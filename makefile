@@ -34,7 +34,7 @@ MPFR=$(GMP)
 
 ######################## do not edit below this line ##########################
 
-VERSION=0.4.6
+VERSION=0.4.4
 
 .SUFFIXES: .c .o
 
