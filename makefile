@@ -34,7 +34,7 @@ MPFR=$(GMP)
 
 ######################## do not edit below this line ##########################
 
-VERSION=0.4.4
+VERSION=0.4.5
 
 .SUFFIXES: .c .o
 
@@ -53,7 +53,9 @@ libmpc.a: $(OBJECTS)
 	$(AR) cru libmpc.a $(OBJECTS)
 	$(RANLIB) libmpc.a
 
-check: test tmul tsqr tdiv texp
+check: test tmul tsqr tdiv texp tabs
+	@echo Testing mpc_abs
+	./tabs
 	@echo Testing all functions
 	$(RM) -f mpc_test
 	./test
@@ -82,6 +84,9 @@ tdiv: tdiv.c libmpc.a
 
 texp: texp.c libmpc.a
 	@echo "Building texp" && ((test -e $(GMP)/lib/libgmp.a && test -e $(MPFR)/lib/libmpfr.a && $(CC) $(CFLAGS) $(INCLUDES) texp.c -o texp ./libmpc.a $(MPFR)/lib/libmpfr.a $(GMP)/lib/libgmp.a) || $(CC) $(CFLAGS) $(INCLUDES) -L. -L$(MPFR)/lib -L$(GMP)/lib texp.c -o texp -lmpc -lmpfr -lgmp)
+
+tabs: tabs.c libmpc.a
+	@echo "Building tabs" && ((test -e $(GMP)/lib/libgmp.a && test -e $(MPFR)/lib/libmpfr.a && $(CC) $(CFLAGS) $(INCLUDES) tabs.c -o tabs ./libmpc.a $(MPFR)/lib/libmpfr.a $(GMP)/lib/libgmp.a) || $(CC) $(CFLAGS) $(INCLUDES) -L. -L$(MPFR)/lib -L$(GMP)/lib tabs.c -o tabs -lmpc -lmpfr -lgmp)
 
 clean:
 	$(RM) *.o *~ libmpc.a test tmul tsqr tdiv texp mpc-$(VERSION).tar.gz mpc.aux mpc.cp mpc.cps mpc.dvi mpc.fn mpc.fns mpc.ky mpc.log mpc.pg mpc.ps mpc.toc mpc.tp mpc.vr mpc.vrs
