@@ -1,6 +1,6 @@
 /* test file for mpc.
 
-Copyright (C) 2002 Andreas Enge, Paul Zimmermann
+Copyright (C) 2002, 2004 Andreas Enge, Paul Zimmermann
 
 This file is part of the MPC Library.
 
@@ -168,7 +168,7 @@ main()
       mpc_neg (z, x, MPC_RNDDU);
 
       PRINT ("Testing mpc_norm\n");
-      mpc_norm (f, x, MPC_RNDDD);
+      mpc_norm (f, x, GMP_RNDD);
 
       PRINT ("Testing mpc_out_str\n");
       if (!(file = fopen (filename, "w")))

@@ -27,13 +27,13 @@ MA 02111-1307, USA. */
 #include "mpc.h"
 #include "mpc-impl.h"
 
-void cmpmul _PROTO((mpc_srcptr, mpc_srcptr, mp_rnd_t));
-void testmul _PROTO((long, long, long, long, mp_prec_t, mp_rnd_t));
-void special _PROTO((void));
-void timemul _PROTO((void));
+void cmpmul (mpc_srcptr, mpc_srcptr, mpc_rnd_t);
+void testmul (long, long, long, long, mp_prec_t, mpc_rnd_t);
+void special (void);
+void timemul (void);
 
 
-void cmpmul (mpc_srcptr x, mpc_srcptr y, mp_rnd_t rnd)
+void cmpmul (mpc_srcptr x, mpc_srcptr y, mpc_rnd_t rnd)
    /* computes the product of x and y with the naive and Karatsuba methods */
    /* using the rounding mode rnd and compares the results and return      */
    /* values.                                                              */
@@ -185,7 +185,7 @@ void cmpmul (mpc_srcptr x, mpc_srcptr y, mp_rnd_t rnd)
 
 
 void
-testmul (long a, long b, long c, long d, mp_prec_t prec, mp_rnd_t rnd)
+testmul (long a, long b, long c, long d, mp_prec_t prec, mpc_rnd_t rnd)
 {
   mpc_t x, y;
 
@@ -288,7 +288,7 @@ int
 main()
 {
   mpc_t x, y;
-  mp_rnd_t rnd_re, rnd_im;
+  mpc_rnd_t rnd_re, rnd_im;
   mp_prec_t prec;
   int i;
 

@@ -30,13 +30,10 @@ MA 02111-1307, USA. */
 #define ERR(x) { mpc_out_str (stderr, 2, 0, x, MPC_RNDNN); \
                  fprintf (stderr, "\n"); }
 
-#define INV_RND(r) \
-   (((r) == GMP_RNDU) ? GMP_RNDD : (((r) == GMP_RNDD) ? GMP_RNDU : (r)))
-
-int mpc_div_ref _PROTO((mpc_ptr, mpc_srcptr, mpc_srcptr, mp_rnd_t));
+int mpc_div_ref (mpc_ptr, mpc_srcptr, mpc_srcptr, mpc_rnd_t);
 
 int
-mpc_div_ref (mpc_ptr a, mpc_srcptr b, mpc_srcptr c, mp_rnd_t rnd)
+mpc_div_ref (mpc_ptr a, mpc_srcptr b, mpc_srcptr c, mpc_rnd_t rnd)
 {
   int ok = 0, inexact_q, inex_re, inex_im = 0, cancel = 0, err, sgn;
   mpfr_t u, v, q, t;
@@ -62,7 +59,7 @@ mpc_div_ref (mpc_ptr a, mpc_srcptr b, mpc_srcptr c, mp_rnd_t rnd)
   rnd_im = (sgn > 0) ? GMP_RNDU : GMP_RNDD;
 
   /* first try with only one real division */
-      prec += _mpfr_ceil_log2 ((double) prec) + 3;
+      prec += mpc_ceil_log2 (prec) + 3;
 
       mpfr_init2 (u, prec);
       mpfr_init2 (v, prec);
@@ -120,7 +117,7 @@ mpc_div_ref (mpc_ptr a, mpc_srcptr b, mpc_srcptr c, mp_rnd_t rnd)
       /* now loop with two real divisions, to detect exact quotients */
   while (ok == 0)
     {
-      prec += _mpfr_ceil_log2 ((double) prec) + 3;
+      prec += mpc_ceil_log2 (prec) + 3;
 
       mpfr_set_prec (u, prec);
       mpfr_set_prec (v, prec);
@@ -190,7 +187,8 @@ main()
   mpc_t b, c, q, q_ref;
   int inex, i;
   mp_prec_t prec;
-  mp_rnd_t rnd_re, rnd_im, rnd;
+  mp_rnd_t rnd_re, rnd_im;
+  mpc_rnd_t rnd;
 
   mpc_init (b);
   mpc_init (c);
@@ -243,8 +241,8 @@ main()
             }
           while (mpfr_sgn (MPC_RE(c)) == 0 && mpfr_sgn (MPC_IM(c)) == 0);
 
-          for (rnd_re = 0; rnd_re < 4; rnd_re++)
-            for (rnd_im = 0; rnd_im < 4; rnd_im++)
+          for (rnd_re = (mp_rnd_t)0; rnd_re < (mp_rnd_t)4; ++rnd_re)
+            for (rnd_im = (mp_rnd_t)0; rnd_im < (mp_rnd_t)4; ++rnd_im)
               {
                 rnd = RNDC(rnd_re, rnd_im);
                 mpc_div     (q,     b, c, rnd);

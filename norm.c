@@ -38,7 +38,7 @@ mpc_norm (mpfr_ptr a, mpc_srcptr b, mp_rnd_t rnd)
 
   do
     {
-      prec += _mpfr_ceil_log2 ((double) prec) + 3;
+      prec += mpc_ceil_log2 (prec) + 3;
 
       mpfr_set_prec (u, prec);
       mpfr_set_prec (v, prec);

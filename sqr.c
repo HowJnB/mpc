@@ -28,7 +28,7 @@ MA 02111-1307, USA. */
    (((r) == GMP_RNDU) ? GMP_RNDD : (((r) == GMP_RNDD) ? GMP_RNDU : (r)))
 
 int
-mpc_sqr (mpc_ptr a, mpc_srcptr b, mp_rnd_t rnd)
+mpc_sqr (mpc_ptr a, mpc_srcptr b, mpc_rnd_t rnd)
 {
    int ok;
    mpfr_t u, v;
@@ -69,7 +69,7 @@ mpc_sqr (mpc_ptr a, mpc_srcptr b, mp_rnd_t rnd)
 
    do
    {
-      prec += _mpfr_ceil_log2 ((double) prec) + 5;
+      prec += mpc_ceil_log2 (prec) + 5;
 
       mpfr_set_prec (u, prec);
       mpfr_set_prec (v, prec);

@@ -1,6 +1,6 @@
 /* mpc_abs -- Absolute value of a complex number.
 
-Copyright (C) 2002 Andreas Enge, Paul Zimmermann
+Copyright (C) 2002, 2004 Andreas Enge, Paul Zimmermann
 
 This file is part of the MPC Library.
 
@@ -33,12 +33,12 @@ mpc_abs (mpfr_ptr a, mpc_srcptr b, mp_rnd_t rnd)
 
   prec = MPFR_PREC(a);
 
-  mpfr_init (u);
-  mpfr_init (v);
+  mpfr_init2 (u, 2*prec);
+  mpfr_init2 (v, 2*prec);
 
   do
     {
-      prec += _mpfr_ceil_log2 ((double) prec) + 3;
+      prec += mpc_ceil_log2 (prec) + 3;
 
       mpfr_set_prec (u, prec);
       mpfr_set_prec (v, prec);

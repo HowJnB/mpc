@@ -24,7 +24,7 @@ MA 02111-1307, USA. */
 #include "mpc.h"
 
 int
-mpc_neg (mpc_ptr a, mpc_srcptr b, mp_rnd_t rnd)
+mpc_neg (mpc_ptr a, mpc_srcptr b, mpc_rnd_t rnd)
 {
   int inex_re, inex_im;
 

@@ -25,7 +25,7 @@ MA 02111-1307, USA. */
 
 int
 mpc_set_ui_ui (mpc_ptr a, unsigned long int b, unsigned long int c,
-               mp_rnd_t rnd)
+               mpc_rnd_t rnd)
 {
   int inex_re, inex_im;
 

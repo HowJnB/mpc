@@ -26,7 +26,7 @@ MA 02111-1307, USA. */
 #include "mpc-impl.h"
 
 int
-mpc_sqrt (mpc_ptr a, mpc_srcptr b, mp_rnd_t rnd)
+mpc_sqrt (mpc_ptr a, mpc_srcptr b, mpc_rnd_t rnd)
 {
   int ok=0;
   mpfr_t    w, t;
@@ -98,7 +98,7 @@ mpc_sqrt (mpc_ptr a, mpc_srcptr b, mp_rnd_t rnd)
 
   do
   {
-      prec += _mpfr_ceil_log2 ((double) prec) + 4;
+      prec += mpc_ceil_log2 (prec) + 4;
       mpfr_set_prec (w, prec);
       mpfr_set_prec (t, prec);
       /* let b = x + iy */

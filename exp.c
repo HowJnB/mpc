@@ -25,7 +25,7 @@ MA 02111-1307, USA. */
 #include "mpc-impl.h"
 
 void
-mpc_exp (mpc_ptr rop, mpc_srcptr op, mp_rnd_t rnd)
+mpc_exp (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
 {
   mpfr_t x, y, z;
   mp_prec_t prec;
@@ -63,7 +63,7 @@ mpc_exp (mpc_ptr rop, mpc_srcptr op, mp_rnd_t rnd)
 
   do
     {
-      prec += _mpfr_ceil_log2 ((double) prec) + 5;
+      prec += mpc_ceil_log2 (prec) + 5;
 
       mpfr_set_prec (x, prec);
       mpfr_set_prec (y, prec);

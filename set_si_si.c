@@ -24,7 +24,7 @@ MA 02111-1307, USA. */
 #include "mpc.h"
 
 int
-mpc_set_si_si (mpc_ptr a, long int b, long int c, mp_rnd_t rnd)
+mpc_set_si_si (mpc_ptr a, long int b, long int c, mpc_rnd_t rnd)
 {
   int inex_re, inex_im;
 

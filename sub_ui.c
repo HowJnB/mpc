@@ -25,7 +25,7 @@ MA 02111-1307, USA. */
 
 /* return 0 iff both the real and imaginary parts are exact */
 int
-mpc_sub_ui (mpc_ptr a, mpc_srcptr b, unsigned long int c, mp_rnd_t rnd)
+mpc_sub_ui (mpc_ptr a, mpc_srcptr b, unsigned long int c, mpc_rnd_t rnd)
 {
   int inex_re, inex_im;
 

@@ -26,7 +26,7 @@ MA 02111-1307, USA. */
 #include "mpc-impl.h"
 
 int
-mpc_div (mpc_ptr a, mpc_srcptr b, mpc_srcptr c, mp_rnd_t rnd)
+mpc_div (mpc_ptr a, mpc_srcptr b, mpc_srcptr c, mpc_rnd_t rnd)
 {
    int ok_re=0, ok_im=0;
    mpc_t  res, c_conj;
@@ -46,7 +46,7 @@ mpc_div (mpc_ptr a, mpc_srcptr b, mpc_srcptr c, mp_rnd_t rnd)
    
    do
    {
-      prec += _mpfr_ceil_log2 ((double) prec) + 5;
+      prec += mpc_ceil_log2 (prec) + 5;
       
       mpc_set_prec (res, prec);
       mpfr_set_prec (q, prec);

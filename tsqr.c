@@ -26,12 +26,12 @@ MA 02111-1307, USA. */
 #include "mpc.h"
 #include "mpc-impl.h"
 
-void cmpsqr _PROTO((mpc_srcptr, mp_rnd_t));
-void testsqr _PROTO((long, long, mp_prec_t, mp_rnd_t));
-void special _PROTO((void));
+void cmpsqr (mpc_srcptr, mpc_rnd_t);
+void testsqr (long, long, mp_prec_t, mpc_rnd_t);
+void special (void);
 
 
-void cmpsqr (mpc_srcptr x, mp_rnd_t rnd)
+void cmpsqr (mpc_srcptr x, mpc_rnd_t rnd)
    /* computes the square of x with the specific function or by simple     */
    /* multiplication using the rounding mode rnd and compares the results  */
    /* and return values.                                                   */
@@ -134,7 +134,7 @@ void cmpsqr (mpc_srcptr x, mp_rnd_t rnd)
 
 
 void
-testsqr (long a, long b, mp_prec_t prec, mp_rnd_t rnd)
+testsqr (long a, long b, mp_prec_t prec, mpc_rnd_t rnd)
 {
   mpc_t x;
 
@@ -182,7 +182,7 @@ int
 main()
 {
   mpc_t x;
-  mp_rnd_t rnd_re, rnd_im;
+  mpc_rnd_t rnd_re, rnd_im;
   mp_prec_t prec;
   int i;
 

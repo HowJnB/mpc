@@ -1,6 +1,6 @@
 /* mpc_mul -- Multiply two complex numbers.
 
-Copyright (C) 2002 Andreas Enge, Paul Zimmermann
+Copyright (C) 2002, 2004 Andreas Enge, Paul Zimmermann
 
 This file is part of the MPC Library.
 
@@ -19,28 +19,19 @@ along with the MPC Library; see the file COPYING.LIB.  If not, write to
 the Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston,
 MA 02111-1307, USA. */
 
+#include <stdio.h>
+
 #include "gmp.h"
 #include "mpfr.h"
 #include "mpc.h"
 #include "mpc-impl.h"
-#include <stdio.h>
-
-#ifdef MPFR202
-#define MPFR_CMP_ABS mpfr_cmp_abs
-#else /* mpfr-2.0.1 doesn't allow 0 in mpfr_cmp_abs */
-#define MPFR_CMP_ABS(a,b) \
-      ((MPFR_IS_ZERO (a)) ? 0 : ((MPFR_IS_ZERO (b)) ? 1 : mpfr_cmp_abs(a, b)))
-#endif
-#define INV_RND(r) \
-   (((r) == GMP_RNDU) ? GMP_RNDD : (((r) == GMP_RNDD) ? GMP_RNDU : (r)))
-#define SWAP(a,b) { mpfr_srcptr tmp; tmp = a; a = b; b = tmp; }
 
 /* return inex such that MPC_INEX_RE(inex) = -1, 0, 1
                          MPC_INEX_IM(inex) = -1, 0, 1
    depending on the signs of the real/imaginary parts of the result
 */
 int
-mpc_mul (mpc_ptr a, mpc_srcptr b, mpc_srcptr c, mp_rnd_t rnd)
+mpc_mul (mpc_ptr a, mpc_srcptr b, mpc_srcptr c, mpc_rnd_t rnd)
 {
    int inex_re, inex_im;
    int overlap;
@@ -98,12 +89,12 @@ mpc_mul (mpc_ptr a, mpc_srcptr b, mpc_srcptr c, mp_rnd_t rnd)
       return MPC_INEX(inex_re, inex_im);
    }
    
-   return ((MPC_MAX_PREC(a) <= MUL_KARATSUBA_THRESHOLD * BITS_PER_MP_LIMB)
+   return ((MPC_MAX_PREC(a) <= (mp_prec_t) MUL_KARATSUBA_THRESHOLD * BITS_PER_MP_LIMB)
          ? mpc_mul_naive : mpc_mul_karatsuba) (a, b, c, rnd);
 }
 
 int
-mpc_mul_naive (mpc_ptr a, mpc_srcptr b, mpc_srcptr c, mp_rnd_t rnd)
+mpc_mul_naive (mpc_ptr a, mpc_srcptr b, mpc_srcptr c, mpc_rnd_t rnd)
 {
   int overlap, inex_re, inex_im;
   mpfr_t u, v, t;
@@ -117,8 +108,8 @@ mpc_mul_naive (mpc_ptr a, mpc_srcptr b, mpc_srcptr c, mp_rnd_t rnd)
   mpfr_init2 (v, prec);
 
   /* Re(a) = Re(b)*Re(c) - Im(b)*Im(c) */
-  mpfr_mul (u, MPC_RE(b), MPC_RE(c), MPC_RNDNN); /* exact */
-  mpfr_mul (v, MPC_IM(b), MPC_IM(c), MPC_RNDNN); /* exact */
+  mpfr_mul (u, MPC_RE(b), MPC_RE(c), GMP_RNDN); /* exact */
+  mpfr_mul (v, MPC_IM(b), MPC_IM(c), GMP_RNDN); /* exact */
 
   if (overlap)
     {
@@ -129,12 +120,12 @@ mpc_mul_naive (mpc_ptr a, mpc_srcptr b, mpc_srcptr c, mp_rnd_t rnd)
     inex_re = mpfr_sub (MPC_RE(a), u, v, MPC_RND_RE(rnd));
 
   /* Im(a) = Re(b)*Im(c) + Im(b)*Re(c) */
-  mpfr_mul (u, MPC_RE(b), MPC_IM(c), MPC_RNDNN); /* exact */
+  mpfr_mul (u, MPC_RE(b), MPC_IM(c), GMP_RNDN); /* exact */
   if (b == c) /* square case */
     inex_im = mpfr_mul_2exp (MPC_IM(a), u, 1, MPC_RND_IM(rnd));
   else
     {
-      mpfr_mul (v, MPC_IM(b), MPC_RE(c), MPC_RNDNN); /* exact */
+      mpfr_mul (v, MPC_IM(b), MPC_RE(c), GMP_RNDN); /* exact */
       inex_im = mpfr_add (MPC_IM(a), u, v, MPC_RND_IM(rnd));
     }
 
@@ -153,7 +144,7 @@ mpc_mul_naive (mpc_ptr a, mpc_srcptr b, mpc_srcptr c, mp_rnd_t rnd)
 
 /* Karatsuba multiplication, with 3 real multiplies */
 int
-mpc_mul_karatsuba (mpc_ptr rop, mpc_srcptr op1, mpc_srcptr op2, mp_rnd_t rnd)
+mpc_mul_karatsuba (mpc_ptr rop, mpc_srcptr op1, mpc_srcptr op2, mpc_rnd_t rnd)
 {
   mpfr_srcptr a, b, c, d;
   int mul_i, ok, inexact, mul_a, mul_c, inex_re, inex_im, sign_x, sign_u;
@@ -260,7 +251,7 @@ mpc_mul_karatsuba (mpc_ptr rop, mpc_srcptr op1, mpc_srcptr op2, mp_rnd_t rnd)
       do
       {
          /* the following should give failures with prob. <= 1/prec */
-         prec += _mpfr_ceil_log2 ((double) prec) + 3;
+         prec += mpc_ceil_log2 (prec) + 3;
 
          mpfr_set_prec (u, prec);
          mpfr_set_prec (x, prec);

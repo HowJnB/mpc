@@ -26,7 +26,7 @@ MA 02111-1307, USA. */
 #include "mpc.h"
 
 size_t
-mpc_inp_str (mpc_ptr rop, FILE *stream, int base, mp_rnd_t rnd_mode)
+mpc_inp_str (mpc_ptr rop, FILE *stream, int base, mpc_rnd_t rnd_mode)
 {
   size_t size, size_im;
   int c;

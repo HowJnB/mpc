@@ -1,3 +1,4 @@
+
 \input texinfo    @c -*-texinfo-*-
 @c %**start of header
 @setfilename mpc.info
@@ -8,8 +9,8 @@
 @end iftex
 @comment %**end of header
 
-@set VERSION 0.4.2
-@set DATE {December 2003}
+@set VERSION 0.4.3
+@set DATE {April 2004}
 
 @ifinfo
 @format
@@ -29,7 +30,7 @@ END-INFO-DIR-ENTRY
 @ifinfo
 This file documents MPC, a library for multiple precision complex arithmetic
 
-Copyright (C) 2002, 2003, Andreas Enge, Paul Zimmermann
+Copyright (C) 2002, 2003, 2004 Andreas Enge, Paul Zimmermann
 
 Permission is granted to make and distribute verbatim copies of
 this manual provided the copyright notice and this permission notice
@@ -75,7 +76,7 @@ by the Foundation.
 
 @page
 @vskip 0pt plus 1filll
-Copyright @copyright{} 2002 Andreas Enge, Paul Zimmermann
+Copyright @copyright{} 2002, 2003, 2004 Andreas Enge, Paul Zimmermann
 
 @sp 2
 
@@ -325,12 +326,12 @@ the corresponding C data type is @code{mp_prec_t}.
 See the MPFR documentation for more details on the allowed precision range.
 
 @cindex Rounding Mode
-@tindex @code{mp_rnd_t}
+@tindex @code{mpc_rnd_t}
 @noindent
 The @dfn{rounding mode} specifies the way to round the result of a 
 complex operation, in case the exact result can not be represented
 exactly in the destination mantissa;
-the corresponding C data type is @code{mp_rnd_t}.
+the corresponding C data type is @code{mpc_rnd_t}.
 A complex rounding mode is a pair of two rounding modes: one for the real
 part, one for the imaginary part.
 
@@ -523,10 +524,10 @@ case the current allocated space for the mantissa of @var{x} is sufficient.
 These functions assign new values to already initialized complex numbers
 (@pxref{Initializing Complex Numbers}).
 
-@deftypefn Function int mpc_set (mpc_t @var{rop}, mpc_t @var{op}, mp_rnd_t @var{rnd})
-@deftypefnx Macro int mpc_set_ui (mpc_t @var{rop}, unsigned long int @var{op}, mp_rnd_t @var{rnd})
-@deftypefnx Macro int mpc_set_si (mpc_t @var{rop}, long int @var{op}, mp_rnd_t @var{rnd})
-@deftypefnx Macro int mpc_set_d (mpc_t @var{rop}, double @var{op}, mp_rnd_t @var{rnd})
+@deftypefn Function int mpc_set (mpc_t @var{rop}, mpc_t @var{op}, mpc_rnd_t @var{rnd})
+@deftypefnx Macro int mpc_set_ui (mpc_t @var{rop}, unsigned long int @var{op}, mpc_rnd_t @var{rnd})
+@deftypefnx Macro int mpc_set_si (mpc_t @var{rop}, long int @var{op}, mpc_rnd_t @var{rnd})
+@deftypefnx Macro int mpc_set_d (mpc_t @var{rop}, double @var{op}, mpc_rnd_t @var{rnd})
 Set the value of @var{rop} from @var{op}, rounded to the precision of @var{rop}
 with the given rounding mode @var{rnd}.
 Except for @code{mpc_set}, the argument @var{op} is interpreted as real,
@@ -540,10 +541,10 @@ rounded by the C compiler to a double-precision number, and then only
 to a complex number.
 @end deftypefn
 
-@deftypefun int mpc_set_d_d (mpc_t @var{rop}, double @var{op1}, double @var{op2}, mp_rnd_t @var{rnd})
-@deftypefunx int mpc_set_ui_ui (mpc_t @var{rop}, unsigned long int @var{op1}, unsigned long int @var{op2}, mp_rnd_t @var{rnd})
-@deftypefunx int mpc_set_si_si (mpc_t @var{rop}, long int @var{op1}, long int @var{op2}, mp_rnd_t @var{rnd})
-@deftypefunx int mpc_set_ui_fr (mpc_t @var{rop}, unsigned long int @var{op1}, mpfr_t @var{op2}, mp_rnd_t @var{rnd})
+@deftypefun int mpc_set_d_d (mpc_t @var{rop}, double @var{op1}, double @var{op2}, mpc_rnd_t @var{rnd})
+@deftypefunx int mpc_set_ui_ui (mpc_t @var{rop}, unsigned long int @var{op1}, unsigned long int @var{op2}, mpc_rnd_t @var{rnd})
+@deftypefunx int mpc_set_si_si (mpc_t @var{rop}, long int @var{op1}, long int @var{op2}, mpc_rnd_t @var{rnd})
+@deftypefunx int mpc_set_ui_fr (mpc_t @var{rop}, unsigned long int @var{op1}, mpfr_t @var{op2}, mpc_rnd_t @var{rnd})
 Set the real part of @var{rop} from @var{op1}, and its imaginary part from
 @var{op2}, according to the rounding mode @var{rnd}.
 @end deftypefun
@@ -554,17 +555,17 @@ Set the real part of @var{rop} from @var{op1}, and its imaginary part from
 @section Combined Initialization and Assignment Functions
 @cindex Initialization and assignment functions
 
-@deftypefn Macro int mpc_init_set (mpc_t @var{rop}, mpc_t @var{op}, mp_rnd_t @var{rnd})
-@deftypefnx Macro int mpc_init_set_ui (mpc_t @var{rop}, unsigned long int @var{op}, mp_rnd_t @var{rnd})
+@deftypefn Macro int mpc_init_set (mpc_t @var{rop}, mpc_t @var{op}, mpc_rnd_t @var{rnd})
+@deftypefnx Macro int mpc_init_set_ui (mpc_t @var{rop}, unsigned long int @var{op}, mpc_rnd_t @var{rnd})
 Initialize @var{rop} and set its value from @var{op}, rounded with the
 rounding mode @var{rnd}.
 The precision of @var{rop} will be taken from the active default precision,
 as set by @code{mpc_set_default_prec}.
 @end deftypefn
 
-@deftypefn Macro int mpc_init_set_ui_ui (mpc_t @var{rop}, unsigned long int @var{op1}, unsigned long int @var{op2}, mp_rnd_t @var{rnd})
-@deftypefnx Macro int mpc_init_set_ui_fr (mpc_t @var{rop}, unsigned long int @var{op1}, mpfr_t @var{op2}, mp_rnd_t @var{rnd})
-@deftypefnx Macro int mpc_init_set_si_si (mpc_t @var{rop}, long int @var{op1}, long int @var{op2}, mp_rnd_t @var{rnd})
+@deftypefn Macro int mpc_init_set_ui_ui (mpc_t @var{rop}, unsigned long int @var{op1}, unsigned long int @var{op2}, mpc_rnd_t @var{rnd})
+@deftypefnx Macro int mpc_init_set_ui_fr (mpc_t @var{rop}, unsigned long int @var{op1}, mpfr_t @var{op2}, mpc_rnd_t @var{rnd})
+@deftypefnx Macro int mpc_init_set_si_si (mpc_t @var{rop}, long int @var{op1}, long int @var{op2}, mpc_rnd_t @var{rnd})
 Initialize @var{rop}, set its real part from @var{op1}, and its imaginary
 part from @var{op2}, rounded with the rounding mode @var{rnd}.
 The precision of @var{rop} will be taken from the active default precision,
@@ -582,48 +583,48 @@ with real numbers instead of complex numbers, their complexity should
 essentially be the same as with the MPFR library, with only a marginal
 overhead due to the MPC layer.
 
-@deftypefun int mpc_add (mpc_t @var{rop}, mpc_t @var{op1}, mpc_t @var{op2}, mp_rnd_t @var{rnd})
-@deftypefunx int mpc_add_ui (mpc_t @var{rop}, mpc_t @var{op1}, unsigned long int @var{op2}, mp_rnd_t @var{rnd})
-@deftypefunx int mpc_add_fr (mpc_t @var{rop}, mpc_t @var{op1}, mpfr_t @var{op2}, mp_rnd_t @var{rnd})
+@deftypefun int mpc_add (mpc_t @var{rop}, mpc_t @var{op1}, mpc_t @var{op2}, mpc_rnd_t @var{rnd})
+@deftypefunx int mpc_add_ui (mpc_t @var{rop}, mpc_t @var{op1}, unsigned long int @var{op2}, mpc_rnd_t @var{rnd})
+@deftypefunx int mpc_add_fr (mpc_t @var{rop}, mpc_t @var{op1}, mpfr_t @var{op2}, mpc_rnd_t @var{rnd})
 Set @var{rop} to @var{op1} @math{+} @var{op2} rounded according to @var{rnd}.
 @end deftypefun
 
-@deftypefun int mpc_sub (mpc_t @var{rop}, mpc_t @var{op1}, mpc_t @var{op2}, mp_rnd_t @var{rnd})
-@deftypefunx int mpc_sub_ui (mpc_t @var{rop}, mpc_t @var{op1}, unsigned long int @var{op2}, mp_rnd_t @var{rnd})
+@deftypefun int mpc_sub (mpc_t @var{rop}, mpc_t @var{op1}, mpc_t @var{op2}, mpc_rnd_t @var{rnd})
+@deftypefunx int mpc_sub_ui (mpc_t @var{rop}, mpc_t @var{op1}, unsigned long int @var{op2}, mpc_rnd_t @var{rnd})
 Set @var{rop} to @var{op1} @minus{} @var{op2} rounded according to @var{rnd}.
 @end deftypefun
 
-@deftypefun int mpc_mul (mpc_t @var{rop}, mpc_t @var{op1}, mpc_t @var{op2}, mp_rnd_t @var{rnd})
-@deftypefunx int mpc_mul_ui (mpc_t @var{rop}, mpc_t @var{op1}, unsigned long int @var{op2}, mp_rnd_t @var{rnd})
-@deftypefunx int mpc_mul_fr (mpc_t @var{rop}, mpc_t @var{op1}, mpfr_t @var{op2}, mp_rnd_t @var{rnd})
+@deftypefun int mpc_mul (mpc_t @var{rop}, mpc_t @var{op1}, mpc_t @var{op2}, mpc_rnd_t @var{rnd})
+@deftypefunx int mpc_mul_ui (mpc_t @var{rop}, mpc_t @var{op1}, unsigned long int @var{op2}, mpc_rnd_t @var{rnd})
+@deftypefunx int mpc_mul_fr (mpc_t @var{rop}, mpc_t @var{op1}, mpfr_t @var{op2}, mpc_rnd_t @var{rnd})
 Set @var{rop} to @var{op1} times @var{op2} rounded according to @var{rnd}.
 @end deftypefun
 
-@deftypefun int mpc_sqr (mpc_t @var{rop}, mpc_t @var{op}, mp_rnd_t @var{rnd})
+@deftypefun int mpc_sqr (mpc_t @var{rop}, mpc_t @var{op}, mpc_rnd_t @var{rnd})
 Set @var{rop} to the square of @var{op} rounded according to @var{rnd}.
 @end deftypefun
 
-@deftypefun int mpc_div (mpc_t @var{rop}, mpc_t @var{op1}, mpc_t @var{op2}, mp_rnd_t @var{rnd})
-@deftypefunx int mpc_div_ui (mpc_t @var{rop}, mpc_t @var{op1}, unsigned long int @var{op2}, mp_rnd_t @var{rnd})
-@deftypefunx int mpc_ui_div (mpc_t @var{rop}, unsigned long int @var{op1}, mpc_t @var{op2}, mp_rnd_t @var{rnd})
-@deftypefunx int mpc_div_fr (mpc_t @var{rop}, mpc_t @var{op1}, mpfr_t @var{op2}, mp_rnd_t @var{rnd})
+@deftypefun int mpc_div (mpc_t @var{rop}, mpc_t @var{op1}, mpc_t @var{op2}, mpc_rnd_t @var{rnd})
+@deftypefunx int mpc_div_ui (mpc_t @var{rop}, mpc_t @var{op1}, unsigned long int @var{op2}, mpc_rnd_t @var{rnd})
+@deftypefunx int mpc_ui_div (mpc_t @var{rop}, unsigned long int @var{op1}, mpc_t @var{op2}, mpc_rnd_t @var{rnd})
+@deftypefunx int mpc_div_fr (mpc_t @var{rop}, mpc_t @var{op1}, mpfr_t @var{op2}, mpc_rnd_t @var{rnd})
 Set @var{rop} to @var{op1}/@var{op2} rounded according to @var{rnd}.
 For @code{mpc_div} and @code{mpc_ui_div}, the return value may fail to
 recognize some exact results, and its sign is not significant.
 @end deftypefun
 
-@deftypefun int mpc_sqrt (mpc_t @var{rop}, mpc_t @var{op}, mp_rnd_t @var{rnd})
+@deftypefun int mpc_sqrt (mpc_t @var{rop}, mpc_t @var{op}, mpc_rnd_t @var{rnd})
 Set @var{rop} to the square root of @var{op} rounded according to @var{rnd}.
 Here, when the return value is 0, it means the result is exact, but the
 contrary may be false.
 @end deftypefun
 
-@deftypefun int mpc_neg (mpc_t @var{rop}, mpc_t @var{op}, mp_rnd_t @var{rnd})
+@deftypefun int mpc_neg (mpc_t @var{rop}, mpc_t @var{op}, mpc_rnd_t @var{rnd})
 Set @var{rop} to @minus{}@var{op} rounded according to @var{rnd}.
 Just changes the sign if @var{rop} and @var{op} are the same variable.
 @end deftypefun
 
-@deftypefun int mpc_conj (mpc_t @var{rop}, mpc_t @var{op}, mp_rnd_t @var{rnd})
+@deftypefun int mpc_conj (mpc_t @var{rop}, mpc_t @var{op}, mpc_rnd_t @var{rnd})
 Set @var{rop} to the conjugate of @var{op} rounded according to @var{rnd}.
 Just changes the sign of the imaginary part 
 if @var{rop} and @var{op} are the same variable.
@@ -644,14 +645,14 @@ The returned value is zero iff the result is exact.
 Note that the destination is of type @code{mpfr_t}, not @code{mpc_t}.
 @end deftypefun
 
-@deftypefun int mpc_mul_2exp (mpc_t @var{rop}, mpc_t @var{op1}, unsigned long int @var{op2}, mp_rnd_t @var{rnd})
+@deftypefun int mpc_mul_2exp (mpc_t @var{rop}, mpc_t @var{op1}, unsigned long int @var{op2}, mpc_rnd_t @var{rnd})
 Set @var{rop} to @var{op1} times 2 raised to @var{op2}
 rounded according to @var{rnd}. Just increases the exponents
 of the real and imaginary parts by @var{op2}
 when @var{rop} and @var{op1} are identical.
 @end deftypefun
 
-@deftypefun int mpc_div_2exp (mpc_t @var{rop}, mpc_t @var{op1}, unsigned long int @var{op2}, mp_rnd_t @var{rnd})
+@deftypefun int mpc_div_2exp (mpc_t @var{rop}, mpc_t @var{op1}, unsigned long int @var{op2}, mpc_rnd_t @var{rnd})
 Set @var{rop} to @var{op1} divided by 2 raised to @var{op2}
 rounded according to @var{rnd}. Just decreases the exponents
 of the real and imaginary parts by @var{op2}
@@ -685,7 +686,7 @@ with @code{mpc_cmp (op1, op2) == 0}.
 @cindex Special functions
 @cindex Special complex functions
 
-@deftypefun void mpc_exp (mpc_t @var{rop}, mpc_t @var{op}, mp_rnd_t @var{rnd})
+@deftypefun void mpc_exp (mpc_t @var{rop}, mpc_t @var{op}, mpc_rnd_t @var{rnd})
 Set @var{rop} to the exponential of @var{op},
 rounded according to @var{rnd} with the precision of @var{rop}.
 @end deftypefun
@@ -709,7 +710,7 @@ When using any of these functions, it is a good idea to include @file{stdio.h}
 before @file{mpc.h}, since that will allow @file{mpc.h} to define prototypes
 for these functions.
 
-@deftypefun size_t mpc_out_str (FILE *@var{stream}, int @var{base}, size_t @var{n_digits}, mpc_t @var{op}, mp_rnd_t @var{rnd})
+@deftypefun size_t mpc_out_str (FILE *@var{stream}, int @var{base}, size_t @var{n_digits}, mpc_t @var{op}, mpc_rnd_t @var{rnd})
 Output @var{op} on stdio stream @var{stream}, in
 base @var{base}, rounded according to @var{rnd}.
 First the real part is printed, then @code{+I*} followed by the imaginary part.
@@ -727,7 +728,7 @@ exponent delimiter.
 Return the number of characters written.
 @end deftypefun
 
-@deftypefun size_t mpc_inp_str (mpc_t @var{rop}, FILE *@var{stream}, int @var{base}, mp_rnd_t @var{rnd})
+@deftypefun size_t mpc_inp_str (mpc_t @var{rop}, FILE *@var{stream}, int @var{base}, mpc_rnd_t @var{rnd})
 Input a string in base @var{base} from stdio stream @var{stream},
 rounded according to @var{rnd}, and put the
 read complex in @var{rop}.  
@@ -790,8 +791,8 @@ of the real and imaginary parts.
 @comment  node-name,  next,  previous,  up
 @unnumbered Contributors
 
-The developers of the MPC library are Andreas Enge and
-Paul Zimmermann.
+The main developers of the MPC library are Andreas Enge and
+Paul Zimmermann. Patrick Pelissier has cleaned up the code.
 
 @node References, Concept Index, Contributors, Top
 @comment  node-name,  next,  previous,  up

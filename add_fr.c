@@ -25,7 +25,7 @@ MA 02111-1307, USA. */
 
 /* return 0 iff both the real and imaginary parts are exact */
 int
-mpc_add_fr (mpc_ptr a, mpc_srcptr b, mpfr_srcptr c, mp_rnd_t rnd)
+mpc_add_fr (mpc_ptr a, mpc_srcptr b, mpfr_srcptr c, mpc_rnd_t rnd)
 {
   int inex_re, inex_im;
 
