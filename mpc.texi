@@ -10,7 +10,7 @@
 @comment %**end of header
 
 @set VERSION 0.4.5
-@set DATE {January 2005}
+@set DATE {February 2005}
 
 @ifinfo
 @format
