@@ -74,9 +74,6 @@ test: test.c libmpc.a
 tmul: tmul.c libmpc.a
 	@echo "Building tmul" && ((test -e $(GMP)/lib/libgmp.a && test -e $(MPFR)/lib/libmpfr.a && $(CC) $(CFLAGS) $(INCLUDES) tmul.c -o tmul ./libmpc.a $(MPFR)/lib/libmpfr.a $(GMP)/lib/libgmp.a) || $(CC) $(CFLAGS) $(INCLUDES) -L. -L$(MPFR)/lib -L$(GMP)/lib tmul.c -o tmul -lmpc -lmpfr -lgmp)
 
-bug1: bug1.c libmpc.a
-	@echo "Building bug1" && ((test -e $(GMP)/lib/libgmp.a && test -e $(MPFR)/lib/libmpfr.a && $(CC) $(CFLAGS) $(INCLUDES) bug1.c -o bug1 ./libmpc.a $(MPFR)/lib/libmpfr.a $(GMP)/lib/libgmp.a) || $(CC) $(CFLAGS) $(INCLUDES) -L. -L$(MPFR)/lib -L$(GMP)/lib bug1.c -o bug1 -lmpc -lmpfr -lgmp)
-
 tsqr: tsqr.c libmpc.a
 	@echo "Building tsqr" && ((test -e $(GMP)/lib/libgmp.a && test -e $(MPFR)/lib/libmpfr.a && $(CC) $(CFLAGS) $(INCLUDES) tsqr.c -o tsqr ./libmpc.a $(MPFR)/lib/libmpfr.a $(GMP)/lib/libgmp.a) || $(CC) $(CFLAGS) $(INCLUDES) -L. -L$(MPFR)/lib -L$(GMP)/lib tsqr.c -o tsqr -lmpc -lmpfr -lgmp)
 
