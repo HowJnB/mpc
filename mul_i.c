@@ -29,7 +29,6 @@ mpc_mul_i (mpc_ptr a, mpc_srcptr b, int sign, mpc_rnd_t rnd)
 /* if sign is >= 0, multiply by i, otherwise by -i */
 {
   int   inex_re, inex_im;
-  mpc_t res;
   mpfr_t tmp;
 
   /* Treat the most probable case of compatible precisions first */
@@ -37,11 +36,7 @@ mpc_mul_i (mpc_ptr a, mpc_srcptr b, int sign, mpc_rnd_t rnd)
         && MPFR_PREC (MPC_IM (b)) == MPFR_PREC (MPC_RE (a)))
   {
      if (a == b)
-     {
-        tmp [0] = MPC_RE (a) [0];
-        MPC_RE (a) [0] = MPC_IM (a) [0];
-        MPC_IM (a) [0] = tmp [0];
-     }
+        mpfr_swap (MPC_RE (a), MPC_IM (a));
      else
      {
         mpfr_set (MPC_RE (a), MPC_IM (b), GMP_RNDN);
@@ -57,22 +52,32 @@ mpc_mul_i (mpc_ptr a, mpc_srcptr b, int sign, mpc_rnd_t rnd)
   else
   {
      if (a == b)
-        mpc_init3 (res, MPFR_PREC (MPC_RE (a)), MPFR_PREC (MPC_IM (a)));
-     else
-        res [0] = a [0];
-     if (sign >= 0)
      {
-        inex_re = mpfr_neg (MPC_RE (res), MPC_IM (b), MPC_RND_RE (rnd));
-        inex_im = mpfr_set (MPC_IM (res), MPC_RE (b), MPC_RND_IM (rnd));
+        mpfr_init2 (tmp, MPFR_PREC (MPC_RE (a)));
+        if (sign >= 0)
+        {
+           inex_re = mpfr_neg (tmp, MPC_IM (b), MPC_RND_RE (rnd));
+           inex_im = mpfr_set (MPC_IM (a), MPC_RE (b), MPC_RND_IM (rnd));
+        }
+        else
+        {
+           inex_re = mpfr_set (tmp, MPC_IM (b), MPC_RND_RE (rnd));
+           inex_im = mpfr_neg (MPC_IM (a), MPC_RE (b), MPC_RND_IM (rnd));
+        }
+        mpfr_clear (MPC_RE (a));
+        MPC_RE (a)[0] = tmp [0];
      }
      else
-     {
-        inex_re = mpfr_set (MPC_RE (res), MPC_IM (b), MPC_RND_RE (rnd));
-        inex_im = mpfr_neg (MPC_IM (res), MPC_RE (b), MPC_RND_IM (rnd));
-     }
-     mpc_set (a, res, GMP_RNDN);
-     if (a == b)
-        mpc_clear (res);
+        if (sign >= 0)
+        {
+           inex_re = mpfr_neg (MPC_RE (a), MPC_IM (b), MPC_RND_RE (rnd));
+           inex_im = mpfr_set (MPC_IM (a), MPC_RE (b), MPC_RND_IM (rnd));
+        }
+        else
+        {
+           inex_re = mpfr_set (MPC_RE (a), MPC_IM (b), MPC_RND_RE (rnd));
+           inex_im = mpfr_neg (MPC_IM (a), MPC_RE (b), MPC_RND_IM (rnd));
+        }
   }
   
   return MPC_INEX(inex_re, inex_im);  
