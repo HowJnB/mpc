@@ -1,0 +1,11 @@
+mpc is a complex floating-point library with exact rounding.
+It is based on the mpfr floating-point library (www.mpfr.org),
+which is itself based on the GNU MP library (www.swox.se/gmp).
+
+A complex number is represented in cartesian coordinates by its real
+and imaginary parts, as described in:
+
+  Vladik Kreinovich and Juergen Wolff von Gudenberg,
+  "An optimality criterion for arithmetic of complex sets",
+  Geombinatorics, 2000, Vol. 10, No. 1, pp. 31-37.
+  http://www.cs.utep.edu/vladik/longvita.html#JournalCS
