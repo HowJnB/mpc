@@ -283,7 +283,8 @@ mpc_mul_karatsuba (mpc_ptr rop, mpc_srcptr op1, mpc_srcptr op2, mpc_rnd_t rnd)
 	     mp_prec_t prec_x;
 	     prec_x = (MPFR_EXP(v) > MPFR_EXP(w)) ? MPFR_EXP(v) - MPFR_EXP(w)
 	       : MPFR_EXP(w) - MPFR_EXP(v);
-	     prec_x += (prec_v > prec_w) ? prec_v : prec_w;
+	     prec_x += MAX(prec_v, prec_w) + 1;
+           /* +1 is necessary for a potential carry */
 	     /* ensure we do not use a too large precision */
 	     if (prec_x > prec_u)
 	       prec_x = prec_u;
