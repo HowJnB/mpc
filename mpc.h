@@ -127,6 +127,7 @@ int  mpc_set_ui_fr __MPC_PROTO ((mpc_ptr, unsigned long int, mpfr_srcptr, mpc_rn
 int  mpc_set_ui_ui __MPC_PROTO ((mpc_ptr, unsigned long int, unsigned long int, mpc_rnd_t));
 int  mpc_set_si_si __MPC_PROTO ((mpc_ptr, long int, long int, mpc_rnd_t));
 int  mpc_cmp __MPC_PROTO ((mpc_srcptr, mpc_srcptr));
+int  mpc_cmp_ui __MPC_PROTO ((mpc_srcptr, unsigned long int));
 void mpc_exp __MPC_PROTO ((mpc_ptr, mpc_srcptr, mpc_rnd_t));
 void mpc_clear __MPC_PROTO ((mpc_ptr));
 void mpc_init  __MPC_PROTO ((mpc_ptr));

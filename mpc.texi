@@ -667,6 +667,7 @@ when @var{rop} and @var{op1} are identical.
 @cindex Comparison functions
 
 @deftypefun int mpc_cmp (mpc_t @var{op1}, mpc_t @var{op2})
+@deftypefunx int mpc_cmp_ui (mpc_t @var{op1}, unsigned long int @var{op2})
 Compare @var{op1} and @var{op2}.
 The return value @var{c} can be decomposed into @code{x = MPC_INEX_RE(c)}
 and @code{y = MPC_INEX_IM(c)}, such that @var{x} is
