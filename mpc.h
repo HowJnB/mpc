@@ -109,6 +109,7 @@ int  mpc_mul    __MPC_PROTO ((mpc_ptr, mpc_srcptr, mpc_srcptr, mpc_rnd_t));
 int  mpc_mul_fr __MPC_PROTO ((mpc_ptr, mpc_srcptr, mpfr_srcptr, mpc_rnd_t));
 int  mpc_mul_ui __MPC_PROTO ((mpc_ptr, mpc_srcptr, unsigned long int, mpc_rnd_t));
 int  mpc_mul_si __MPC_PROTO ((mpc_ptr, mpc_srcptr, long int, mpc_rnd_t));
+int  mpc_mul_i  __MPC_PROTO ((mpc_ptr, mpc_srcptr, int, mpc_rnd_t));
 int  mpc_sqr    __MPC_PROTO ((mpc_ptr, mpc_srcptr, mpc_rnd_t));
 int  mpc_div    __MPC_PROTO ((mpc_ptr, mpc_srcptr, mpc_srcptr, mpc_rnd_t));
 int  mpc_div_fr __MPC_PROTO ((mpc_ptr, mpc_srcptr, mpfr_srcptr, mpc_rnd_t));

@@ -601,6 +601,12 @@ Set @var{rop} to @var{op1} @minus{} @var{op2} rounded according to @var{rnd}.
 Set @var{rop} to @var{op1} times @var{op2} rounded according to @var{rnd}.
 @end deftypefun
 
+@deftypefun int mpc_mul_i (mpc_t @var{rop}, mpc_t @var{op}, int @var{sgn}, mpc_rnd_t @var{rnd})
+Set @var{rop} to @var{op} times the imaginary unit i if @var{sgn} is
+non-negative, set @var{rop} to @var{op} times -i otherwise,
+in both cases rounded according to @var{rnd}.
+@end deftypefun
+
 @deftypefun int mpc_sqr (mpc_t @var{rop}, mpc_t @var{op}, mpc_rnd_t @var{rnd})
 Set @var{rop} to the square of @var{op} rounded according to @var{rnd}.
 @end deftypefun
