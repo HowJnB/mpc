@@ -1,6 +1,6 @@
 /* mpc_div -- Divide two complex numbers.
 
-Copyright (C) 2002 Andreas Enge, Paul Zimmermann
+Copyright (C) 2002, 2003, 2004, 2005 Andreas Enge, Paul Zimmermann
 
 This file is part of the MPC Library.
 
@@ -77,10 +77,10 @@ mpc_div (mpc_ptr a, mpc_srcptr b, mpc_srcptr c, mpc_rnd_t rnd)
       if (inexact_im != 0)
          mpfr_add_one_ulp (MPC_IM (res), GMP_RNDN);
 
-      /* divide the product by the norm*/
+      /* divide the product by the norm */
       if (inexact_norm == 0 && (inexact_re == 0 || inexact_im == 0))
       {
-         /* The divison has good chances to be exact in at least one part.    */
+         /* The division has good chances to be exact in at least one part.   */
          /* Since this can cause problems when not rounding to the nearest,   */
          /* we use the division code of mpfr, which handles the situation.    */
          if (MPFR_SIGN (MPC_RE (res)) > 0)
@@ -117,35 +117,44 @@ mpc_div (mpc_ptr a, mpc_srcptr b, mpc_srcptr c, mpc_rnd_t rnd)
          /* The division is inexact, so for efficiency reasons we invert q */
          /* only once and multiply by the inverse. */
          /* We do not decide about the sign of the difference. */
-         inexact_re = 1;
-         inexact_im = 1;
-         mpfr_ui_div (q, 1, q, GMP_RNDU);
+         if (mpfr_ui_div (q, 1, q, GMP_RNDU))
+           {
+             /* if 1/q is inexact, the approximations of the real and
+                imaginary part below will be inexact, unless RE(res)
+                or IM(res) is zero */
+             inexact_re = inexact_re || (MPFR_IS_ZERO(MPC_RE(res)) == 0);
+             inexact_im = inexact_im || (MPFR_IS_ZERO(MPC_IM(res)) == 0);
+           }
          if (MPFR_SIGN (MPC_RE (res)) > 0)
          {
-            mpfr_mul (MPC_RE (res), MPC_RE (res), q, GMP_RNDU);
-            ok_re = mpfr_can_round (MPC_RE (res), prec - 4, GMP_RNDU,
-                  MPC_RND_RE(rnd), MPFR_PREC(MPC_RE(a)));
+           inexact_re = mpfr_mul (MPC_RE (res), MPC_RE (res), q, GMP_RNDU)
+             || inexact_re;
+           ok_re = mpfr_can_round (MPC_RE (res), prec - 4, GMP_RNDU,
+                                   MPC_RND_RE(rnd), MPFR_PREC(MPC_RE(a)));
          }
          else
          {
-            mpfr_mul (MPC_RE (res), MPC_RE (res), q, GMP_RNDD);
-            ok_re = mpfr_can_round (MPC_RE (res), prec - 4, GMP_RNDD,
-                  MPC_RND_RE(rnd), MPFR_PREC(MPC_RE(a)));
+           inexact_re = mpfr_mul (MPC_RE (res), MPC_RE (res), q, GMP_RNDD)
+             || inexact_re;
+           ok_re = mpfr_can_round (MPC_RE (res), prec - 4, GMP_RNDD,
+                                   MPC_RND_RE(rnd), MPFR_PREC(MPC_RE(a)));
          }
 
          if (ok_re) /* compute imaginary part */
          {
             if (MPFR_SIGN (MPC_IM (res)) > 0)
             {
-               mpfr_mul (MPC_IM (res), MPC_IM (res), q, GMP_RNDU);
+              inexact_im = mpfr_mul (MPC_IM (res), MPC_IM (res), q, GMP_RNDU)
+                || inexact_im;
                ok_im = mpfr_can_round (MPC_IM (res), prec - 4, GMP_RNDU,
-                     MPC_RND_IM(rnd), MPFR_PREC(MPC_IM(a)));
+                                       MPC_RND_IM(rnd), MPFR_PREC(MPC_IM(a)));
             }
             else
             {
-               mpfr_mul (MPC_IM (res), MPC_IM (res), q, GMP_RNDD);
-               ok_im = mpfr_can_round (MPC_IM (res), prec - 4, GMP_RNDD,
-                     MPC_RND_IM(rnd), MPFR_PREC(MPC_IM(a)));
+              inexact_im = mpfr_mul (MPC_IM (res), MPC_IM (res), q, GMP_RNDD)
+                || inexact_im;
+              ok_im = mpfr_can_round (MPC_IM (res), prec - 4, GMP_RNDD,
+                                      MPC_RND_IM(rnd), MPFR_PREC(MPC_IM(a)));
             }
          }
       }
