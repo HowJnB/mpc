@@ -36,7 +36,8 @@ mpc_norm (mpfr_ptr a, mpc_srcptr b, mp_rnd_t rnd)
   mpfr_init (u);
   mpfr_init (v);
 
-  if (2 * SAFE_ABS (mp_exp_t, MPFR_EXP (MPC_RE (b)) - MPFR_EXP (MPC_IM (b)))
+  if (!MPFR_IS_ZERO(MPC_RE(b)) && !MPFR_IS_ZERO(MPC_IM(b)) &&
+      2 * SAFE_ABS (mp_exp_t, MPFR_EXP (MPC_RE (b)) - MPFR_EXP (MPC_IM (b)))
        > (unsigned int) prec)
     /* If real and imaginary part have very different magnitudes, then the */
     /* generic code increases the precision too much. Instead, compute the */

@@ -78,7 +78,20 @@ mpc_div_ref (mpc_ptr a, mpc_srcptr b, mpc_srcptr c, mpc_rnd_t rnd)
       inex_re = mpfr_mul (u, MPC_RE(b), MPC_RE(c), rnd_re); /* 1 */
       inex_re |= mpfr_mul (v, MPC_IM(b), MPC_IM(c), rnd_re); /* 1 */
       inex_re |= mpfr_add (t, u, v, rnd_re);
-      cancel = MAX(MPFR_EXP(u), MPFR_EXP(v)) - MPFR_EXP(t);
+      if (MPFR_IS_ZERO(u))
+        {
+          if (MPFR_IS_ZERO(v))
+            cancel = 0;
+          else
+            cancel = MPFR_EXP(v) - MPFR_EXP(t);
+        }
+      else if (MPFR_IS_ZERO(v))
+        cancel = MPFR_EXP(u) - MPFR_EXP(t);
+      else
+        {
+          cancel = (MPFR_IS_ZERO(t)) ? prec
+            : MAX(MPFR_EXP(u), MPFR_EXP(v)) - MPFR_EXP(t);
+        }
       /* err(t) <= [1 + 2*2^cancel] ulp(t) */
       inex_re |= mpfr_mul (t, t, q, rnd_re) || inexact_q;
       /* err(t) <= [1 + 3*(1 + 2*2^cancel) + 14] ulp(t)
@@ -98,9 +111,20 @@ mpc_div_ref (mpc_ptr a, mpc_srcptr b, mpc_srcptr c, mpc_rnd_t rnd)
         {
           inex_im = mpfr_mul (u, MPC_RE(b), MPC_IM(c), INV_RND(rnd_im));
           inex_im |= mpfr_mul (v, MPC_IM(b), MPC_RE(c), rnd_im);
-          cancel = MAX(MPFR_EXP(u), MPFR_EXP(v));
+          if (MPFR_IS_ZERO(u))
+            {
+              if (MPFR_IS_ZERO(v))
+                cancel = 0;
+              else
+                cancel = MPFR_EXP(v);
+            }
+          else if (MPFR_IS_ZERO(v))
+            cancel = MPFR_EXP(u);
+          else
+            cancel = MAX(MPFR_EXP(u), MPFR_EXP(v));
           inex_im |= mpfr_sub (u, v, u, rnd_im);
-          cancel = cancel - MPFR_EXP(u);
+          if (!MPFR_IS_ZERO(u))
+            cancel = cancel - MPFR_EXP(u);
           inex_im |= mpfr_mul (u, u, q, rnd_im) || inexact_q;
           err = (cancel <= 1) ? 5 : ((cancel == 2) ? 6 :
                                      ((cancel <= 4) ? 7 : cancel + 3));
@@ -135,7 +159,18 @@ mpc_div_ref (mpc_ptr a, mpc_srcptr b, mpc_srcptr c, mpc_rnd_t rnd)
       inex_re = mpfr_mul (u, MPC_RE(b), MPC_RE(c), rnd_re); /* 1 */
       inex_re |= mpfr_mul (v, MPC_IM(b), MPC_IM(c), rnd_re); /* 1 */
       inex_re |= mpfr_add (t, u, v, rnd_re);
-      cancel = MAX(MPFR_EXP(u), MPFR_EXP(v)) - MPFR_EXP(t);
+      if (MPFR_IS_ZERO(u))
+        {
+          if (MPFR_IS_ZERO(v))
+            cancel = 0;
+          else
+            cancel = MPFR_EXP(v) - MPFR_EXP(t);
+        }
+      else if (MPFR_IS_ZERO(v))
+        cancel = MPFR_EXP(u) - MPFR_EXP(t);
+      else
+        cancel = (MPFR_IS_ZERO(t)) ? prec
+          : MAX(MPFR_EXP(u), MPFR_EXP(v)) - MPFR_EXP(t);
       /* err(t) <= [1 + 2*2^cancel] ulp(t) */
       inex_re |= mpfr_div (t, t, q, rnd_re) || inexact_q;
       /* err(t) <= [1 + 2*(1 + 2*2^cancel) + 6] ulp(t)
@@ -154,9 +189,20 @@ mpc_div_ref (mpc_ptr a, mpc_srcptr b, mpc_srcptr c, mpc_rnd_t rnd)
         {
           inex_im = mpfr_mul (u, MPC_RE(b), MPC_IM(c), INV_RND(rnd_im));
           inex_im |= mpfr_mul (v, MPC_IM(b), MPC_RE(c), rnd_im);
-          cancel = MAX(MPFR_EXP(u), MPFR_EXP(v));
+          if (MPFR_IS_ZERO(u))
+            {
+              if (MPFR_IS_ZERO(v))
+                cancel = 0;
+              else
+                cancel = MPFR_EXP(v);
+            }
+          else if (MPFR_IS_ZERO(v))
+            cancel = MPFR_EXP(u);
+          else
+            cancel = MAX(MPFR_EXP(u), MPFR_EXP(v));
           inex_im |= mpfr_sub (u, v, u, rnd_im);
-          cancel = cancel - MPFR_EXP(u);
+          if (!MPFR_IS_ZERO(u))
+            cancel = cancel - MPFR_EXP(u);
           inex_im |= mpfr_div (u, u, q, rnd_im) || inexact_q;
           err = (cancel <= 0) ? 4 : cancel + 3;
           ok = (inex_im == 0) || ((err < prec) && mpfr_can_round (u,
