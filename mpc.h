@@ -128,7 +128,7 @@ int  mpc_set_ui_fr __MPC_PROTO ((mpc_ptr, unsigned long int, mpfr_srcptr, mpc_rn
 int  mpc_set_ui_ui __MPC_PROTO ((mpc_ptr, unsigned long int, unsigned long int, mpc_rnd_t));
 int  mpc_set_si_si __MPC_PROTO ((mpc_ptr, long int, long int, mpc_rnd_t));
 int  mpc_cmp __MPC_PROTO ((mpc_srcptr, mpc_srcptr));
-int  mpc_cmp_ui __MPC_PROTO ((mpc_srcptr, unsigned long int));
+int  mpc_cmp_si_si __MPC_PROTO ((mpc_srcptr, long int, long int));
 void mpc_exp __MPC_PROTO ((mpc_ptr, mpc_srcptr, mpc_rnd_t));
 void mpc_clear __MPC_PROTO ((mpc_ptr));
 void mpc_init  __MPC_PROTO ((mpc_ptr));
@@ -161,5 +161,6 @@ size_t mpc_out_str __MPC_PROTO ((FILE *, int, size_t, mpc_srcptr, mpc_rnd_t));
  ( mpc_init(x), mpc_set_si_si((x), (y), (z), (rnd)) )
 #define mpc_add_si(x, y, z, rnd) \
  ( (z) >= 0 ? mpc_add_ui ((x), (y), (z), (rnd)) : mpc_sub_ui ((x), (y), -(z), (rnd)) )
-
+#define mpc_cmp_si(x, y) \
+ ( mpc_cmp_si_si ((x), (y), 0) )
 #endif /* ifndef __MPC_H */ 

@@ -1,4 +1,5 @@
-/* mpc_cmp -- Compare a complex number to a non-negative integer.
+/* mpc_cmp_si_si -- Compare a complex number to a number of the form
+   b+c*i with b and c signed integers.
 
 Copyright (C) 2005 Andreas Enge
 
@@ -25,12 +26,12 @@ MA 02111-1307, USA. */
 
 /* return 0 iff a = b */
 int
-mpc_cmp_ui (mpc_srcptr a, unsigned long int b)
+mpc_cmp_si_si (mpc_srcptr a, long int b, long int c)
 {
   int cmp_re, cmp_im;
 
-  cmp_re = mpfr_cmp_ui (MPC_RE(a), b);
-  cmp_im = mpfr_cmp_ui (MPC_IM(a), 0);
+  cmp_re = mpfr_cmp_si (MPC_RE(a), b);
+  cmp_im = mpfr_cmp_si (MPC_IM(a), c);
   
   return MPC_INEX(cmp_re, cmp_im);
 }

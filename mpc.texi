@@ -672,9 +672,12 @@ when @var{rop} and @var{op1} are identical.
 @cindex Complex comparisons functions
 @cindex Comparison functions
 
-@deftypefun int mpc_cmp (mpc_t @var{op1}, mpc_t @var{op2})
-@deftypefunx int mpc_cmp_ui (mpc_t @var{op1}, unsigned long int @var{op2})
-Compare @var{op1} and @var{op2}.
+@deftypefn Function int mpc_cmp (mpc_t @var{op1}, mpc_t @var{op2})
+@deftypefnx Function int mpc_cmp_si_si (mpc_t @var{op1}, long int @var{op2r}, long int @var{op2i})
+@deftypefnx Macro int mpc_cmp_si (mpc_t @var{op1}, long int @var{op2})
+
+Compare @var{op1} and @var{op2}, where in the case of @code{mpc_cmp_si_si},
+@var{op2} is taken to be @var{op2r} + i @var{op2i}.
 The return value @var{c} can be decomposed into @code{x = MPC_INEX_RE(c)}
 and @code{y = MPC_INEX_IM(c)}, such that @var{x} is
 positive if the real part of @var{op1} is greater than that of @var{op2},
@@ -686,7 +689,8 @@ It is not allowed that one of the operands has a NaN (Not-a-Number) part.
 
 The storage of the return value is such that equality can be simply checked
 with @code{mpc_cmp (op1, op2) == 0}.
-@end deftypefun
+@end deftypefn
+
 
 @node Special Complex Functions, I/O of Complex Numbers, Complex Comparison, Complex Functions
 @comment  node-name,  next,  previous,  up
