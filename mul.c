@@ -149,7 +149,7 @@ mpc_mul_karatsuba (mpc_ptr rop, mpc_srcptr op1, mpc_srcptr op2, mpc_rnd_t rnd)
   mpfr_srcptr a, b, c, d;
   int mul_i, ok, inexact, mul_a, mul_c, inex_re, inex_im, sign_x, sign_u;
   mpfr_t u, v, w, x;
-  mp_prec_t prec, prec_re;
+  mp_prec_t prec, prec_re, prec_u, prec_v, prec_w;
   mp_rnd_t rnd_re, rnd_u, rnd_x;
   int overlap;
      /* true if rop == op1 or rop == op2 */
@@ -160,7 +160,7 @@ mpc_mul_karatsuba (mpc_ptr rop, mpc_srcptr op1, mpc_srcptr op2, mpc_rnd_t rnd)
         imaginary part is used). If this fails, we have to start again and
         need the correct values of op1 and op2.
         So we just create a new variable for the result in this case. */
-  
+
   overlap = (rop == op1) || (rop == op2);
   if (overlap)
      mpc_init3 (result, MPFR_PREC (MPC_RE (rop)),
@@ -211,10 +211,10 @@ mpc_mul_karatsuba (mpc_ptr rop, mpc_srcptr op1, mpc_srcptr op2, mpc_rnd_t rnd)
 
   /* now |a| >= |b| and |c| >= |d| */
   prec = MPC_MAX_PREC(rop);
-  
+
   mpfr_init2 (u, 2);
-  mpfr_init2 (v, MPFR_PREC(a) + MPFR_PREC(d));
-  mpfr_init2 (w, MPFR_PREC(b) + MPFR_PREC(c));
+  mpfr_init2 (v, prec_v = MPFR_PREC(a) + MPFR_PREC(d));
+  mpfr_init2 (w, prec_w = MPFR_PREC(b) + MPFR_PREC(c));
   mpfr_init2 (x, 2);
 
   mpfr_mul (v, a, d, GMP_RNDN); /* exact */
@@ -253,7 +253,7 @@ mpc_mul_karatsuba (mpc_ptr rop, mpc_srcptr op1, mpc_srcptr op2, mpc_rnd_t rnd)
          /* the following should give failures with prob. <= 1/prec */
          prec += mpc_ceil_log2 (prec) + 3;
 
-         mpfr_set_prec (u, prec);
+         mpfr_set_prec (u, prec_u = prec);
          mpfr_set_prec (x, prec);
 
          /* first compute away(b +/- a) and store it in u */
@@ -268,9 +268,28 @@ mpc_mul_karatsuba (mpc_ptr rop, mpc_srcptr op1, mpc_srcptr op2, mpc_rnd_t rnd)
          if (mul_c == -1)
            mpfr_neg (x, x, GMP_RNDN);
 
+	 if (inexact == 0)
+	   mpfr_prec_round (u, prec_u = 2 * prec, GMP_RNDN);
+
          /* compute away(u*x) and store it in u */
          rnd_u = (sign_u > 0) ? GMP_RNDU : GMP_RNDD;
          inexact |= mpfr_mul (u, u, x, rnd_u); /* (a+b)*(c-d) */
+
+	 /* if all computations are exact up to here, it may be that
+	    the real part is exact, thus we need if possible to 
+	    compute v - w exactly */
+	 if (inexact == 0)
+	   {
+	     mp_prec_t prec_x;
+	     prec_x = (MPFR_EXP(v) > MPFR_EXP(w)) ? MPFR_EXP(v) - MPFR_EXP(w)
+	       : MPFR_EXP(w) - MPFR_EXP(v);
+	     prec_x += (prec_v > prec_w) ? prec_v : prec_w;
+	     /* ensure we do not use a too large precision */
+	     if (prec_x > prec_u)
+	       prec_x = prec_u;
+	     if (prec_x > prec)
+	       mpfr_prec_round (x, prec_x, GMP_RNDN);
+	   }
 
          inexact |= mpfr_sub (x, v, w, rnd_u); /* ad - bc */
 
@@ -280,7 +299,7 @@ mpc_mul_karatsuba (mpc_ptr rop, mpc_srcptr op1, mpc_srcptr op2, mpc_rnd_t rnd)
          inexact |= mpfr_add (u, u, x, rnd_u); /* ac - bd */
 
          ok = inexact == 0 ||
-           mpfr_can_round (u, prec - 3, rnd_u, rnd_re, prec_re);
+           mpfr_can_round (u, prec_u - 3, rnd_u, rnd_re, prec_re);
       }
       while (ok == 0);
 
