@@ -95,7 +95,7 @@ mpc_mul (mpc_ptr a, mpc_srcptr b, mpc_srcptr c, mpc_rnd_t rnd)
           > MPC_MAX_PREC (b) / 2
        || SAFE_ABS (mp_exp_t, MPFR_EXP (MPC_RE (c)) - MPFR_EXP (MPC_IM (c)))
           > MPC_MAX_PREC (c) / 2)
-      return mpc_mul_karatsuba (a, b, c, rnd);
+      return mpc_mul_naive (a, b, c, rnd);
    else
       return ((MPC_MAX_PREC(a)
               <= (mp_prec_t) MUL_KARATSUBA_THRESHOLD * BITS_PER_MP_LIMB)
