@@ -22,10 +22,11 @@ MA 02111-1307, USA. */
 #ifndef __MPC_H
 #define __MPC_H
 
-/* check version of mpfr, default is 2.0.2 */
-#ifndef MPFR_201
+/* check version of mpfr */
+#ifdef mpfr_round_prec /* 2.0.2 */
 #define _mpfr_ceil_log2 __gmpfr_ceil_log2
 #define mpfr_set_str_raw mpfr_set_str_binary
+void mpfr_set_str_binary(mpfr_ptr, __gmp_const char *);
 #endif
 
 /* check if stdio.h is included */

@@ -8,8 +8,8 @@
 @end iftex
 @comment %**end of header
 
-@set VERSION 0.4.1
-@set DATE {October 2002}
+@set VERSION 0.4.2
+@set DATE {December 2003}
 
 @ifinfo
 @format
@@ -29,7 +29,7 @@ END-INFO-DIR-ENTRY
 @ifinfo
 This file documents MPC, a library for multiple precision complex arithmetic
 
-Copyright (C) 2002, Andreas Enge, Paul Zimmermann
+Copyright (C) 2002, 2003, Andreas Enge, Paul Zimmermann
 
 Permission is granted to make and distribute verbatim copies of
 this manual provided the copyright notice and this permission notice

@@ -121,8 +121,10 @@ void cmpmul (mpc_srcptr x, mpc_srcptr y, mp_rnd_t rnd)
       fprintf (stderr, "\n");
       exit (1);
    }
-     
-   mpc_set (t, y, MPC_RNDNN);
+
+   /* the following test is valid only when y can be copied in t exactly */
+   if (mpc_set (t, y, MPC_RNDNN) == 0)
+     {
    inexact_t = mpc_mul (t, x, t, rnd);
    if (mpc_cmp (z, t))
    {
@@ -154,7 +156,8 @@ void cmpmul (mpc_srcptr x, mpc_srcptr y, mp_rnd_t rnd)
       fprintf (stderr, "\n");
       exit (1);
    }
-     
+     }
+
    mpc_mul (u, x, y, rnd);
    mpc_set (t, u, rnd);
    if (mpc_cmp (z, t))
