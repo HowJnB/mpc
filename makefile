@@ -89,7 +89,7 @@ tabs: tabs.c libmpc.a
 	@echo "Building tabs" && ((test -e $(GMP)/lib/libgmp.a && test -e $(MPFR)/lib/libmpfr.a && $(CC) $(CFLAGS) $(INCLUDES) tabs.c -o tabs ./libmpc.a $(MPFR)/lib/libmpfr.a $(GMP)/lib/libgmp.a) || $(CC) $(CFLAGS) $(INCLUDES) -L. -L$(MPFR)/lib -L$(GMP)/lib tabs.c -o tabs -lmpc -lmpfr -lgmp)
 
 clean:
-	$(RM) *.o *~ libmpc.a test tmul tsqr tdiv texp mpc-$(VERSION).tar.gz mpc.aux mpc.cp mpc.cps mpc.dvi mpc.fn mpc.fns mpc.ky mpc.log mpc.pg mpc.ps mpc.toc mpc.tp mpc.vr mpc.vrs
+	$(RM) *.o *~ libmpc.a test tmul tsqr tdiv texp tabs mpc-$(VERSION).tar.gz mpc.aux mpc.cp mpc.cps mpc.dvi mpc.fn mpc.fns mpc.ky mpc.log mpc.pg mpc.ps mpc.toc mpc.tp mpc.vr mpc.vrs
 
 dist: $(DIST)
 	rm -fr mpc-$(VERSION)
