@@ -36,8 +36,8 @@ mpc_sqrt (mpc_ptr a, mpc_srcptr b, mpc_rnd_t rnd)
     /* be either the real or the imaginary part of a */
   int re_cmp, im_cmp;
     /* comparison of the real/imaginary part of b with 0 */
-  mp_prec_t prec;
-  int inexact;
+  mp_prec_t prec, logprec;
+  int inexact, loops;
 
   im_cmp = mpfr_cmp_ui (MPC_IM (b), 0);  
   re_cmp = mpfr_cmp_ui (MPC_RE (b), 0);  
@@ -96,9 +96,12 @@ mpc_sqrt (mpc_ptr a, mpc_srcptr b, mpc_rnd_t rnd)
     }
   }
 
+  loops = 0;
+  logprec = mpc_ceil_log2 (prec);
   do
   {
-      prec += mpc_ceil_log2 (prec) + 4;
+      loops ++;
+      prec += (loops <= 2) ? logprec + 4 : prec / 2;
       mpfr_set_prec (w, prec);
       mpfr_set_prec (t, prec);
       /* let b = x + iy */
