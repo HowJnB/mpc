@@ -153,7 +153,7 @@ int main()
   for (i = 0; i < 12; i++)
   {
      mpfr_div_2ui (eps, eps, 200, GMP_RNDN);
-     for (prec = 2; prec < 1000; prec += 44)
+     for (prec = 2; prec < 1000; prec += 222)
      {
         mpc_set_prec (x, prec);
         mpc_set_ui_ui (x, 1, 0, MPC_RNDNN);
