@@ -100,7 +100,7 @@ typedef unsigned long int       mp_size_unsigned_t;
 #define MPFR_PREC(x) mpfr_get_prec(x)
 #define MPFR_EXP(x)  mpfr_get_exp(x)
 #define MPFR_CHANGE_SIGN(x) mpfr_neg(x,x,GMP_RNDN)
-#define MPFR_IS_ZERO(x) mpfr_cmp_ui(x,0)
+#define MPFR_IS_ZERO(x) (mpfr_cmp_ui(x,0) == 0)
 
 #endif
 

@@ -149,7 +149,7 @@ mpc_sqr (mpc_ptr a, mpc_srcptr b, mpc_rnd_t rnd)
    /* compute the imaginary part as 2*x*y, which is always possible */
    inex_im = mpfr_mul (MPC_IM (a), x, MPC_IM (b),
                           MPC_RND_IM (rnd));
-   MPFR_EXP (MPC_IM (a))++;
+   mpfr_set_exp (MPC_IM (a), mpfr_get_exp (MPC_IM (a)) + 1);
 
    mpfr_clear (u);
    mpfr_clear (v);
