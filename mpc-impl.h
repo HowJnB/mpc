@@ -31,13 +31,11 @@ MA 02111-1307, USA. */
 	  Change_sign
    + 2.0.2 / 2.0.3:
           Format.
-	  set_str_raw
 	  ceil_log2
 	  IS_ZERO
 	  Change_sign
    + 2.1.0: 
           Format 
-	  set_str_raw
 	  ceil_log2
 	  IS_ZERO
 	  Change_sign
@@ -69,7 +67,6 @@ typedef unsigned int            mp_size_unsigned_t;
 #else
 typedef unsigned long int       mp_size_unsigned_t;
 #endif
-#define mpfr_set_str_raw(x, s) mpfr_set_str(x,s,2,GMP_RNDN)
 #define MPFR_CMP_ABS mpfr_cmp_abs
 #define MPFR_PREC(x) ((x)->_mpfr_prec)
 #define MPFR_SIZE(x) ((x)->_mpfr_size)
@@ -81,7 +78,6 @@ typedef unsigned long int       mp_size_unsigned_t;
 
 #elif (MPFR_VERSION == MPFR_VERSION_NUM(2,1,0)) /* MPFR 2.1.0 */
 
-#define mpfr_set_str_raw(x, s) mpfr_set_str(x,s,2,GMP_RNDN)
 #define MPFR_CMP_ABS mpfr_cmp_abs
 #define MPFR_PREC(x) ((x)->_mpfr_prec)
 #define MPFR_EXP(x) ((x)->_mpfr_exp)
@@ -95,7 +91,6 @@ typedef unsigned long int       mp_size_unsigned_t;
 
 #else /* Generic MPFR code */
 
-#define mpfr_set_str_raw(x, s) mpfr_set_str(x,s,2,GMP_RNDN)
 #define MPFR_CMP_ABS mpfr_cmp_abs
 #define MPFR_PREC(x) mpfr_get_prec(x)
 #define MPFR_EXP(x)  mpfr_get_exp(x)

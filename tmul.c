@@ -340,10 +340,10 @@ special ()
 
   mpc_set_prec (x, 27);
   mpc_set_prec (y, 27);
-  mpfr_set_str_raw (MPC_RE(x), "1.11111011011000010101000000e-2");
-  mpfr_set_str_raw (MPC_IM(x), "1.11010001010110111001110001e-3");
-  mpfr_set_str_raw (MPC_RE(y), "1.10100101110110011011100100e-1");
-  mpfr_set_str_raw (MPC_IM(y), "1.10111100011000001100110011e-1");
+  mpfr_set_str (MPC_RE(x), "1.11111011011000010101000000e-2", 2, GMP_RNDN);
+  mpfr_set_str (MPC_IM(x), "1.11010001010110111001110001e-3", 2, GMP_RNDN);
+  mpfr_set_str (MPC_RE(y), "1.10100101110110011011100100e-1", 2, GMP_RNDN);
+  mpfr_set_str (MPC_IM(y), "1.10111100011000001100110011e-1", 2, GMP_RNDN);
   cmpmul (x, y, 0);
 
   mpc_clear (x);

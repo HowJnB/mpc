@@ -1,6 +1,6 @@
 /* tsqr -- test file for mpc_sqr.
 
-Copyright (C) 2002 Andreas Enge, Paul Zimmermann
+Copyright (C) 2002, 2005 Andreas Enge, Paul Zimmermann
 
 This file is part of the MPC Library.
 
@@ -168,8 +168,8 @@ special ()
     }
 
   mpc_set_prec (x, 27);
-  mpfr_set_str_raw (MPC_RE(x), "1.11111011011000010101000000e-2");
-  mpfr_set_str_raw (MPC_IM(x), "1.11010001010110111001110001e-3");
+  mpfr_set_str (MPC_RE(x), "1.11111011011000010101000000e-2", 2, GMP_RNDN);
+  mpfr_set_str (MPC_IM(x), "1.11010001010110111001110001e-3", 2, GMP_RNDN);
 
   cmpsqr (x, 0);
 
