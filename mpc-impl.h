@@ -119,6 +119,9 @@ typedef unsigned long int       mp_size_unsigned_t;
 #define INV_RND(r) \
    (((r) == GMP_RNDU) ? GMP_RNDD : (((r) == GMP_RNDD) ? GMP_RNDU : (r)))
 #define SWAP(a,b) { mpfr_srcptr tmp; tmp = a; a = b; b = tmp; }
+/* Safe absolute value (to avoid possible integer overflow) */
+/* type is the target (unsigned) type (copied from mpfr-impl.h */
+#define SAFE_ABS(type,x) ((x) >= 0 ? (type)(x) : -(type)(x))
 
 /* Define internal functions */
 

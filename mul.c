@@ -89,8 +89,17 @@ mpc_mul (mpc_ptr a, mpc_srcptr b, mpc_srcptr c, mpc_rnd_t rnd)
       return MPC_INEX(inex_re, inex_im);
    }
    
-   return ((MPC_MAX_PREC(a) <= (mp_prec_t) MUL_KARATSUBA_THRESHOLD * BITS_PER_MP_LIMB)
-         ? mpc_mul_naive : mpc_mul_karatsuba) (a, b, c, rnd);
+   /* If the real and imaginary part of one argument have a very different */
+   /* exponent, it is not reasonable to use Karatsuba multiplication.      */
+   if (   SAFE_ABS (mp_exp_t, MPFR_EXP (MPC_RE (b)) - MPFR_EXP (MPC_IM (b)))
+          > MPC_MAX_PREC (b) / 2
+       || SAFE_ABS (mp_exp_t, MPFR_EXP (MPC_RE (c)) - MPFR_EXP (MPC_IM (c)))
+          > MPC_MAX_PREC (c) / 2)
+      return mpc_mul_karatsuba (a, b, c, rnd);
+   else
+      return ((MPC_MAX_PREC(a)
+              <= (mp_prec_t) MUL_KARATSUBA_THRESHOLD * BITS_PER_MP_LIMB)
+              ? mpc_mul_naive : mpc_mul_karatsuba) (a, b, c, rnd);
 }
 
 int
