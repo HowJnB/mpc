@@ -28,11 +28,20 @@ MA 02111-1307, USA. */
 int
 mpc_div (mpc_ptr a, mpc_srcptr b, mpc_srcptr c, mpc_rnd_t rnd)
 {
-   int ok_re=0, ok_im=0;
+   int ok_re = 0, ok_im = 0;
    mpc_t  res, c_conj;
    mpfr_t q;
    mp_prec_t prec;
    int inexact_prod, inexact_norm, inexact_re, inexact_im;
+
+   /* first check for real divisor */
+   if (MPFR_IS_ZERO(MPC_IM(c))) /* (re_b+i*im_b)/c = re_b/c + i * (im_b/c) */
+     {
+       /* warning: a may overlap with b,c so treat the imaginary part first */
+       inexact_im = mpfr_div (MPC_IM(a), MPC_IM(b), MPC_RE(c), MPC_RND_IM(rnd));
+       inexact_re = mpfr_div (MPC_RE(a), MPC_RE(b), MPC_RE(c), MPC_RND_RE(rnd));
+       return MPC_INEX(inexact_re, inexact_im);
+     }
    
    prec = MPC_MAX_PREC(a);
    
