@@ -1,6 +1,6 @@
 /* mpc_sqr -- Square a complex number.
 
-Copyright (C) 2002 Andreas Enge, Paul Zimmermann
+Copyright (C) 2002, 2005 Andreas Enge, Paul Zimmermann
 
 This file is part of the MPC Library.
 
