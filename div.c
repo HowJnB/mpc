@@ -32,7 +32,7 @@ mpc_div (mpc_ptr a, mpc_srcptr b, mpc_srcptr c, mpc_rnd_t rnd)
    mpc_t  res, c_conj;
    mpfr_t q;
    mp_prec_t prec;
-   int inexact_prod, inexact_norm, inexact_re, inexact_im;
+   int inexact_prod, inexact_norm, inexact_re, inexact_im, loops = 0;
 
    /* first check for real divisor */
    if (MPFR_IS_ZERO(MPC_IM(c))) /* (re_b+i*im_b)/c = re_b/c + i * (im_b/c) */
@@ -55,7 +55,8 @@ mpc_div (mpc_ptr a, mpc_srcptr b, mpc_srcptr c, mpc_rnd_t rnd)
    
    do
    {
-      prec += mpc_ceil_log2 (prec) + 5;
+      loops ++;
+      prec += (loops <= 2) ? mpc_ceil_log2 (prec) + 5 : prec / 2;
       
       mpc_set_prec (res, prec);
       mpfr_set_prec (q, prec);
