@@ -1,6 +1,6 @@
 /* mpc_norm -- Square of the norm of a complex number.
 
-Copyright (C) 2002 Andreas Enge, Paul Zimmermann
+Copyright (C) 2002, 2005 Andreas Enge, Paul Zimmermann
 
 This file is part of the MPC Library.
 
@@ -36,24 +36,38 @@ mpc_norm (mpfr_ptr a, mpc_srcptr b, mp_rnd_t rnd)
   mpfr_init (u);
   mpfr_init (v);
 
-  do
-    {
-      prec += mpc_ceil_log2 (prec) + 3;
+  if (2 * SAFE_ABS (mp_exp_t, MPFR_EXP (MPC_RE (b)) - MPFR_EXP (MPC_IM (b)))
+       > (unsigned int) prec)
+    /* If real and imaginary part have very different magnitudes, then the */
+    /* generic code increases the precision too much. Instead, compute the */
+    /* squarings _exactly_.                                                */
+  {
+     mpfr_set_prec (u, 2 * MPFR_PREC (MPC_RE (b)));
+     mpfr_set_prec (v, 2 * MPFR_PREC (MPC_IM (b)));
+     mpfr_mul (u, MPC_RE (b), MPC_RE (b), GMP_RNDN);
+     mpfr_mul (v, MPC_IM (b), MPC_IM (b), GMP_RNDN);
+     inexact = mpfr_add (a, u, v, rnd);
+  }
+  else
+  {
+    do
+      {
+        prec += mpc_ceil_log2 (prec) + 3;
 
-      mpfr_set_prec (u, prec);
-      mpfr_set_prec (v, prec);
+        mpfr_set_prec (u, prec);
+        mpfr_set_prec (v, prec);
 
-      /* first compute norm(b)^2 */
-      inexact = mpfr_mul (u, MPC_RE(b), MPC_RE(b), GMP_RNDN); /* err<=1/2ulp */
-      inexact |= mpfr_mul (v, MPC_IM(b), MPC_IM(b), GMP_RNDN); /* err<=1/2ulp*/
+        /* first compute norm(b)^2 */
+        inexact = mpfr_mul (u, MPC_RE(b), MPC_RE(b), GMP_RNDN); /* err<=1/2ulp */
+        inexact |= mpfr_mul (v, MPC_IM(b), MPC_IM(b), GMP_RNDN); /* err<=1/2ulp*/
 
-      inexact |= mpfr_add (u, u, v, GMP_RNDN);            /* err <= 3/2 ulps */
-    }
-  while (inexact != 0 &&
-         mpfr_can_round (u, prec - 2, GMP_RNDN, rnd, MPFR_PREC(a)) == 0);
+        inexact |= mpfr_add (u, u, v, GMP_RNDN);            /* err <= 3/2 ulps */
+      }
+    while (inexact != 0 &&
+           mpfr_can_round (u, prec - 2, GMP_RNDN, rnd, MPFR_PREC(a)) == 0);
 
-  inexact |= mpfr_set (a, u, rnd);
-
+    inexact |= mpfr_set (a, u, rnd);
+  }
   mpfr_clear (u);
   mpfr_clear (v);
 
