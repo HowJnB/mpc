@@ -1,6 +1,6 @@
 /* tmul -- test file for mpc_mul.
 
-Copyright (C) 2002 Andreas Enge, Paul Zimmermann
+Copyright (C) 2002, 2005 Andreas Enge, Paul Zimmermann
 
 This file is part of the MPC Library.
 
@@ -28,6 +28,8 @@ MA 02111-1307, USA. */
 #include "mpc-impl.h"
 
 void cmpmul (mpc_srcptr, mpc_srcptr, mpc_rnd_t);
+void cmpmului (mpc_srcptr, unsigned long int, mpc_rnd_t);
+void cmpmulsi (mpc_srcptr, long int, mpc_rnd_t);
 void testmul (long, long, long, long, mp_prec_t, mpc_rnd_t);
 void special (void);
 void timemul (void);
@@ -184,6 +186,117 @@ void cmpmul (mpc_srcptr x, mpc_srcptr y, mpc_rnd_t rnd)
 }
 
 
+void cmpmului (mpc_srcptr x, unsigned long int y, mpc_rnd_t rnd)
+   /* computes the product of x and y using mpc_mul_fr and mpc_mul_ui      */
+   /* using the rounding mode rnd and compares the results and return      */
+   /* values.                                                              */
+   /* In our current test suite, the real and imaginary parts of x have    */
+   /* the same precision, and we use this precision also for the result.   */
+
+{
+   mpc_t z, t;
+   mpfr_t yf;
+   int   inexact_z, inexact_t;
+
+   mpc_init2 (z, MPC_MAX_PREC (x));
+   mpc_init2 (t, MPC_MAX_PREC (x));
+   mpfr_init2 (yf, 8 * sizeof (long int));
+   mpfr_set_si (yf, y, GMP_RNDN);
+   
+   inexact_z = mpc_mul_fr (z, x, yf, rnd);
+   inexact_t = mpc_mul_ui (t, x, y, rnd);
+
+   if (mpc_cmp (z, t))
+   {
+      fprintf (stderr, "mul_fr and mul_ui differ for rnd=(%s,%s) \nx=",
+               mpfr_print_rnd_mode(MPC_RND_RE(rnd)),
+               mpfr_print_rnd_mode(MPC_RND_IM(rnd)));
+      mpc_out_str (stderr, 2, 0, x, MPC_RNDNN);
+      fprintf (stderr, "\nand y=%li", y);
+      fprintf (stderr, "\nmpc_mul_fr gives ");
+      mpc_out_str (stderr, 2, 0, z, MPC_RNDNN);
+      fprintf (stderr, "\nmpc_mul_ui gives ");
+      mpc_out_str (stderr, 2, 0, t, MPC_RNDNN);
+      fprintf (stderr, "\n");
+      exit (1);
+   }
+   if (inexact_z != inexact_t)
+   {
+      fprintf (stderr, "The return values of mul_fr and mul_ui differ for ");
+      fprintf (stderr, "rnd=(%s,%s) \nx=",
+               mpfr_print_rnd_mode(MPC_RND_RE(rnd)),
+               mpfr_print_rnd_mode(MPC_RND_IM(rnd)));
+      mpc_out_str (stderr, 2, 0, x, MPC_RNDNN);
+      fprintf (stderr, "\nand y=%li", y);
+      fprintf (stderr, "\nand x*y=");
+      mpc_out_str (stderr, 2, 0, z, MPC_RNDNN);
+      fprintf (stderr, "\nmpc_mul_fr gives %i", inexact_z);
+      fprintf (stderr, "\nmpc_mul_ui gives %i", inexact_t);
+      fprintf (stderr, "\n");
+      exit (1);
+   }
+   
+   mpc_clear (z);
+   mpc_clear (t);
+   mpfr_clear (yf);
+}
+
+void cmpmulsi (mpc_srcptr x, long int y, mpc_rnd_t rnd)
+   /* computes the product of x and y using mpc_mul_fr and mpc_mul_si      */
+   /* using the rounding mode rnd and compares the results and return      */
+   /* values.                                                              */
+   /* In our current test suite, the real and imaginary parts of x have    */
+   /* the same precision, and we use this precision also for the result.   */
+
+{
+   mpc_t z, t;
+   mpfr_t yf;
+   int   inexact_z, inexact_t;
+
+   mpc_init2 (z, MPC_MAX_PREC (x));
+   mpc_init2 (t, MPC_MAX_PREC (x));
+   mpfr_init2 (yf, 8 * sizeof (long int));
+   mpfr_set_si (yf, y, GMP_RNDN);
+   
+   inexact_z = mpc_mul_fr (z, x, yf, rnd);
+   inexact_t = mpc_mul_si (t, x, y, rnd);
+
+   if (mpc_cmp (z, t))
+   {
+      fprintf (stderr, "mul_fr and mul_si differ for rnd=(%s,%s) \nx=",
+               mpfr_print_rnd_mode(MPC_RND_RE(rnd)),
+               mpfr_print_rnd_mode(MPC_RND_IM(rnd)));
+      mpc_out_str (stderr, 2, 0, x, MPC_RNDNN);
+      fprintf (stderr, "\nand y=%li", y);
+      fprintf (stderr, "\nmpc_mul_fr gives ");
+      mpc_out_str (stderr, 2, 0, z, MPC_RNDNN);
+      fprintf (stderr, "\nmpc_mul_si gives ");
+      mpc_out_str (stderr, 2, 0, t, MPC_RNDNN);
+      fprintf (stderr, "\n");
+      exit (1);
+   }
+   if (inexact_z != inexact_t)
+   {
+      fprintf (stderr, "The return values of mul_fr and mul_si differ for ");
+      fprintf (stderr, "rnd=(%s,%s) \nx=",
+               mpfr_print_rnd_mode(MPC_RND_RE(rnd)),
+               mpfr_print_rnd_mode(MPC_RND_IM(rnd)));
+      mpc_out_str (stderr, 2, 0, x, MPC_RNDNN);
+      fprintf (stderr, "\nand y=%li", y);
+      fprintf (stderr, "\nand x*y=");
+      mpc_out_str (stderr, 2, 0, z, MPC_RNDNN);
+      fprintf (stderr, "\nmpc_mul_fr gives %i", inexact_z);
+      fprintf (stderr, "\nmpc_mul_si gives %i", inexact_t);
+      fprintf (stderr, "\n");
+      exit (1);
+   }
+   
+   mpc_clear (z);
+   mpc_clear (t);
+   mpfr_clear (yf);
+}
+
+
 void
 testmul (long a, long b, long c, long d, mp_prec_t prec, mpc_rnd_t rnd)
 {
@@ -291,6 +404,7 @@ main()
   mpc_rnd_t rnd_re, rnd_im;
   mp_prec_t prec;
   int i;
+  long int ysi;
 
 /*
   timemul ();
@@ -323,10 +437,16 @@ main()
 
       mpc_random (x);
       mpc_random (y);
+      ysi = rand ();
 
       for (rnd_re = 0; rnd_re < 4; rnd_re ++)
         for (rnd_im = 0; rnd_im < 4; rnd_im ++)
+         {
             cmpmul (x, y, RNDC(rnd_re, rnd_im));
+            cmpmului (x, (unsigned long int) ysi, RNDC(rnd_re, rnd_im));
+            cmpmulsi (x, ysi, RNDC(rnd_re, rnd_im));
+            cmpmulsi (x, -ysi, RNDC(rnd_re, rnd_im));
+         }
     }
   }
 
