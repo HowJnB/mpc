@@ -1,6 +1,6 @@
 /* mpc.h -- Include file for mpc.
 
-Copyright (C) 2002 Andreas Enge, Paul Zimmermann
+Copyright (C) 2002, 2003 Andreas Enge, Paul Zimmermann
 
 This file is part of the MPC Library.
 
@@ -21,6 +21,12 @@ MA 02111-1307, USA. */
 
 #ifndef __MPC_H
 #define __MPC_H
+
+/* check version of mpfr, default is 2.0.2 */
+#ifndef MPFR_201
+#define _mpfr_ceil_log2 __gmpfr_ceil_log2
+#define mpfr_set_str_raw mpfr_set_str_binary
+#endif
 
 /* check if stdio.h is included */
 #if defined (FILE) || defined (H_STDIO) || defined (_H_STDIO) \
