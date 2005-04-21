@@ -45,8 +45,8 @@ mpc_norm (mpfr_ptr a, mpc_srcptr b, mp_rnd_t rnd)
   {
      mpfr_set_prec (u, 2 * MPFR_PREC (MPC_RE (b)));
      mpfr_set_prec (v, 2 * MPFR_PREC (MPC_IM (b)));
-     mpfr_mul (u, MPC_RE (b), MPC_RE (b), GMP_RNDN);
-     mpfr_mul (v, MPC_IM (b), MPC_IM (b), GMP_RNDN);
+     mpfr_sqr (u, MPC_RE (b), GMP_RNDN);
+     mpfr_sqr (v, MPC_IM (b), GMP_RNDN);
      inexact = mpfr_add (a, u, v, rnd);
   }
   else
@@ -59,8 +59,8 @@ mpc_norm (mpfr_ptr a, mpc_srcptr b, mp_rnd_t rnd)
         mpfr_set_prec (v, prec);
 
         /* first compute norm(b)^2 */
-        inexact = mpfr_mul (u, MPC_RE(b), MPC_RE(b), GMP_RNDN); /* err<=1/2ulp */
-        inexact |= mpfr_mul (v, MPC_IM(b), MPC_IM(b), GMP_RNDN); /* err<=1/2ulp*/
+        inexact = mpfr_sqr (u, MPC_RE(b), GMP_RNDN); /* err<=1/2ulp */
+        inexact |= mpfr_sqr (v, MPC_IM(b), GMP_RNDN); /* err<=1/2ulp*/
 
         inexact |= mpfr_add (u, u, v, GMP_RNDN);            /* err <= 3/2 ulps */
       }

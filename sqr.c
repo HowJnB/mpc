@@ -43,14 +43,13 @@ mpc_sqr (mpc_ptr a, mpc_srcptr b, mpc_rnd_t rnd)
    /* first check for real resp. purely imaginary number */
    if (MPFR_IS_ZERO (MPC_IM(b)))
    {
-      inex_re = mpfr_mul (MPC_RE(a), MPC_RE(b), MPC_RE(b), MPC_RND_RE(rnd));
+      inex_re = mpfr_sqr (MPC_RE(a), MPC_RE(b), MPC_RND_RE(rnd));
       inex_im = mpfr_set_ui (MPC_IM(a), 0, GMP_RNDN);
       return MPC_INEX(inex_re, inex_im);
    }
    if (MPFR_IS_ZERO (MPC_RE(b)))
    {
-      inex_re = -mpfr_mul (MPC_RE(a), MPC_IM(b), MPC_IM(b),
-                           INV_RND (MPC_RND_RE(rnd)));
+      inex_re = -mpfr_sqr (MPC_RE(a), MPC_IM(b), INV_RND (MPC_RND_RE(rnd)));
       mpfr_neg (MPC_RE(a), MPC_RE(a), GMP_RNDN);
       inex_im = mpfr_set_ui (MPC_IM(a), 0, GMP_RNDN);
       return MPC_INEX(inex_re, inex_im);

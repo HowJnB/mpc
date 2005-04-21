@@ -45,8 +45,8 @@ mpc_abs_basic (mpfr_ptr a, mpc_srcptr b, mp_rnd_t rnd)
       mpfr_set_prec (v, prec);
 
       /* first compute norm(b)^2 */
-      inexact = mpfr_mul (u, MPC_RE(b), MPC_RE(b), GMP_RNDU); /* err<=1ulp */
-      inexact |= mpfr_mul (v, MPC_IM(b), MPC_IM(b), GMP_RNDU); /* err<=1ulp*/
+      inexact = mpfr_sqr (u, MPC_RE(b), GMP_RNDU); /* err<=1ulp */
+      inexact |= mpfr_sqr (v, MPC_IM(b), GMP_RNDU); /* err<=1ulp*/
 
       inexact |= mpfr_add (u, u, v, GMP_RNDU);            /* err <= 3 ulps */
       inexact |= mpfr_sqrt (u, u, GMP_RNDU); /* err <= 4 ulps */
@@ -124,7 +124,7 @@ mpc_abs (mpfr_ptr a, mpc_srcptr b, mp_rnd_t rnd)
             so we round towards infinity                                 */
       {
          inexact = 1;
-         mpfr_mul (u, MPC_IM (b), MPC_IM (b), GMP_RNDU); /* err <= 1 ulp */
+         mpfr_sqr (u, MPC_IM (b), GMP_RNDU); /* err <= 1 ulp */
          if (MPFR_SIGN (MPC_RE (b)) > 0)
          {
             mpfr_div (u, u, MPC_RE (b), GMP_RNDU); /* err <= 3 ulp */
@@ -144,7 +144,7 @@ mpc_abs (mpfr_ptr a, mpc_srcptr b, mp_rnd_t rnd)
                (signed long) prec)
       {
          inexact = 1;
-         mpfr_mul (u, MPC_RE (b), MPC_RE (b), GMP_RNDU);
+         mpfr_sqr (u, MPC_RE (b), GMP_RNDU);
          if (MPFR_SIGN (MPC_IM (b)) > 0)
          {
             mpfr_div (u, u, MPC_IM (b), GMP_RNDU);
@@ -162,8 +162,8 @@ mpc_abs (mpfr_ptr a, mpc_srcptr b, mp_rnd_t rnd)
       else
       {
          /* first compute norm(b)^2 */
-         inexact = mpfr_mul (u, MPC_RE(b), MPC_RE(b), GMP_RNDU); /* err<=1ulp */
-         inexact |= mpfr_mul (v, MPC_IM(b), MPC_IM(b), GMP_RNDU); /* err<=1ulp*/
+         inexact = mpfr_sqr (u, MPC_RE(b), GMP_RNDU); /* err<=1ulp */
+         inexact |= mpfr_sqr (v, MPC_IM(b), GMP_RNDU); /* err<=1ulp*/
          inexact |= mpfr_add (u, u, v, GMP_RNDU);            /* err <= 3 ulps */
          inexact |= mpfr_sqrt (u, u, GMP_RNDU); /* err <= 4 ulps */
       }
