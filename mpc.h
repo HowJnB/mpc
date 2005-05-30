@@ -105,6 +105,8 @@ int  mpc_add_fr __MPC_PROTO ((mpc_ptr, mpc_srcptr, mpfr_srcptr, mpc_rnd_t));
 int  mpc_add_ui __MPC_PROTO ((mpc_ptr, mpc_srcptr, unsigned long int, mpc_rnd_t));
 int  mpc_sub    __MPC_PROTO ((mpc_ptr, mpc_srcptr, mpc_srcptr, mpc_rnd_t));
 int  mpc_sub_ui __MPC_PROTO ((mpc_ptr, mpc_srcptr, unsigned long int, mpc_rnd_t));
+int  mpc_ui_sub __MPC_PROTO ((mpc_ptr, unsigned long int, mpc_srcptr, mpc_rnd_t));
+int  mpc_ui_ui_sub __MPC_PROTO ((mpc_ptr, unsigned long int, unsigned long int, mpc_srcptr, mpc_rnd_t));
 int  mpc_mul    __MPC_PROTO ((mpc_ptr, mpc_srcptr, mpc_srcptr, mpc_rnd_t));
 int  mpc_mul_fr __MPC_PROTO ((mpc_ptr, mpc_srcptr, mpfr_srcptr, mpc_rnd_t));
 int  mpc_mul_ui __MPC_PROTO ((mpc_ptr, mpc_srcptr, unsigned long int, mpc_rnd_t));

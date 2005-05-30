@@ -591,7 +591,10 @@ Set @var{rop} to @var{op1} @math{+} @var{op2} rounded according to @var{rnd}.
 
 @deftypefun int mpc_sub (mpc_t @var{rop}, mpc_t @var{op1}, mpc_t @var{op2}, mpc_rnd_t @var{rnd})
 @deftypefunx int mpc_sub_ui (mpc_t @var{rop}, mpc_t @var{op1}, unsigned long int @var{op2}, mpc_rnd_t @var{rnd})
+@deftypefunx int mpc_ui_sub (mpc_t @var{rop}, unsigned long int @var{op1}, mpc_t @var{op2}, mpc_rnd_t @var{rnd})
+@deftypefunx int mpc_ui_ui_sub (mpc_t @var{rop}, unsigned long int @var{re1}, unsigned long int @var{im1}, mpc_t @var{op2}, mpc_rnd_t @var{rnd})
 Set @var{rop} to @var{op1} @minus{} @var{op2} rounded according to @var{rnd}.
+For @code{mpc_ui_ui_sub}, @var{op1} is @var{re1} + @var{im1}.
 @end deftypefun
 
 @deftypefun int mpc_mul (mpc_t @var{rop}, mpc_t @var{op1}, mpc_t @var{op2}, mpc_rnd_t @var{rnd})
@@ -805,6 +808,8 @@ of the real and imaginary parts.
 
 The main developers of the MPC library are Andreas Enge and
 Paul Zimmermann. Patrick Pelissier has cleaned up the code.
+Marc Helbling contributed the @code{mpc_ui_sub} and
+@code{mpc_ui_ui_sub} functions.
 
 @node References, Concept Index, Contributors, Top
 @comment  node-name,  next,  previous,  up
