@@ -589,13 +589,13 @@ overhead due to the MPC layer.
 Set @var{rop} to @var{op1} @math{+} @var{op2} rounded according to @var{rnd}.
 @end deftypefun
 
-@deftypefun int mpc_sub (mpc_t @var{rop}, mpc_t @var{op1}, mpc_t @var{op2}, mpc_rnd_t @var{rnd})
-@deftypefunx int mpc_sub_ui (mpc_t @var{rop}, mpc_t @var{op1}, unsigned long int @var{op2}, mpc_rnd_t @var{rnd})
-@deftypefunx int mpc_ui_sub (mpc_t @var{rop}, unsigned long int @var{op1}, mpc_t @var{op2}, mpc_rnd_t @var{rnd})
-@deftypefunx int mpc_ui_ui_sub (mpc_t @var{rop}, unsigned long int @var{re1}, unsigned long int @var{im1}, mpc_t @var{op2}, mpc_rnd_t @var{rnd})
+@deftypefn Function int mpc_sub (mpc_t @var{rop}, mpc_t @var{op1}, mpc_t @var{op2}, mpc_rnd_t @var{rnd})
+@deftypefnx Function int mpc_sub_ui (mpc_t @var{rop}, mpc_t @var{op1}, unsigned long int @var{op2}, mpc_rnd_t @var{rnd})
+@deftypefnx Macro int mpc_ui_sub (mpc_t @var{rop}, unsigned long int @var{op1}, mpc_t @var{op2}, mpc_rnd_t @var{rnd})
+@deftypefnx Function int mpc_ui_ui_sub (mpc_t @var{rop}, unsigned long int @var{re1}, unsigned long int @var{im1}, mpc_t @var{op2}, mpc_rnd_t @var{rnd})
 Set @var{rop} to @var{op1} @minus{} @var{op2} rounded according to @var{rnd}.
 For @code{mpc_ui_ui_sub}, @var{op1} is @var{re1} + @var{im1}.
-@end deftypefun
+@end deftypefn
 
 @deftypefun int mpc_mul (mpc_t @var{rop}, mpc_t @var{op1}, mpc_t @var{op2}, mpc_rnd_t @var{rnd})
 @deftypefunx int mpc_mul_ui (mpc_t @var{rop}, mpc_t @var{op1}, unsigned long int @var{op2}, mpc_rnd_t @var{rnd})
