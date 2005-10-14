@@ -1,0 +1,3 @@
+New functions to implement:
+- complex logarithm: look at algorithm and error analysis in Regis Dupont's
+  PhD thesis <http://www.lix.polytechnique.fr/Labo/Regis.Dupont/index.html>
