@@ -1,6 +1,6 @@
 /* mpc_mul -- Multiply two complex numbers.
 
-Copyright (C) 2002, 2004 Andreas Enge, Paul Zimmermann
+Copyright (C) 2002, 2004, 2005 Andreas Enge, Paul Zimmermann
 
 This file is part of the MPC Library.
 
@@ -188,14 +188,14 @@ mpc_mul_karatsuba (mpc_ptr rop, mpc_srcptr op1, mpc_srcptr op2, mpc_rnd_t rnd)
   mul_a = 1; /* implicit factor for a */
   mul_c = 1; /* implicit factor for c */
 
-  if (MPFR_CMP_ABS (a, b) < 0)
+  if (mpfr_cmp_abs (a, b) < 0)
     {
       SWAP(a, b);
       mul_i ++;
       mul_a = -1; /* consider i * (a+i*b) = -b + i*a */
     }
 
-  if (MPFR_CMP_ABS (c, d) < 0)
+  if (mpfr_cmp_abs (c, d) < 0)
     {
       SWAP(c, d);
       mul_i ++;
@@ -235,7 +235,7 @@ mpc_mul_karatsuba (mpc_ptr rop, mpc_srcptr op1, mpc_srcptr op2, mpc_rnd_t rnd)
     mpfr_neg (w, w, GMP_RNDN);
 
   /* compute sign(v-w) */
-  sign_x = MPFR_CMP_ABS (v, w);
+  sign_x = mpfr_cmp_abs (v, w);
   if (sign_x > 0)
     sign_x = 2 * mpfr_sgn (v) - mpfr_sgn (w);
   else if (sign_x == 0)

@@ -1,6 +1,6 @@
 # Makefile for the MPC library.
 #
-# Copyright (C) 2002, 2004 Andreas Enge, Paul Zimmermann
+# Copyright (C) 2002, 2004, 2005 Andreas Enge, Paul Zimmermann
 #
 # This file is part of the MPC Library.
 #
@@ -19,10 +19,6 @@
 # the Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston,
 # MA 02111-1307, USA.
 
-# directory where GMP is installed (you need GMP 4.1 or later, configured
-# with MPFR installed, i.e. ./configure --enable-mpfr):
-# headers are expected in $(GMP)/include, lib in $(GMP)/lib
-
 AR=ar
 CC=gcc
 RANLIB=ranlib
@@ -30,7 +26,7 @@ CFLAGS= -g -O2 -Wall -Wmissing-prototypes -ansi -pedantic
 RM=rm -f
 
 GMP=/usr/local
-MPFR=$(GMP)
+MPFR=/usr/local
 
 ######################## do not edit below this line ##########################
 
@@ -43,7 +39,7 @@ LIBS=$(MPFR)/lib/libmpfr.a $(GMP)/lib/libgmp.a
 
 OBJECTS= abs.o add.o add_fr.o add_ui.o clear.o cmp.o cmp_si_si.o conj.o div.o div_2exp.o div_fr.o div_ui.o exp.o init.o init2.o init3.o inp_str.o mul.o mul_2exp.o mul_fr.o mul_ui.o mul_si.o mul_i.o neg.o norm.o out_str.o random.o random2.o set.o set_d_d.o set_dfl_prec.o set_prec.o set_ui_fr.o set_si_si.o set_ui_ui.o sqr.o sqrt.o sub.o sub_ui.o ui_div.o uceil_log2.o ui_ui_sub.o
 SOURCES= abs.c add.c add_fr.c add_ui.c clear.c cmp.c cmp_si_si.c conj.c div.c div_2exp.c div_fr.c div_ui.c exp.c init.c init2.c init3.c inp_str.c mul.c mul_2exp.c mul_fr.c mul_ui.c mul_si.c mul_i.c neg.c norm.c out_str.c random.c random2.c set.c set_d_d.c set_dfl_prec.c set_prec.c set_ui_fr.c set_si_si.c set_ui_ui.c sqr.c sqrt.c sub.c sub_ui.c ui_div.c uceil_log2.c ui_ui_sub.c
-TESTS= test.c tmul.c tsqr.c tdiv.c texp.c
+TESTS= test.c tmul.c tsqr.c tdiv.c texp.c tabs.c
 DIST= $(SOURCES) $(TESTS) makefile mpc.h mpc-impl.h COPYING.LIB mpc.texi INSTALL
 
 .c.o:

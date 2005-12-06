@@ -1,31 +1,25 @@
                         Installing MPC
                         ==============
 
-0. You first need to install GMP. See <http://www.swox.com/gmp/>.
-   MPC requires GMP version 4.1 or later.
-
-   You need to configure GMP with --enable-mpfr, to install the MPFR
-   library, too.
+0. You first need to install GMP and MPFR. See <http://www.swox.com/gmp/>
+   and <http://www.mpfr.org>.
+   MPC requires GMP version 4.1 or later and MPFR version 2.2.0 or later.
 
 1. In the MPC build directory, type
 
       make
 
-   This assumes that GMP is installed into /usr/local.
+   This assumes that GMP and MPFR are installed into /usr/local.
 
    Otherwise, type
 
-      make GMP=<gmp_install_dir>
-
-   where <gmp_install_dir> is the directory where you installed GMP. The GMP
-   header files like gmp.h are then expected to be in <gmp_install_dir>/include,
-   and the GMP library files like libgmp.a in <gmp_install_dir>/lib.
-
-   It is also possible to specify a separate directory for MPFR by
-
       make GMP=<gmp_install_dir> MPFR=<mpfr_install_dir>
 
-   which allows to use a newer version of MPFR.
+   where <gmp_install_dir> is the directory where you installed GMP and
+   <mpfr_install_dir> is the directory where you installed MPFR. The GMP
+   header files like gmp.h are then expected to be in <gmp_install_dir>/include,
+   the GMP library files like libgmp.a in <gmp_install_dir>/lib, and likewise
+   for MPFR.
 
 2. Type
 
@@ -33,10 +27,6 @@
 
    resp.
       
-      make check GMP=<gmp_install_dir>
-
-   resp.
-
       make check GMP=<gmp_install_dir> MPFR=<mpfr_install_dir>
 
    to produce and run the test files (please check that <gmp_install_dir>/lib

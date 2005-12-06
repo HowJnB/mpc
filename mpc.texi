@@ -10,7 +10,7 @@
 @comment %**end of header
 
 @set VERSION 0.4.5
-@set DATE {February 2005}
+@set DATE {December 2005}
 
 @ifinfo
 @format
@@ -186,9 +186,7 @@ probably a good idea to glance through it.
 @cindex Installation
 
 To build MPC, you first have to install GNU MP 
-(version 4.1 or higher) on your computer.
-You need to configure GNU MP with @code{--enable-mpfr}, to install
-also the MPFR sub-library.
+(version 4.1 or higher) and MPFR (version 2.2.0 or higher) on your computer.
 You need a C compiler, preferably GCC, but any reasonable compiler should
 work.  And you need a standard Unix @samp{make} program, plus some other
 standard Unix utility programs.
@@ -199,23 +197,17 @@ Here are the steps needed to install the library on Unix systems:
 @item 
 @samp{make}  
 
-if GMP is installed into the standard directory @samp{/usr/local}.
+if GMP and MPFR are installed into the standard directory @samp{/usr/local}.
 This will compile MPC, and create a library archive file @file{libmpc.a}
 in the working directory.
 
-@samp{make GMP=<gmp_install_dir>}.
-
-is used to indicate a different location of GMP.
-
 @samp{make GMP=<gmp_install_dir> MPFR=<mpfr_install_dir>}.
 
-allows to use a different version of MPFR than that provided with GMP.
+is used to indicate different locations of GMP and MPFR.
 
 
 @item
 @samp{make check} resp.
-
-@samp {make check GMP=<gmp_install_dir>} resp.
 
 @samp {make check GMP=<gmp_install_dir> MPFR=<mpfr_install_dir>}
 
