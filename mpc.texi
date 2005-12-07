@@ -201,6 +201,11 @@ if GMP and MPFR are installed into the standard directory @samp{/usr/local}.
 This will compile MPC, and create a library archive file @file{libmpc.a}
 in the working directory.
 
+@samp{make GMP=<gmp_install_dir>}.
+
+is used to indicate a different location where both GMP and MPFR
+are installed.
+
 @samp{make GMP=<gmp_install_dir> MPFR=<mpfr_install_dir>}.
 
 is used to indicate different locations of GMP and MPFR.
@@ -208,6 +213,8 @@ is used to indicate different locations of GMP and MPFR.
 
 @item
 @samp{make check} resp.
+
+@samp {make check GMP=<gmp_install_dir>} resp.
 
 @samp {make check GMP=<gmp_install_dir> MPFR=<mpfr_install_dir>}
 

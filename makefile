@@ -26,7 +26,7 @@ CFLAGS= -g -O2 -Wall -Wmissing-prototypes -ansi -pedantic
 RM=rm -f
 
 GMP=/usr/local
-MPFR=/usr/local
+MPFR=$(GMP)
 
 ######################## do not edit below this line ##########################
 
