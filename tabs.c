@@ -140,7 +140,6 @@ int main()
   mpc_t  x;
   mpfr_t eps;
   mp_prec_t prec;
-  int i;
 
   mpc_init2 (x, 1000);
   mpfr_init2 (eps, 10);
@@ -150,25 +149,22 @@ int main()
   /* Check 1, 1+epsilon, (1+epsilon) + epsilon*i and the same values with */
   /* real and imaginary part swapped for epsilon small powers of 2.       */
   mpfr_set_ui (eps, 1, GMP_RNDN);
-  for (i = 0; i < 12; i++)
+  mpfr_div_2ui (eps, eps, 200, GMP_RNDN);
+  for (prec = 2; prec < 1000; prec += 222)
   {
-     mpfr_div_2ui (eps, eps, 200, GMP_RNDN);
-     for (prec = 2; prec < 1000; prec += 222)
-     {
-        mpc_set_prec (x, prec);
-        mpc_set_ui_ui (x, 1, 0, MPC_RNDNN);
-        testabs (x);
-        mpfr_set (MPC_IM (x), eps, GMP_RNDN);
-        testabs (x);
-        mpfr_add_ui (MPC_RE (x), eps, 1, GMP_RNDN);
-        testabs (x);
-        mpc_set_ui_ui (x, 0, 1, MPC_RNDNN);
-        testabs (x);
-        mpfr_set (MPC_RE (x), eps, GMP_RNDN);
-        testabs (x);
-        mpfr_add_ui (MPC_IM (x), eps, 1, GMP_RNDN);
-        testabs (x);
-     }
+     mpc_set_prec (x, prec);
+     mpc_set_ui_ui (x, 1, 0, MPC_RNDNN);
+     testabs (x);
+     mpfr_set (MPC_IM (x), eps, GMP_RNDN);
+     testabs (x);
+     mpfr_add_ui (MPC_RE (x), eps, 1, GMP_RNDN);
+     testabs (x);
+     mpc_set_ui_ui (x, 0, 1, MPC_RNDNN);
+     testabs (x);
+     mpfr_set (MPC_RE (x), eps, GMP_RNDN);
+     testabs (x);
+     mpfr_add_ui (MPC_IM (x), eps, 1, GMP_RNDN);
+     testabs (x);
   }
   
   mpc_clear (x);

@@ -50,8 +50,6 @@ libmpc.a: $(OBJECTS)
 	$(RANLIB) libmpc.a
 
 check: test tmul tsqr tdiv texp tabs
-	@echo Testing mpc_abs
-	./tabs
 	@echo Testing all functions
 	$(RM) -f mpc_test
 	./test
@@ -64,6 +62,8 @@ check: test tmul tsqr tdiv texp tabs
 	./tdiv
 	@echo Testing mpc_exp
 	./texp
+	@echo Testing mpc_abs
+	./tabs
 
 # Building scheme is complicated: we first try to build with explicit static lib, and if it fails with -l <= -Ldirectory is scanned AFTER system directory 
 test: test.c libmpc.a
