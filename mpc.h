@@ -156,6 +156,8 @@ size_t mpc_out_str __MPC_PROTO ((FILE *, int, size_t, mpc_srcptr, mpc_rnd_t));
  ( mpc_init(x), mpc_set((x), (y), (rnd)) )
 #define mpc_init_set_ui_fr(x, y, z, rnd) \
  ( mpc_init(x), mpc_set_ui_fr((x), (y), (z), (rnd)) )
+#define mpc_init_set_ui(x, y, rnd) \
+ ( mpc_init(x), mpc_set_ui((x), (y), (rnd)) )
 #define mpc_init_set_ui_ui(x, y, z, rnd) \
  ( mpc_init(x), mpc_set_ui_ui((x), (y), (z), (rnd)) )
 #define mpc_init_set_si_si(x, y, z, rnd) \
