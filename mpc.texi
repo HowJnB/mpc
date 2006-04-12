@@ -214,9 +214,9 @@ is used to indicate different locations of GMP and MPFR.
 @item
 @samp{make check} resp.
 
-@samp {make check GMP=<gmp_install_dir>} resp.
+@samp{make check GMP=<gmp_install_dir>} resp.
 
-@samp {make check GMP=<gmp_install_dir> MPFR=<mpfr_install_dir>}
+@samp{make check GMP=<gmp_install_dir> MPFR=<mpfr_install_dir>}
 
 This will make sure MPC was built correctly.  
 If you get error messages, please
