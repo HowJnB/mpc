@@ -1,3 +1,14 @@
 New functions to implement:
 - complex logarithm: look at algorithm and error analysis in Regis Dupont's
   PhD thesis <http://www.lix.polytechnique.fr/Labo/Regis.Dupont/index.html>
+- from Mickael Gastineau <gastineau@imcce.fr> 20 Feb 2007:
+  int mpc_fr_div (mpc_t rop, mpfr_t op1, mpc_t op2, mpc_rnd_t rnd)
+      rop = op1 / op2
+  int mpc_sub_fr (mpc_t rop, mpc_t op1, mpfr_t op2, mpc_rnd_t rnd)
+      rop = op1 - op2
+  int mpc_fr_sub (mpc_t rop, mpfr_t op1, mpc_t op2, mpc_rnd_t rnd)
+      rop = op1 - op2
+  int mpc_set_fr (mpc_t rop,  mpfr_t op1, mpc_rnd_t)
+      rop = op1
+  int mpc_pow_fr (mpc_t rop, mpc_t op1, mpfr_t op2, mpc_rnd_t rnd)
+      rop = op1 ^ op2
