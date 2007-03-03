@@ -1,6 +1,15 @@
 New functions to implement:
 - complex logarithm: look at algorithm and error analysis in Regis Dupont's
   PhD thesis <http://www.lix.polytechnique.fr/Labo/Regis.Dupont/index.html>
+- complex sin: sin(x+I*y) = sin(x) cosh(y) + cos(x) sinh(y) I
+  assume the target precision is p, and we use working precision w > p
+  with rounding to nearest:
+     a = o(sin(x)) b = o(cosh(y)) X = o(a*b)
+     c = o(cos(x)) d = o(sinh(y)) Y = o(c*d)
+  Then X can be written sin(x)*cosh(y)*(1+t)^3 with |t| <= 2^(-w),
+  thus for w >= 2, X can be written sin(x)*cosh(y)*(1+4*t) with |t| <= 2^(-w),
+  thus the relative error is bounded by 4*2^(-w), which is always bounded by
+  4*ulp(X).
 - from Mickael Gastineau <gastineau@imcce.fr> 20 Feb 2007:
   int mpc_fr_div (mpc_t rop, mpfr_t op1, mpc_t op2, mpc_rnd_t rnd)
       rop = op1 / op2

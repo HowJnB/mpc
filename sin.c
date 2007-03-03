@@ -45,11 +45,19 @@ mpc_sin (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
      thus the relative error is bounded by 4*2^(-w) <= 4*ulp(r).
   */
   
-  /* special case when the input is real */
+  /* special case when the input is real: sin(x) = sin(x) */
   if (mpfr_cmp_ui (MPC_IM(op), 0) == 0)
     {
       mpfr_sin (MPC_RE(rop), MPC_RE(op), MPC_RND_RE(rnd));
       mpfr_set_ui (MPC_IM(rop), 0, MPC_RND_IM(rnd));
+      return;
+    }
+
+  /* special case when the input is imaginary: sin(I*y) = sinh(y)*I */
+  if (mpfr_cmp_ui (MPC_RE(op), 0) == 0)
+    {
+      mpfr_set_ui (MPC_RE(rop), 0, MPC_RND_RE(rnd));
+      mpfr_sinh (MPC_IM(rop), MPC_IM(op), MPC_RND_IM(rnd));
       return;
     }
 
