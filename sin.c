@@ -1,6 +1,6 @@
 /* mpc_sin -- sine of a complex number.
 
-Copyright (C) 2007 Andreas Enge, Paul Zimmermann
+Copyright (C) 2007 Paul Zimmermann
 
 This file is part of the MPC Library.
 
