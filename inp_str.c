@@ -31,6 +31,9 @@ mpc_inp_str (mpc_ptr rop, FILE *stream, int base, mpc_rnd_t rnd_mode)
   size_t size, size_im;
   int c;
 
+  if (stream == NULL)
+    stream = stdin;
+
   /* input real part */
   size = mpfr_inp_str (MPC_RE(rop), stream, base, MPC_RND_RE(rnd_mode));
   if (size == 0) /* error while reading the real part */
