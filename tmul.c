@@ -21,7 +21,9 @@ MA 02111-1307, USA. */
 
 #include <stdio.h>
 #include <stdlib.h>
+#ifdef TIMING
 #include <sys/times.h>
+#endif
 #include "gmp.h"
 #include "mpfr.h"
 #include "mpc.h"
@@ -32,8 +34,9 @@ void cmpmului (mpc_srcptr, unsigned long int, mpc_rnd_t);
 void cmpmulsi (mpc_srcptr, long int, mpc_rnd_t);
 void testmul (long, long, long, long, mp_prec_t, mpc_rnd_t);
 void special (void);
+#ifdef TIMING
 void timemul (void);
-
+#endif
 
 void cmpmul (mpc_srcptr x, mpc_srcptr y, mpc_rnd_t rnd)
    /* computes the product of x and y with the naive and Karatsuba methods */
@@ -350,7 +353,7 @@ special ()
   mpc_clear (y);
 }
 
-
+#ifdef TIMING
 void
 timemul ()
 {
@@ -395,7 +398,7 @@ timemul ()
    mpc_clear (y);
    mpc_clear (z);
 }
-
+#endif
 
 int
 main()
@@ -406,9 +409,9 @@ main()
   int i;
   long int ysi;
 
-/*
+#ifdef TIMING
   timemul ();
-*/
+#endif
 
   special ();
 
