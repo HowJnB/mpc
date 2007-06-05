@@ -30,6 +30,9 @@ mpc_out_str (FILE *stream, int base, size_t n, mpc_srcptr op, mpc_rnd_t rnd)
 {
   size_t size;
 
+  if (stream == NULL)
+    stream = stdout; /* fprintf does not allow NULL as first argument */
+
   size = mpfr_out_str (stream, base, n, MPC_RE(op), MPC_RND_RE(rnd));
   size += fprintf (stream, "+I*");
   size += mpfr_out_str (stream, base, n, MPC_IM(op), MPC_RND_IM(rnd));
