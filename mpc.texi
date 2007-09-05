@@ -298,12 +298,9 @@ the language needs to be improved, please send a note to the same address.
 @cindex @file{mpc.h}
 All declarations needed to use MPC are collected in the include file
 @file{mpc.h}.  It is designed to work with both C and C++ compilers.
-You should include that file in any program using the MPC library.
-As MPC is based on the MPFR library, itself based on GNU MP, you
-should also include the corresponding header files in the following order:
+You should include that file in any program using the MPC library
+by adding the line
 @example
-   #include "gmp.h"
-   #include "mpfr.h"
    #include "mpc.h"
 @end example
 

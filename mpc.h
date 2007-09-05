@@ -27,6 +27,7 @@ MA 02111-1307, USA. */
 # define _MPC_H_HAVE_FILE 1
 #endif
 
+#include "gmp.h"
 #include "mpfr.h"
 
 /* Return values */
