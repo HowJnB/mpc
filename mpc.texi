@@ -9,8 +9,8 @@
 @end iftex
 @comment %**end of header
 
-@set VERSION 0.4.5
-@set DATE {December 2005}
+@set VERSION 0.4.6
+@set DATE {September 2007}
 
 @ifinfo
 @format
@@ -30,7 +30,7 @@ END-INFO-DIR-ENTRY
 @ifinfo
 This file documents MPC, a library for multiple precision complex arithmetic
 
-Copyright (C) 2002, 2003, 2004, 2005 Andreas Enge, Paul Zimmermann
+Copyright (C) 2002, 2003, 2004, 2005, 2007 Andreas Enge, Paul Zimmermann
 
 Permission is granted to make and distribute verbatim copies of
 this manual provided the copyright notice and this permission notice
@@ -76,7 +76,7 @@ by the Foundation.
 
 @page
 @vskip 0pt plus 1filll
-Copyright @copyright{} 2002, 2003, 2004, 2005 Andreas Enge, Paul Zimmermann
+Copyright @copyright{} 2002, 2003, 2004, 2005, 2007 Andreas Enge, Paul Zimmermann
 
 @sp 2
 
@@ -510,6 +510,16 @@ The previous value stored in @var{x} is lost. It is equivalent to
 a call to @code{mpc_clear(x)} followed by a call to 
 @code{mpc_init2(x, prec)}, but more efficient as no allocation is done in
 case the current allocated space for the mantissa of @var{x} is sufficient.
+@end deftypefun
+
+@deftypefun mp_prec_t mpc_get_prec (mpc_t @var{x})
+If the real and imaginary part of @var{x} have the same precision, it is returned,
+otherwise, 0 is returned.
+@end deftypefun
+
+@deftypefun mp_prec_t mpc_get_prec2 (mp_prec_t* @var{pr}, mp_prec_t* @var{pi}, mpc_t @var{x})
+Returns the precision of the real part of @var{x} via @var{pr} and of its imaginary part
+via @var{pi}.
 @end deftypefun
 
 @node Assigning Complex Numbers, Simultaneous Init & Assign, Initializing Complex Numbers, Complex Functions

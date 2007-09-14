@@ -1,6 +1,6 @@
 /* mpc.h -- Include file for mpc.
 
-Copyright (C) 2002, 2003, 2004, 2005 Andreas Enge, Paul Zimmermann
+Copyright (C) 2002, 2003, 2004, 2005, 2007 Andreas Enge, Paul Zimmermann
 
 This file is part of the MPC Library.
 
@@ -141,6 +141,8 @@ void mpc_random __MPC_PROTO ((mpc_ptr));
 void mpc_random2 __MPC_PROTO ((mpc_ptr, mp_size_t, mp_exp_t));
 void mpc_init2  __MPC_PROTO ((mpc_ptr, mp_prec_t));
 void mpc_init3  __MPC_PROTO ((mpc_ptr, mp_prec_t, mp_prec_t));
+mp_prec_t mpc_get_prec (mpc_t x);
+void mpc_get_prec2 (mp_prec_t *pr, mp_prec_t *pi, mpc_t x);
 void mpc_set_prec __MPC_PROTO ((mpc_ptr, mp_prec_t));
 void mpc_set_default_prec __MPC_PROTO ((mp_prec_t));
 mp_prec_t mpc_get_default_prec __MPC_PROTO ((void));

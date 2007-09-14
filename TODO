@@ -12,9 +12,3 @@ New functions to implement:
       rop = op1
   int mpc_pow_fr (mpc_t rop, mpc_t op1, mpfr_t op2, mpc_rnd_t rnd)
       rop = op1 ^ op2
-- from Andreas Enge:
-  mp_prec_t mpc_get_prec (mpc_t c)
-    returns the precision of the real and imaginary part of c (if equal),
-    and 0 otherwise
-  void mpc_get_prec2 (mp_prec_t *px, mp_prec_t *py, mpc_t c)
-    put in px and py the precisions of the real and imaginary part of c

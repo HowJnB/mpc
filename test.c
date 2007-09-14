@@ -1,6 +1,6 @@
 /* test file for mpc.
 
-Copyright (C) 2002, 2004 Andreas Enge, Paul Zimmermann
+Copyright (C) 2002, 2004, 2007 Andreas Enge, Paul Zimmermann
 
 This file is part of the MPC Library.
 
@@ -37,7 +37,7 @@ int
 main()
 {
   mpc_t x, y, z;
-  mp_prec_t prec;
+  mp_prec_t prec, pr, pi;
   mpfr_t f, g;
   FILE *file;
   int nread;
@@ -53,9 +53,31 @@ main()
     {
       mpc_set_prec (x, prec);
       mpc_set_prec (y, prec);
-      mpc_set_prec (z, prec);
       mpfr_set_prec (f, prec);
       mpfr_set_prec (g, prec);
+
+      PRINT ("Testing mpc_get_prec and mpc_get_prec2\n");
+      mpfr_set_prec (MPC_RE (z), prec);
+      mpfr_set_prec (MPC_IM (z), prec + 1);
+      if (mpc_get_prec (z) != 0)
+      {
+         fprintf (stderr, "Error in mpc_get_prec for prec (re) = %li, prec (im) = %li\n",
+            prec, prec + 1);
+         exit (1);
+      }
+      mpc_get_prec2 (&pr, &pi, z);
+      if (pr != prec || pi != prec + 1)
+      {
+         fprintf (stderr, "Error in mpc_get_prec2 for prec (re) = %li, prec (im) = %li\n",
+            prec, prec + 1);
+         exit (1);
+      }
+      mpc_set_prec (z, prec);
+      if (mpc_get_prec (z) != prec)
+      {
+         fprintf (stderr, "Error in mpc_get_prec for prec = %li\n", prec);
+         exit (1);
+      }
 
       mpc_set_ui (x, 1, MPC_RNDNN);
       mpc_mul_2exp (x, x, prec, MPC_RNDNN);
