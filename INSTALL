@@ -1,9 +1,9 @@
                         Installing MPC
                         ==============
 
-0. You first need to install GMP and MPFR. See <http://www.swox.com/gmp/>
+0. You first need to install GMP and MPFR. See <http://gmplib.org/>
    and <http://www.mpfr.org>.
-   MPC requires GMP version 4.1 or later and MPFR version 2.2.0 or later.
+   MPC requires GMP version 4.2.2 or later and MPFR version 2.3.0 or later.
 
 1. In the MPC build directory, type
 

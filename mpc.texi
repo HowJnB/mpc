@@ -517,7 +517,7 @@ If the real and imaginary part of @var{x} have the same precision, it is returne
 otherwise, 0 is returned.
 @end deftypefun
 
-@deftypefun mp_prec_t mpc_get_prec2 (mp_prec_t* @var{pr}, mp_prec_t* @var{pi}, mpc_t @var{x})
+@deftypefun void mpc_get_prec2 (mp_prec_t* @var{pr}, mp_prec_t* @var{pi}, mpc_t @var{x})
 Returns the precision of the real part of @var{x} via @var{pr} and of its imaginary part
 via @var{pi}.
 @end deftypefun
