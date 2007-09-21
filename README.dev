@@ -1,0 +1,7 @@
+To make a new release:
+
+  1) create a tag for the new release, for example:
+
+     $ svn cp svn+ssh://zimmerma@scm.gforge.inria.fr/svn/mpc/trunk \
+              svn+ssh://zimmerma@scm.gforge.inria.fr/svn/mpc/tags/0.4.6 
+   
