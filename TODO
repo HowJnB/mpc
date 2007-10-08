@@ -12,3 +12,5 @@ New functions to implement:
       rop = op1
   int mpc_pow_fr (mpc_t rop, mpc_t op1, mpfr_t op2, mpc_rnd_t rnd)
       rop = op1 ^ op2
+- from Rob <sisyphus1@optusnet.com.au> 6 Oct 2007:
+  const char * mpc_get_version (void)

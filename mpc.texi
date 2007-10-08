@@ -1,17 +1,15 @@
-
-\input texinfo    @c -*-texinfo-*-
-@c %**start of header
+\input texinfo
 @setfilename mpc.info
 @settitle MPC @value{VERSION}
 @synindex tp fn
 @iftex
 @afourpaper
 @end iftex
-@comment %**end of header
 
-@set VERSION 0.4.6
-@set DATE {September 2007}
-
+@set VERSION 0.4.7
+@set DATE October 2007
+@set AUTHORS Andreas Enge, Paul Zimmermann
+@set COPYRIGHTDATES 2002, 2003, 2004, 2005, 2007
 @ifinfo
 @format
 START-INFO-DIR-ENTRY
@@ -20,17 +18,22 @@ END-INFO-DIR-ENTRY
 @end format
 @end ifinfo
 
-@c smallbook
-
 @iftex
 @finalout
 @end iftex
 
 
+@copying
 @ifinfo
-This file documents MPC, a library for multiple precision complex arithmetic
+This is the manual for MPC, a library for multiple precision complex arithmetic,
+version @value{VERSION}, of @value{DATE}.
+@end ifinfo
 
-Copyright (C) 2002, 2003, 2004, 2005, 2007 Andreas Enge, Paul Zimmermann
+@sp 1
+
+Copyright (C) @value{COPYRIGHTDATES} @value{AUTHORS}
+
+@sp 2
 
 Permission is granted to make and distribute verbatim copies of
 this manual provided the copyright notice and this permission notice
@@ -49,24 +52,18 @@ resulting derived work is distributed under the terms of a permission
 notice identical to this one.
 
 Permission is granted to copy and distribute translations of this manual
-into another language, under the above conditions for modified versions,
-except that this permission notice may be stated in a translation approved
-by the Foundation.
-@end ifinfo
+into another language, under the above conditions for modified versions.
+@end copying
 
 @setchapternewpage on
 @titlepage
-@c  use the new format for titles
 
 @title MPC
 @subtitle The Multiple Precision Complex Library
 @subtitle Edition @value{VERSION}
 @subtitle @value{DATE}
 
-@author Andreas Enge, Paul Zimmermann
-
-@c Include the Distribution inside the titlepage so
-@c that headings are turned off.
+@author @value{AUTHORS}
 
 @tex
 \global\parindent=0pt
@@ -76,27 +73,7 @@ by the Foundation.
 
 @page
 @vskip 0pt plus 1filll
-Copyright @copyright{} 2002, 2003, 2004, 2005, 2007 Andreas Enge, Paul Zimmermann
-
-@sp 2
-
-@c Published by the Free Software Foundation @*
-@c 59 Temple Place - Suite 330 @*
-@c Boston, MA 02111-1307, USA @*
-
-Permission is granted to make and distribute verbatim copies of
-this manual provided the copyright notice and this permission notice
-are preserved on all copies.
-
-Permission is granted to copy and distribute modified versions of this
-manual under the conditions for verbatim copying, provided that the entire
-resulting derived work is distributed under the terms of a permission
-notice identical to this one.
-
-Permission is granted to copy and distribute translations of this manual
-into another language, under the above conditions for modified versions,
-except that this permission notice may be stated in a translation approved
-by the Foundation.
+@insertcopying
 @end titlepage
 @headings double
 
@@ -110,10 +87,10 @@ Complex Library, version @value{VERSION}
 @end ifinfo
 
 @menu
-* Copying::                   GMP Copying Conditions (LGPL).
+* Copying::                   MPC Copying Conditions (LGPL).
 * Introduction to MPC ::      Brief introduction to MPC.
 * Installing MPC::            How to configure and compile the MPC library.
-* MPC Basics::                What every MPC user should now.
+* MPC Basics::                What every MPC user should know.
 * Reporting Bugs::            How to usefully report bugs.
 * Complex Functions::         Functions for arithmetic on complex numbers.
 
@@ -186,7 +163,7 @@ probably a good idea to glance through it.
 @cindex Installation
 
 To build MPC, you first have to install GNU MP 
-(version 4.1 or higher) and MPFR (version 2.2.0 or higher) on your computer.
+(version 4.2.2 or higher) and MPFR (version 2.2.1 or higher) on your computer.
 You need a C compiler, preferably GCC, but any reasonable compiler should
 work.  And you need a standard Unix @samp{make} program, plus some other
 standard Unix utility programs.
@@ -230,14 +207,10 @@ There are some other useful make targets:
 
 @itemize @bullet
 @item
-@samp{make mpc.dvi}
+@samp{make doc}
 
-Create a DVI version of the manual, in @file{mpc.dvi}.
-
-@item
-@samp{make mpc.ps}
-
-Create a Postscript version of the manual, in @file{mpc.ps}.
+Create a dvi version of the manual in @file{mpc.dvi},
+a pdf version in @file{mpc.pdf} and an info version in @file{mpc.info}.
 
 @item
 @samp{make clean}
@@ -829,8 +802,14 @@ Marc Helbling contributed the @code{mpc_ui_sub} and
 @itemize @bullet
 
 @item
-Torbjorn Granlund, "GNU MP: The GNU Multiple Precision Arithmetic Library", 
-  version 4.1, 2002.
+Torbj@"orn Granlund et al.
+@code{gmp} -- GNU multiprecision library.
+Version 4.2.1, @url{http://gmplib.org/}.
+
+@item
+Guillaume Hanrot, Vincent Lef@`evre, Patrick P@'elissier, Paul Zimmermann et al.
+@code{mpfr} -- A library for multiple-precision floating-point               computations with exact rounding.
+Version 2.2.1, @url{http://www.mpfr.org}.
 
 @item
 IEEE standard for binary floating-point arithmetic, Technical Report 
