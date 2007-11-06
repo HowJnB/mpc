@@ -1,0 +1,97 @@
+# Makefile for the MPC library (Windows version).
+#
+# Copyright (C) 2002, 2004, 2005, 2007 Andreas Enge, Mickael Gastineau, Paul Zimmermann
+#
+# This file is part of the MPC Library.
+#
+# The MPC Library is free software; you can redistribute it and/or modify
+# it under the terms of the GNU Lesser General Public License as published by
+# the Free Software Foundation; either version 2.1 of the License, or (at your
+# option) any later version.
+#
+# The MPC Library is distributed in the hope that it will be useful, but
+# WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
+# or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Lesser General Public
+# License for more details.
+#
+# You should have received a copy of the GNU Lesser General Public License
+# along with the MPC Library; see the file COPYING.LIB.  If not, write to
+# the Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston,
+# MA 02111-1307, USA.
+
+AR=lib.exe 
+CC=cl.exe
+RANLIB=ranlib
+CFLAGS=/O2 /DEBUG /GR- /MT /nologo /EHs
+RM=del
+
+GMP=/usr/local
+MPFR=$(GMP)
+
+######################## do not edit below this line ##########################
+
+.SUFFIXES: .c .o
+
+INCLUDES=/I. /I$(MPFR)/include /I$(GMP)/include
+LIBS=$(MPFR)/lib/mpfr.lib $(GMP)/lib/gmp.lib
+
+OBJECTS= abs.obj add.obj add_fr.obj add_ui.obj clear.obj cmp.obj cmp_si_si.obj conj.obj div.obj div_2exp.obj div_fr.obj div_ui.obj exp.obj get_prec.obj get_prec2.obj init.obj init2.obj init3.obj inp_str.obj mul.obj mul_2exp.obj mul_fr.obj mul_ui.obj mul_si.obj mul_i.obj neg.obj norm.obj out_str.obj random.obj random2.obj set.obj set_d_d.obj set_dfl_prec.obj set_prec.obj set_ui_fr.obj set_si_si.obj set_ui_ui.obj sqr.obj sqrt.obj sub.obj sub_ui.obj ui_div.obj uceil_log2.obj ui_ui_sub.obj sin.obj
+SOURCES= abs.c add.c add_fr.c add_ui.c clear.c cmp.c cmp_si_si.c conj.c div.c div_2exp.c div_fr.c div_ui.c exp.c get_prec.c get_prec2.c init.c init2.c init3.c inp_str.c mul.c mul_2exp.c mul_fr.c mul_ui.c mul_si.c mul_i.c neg.c norm.c out_str.c random.c random2.c set.c set_d_d.c set_dfl_prec.c set_prec.c set_ui_fr.c set_si_si.c set_ui_ui.c sqr.c sqrt.c sub.c sub_ui.c ui_div.c uceil_log2.c ui_ui_sub.c sin.c
+TESTS= test.c tmul.c tsqr.c tdiv.c texp.c tabs.c tsin.c
+
+.c.obj:
+	$(CC) $(INCLUDES) $(CFLAGS) -c $<
+
+mpc.lib: $(OBJECTS)
+	$(AR)/out:$@  $(OBJECTS)
+
+
+check: test tmul tsqr tdiv texp tabs tsin
+	@echo Testing all functions
+	$(RM) mpc_test
+	.\test
+	$(RM) mpc_test
+	@echo Testing mpc_mul
+	.\tmul
+	@echo Testing mpc_sqr
+	.\tsqr
+	@echo Testing mpc_div
+	.\tdiv
+	@echo Testing mpc_exp
+	.\texp
+	@echo Testing mpc_sin
+	.\tsin
+	@echo Testing mpc_abs
+	.\tabs
+
+# Building scheme is complicated: we first try to build with explicit static lib, and if it fails with /LIBPATH: <= -Ldirectory is scanned AFTER system directory 
+test: test.c mpc.lib
+	@echo "Building test" && $(CC) $(CFLAGS) $(INCLUDES) test.c /link /out:test.exe /LIBPATH:"." mpc.lib  /LIBPATH:"$(MPFR)/lib" mpfr.lib  /LIBPATH:"$(GMP)/lib"  gmp.lib
+
+tmul: tmul.c mpc.lib
+	@echo "Building tmul" &&  $(CC) $(CFLAGS) $(INCLUDES)  tmul.c /link /out:tmul.exe /LIBPATH:"." mpc.lib  /LIBPATH:"$(MPFR)/lib" mpfr.lib  /LIBPATH:"$(GMP)/lib"  gmp.lib
+
+tsqr: tsqr.c mpc.lib
+	@echo "Building tsqr" && $(CC) $(CFLAGS) $(INCLUDES) tsqr.c /link /out:tsqr.exe /LIBPATH:"." mpc.lib  /LIBPATH:"$(MPFR)/lib" mpfr.lib  /LIBPATH:"$(GMP)/lib"  gmp.lib
+
+tdiv: tdiv.c mpc.lib
+	@echo "Building tdiv" && $(CC) $(CFLAGS) $(INCLUDES) tdiv.c /link /out:tdiv.exe /LIBPATH:"." mpc.lib  /LIBPATH:"$(MPFR)/lib" mpfr.lib  /LIBPATH:"$(GMP)/lib"  gmp.lib
+
+texp: texp.c mpc.lib
+	@echo "Building texp" && $(CC) $(CFLAGS) $(INCLUDES)  texp.c /link /out:texp.exe /LIBPATH:"." mpc.lib  /LIBPATH:"$(MPFR)/lib" mpfr.lib  /LIBPATH:"$(GMP)/lib"  gmp.lib
+
+tsin: tsin.c mpc.lib
+	@echo "Building tsin" && $(CC) $(CFLAGS) $(INCLUDES) tsin.c /link /out:tsin.exe /LIBPATH:"." mpc.lib  /LIBPATH:"$(MPFR)/lib" mpfr.lib  /LIBPATH:"$(GMP)/lib"  gmp.lib
+
+tabs: tabs.c mpc.lib
+	@echo "Building tabs" && $(CC) $(CFLAGS) $(INCLUDES) tabs.c /link /out:tabs.exe /LIBPATH:"." mpc.lib  /LIBPATH:"$(MPFR)/lib" mpfr.lib  /LIBPATH:"$(GMP)/lib"  gmp.lib
+
+clean:
+	$(RM) *.obj *~ mpc.lib test.exe tmul.exe tsqr.exe tdiv.exe texp.exe tsin.exe tabs.exe mpc.aux mpc.cp mpc.cps mpc.dvi mpc.fn mpc.fns mpc.ky mpc.log mpc.pg mpc.ps mpc.toc mpc.tp mpc.vr mpc.vrs
+
+
+mpc.dvi: mpc.texi
+	texi2dvi mpc.texi
+
+mpc.ps: mpc.dvi
+	dvips mpc -o

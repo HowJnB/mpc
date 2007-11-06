@@ -43,4 +43,30 @@
    to produce the documentation in DVI or Postscript format.
 
 In case of difficulties, send a description of the problem to
-<enge@lix.polytechnique.fr, zimmerma@loria.fr>.
+<enge at lix dot polytechnique.fr, zimmerma at loria dot fr>
+(replace 'at' by '@', and 'dot' by '.').
+
+##############################################################################
+
+Note for Windows users:
+======================
+
+There is a special file makefile.vc for Windows, contributed by Mickael
+Gastineau. This file works both for the SDK from Visual Studio, and for that
+of Vista. To use it, simply replace "make" by "nmake /f makefile.vc" in the
+above instructions:
+
+compilation :
+nmake /f makefile.vc GMP=<gmp_install_dir> MPFR=<mpfr_install_dir>
+
+clean :
+nmake /f makefile.vc GMP=<gmp_install_dir> MPFR=<mpfr_install_dir> clean
+
+check :
+nmake /f makefile.vc GMP=<gmp_install_dir> MPFR=<mpfr_install_dir> check
+
+For any issue related to the makefile.vc file, please contact directly
+Mickael Gastineau at <gastineau at imcce dot fr> (replace 'at' by '@',
+and 'dot' by '.').
+
+
