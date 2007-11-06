@@ -52,9 +52,9 @@ Note for Windows users:
 ======================
 
 There is a special file makefile.vc for Windows, contributed by Mickael
-Gastineau. This file works both for the SDK from Visual Studio, and for that
-of Vista. To use it, simply replace "make" by "nmake /f makefile.vc" in the
-above instructions:
+Gastineau. This file works both for the Windows Server 2003 R2 Platform SDK,
+and for the Windows SDK of Vista. To use it, simply replace "make" by
+"nmake /f makefile.vc" in the above instructions:
 
 compilation :
 nmake /f makefile.vc GMP=<gmp_install_dir> MPFR=<mpfr_install_dir>
