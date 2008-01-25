@@ -1,6 +1,8 @@
 New functions to implement:
 - complex logarithm: look at algorithm and error analysis in Regis Dupont's
   PhD thesis <http://www.lix.polytechnique.fr/Labo/Regis.Dupont/index.html>
+  Cf mail from Michael <comtech.usa@gmail.com> on mpfr list, 25 Jan 2008.
+  log(a+I*b) = 1/2*log(a^2+b^2) + I*atan2(b,a).
 - from Mickael Gastineau <gastineau@imcce.fr> 20 Feb 2007:
   int mpc_fr_div (mpc_t rop, mpfr_t op1, mpc_t op2, mpc_rnd_t rnd)
       rop = op1 / op2
