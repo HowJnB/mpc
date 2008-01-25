@@ -1,6 +1,6 @@
 /* mpc.h -- Include file for mpc.
 
-Copyright (C) 2002, 2003, 2004, 2005, 2007 Andreas Enge, Paul Zimmermann
+Copyright (C) 2002, 2003, 2004, 2005, 2007, 2008 Andreas Enge, Paul Zimmermann
 
 This file is part of the MPC Library.
 
@@ -22,13 +22,13 @@ MA 02111-1307, USA. */
 #ifndef __MPC_H
 #define __MPC_H
 
+#include "gmp.h"
+#include "mpfr.h"
+
 /* Check if stdio.h is included */
 #if defined (_GMP_H_HAVE_FILE)
 # define _MPC_H_HAVE_FILE 1
 #endif
-
-#include "gmp.h"
-#include "mpfr.h"
 
 /* Return values */
 
