@@ -16,3 +16,5 @@ New functions to implement:
       rop = op1 ^ op2
 - from Rob <sisyphus1@optusnet.com.au> 6 Oct 2007:
   const char * mpc_get_version (void)
+- from Rob <sisyphus1@optusnet.com.au> 27 Jan 2008
+  print "All tests passed" for make check
