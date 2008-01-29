@@ -22,6 +22,7 @@
 AR=lib.exe 
 CC=cl.exe
 RANLIB=ranlib
+# note: if flag /GS was used to compile gmp and mpfr, it should be added here
 CFLAGS=/O2 /DEBUG /GR- /MT /nologo /EHs
 RM=del
 
@@ -42,8 +43,10 @@ TESTS= test.c tmul.c tsqr.c tdiv.c texp.c tabs.c tsin.c
 .c.obj:
 	$(CC) $(INCLUDES) $(CFLAGS) -c $<
 
+# note: if compilation fails due to missing bufferoverflowu.lib, try
+# adding it after $@ $(OBJECTS) below
 mpc.lib: $(OBJECTS)
-	$(AR)/out:$@  $(OBJECTS)
+	$(AR)/out:$@ $(OBJECTS)
 
 
 check: test tmul tsqr tdiv texp tabs tsin
