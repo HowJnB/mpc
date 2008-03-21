@@ -1,46 +1,44 @@
                         Installing MPC
                         ==============
 
+This is for the impatient, for deeper explanations see Installing MPC chapter
+in the Texinfo documentation (type 'info mpc.info').
+
 0. You first need to install GMP and MPFR. See <http://gmplib.org/>
    and <http://www.mpfr.org>.
    MPC requires GMP version 4.2.2 or later and MPFR version 2.3.0 or later.
 
-1. In the MPC build directory, type
+1. In the directory  MPC archive, type
 
+      tar xzf mpc-0.4.7.tar.gz
+      cd mpc-0.4.7
+      ./configure
       make
 
-   This assumes that GMP and MPFR are installed into /usr/local.
+   This assumes that GMP and MPFR are installed in a directory searched by
+   default by the compiler. Otherwise, use --with-gmp=DIR or --with-mpfr=DIR
+   (see Texinfo documentation).
 
-   Otherwise, type
-
-      make GMP=<gmp_install_dir> MPFR=<mpfr_install_dir>
-
-   where <gmp_install_dir> is the directory where you installed GMP and
-   <mpfr_install_dir> is the directory where you installed MPFR. The GMP
-   header files like gmp.h are then expected to be in <gmp_install_dir>/include,
-   the GMP library files like libgmp.a in <gmp_install_dir>/lib, and likewise
-   for MPFR.
-
-2. Type
-
+2. You can optionally run the test suit, type
+   
       make check
 
-   resp.
-      
-      make check GMP=<gmp_install_dir> MPFR=<mpfr_install_dir>
+3. To install the MPC library, type
 
-   to produce and run the test files (please check that <gmp_install_dir>/lib
-   is first in your LD_LIBRARY_PATH environment variable if you use the dynamic
-   GMP libraries, or compile the test files with the -static option).
+      make install
 
-3. Type
+      By default, the files are copied into /usr/local subdirectories. You
+      need write permissions on these directories.
+
+4. You can optionally create documentation, type
 
       make mpc.dvi
 
    or
+   
       make mpc.ps
 
-   to produce the documentation in DVI or Postscript format.
+   This requires Texinfo package.
 
 In case of difficulties, send a description of the problem to
 <enge at lix dot polytechnique.fr, zimmerma at loria dot fr>

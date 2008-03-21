@@ -1,3 +1,10 @@
+Source code from Subversion repository:
+To compile source code obtained from Subversion repository, you need autoconf,
+automake and libtools packages. To create the configure file, type:
+
+$ autoreconf -i
+
+
 To make a new release:
 
   1) create a tag for the new release, for example:

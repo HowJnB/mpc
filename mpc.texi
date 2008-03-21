@@ -6,7 +6,8 @@
 @afourpaper
 @end iftex
 
-@set VERSION 0.4.7
+@include version.texi
+
 @set DATE October 2007
 @set AUTHORS Andreas Enge, Paul Zimmermann
 @set COPYRIGHTDATES 2002, 2003, 2004, 2005, 2007
@@ -77,14 +78,14 @@ into another language, under the above conditions for modified versions.
 @end titlepage
 @headings double
 
-@ifinfo
+@ifnottex
 @node Top, Copying, (dir), (dir)
 
 @top MPC
 
 This manual documents how to install and use the Multiple Precision
 Complex Library, version @value{VERSION}
-@end ifinfo
+@end ifnottex
 
 @menu
 * Copying::                   MPC Copying Conditions (LGPL).
@@ -162,79 +163,137 @@ probably a good idea to glance through it.
 @chapter Installing MPC
 @cindex Installation
 
-To build MPC, you first have to install GNU MP 
-(version 4.2.2 or higher) and MPFR (version 2.2.1 or higher) on your computer.
-You need a C compiler, preferably GCC, but any reasonable compiler should
-work.  And you need a standard Unix @samp{make} program, plus some other
-standard Unix utility programs.
+To build MPC, you first have to install GNU MP (version 4.2.2 or higher) and
+MPFR (version 2.2.1 or higher) on your computer.  You need a C compiler,
+preferably GCC, but any reasonable compiler should work. And you need a
+standard Unix @samp{make} program, plus some other standard Unix utility
+programs.
 
 Here are the steps needed to install the library on Unix systems:
 
 @enumerate
-@item 
-@samp{make}  
+@item
+@samp{tar xzf mpc-@value{VERSION}.tar.gz}
 
-if GMP and MPFR are installed into the standard directory @samp{/usr/local}.
-This will compile MPC, and create a library archive file @file{libmpc.a}
-in the working directory.
+@item
+@samp{cd mpc-@value{VERSION}}
 
-@samp{make GMP=<gmp_install_dir>}.
+@item
+@samp{./configure}
 
-is used to indicate a different location where both GMP and MPFR
-are installed.
+if GMP and MPFR are installed into standard directories, that is, directories
+that are searched by default by the compiler and the linking tools.
 
-@samp{make GMP=<gmp_install_dir> MPFR=<mpfr_install_dir>}.
+@samp{./configure --with-gmp=<gmp_install_dir>}
+
+is used to indicate a different location where GMP is installed.
+
+@samp{./configure --with-mpfr=<mpfr_install_dir>}
+
+is used to indicate a different location where MPFR is installed.
+
+@samp{./configure --with-gmp=<gmp_install_dir> --with-mpfr=<mpfr_install_dir>}
 
 is used to indicate different locations of GMP and MPFR.
 
+@emph{Warning!} Do not use these options if you have CPPFLAGS and/or LDFLAGS
+containing a -I or -L option with a directory that contains a GMP header or
+library file, as these options just add -I and -L options to CPPFLAGS and
+LDFLAGS @emph{after} the ones that are currently declared, so that DIR will
+have a lower precedence. Also, this may not work if DIR is a system directory.
 
 @item
-@samp{make check} resp.
+@samp{make}
 
-@samp{make check GMP=<gmp_install_dir>} resp.
+This compiles MPC in the working directory.
 
-@samp{make check GMP=<gmp_install_dir> MPFR=<mpfr_install_dir>}
+@item
+@samp{make check}
 
-This will make sure MPC was built correctly.  
-If you get error messages, please
-report them to @samp{enge@@lix.polytechnique.fr,zimmerma@@loria.fr}.
-(@xref{Reporting Bugs}, for
-information on what to include in useful bug reports.)
+This will make sure MPC was built correctly.
+
+If you get error messages, please report them to
+@samp{mpc-discuss@@lists.gforge.inria.fr} (@xref{Reporting Bugs}, for
+information on what to include in useful bug reports).
+
+@item
+@samp{make install}
+
+This will copy the file @file{mpc.h} to the directory
+@file{/usr/local/include}, the file @file{libmpc.a} to the directory
+@file{/usr/local/lib}, and the file @file{mpc.info} to the directory
+@file{/usr/local/share/info} (or if you passed the @samp{--prefix} option to
+@file{configure}, using the prefix directory given as argument to
+@samp{--prefix} instead of @file{/usr/local}). Note: you need write permissions
+on these directories.
 
 @end enumerate
+
+
+@section Other `make' Targets
 
 There are some other useful make targets:
 
 @itemize @bullet
 @item
-@samp{make doc}
+@samp{mpc.info} or @samp{info}
 
-Create a dvi version of the manual in @file{mpc.dvi},
-a pdf version in @file{mpc.pdf} and an info version in @file{mpc.info}.
+Create an info version of the manual, in @file{mpc.info}.
 
 @item
-@samp{make clean}
+@samp{mpc.pdf} or @samp{pdf}
 
-Delete all object and archive files.
+Create a PDF version of the manual, in @file{mpc.pdf}.
 
+@item
+@samp{mpc.dvi} or @samp{dvi}
+
+Create a DVI version of the manual, in @file{mpc.dvi}.
+
+@item
+@samp{mpc.ps} or @samp{ps}
+
+Create a Postscript version of the manual, in @file{mpc.ps}.
+
+@item
+@samp{mpc.html} or @samp{html}
+
+Create a HTML version of the manual, in several pages in the directory
+@file{mpc.html}; if you want only one output HTML file, then type
+@samp{makeinfo --html --no-split mpc.texi} instead.
+
+@item
+@samp{clean}
+
+Delete all object files and archive files, but not the configuration files.
+
+@item
+@samp{distclean}
+
+Delete all files not included in the distribution.
+
+@item
+@samp{uninstall}
+
+Delete all files copied by @samp{make install}.
 @end itemize
+
 
 
 @section Known Build Problems
 
-MPC suffers from all bugs from the GNU MP and MPFR libraries,
-plus many many more.
+MPC suffers from all bugs from the GNU MP and MPFR libraries, plus many many
+more.
 
-Please report other problems to 
-@samp{enge@@lix.polytechnique.fr,zimmerma@@loria.fr}.
-@xref{Reporting Bugs}.
+Please report other problems to
+@samp{enge@@lix.polytechnique.fr,zimmerma@@loria.fr}.  @xref{Reporting Bugs}.
 
 @node Reporting Bugs, MPC Basics, Installing MPC, Top
 @comment  node-name,  next,  previous,  up
 @chapter Reporting Bugs
 @cindex Reporting bugs
 
-If you think you have found a bug in the MPC library, 
+If you think you have found a bug in the MPC library,
 please investigate
 and report it. We have made this library available to you, and it is not to ask
 too much from you, to ask you to report the bugs that you find.
@@ -297,7 +356,7 @@ See the MPFR documentation for more details on the allowed precision range.
 @cindex Rounding Mode
 @tindex @code{mpc_rnd_t}
 @noindent
-The @dfn{rounding mode} specifies the way to round the result of a 
+The @dfn{rounding mode} specifies the way to round the result of a
 complex operation, in case the exact result can not be represented
 exactly in the destination mantissa;
 the corresponding C data type is @code{mpc_rnd_t}.
@@ -318,7 +377,7 @@ arguments.  This notation is based on an analogy with the assignment operator.
 
 MPC allows you to use the same variable for both input and output in the same
 expression.  For example, the main function for floating-point multiplication,
-@code{mpc_mul}, can be used like this: @code{mpc_mul (x, x, x, rnd_mode)}.  
+@code{mpc_mul}, can be used like this: @code{mpc_mul (x, x, x, rnd_mode)}.
 This
 computes the square of @var{x} with rounding mode @code{rnd_mode}
 and puts the result back in @var{x}.
@@ -326,7 +385,7 @@ and puts the result back in @var{x}.
 Before you can assign to an MPC variable, you need to initialize it by calling
 one of the special initialization functions.  When you are done with a
 variable, you need to clear it out, using one of the functions for that
-purpose.  
+purpose.
 
 A variable should only be initialized once, or at least cleared out between
 each initialization.  After a variable has been initialized, it may be
@@ -339,7 +398,7 @@ loop has exited.
 You do not need to be concerned about allocating additional space for MPC
 variables, since each of its real and imaginary part
 has a mantissa of fixed size.
-Hence unless you change its precision, or clear and reinitialize it, 
+Hence unless you change its precision, or clear and reinitialize it,
 a complex variable will have the same allocated space during all its
 life.
 
@@ -350,7 +409,7 @@ life.
 
 The complex functions expect arguments of type @code{mpc_t}.
 
-The MPC floating-point functions have an interface that is similar to the 
+The MPC floating-point functions have an interface that is similar to the
 GNU MP
 integer functions.  The function prefix for operations on complex numbers is
 @code{mpc_}.
@@ -384,7 +443,7 @@ different word size.
 @section Rounding Modes
 
 A complex rounding mode is of the form @code{MPC_RNDxy} where
-@code{x} and @code{y} are one of @code{N} (to nearest), @code{Z} (towards 
+@code{x} and @code{y} are one of @code{N} (to nearest), @code{Z} (towards
 zero), @code{U} (towards plus infinity), @code{D} (towards minus infinity).
 The first letter refers to the rounding mode for the real part,
 and the second one for the imaginary part.
@@ -480,7 +539,7 @@ closely match the actual accurate part of the numbers.
 Reset the precision of @var{x} to be @strong{exactly} @var{prec} bits,
 and set its real/imaginary parts to NaN.
 The previous value stored in @var{x} is lost. It is equivalent to
-a call to @code{mpc_clear(x)} followed by a call to 
+a call to @code{mpc_clear(x)} followed by a call to
 @code{mpc_init2(x, prec)}, but more efficient as no allocation is done in
 case the current allocated space for the mantissa of @var{x} is sufficient.
 @end deftypefun
@@ -615,7 +674,7 @@ Just changes the sign if @var{rop} and @var{op} are the same variable.
 
 @deftypefun int mpc_conj (mpc_t @var{rop}, mpc_t @var{op}, mpc_rnd_t @var{rnd})
 Set @var{rop} to the conjugate of @var{op} rounded according to @var{rnd}.
-Just changes the sign of the imaginary part 
+Just changes the sign of the imaginary part
 if @var{rop} and @var{op} are the same variable.
 @end deftypefun
 
@@ -730,8 +789,8 @@ Return the number of characters written.
 @deftypefun size_t mpc_inp_str (mpc_t @var{rop}, FILE *@var{stream}, int @var{base}, mpc_rnd_t @var{rnd})
 Input a string in base @var{base} from stdio stream @var{stream},
 rounded according to @var{rnd}, and put the
-read complex in @var{rop}.  
-Each of the real and imaginary part should be of the form @samp{M@@N} or, 
+read complex in @var{rop}.
+Each of the real and imaginary part should be of the form @samp{M@@N} or,
 if the base is 10 or less, alternatively @samp{MeN} or @samp{MEN}.
 @samp{M} is the mantissa and
 @samp{N} is the exponent.  The mantissa is always in the specified base.  The
@@ -762,7 +821,7 @@ real (resp. imaginary) part is in
 the interval @minus{}@var{exp} to @var{exp}.
 This function is useful for
 testing functions and algorithms, since this kind of random numbers have
-proven to be more likely to trigger corner-case bugs.  
+proven to be more likely to trigger corner-case bugs.
 Negative parts are generated when @var{max_size} is negative.
 @end deftypefun
 
@@ -770,7 +829,7 @@ Negative parts are generated when @var{max_size} is negative.
 @comment  node-name,  next,  previous,  up
 @section Internals
 
-These types and 
+These types and
 functions were mainly designed for the implementation of MPC,
 but may be useful for users too.
 However no upward compatibility is guaranteed.
@@ -812,7 +871,7 @@ Guillaume Hanrot, Vincent Lef@`evre, Patrick P@'elissier, Paul Zimmermann et al.
 Version 2.2.1, @url{http://www.mpfr.org}.
 
 @item
-IEEE standard for binary floating-point arithmetic, Technical Report 
+IEEE standard for binary floating-point arithmetic, Technical Report
 ANSI-IEEE Standard 754-1985, New York, 1985.
 Approved March 21, 1985: IEEE Standards Board; approved July 26,
   1985: American National Standards Institute, 18 pages.
@@ -833,5 +892,7 @@ Donald E. Knuth, "The Art of Computer Programming", vol 2,
 @unnumbered Function and Type Index
 @printindex fn
 
+@ifnothtml
 @contents
+@end ifnothtml
 @bye
