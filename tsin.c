@@ -76,8 +76,8 @@ main()
     /* consecutive roundings.                                               */
     mpc_random (x);
     mpc_sin (z, x, MPC_RNDNN);
-    mpc_sin (t, x, MPC_RNDNN);
-    mpc_set (u, t, MPC_RNDNN);
+    mpc_sin (u, x, MPC_RNDNN);
+    mpc_set (t, u, MPC_RNDNN);
 
     if (mpc_cmp (z, t))
     {
