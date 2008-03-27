@@ -3,7 +3,7 @@ include_HEADERS = mpc.h
 
 lib_LTLIBRARIES = libmpc.la
 libmpc_la_SOURCES = mpc-impl.h abs.c add.c add_fr.c add_ui.c clear.c \
-cmp.c cmp_si_si.c conj.c div_2exp.c div.c div_fr.c div_ui.c exp.c \
+cmp.c cmp_si_si.c conj.c cos.c div_2exp.c div.c div_fr.c div_ui.c exp.c \
 get_prec2.c get_prec.c init2.c init3.c init.c inp_str.c mul_2exp.c mul.c \
 mul_fr.c mul_i.c mul_si.c mul_ui.c neg.c norm.c out_str.c random2.c random.c \
 set.c set_d_d.c set_dfl_prec.c set_prec.c set_si_si.c set_ui_fr.c \
@@ -13,7 +13,7 @@ ui_ui_sub.c
 LDADD = $(top_builddir)/libmpc.la
 
 check_INCLUDES = -I$(top_srcdir)
-check_PROGRAMS = test tabs tdiv texp tmul tsin tsqr
+check_PROGRAMS = test tabs tcos tdiv texp tmul tsin tsqr
 
 TESTS = $(check_PROGRAMS)
 CLEANFILES = $(top_builddir)/mpc_test
