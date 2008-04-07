@@ -1,7 +1,7 @@
 #                                               -*- Autoconf -*-
 # Process this file with autoconf to produce a configure script.
 
-AC_PREREQ(2.61)
+AC_PREREQ(2.59)
 AC_INIT(mpc, 0.4.7, mpc-discuss@lists.gforge.inria.fr)
 AC_CONFIG_SRCDIR([mpc-impl.h])
 AC_CONFIG_HEADER([config.h])

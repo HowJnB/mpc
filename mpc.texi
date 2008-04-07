@@ -8,9 +8,8 @@
 
 @include version.texi
 
-@set DATE October 2007
-@set AUTHORS Andreas Enge, Paul Zimmermann
-@set COPYRIGHTDATES 2002, 2003, 2004, 2005, 2007
+@set AUTHORS Andreas Enge, Philippe Th@'eveny, Paul Zimmermann
+@set COPYRIGHTDATES 2002, 2003, 2004, 2005, 2007, 2008
 @ifinfo
 @format
 START-INFO-DIR-ENTRY
@@ -27,7 +26,7 @@ END-INFO-DIR-ENTRY
 @copying
 @ifinfo
 This is the manual for MPC, a library for multiple precision complex arithmetic,
-version @value{VERSION}, of @value{DATE}.
+version @value{VERSION}, of @value{UPDATED-MONTH}.
 @end ifinfo
 
 @sp 1
@@ -62,7 +61,7 @@ into another language, under the above conditions for modified versions.
 @title MPC
 @subtitle The Multiple Precision Complex Library
 @subtitle Edition @value{VERSION}
-@subtitle @value{DATE}
+@subtitle @value{UPDATED-MONTH}
 
 @author @value{AUTHORS}
 
