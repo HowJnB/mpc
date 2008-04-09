@@ -2,8 +2,8 @@
 LDADD = $(top_builddir)/src/libmpc.la
 
 
-AM_CPPFLAGS = -I$(top_srcdir)/src
-check_PROGRAMS = test tabs tcos tdiv texp tmul tsin tsqr
+AM_CPPFLAGS = -I$(top_srcdir)/src -I$(top_srcdir)/tests
+check_PROGRAMS = test tabs tcos tdiv texp tmul tsin tsqr tsqrt
 
 TESTS = $(check_PROGRAMS)
 CLEANFILES = mpc_test
