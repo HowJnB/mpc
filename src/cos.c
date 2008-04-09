@@ -167,7 +167,7 @@ mpc_cos (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
         mpfr_signbit (MPC_RE (op)) ==  mpfr_signbit (MPC_IM (op));
 
       mpfr_setsign (MPC_IM (rop), MPC_IM (op), imag_sign, MPC_RND_IM (rnd));
-      mpfr_cos (MPC_RE (rop), MPC_RE (op), MPC_RND_IM (rnd));
+      mpfr_cos (MPC_RE (rop), MPC_RE (op), MPC_RND_RE (rnd));
 
       return;
     }
@@ -211,6 +211,7 @@ mpc_cos (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
         {
           mpfr_sinh (z, MPC_IM(op), GMP_RNDN);
           mpfr_mul (y, y, z, GMP_RNDN);
+          mpfr_neg (y, y, GMP_RNDN);
           ok = mpfr_can_round (y, prec - 2, GMP_RNDN, MPC_RND_IM(rnd),
                                MPFR_PREC(MPC_IM(rop)));
         }
