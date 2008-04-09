@@ -18,3 +18,31 @@ New functions to implement:
   const char * mpc_get_version (void)
 - from Rob <sisyphus1@optusnet.com.au> 27 Jan 2008
   print "All tests passed" for make check
+- from Andreas Enge 9 April 2008:
+  mpc_pow_ui
+- from Andreas Enge and Philippe Théveny 9 April 2008
+  factor out code for testing with various precisions and rounding
+  modes, as done in mpfr
+- from Andreas Enge and Philippe Théveny 9 April 2008
+  systematic testing whether ok when output variable equals some
+  input variable
+- from Andreas Enge 9 April 2008:
+  depending on a preprocessor variable (DEBUG or MPC_LOG), add
+  logging: For each function call, output arguments and precision, and
+  the successive precisions in the main loop; allows to test with
+  real world data whether we hit corner cases
+  possibly: mpc_write and mpc_read that serialises mpc objects (output in
+  base 16 together with the precision of the variable)
+- from Andreas Enge and Philippe Théveny 9 April 2008
+  work plan for completing functionality
+  1) tan; requires to start a document with the generic errors,
+     notably for division: tan=sin/cos
+  2) log and agm
+  3) inverse trigonometric functions, require log
+  hyperbolic functions and cproj at any moment (relatively easy)
+- from Andreas Enge and Philippe Théveny 9 April 2008
+  correct handling of Nan and infinities:
+  beware of intermediate overflows while the result may fit
+     (we need special code)
+  beware of strange specifications in C99, that we want to follow,
+     but that are not automatic from the behaviour of mpfr

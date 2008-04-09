@@ -257,7 +257,7 @@ Create a Postscript version of the manual, in @file{mpc.ps}.
 @item
 @samp{mpc.html} or @samp{html}
 
-Create a HTML version of the manual, in several pages in the directory
+Create an HTML version of the manual, in several pages in the directory
 @file{mpc.html}; if you want only one output HTML file, then type
 @samp{makeinfo --html --no-split mpc.texi} instead.
 
@@ -285,7 +285,8 @@ MPC suffers from all bugs from the GNU MP and MPFR libraries, plus many many
 more.
 
 Please report other problems to
-@samp{enge@@lix.polytechnique.fr,zimmerma@@loria.fr}.  @xref{Reporting Bugs}.
+@samp{mpc-discuss@@lists.gforge.inria.fr}.
+@xref{Reporting Bugs}.
 
 @node Reporting Bugs, MPC Basics, Installing MPC, Top
 @comment  node-name,  next,  previous,  up
@@ -316,7 +317,7 @@ If your bug report is good, we will do our best to help you to get a corrected
 version of the library; if the bug report is poor, we will not do anything about
 it (aside of chiding you to send better bug reports).
 
-Send your bug report to: @samp{enge@@lix.polytechnique.fr,zimmerma@@loria.fr}.
+Send your bug report to: @samp{mpc-discuss@@lists.gforge.inria.fr}.
 
 If you think something in this manual is unclear, or downright incorrect, or if
 the language needs to be improved, please send a note to the same address.
@@ -763,9 +764,8 @@ Passing a null pointer for a @var{stream} argument to any of
 these functions will make them read from @code{stdin} and write to
 @code{stdout}, respectively.
 
-When using any of these functions, it is a good idea to include @file{stdio.h}
-before @file{mpc.h}, since that will allow @file{mpc.h} to define prototypes
-for these functions.
+When using any of these functions, you need to include @file{stdio.h}
+before @file{mpc.h}.
 
 @deftypefun size_t mpc_out_str (FILE *@var{stream}, int @var{base}, size_t @var{n_digits}, mpc_t @var{op}, mpc_rnd_t @var{rnd})
 Output @var{op} on stdio stream @var{stream}, in
@@ -773,8 +773,8 @@ base @var{base}, rounded according to @var{rnd}.
 First the real part is printed, then @code{+I*} followed by the imaginary part.
 The base may vary from 2 to 36.  Print at most
 @var{n_digits} significant digits for each part,
-or if @var{n_digits} is 0, the maximum
-number of digits accurately representable by @var{op}.
+or if @var{n_digits} is 0, enough digits so that
+@var{op} can be read back exactly rounding to nearest.
 
 In addition to the significant digits, a decimal point at the right of the
 first digit and a
