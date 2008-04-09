@@ -31,16 +31,13 @@ static void
 message_failed (mpc_srcptr op, mpc_srcptr rop, mpc_srcptr rop4,
 		mpc_srcptr rop4rnd, mpc_rnd_t rnd)
 {
-  char *rnd_r;
-  char *rnd_i;
-
   fprintf (stderr, "rounding in " FUNCTION_NAME(TEST_FUNCTION) " might be "
 	   "incorrect for\nx=");
   mpc_out_str (stderr, 2, 0, op, rnd);
 
-  rnd_r = mpfr_print_rnd_mode (MPC_RND_RE (rnd));
-  rnd_i = mpfr_print_rnd_mode (MPC_RND_IM (rnd));
-  fprintf (stderr, "\nwith rounding mode (%s, %s)", rnd_r, rnd_i);
+  fprintf (stderr, "\nwith rounding mode (%s, %s)",
+	   mpfr_print_rnd_mode (MPC_RND_RE (rnd)),
+	   mpfr_print_rnd_mode (MPC_RND_IM (rnd)));
 
   fprintf (stderr, "\n" FUNCTION_NAME(TEST_FUNCTION) "                     "
 	   "gives ");
@@ -52,8 +49,6 @@ message_failed (mpc_srcptr op, mpc_srcptr rop, mpc_srcptr rop4,
   mpc_out_str (stderr, 2, 0, rop4rnd, rnd);
   fprintf (stderr, "\n");
 
-  mpfr_free_str (rnd_r);
-  mpfr_free_str (rnd_i);
   exit (1);
 } 
 static void
