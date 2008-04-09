@@ -25,26 +25,24 @@ MA 02111-1307, USA. */
 #include "mpfr.h"
 #include "mpc.h"
 
+#define TEST_FUNCTION mpc_cos
+#include "tgeneric.c"
 
 int
 main()
 {
-  mpc_t  x, z, t, u;
-  mpfr_t f, g;
+  mpc_t  x, z;
+  mpfr_t g;
   mp_prec_t prec;
 
   mpc_init (x);
   mpc_init (z);
-  mpc_init (t);
-  mpc_init (u);
   mpfr_init (g);
 
   for (prec = 2; prec <= 1000; prec++)
     {
       mpc_set_prec (x, prec);
       mpc_set_prec (z, prec);
-      mpc_set_prec (t, prec);
-      mpc_set_prec (u, 4*prec);
       mpfr_set_prec (g, prec);
 
       /* check that cos(I*b) = cosh(b) */
@@ -67,34 +65,10 @@ main()
         }
     }
 
-
-  /* We also compute the result with four times the precision and check   */
-  /* whether the rounding is correct. Error reports in this part of the   */
-  /* algorithm might still be wrong, though, since there are two          */
-  /* consecutive roundings.                                               */
-  mpc_random (x);
-  mpc_cos (z, x, MPC_RNDNN);
-  mpc_cos (u, x, MPC_RNDNN);
-  mpc_set (t, u, MPC_RNDNN);
-
-  if (mpc_cmp (z, t))
-    {
-      fprintf (stderr, "rounding in cos might be incorrect for\nx=");
-      mpc_out_str (stderr, 2, 0, x, MPC_RNDNN);
-      fprintf (stderr, "\nmpc_cos                     gives ");
-      mpc_out_str (stderr, 2, 0, z, MPC_RNDNN);
-      fprintf (stderr, "\nmpc_cos quadruple precision gives ");
-      mpc_out_str (stderr, 2, 0, u, MPC_RNDNN);
-      fprintf (stderr, "\nand is rounded to                 ");
-      mpc_out_str (stderr, 2, 0, t, MPC_RNDNN);
-      fprintf (stderr, "\n");
-      exit (1);
-    }
+  tgeneric ();
 
   mpc_clear (x);
   mpc_clear (z);
-  mpc_clear (t);
-  mpc_clear (u);
   mpfr_clear (g);
 
   return 0;

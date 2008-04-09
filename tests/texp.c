@@ -25,27 +25,25 @@ MA 02111-1307, USA. */
 #include "mpfr.h"
 #include "mpc.h"
 
+#define TEST_FUNCTION mpc_exp
+#include "tgeneric.c"
 
 int
 main()
 {
-   mpc_t  x, z, t, u;
-   mpfr_t f, g;
-   mp_prec_t prec;
+  mpc_t  x, z;
+  mpfr_t f, g;
+  mp_prec_t prec;
 
-   mpc_init (x);
-   mpc_init (z);
-   mpc_init (t);
-   mpc_init (u);
-   mpfr_init (f);
-   mpfr_init (g);
+  mpc_init (x);
+  mpc_init (z);
+  mpfr_init (f);
+  mpfr_init (g);
 
-   for (prec = 2; prec <= 1000; prec++)
-   {
+  for (prec = 2; prec <= 1000; prec++)
+    {
       mpc_set_prec (x, prec);
       mpc_set_prec (z, prec);
-      mpc_set_prec (t, prec);
-      mpc_set_prec (u, 4*prec);
       mpfr_set_prec (f, prec);
       mpfr_set_prec (g, prec);
 
@@ -56,49 +54,25 @@ main()
       mpc_exp (z, x, MPC_RNDNN);
       mpfr_sin_cos (f, g, MPC_IM(x), GMP_RNDN);
       if (mpfr_cmp (g, MPC_RE(z)) || mpfr_cmp (f, MPC_IM(z)))
-      {
-         fprintf (stderr, "Error in mpc_exp: exp(I*x) <> cos(x)+I*sin(x)\n"
-                  "got      ");
-         mpc_out_str (stderr, 10, 0, z, MPC_RNDNN);
-         fprintf (stderr, "\nexpected ");
-         mpfr_set (MPC_RE(z), g, GMP_RNDN);
-         mpfr_set (MPC_IM(z), f, GMP_RNDN);
-         mpc_out_str (stderr, 10, 0, z, MPC_RNDNN);
-         fprintf (stderr, "\n");
-         exit (1);
-       }
+	{
+	  fprintf (stderr, "Error in mpc_exp: exp(I*x) <> cos(x)+I*sin(x)\n"
+		   "got      ");
+	  mpc_out_str (stderr, 10, 0, z, MPC_RNDNN);
+	  fprintf (stderr, "\nexpected ");
+	  mpfr_set (MPC_RE(z), g, GMP_RNDN);
+	  mpfr_set (MPC_IM(z), f, GMP_RNDN);
+	  mpc_out_str (stderr, 10, 0, z, MPC_RNDNN);
+	  fprintf (stderr, "\n");
+	  exit (1);
+	}
     }
 
+  tgeneric ();
+   
+  mpc_clear (x);
+  mpc_clear (z);
+  mpfr_clear (f);
+  mpfr_clear (g);
 
-    /* We also compute the result with four times the precision and check   */
-    /* whether the rounding is correct. Error reports in this part of the   */
-    /* algorithm might still be wrong, though, since there are two          */
-    /* consecutive roundings.                                               */
-    mpc_random (x);
-    mpc_exp (z, x, MPC_RNDNN);
-    mpc_exp (t, x, MPC_RNDNN);
-    mpc_set (u, t, MPC_RNDNN);
-
-    if (mpc_cmp (z, t))
-    {
-       fprintf (stderr, "rounding in exp might be incorrect for\nx=");
-       mpc_out_str (stderr, 2, 0, x, MPC_RNDNN);
-       fprintf (stderr, "\nmpc_exp                     gives ");
-       mpc_out_str (stderr, 2, 0, z, MPC_RNDNN);
-       fprintf (stderr, "\nmpc_exp quadruple precision gives ");
-       mpc_out_str (stderr, 2, 0, u, MPC_RNDNN);
-       fprintf (stderr, "\nand is rounded to                 ");
-       mpc_out_str (stderr, 2, 0, t, MPC_RNDNN);
-       fprintf (stderr, "\n");
-       exit (1);
-    }
-
-    mpc_clear (x);
-    mpc_clear (z);
-    mpc_clear (t);
-    mpc_clear (u);
-    mpfr_clear (f);
-    mpfr_clear (g);
-
-    return 0;
+  return 0;
 }
