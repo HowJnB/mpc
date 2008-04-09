@@ -50,7 +50,8 @@ message_failed (mpc_srcptr op, mpc_srcptr rop, mpc_srcptr rop4,
   fprintf (stderr, "\n");
 
   exit (1);
-} 
+}
+
 static void
 tgeneric()
 {
@@ -71,17 +72,17 @@ tgeneric()
       mpc_set_prec (t, prec);
       mpc_set_prec (u, 4*prec);
 
-      /* We compute the result with four times the precision and check        */
-      /* whether the rounding is correct. Error reports in this part of the   */
-      /* algorithm might still be wrong, though, since there are two          */
-      /* consecutive roundings.                                               */
       mpc_random (x);
-      TEST_FUNCTION (u, x, MPC_RNDNN);
 
       for (rnd_re = 0; rnd_re < 4; rnd_re ++)
-	for (rnd_im = 0; rnd_im < 4; rnd_im ++)
-	  {
-	    const mpc_rnd_t rnd = RNDC (rnd_re, rnd_im);
+         for (rnd_im = 0; rnd_im < 4; rnd_im ++)
+       {
+        /* We compute the result with four times the precision and check        */
+        /* whether the rounding is correct. Error reports in this part of the   */
+        /* algorithm might still be wrong, though, since there are two          */
+        /* consecutive roundings.                                               */
+        const mpc_rnd_t rnd = RNDC (rnd_re, rnd_im);
+        TEST_FUNCTION (u, x, rnd);
 	    TEST_FUNCTION (z, x, rnd);
 	    mpc_set (t, u, rnd);
 
