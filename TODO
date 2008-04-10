@@ -12,8 +12,6 @@ New functions to implement:
       rop = op1 - op2
   int mpc_set_fr (mpc_t rop,  mpfr_t op1, mpc_rnd_t)
       rop = op1
-  int mpc_pow_fr (mpc_t rop, mpc_t op1, mpfr_t op2, mpc_rnd_t rnd)
-      rop = op1 ^ op2
 - from Rob <sisyphus1@optusnet.com.au> 6 Oct 2007:
   const char * mpc_get_version (void)
 - from Andreas Enge 9 April 2008:
@@ -30,8 +28,7 @@ New functions to implement:
   base 16 together with the precision of the variable)
 - from Andreas Enge and Philippe Théveny 9 April 2008
   work plan for completing functionality
-  1) tan; requires to start a document with the generic errors,
-     notably for division: tan=sin/cos
+  1) tan
   2) log and agm
   3) inverse trigonometric functions, require log
   hyperbolic functions and cproj at any moment (relatively easy)

@@ -37,7 +37,9 @@ MA 02111-1307, USA. */
 #define BITS_PER_MP_LIMB mp_bits_per_limb
 #endif
 
-#define MPC_MAX_PREC(x) MAX(MPFR_PREC(MPC_RE(x)), MPFR_PREC(MPC_IM(x)))
+#define MPC_PREC_RE(x) (MPFR_PREC(MPC_RE(x)))
+#define MPC_PREC_IM(x) (MPFR_PREC(MPC_IM(x)))
+#define MPC_MAX_PREC(x) MAX(MPC_PREC_RE(x), MPC_PREC_IM(x))
 
 #define INV_RND(r) \
    (((r) == GMP_RNDU) ? GMP_RNDD : (((r) == GMP_RNDD) ? GMP_RNDU : (r)))

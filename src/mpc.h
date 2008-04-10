@@ -134,6 +134,7 @@ int  mpc_set_si_si __MPC_PROTO ((mpc_ptr, long int, long int, mpc_rnd_t));
 int  mpc_cmp __MPC_PROTO ((mpc_srcptr, mpc_srcptr));
 int  mpc_cmp_si_si __MPC_PROTO ((mpc_srcptr, long int, long int));
 void mpc_exp __MPC_PROTO ((mpc_ptr, mpc_srcptr, mpc_rnd_t));
+void mpc_log __MPC_PROTO ((mpc_ptr, mpc_srcptr, mpc_rnd_t));
 void mpc_sin __MPC_PROTO ((mpc_ptr, mpc_srcptr, mpc_rnd_t));
 void mpc_cos __MPC_PROTO ((mpc_ptr, mpc_srcptr, mpc_rnd_t));
 void mpc_clear __MPC_PROTO ((mpc_ptr));
