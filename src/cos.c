@@ -176,16 +176,16 @@ mpc_cos (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
 
   /* let op = a + i*b, then cos(op) = cos(a)*cosh(b) - i*sin(a)*sinh(b).
 
-     We use the following algorithm (same for the imaginary part),
-     with rounding to nearest for all operations, and working precision w:
+  We use the following algorithm (same for the imaginary part),
+  with rounding to nearest for all operations, and working precision w:
 
-     (1) x = o(cos(a))
-     (2) y = o(cosh(b))
-     (3) r = o(x*y)
-     then the error on r is at most 4 ulps, since we can write
-     r = cos(a)*cosh(b)*(1+t)^3 with |t| <= 2^(-w),
-     thus for w >= 2, r = cos(a)*cosh(b)*(1+4*t) with |t| <= 2^(-w),
-     thus the relative error is bounded by 4*2^(-w) <= 4*ulp(r).
+  (1) x = o(cos(a))
+  (2) y = o(cosh(b))
+  (3) r = o(x*y)
+  then the error on r is at most 4 ulps, since we can write
+  r = cos(a)*cosh(b)*(1+t)^3 with |t| <= 2^(-w),
+  thus for w >= 2, r = cos(a)*cosh(b)*(1+4*t) with |t| <= 2^(-w),
+  thus the relative error is bounded by 4*2^(-w) <= 4*ulp(r).
   */
 
   prec = MPC_MAX_PREC(rop);

@@ -29,21 +29,21 @@ MA 02111-1307, USA. */
 
 static void
 message_failed (mpc_srcptr op, mpc_srcptr rop, mpc_srcptr rop4,
-		mpc_srcptr rop4rnd, mpc_rnd_t rnd)
+                mpc_srcptr rop4rnd, mpc_rnd_t rnd)
 {
   fprintf (stderr, "rounding in " FUNCTION_NAME(TEST_FUNCTION) " might be "
-	   "incorrect for\nx=");
+           "incorrect for\nx=");
   mpc_out_str (stderr, 2, 0, op, rnd);
 
   fprintf (stderr, "\nwith rounding mode (%s, %s)",
-	   mpfr_print_rnd_mode (MPC_RND_RE (rnd)),
-	   mpfr_print_rnd_mode (MPC_RND_IM (rnd)));
+           mpfr_print_rnd_mode (MPC_RND_RE (rnd)),
+           mpfr_print_rnd_mode (MPC_RND_IM (rnd)));
 
   fprintf (stderr, "\n" FUNCTION_NAME(TEST_FUNCTION) "                     "
-	   "gives ");
+           "gives ");
   mpc_out_str (stderr, 2, 0, rop, rnd);
   fprintf (stderr, "\n" FUNCTION_NAME(TEST_FUNCTION) " quadruple precision "
-	   "gives ");
+           "gives ");
   mpc_out_str (stderr, 2, 0, rop4, rnd);
   fprintf (stderr, "\nand is rounded to                  ");
   mpc_out_str (stderr, 2, 0, rop4rnd, rnd);
@@ -75,20 +75,20 @@ tgeneric()
       mpc_random (x);
 
       for (rnd_re = 0; rnd_re < 4; rnd_re ++)
-         for (rnd_im = 0; rnd_im < 4; rnd_im ++)
-       {
-        /* We compute the result with four times the precision and check        */
-        /* whether the rounding is correct. Error reports in this part of the   */
-        /* algorithm might still be wrong, though, since there are two          */
-        /* consecutive roundings.                                               */
-        const mpc_rnd_t rnd = RNDC (rnd_re, rnd_im);
-        TEST_FUNCTION (u, x, rnd);
-	    TEST_FUNCTION (z, x, rnd);
-	    mpc_set (t, u, rnd);
+        for (rnd_im = 0; rnd_im < 4; rnd_im ++)
+          {
+            /* We compute the result with four times the precision and check        */
+            /* whether the rounding is correct. Error reports in this part of the   */
+            /* algorithm might still be wrong, though, since there are two          */
+            /* consecutive roundings.                                               */
+            const mpc_rnd_t rnd = RNDC (rnd_re, rnd_im);
+            TEST_FUNCTION (u, x, rnd);
+            TEST_FUNCTION (z, x, rnd);
+            mpc_set (t, u, rnd);
 
-	    if (mpc_cmp (z, t))
-	      message_failed (x, z, u, t, rnd);
-	  }
+            if (mpc_cmp (z, t))
+              message_failed (x, z, u, t, rnd);
+          }
     }
 
   mpc_clear (x);

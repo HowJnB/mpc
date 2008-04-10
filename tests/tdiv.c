@@ -59,86 +59,86 @@ mpc_div_ref (mpc_ptr a, mpc_srcptr b, mpc_srcptr c, mpc_rnd_t rnd)
   rnd_im = (sgn > 0) ? GMP_RNDU : GMP_RNDD;
 
   /* first try with only one real division */
-      prec += mpc_ceil_log2 (prec) + 3;
+  prec += mpc_ceil_log2 (prec) + 3;
 
-      mpfr_init2 (u, prec);
-      mpfr_init2 (v, prec);
-      mpfr_init2 (q, prec);
-      mpfr_init2 (t, prec);
+  mpfr_init2 (u, prec);
+  mpfr_init2 (v, prec);
+  mpfr_init2 (q, prec);
+  mpfr_init2 (t, prec);
 
-      /* first compute 1/norm(c)^2 rounded away */
-      inexact_q = mpfr_mul (u, MPC_RE(c), MPC_RE(c), GMP_RNDZ);
-      inexact_q |= mpfr_mul (v, MPC_IM(c), MPC_IM(c), GMP_RNDZ);
-      inexact_q |= mpfr_add (q, u, v, GMP_RNDZ); /* 3 ulps */
-      inexact_q |= mpfr_ui_div (q, 1, q, GMP_RNDU); /* 7 ulps */
+  /* first compute 1/norm(c)^2 rounded away */
+  inexact_q = mpfr_mul (u, MPC_RE(c), MPC_RE(c), GMP_RNDZ);
+  inexact_q |= mpfr_mul (v, MPC_IM(c), MPC_IM(c), GMP_RNDZ);
+  inexact_q |= mpfr_add (q, u, v, GMP_RNDZ); /* 3 ulps */
+  inexact_q |= mpfr_ui_div (q, 1, q, GMP_RNDU); /* 7 ulps */
 
-      /* now compute b*conjugate(c) */
+  /* now compute b*conjugate(c) */
 
-      /* real part */
-      inex_re = mpfr_mul (u, MPC_RE(b), MPC_RE(c), rnd_re); /* 1 */
-      inex_re |= mpfr_mul (v, MPC_IM(b), MPC_IM(c), rnd_re); /* 1 */
-      inex_re |= mpfr_add (t, u, v, rnd_re);
+  /* real part */
+  inex_re = mpfr_mul (u, MPC_RE(b), MPC_RE(c), rnd_re); /* 1 */
+  inex_re |= mpfr_mul (v, MPC_IM(b), MPC_IM(c), rnd_re); /* 1 */
+  inex_re |= mpfr_add (t, u, v, rnd_re);
+  if (MPFR_IS_ZERO(u))
+    {
+      if (MPFR_IS_ZERO(v))
+        cancel = 0;
+      else
+        cancel = MPFR_EXP(v) - MPFR_EXP(t);
+    }
+  else if (MPFR_IS_ZERO(v))
+    cancel = MPFR_EXP(u) - MPFR_EXP(t);
+  else
+    {
+      cancel = (MPFR_IS_ZERO(t)) ? prec
+        : MAX(MPFR_EXP(u), MPFR_EXP(v)) - MPFR_EXP(t);
+    }
+  /* err(t) <= [1 + 2*2^cancel] ulp(t) */
+  inex_re |= mpfr_mul (t, t, q, rnd_re) || inexact_q;
+  /* err(t) <= [1 + 3*(1 + 2*2^cancel) + 14] ulp(t)
+   */
+  err = (cancel <= 1) ? 5 : ((cancel == 2) ? 6 :
+                             ((cancel <= 4) ? 7 : cancel + 3));
+  ok = (inex_re == 0) || ((err < prec) && mpfr_can_round (t, prec - err,
+                                                          rnd_re, MPC_RND_RE(rnd), MPFR_PREC(MPC_RE(a))));
+  if ((rnd_re == GMP_RNDU && mpfr_sgn (t) < 0)
+      || (rnd_re == GMP_RNDD && mpfr_sgn (t) > 0))
+    {
+      ok = 0;
+      rnd_re = INV_RND(rnd_re);
+    }
+
+  if (ok) /* compute imaginary part */
+    {
+      inex_im = mpfr_mul (u, MPC_RE(b), MPC_IM(c), INV_RND(rnd_im));
+      inex_im |= mpfr_mul (v, MPC_IM(b), MPC_RE(c), rnd_im);
       if (MPFR_IS_ZERO(u))
         {
           if (MPFR_IS_ZERO(v))
             cancel = 0;
           else
-            cancel = MPFR_EXP(v) - MPFR_EXP(t);
+            cancel = MPFR_EXP(v);
         }
       else if (MPFR_IS_ZERO(v))
-        cancel = MPFR_EXP(u) - MPFR_EXP(t);
+        cancel = MPFR_EXP(u);
       else
-        {
-          cancel = (MPFR_IS_ZERO(t)) ? prec
-            : MAX(MPFR_EXP(u), MPFR_EXP(v)) - MPFR_EXP(t);
-        }
-      /* err(t) <= [1 + 2*2^cancel] ulp(t) */
-      inex_re |= mpfr_mul (t, t, q, rnd_re) || inexact_q;
-      /* err(t) <= [1 + 3*(1 + 2*2^cancel) + 14] ulp(t)
-       */
-      err = (cancel <= 1) ? 5 : ((cancel == 2) ? 6 : 
+        cancel = MAX(MPFR_EXP(u), MPFR_EXP(v));
+      inex_im |= mpfr_sub (u, v, u, rnd_im);
+      if (!MPFR_IS_ZERO(u))
+        cancel = cancel - MPFR_EXP(u);
+      inex_im |= mpfr_mul (u, u, q, rnd_im) || inexact_q;
+      err = (cancel <= 1) ? 5 : ((cancel == 2) ? 6 :
                                  ((cancel <= 4) ? 7 : cancel + 3));
-      ok = (inex_re == 0) || ((err < prec) && mpfr_can_round (t, prec - err,
-                            rnd_re, MPC_RND_RE(rnd), MPFR_PREC(MPC_RE(a))));
-      if ((rnd_re == GMP_RNDU && mpfr_sgn (t) < 0)
-          || (rnd_re == GMP_RNDD && mpfr_sgn (t) > 0))
+      ok = (inex_im == 0) || ((err < prec) && mpfr_can_round (u,
+                                                              prec - err, GMP_RNDN, MPC_RND_IM(rnd), MPFR_PREC(MPC_IM(a))));
+      if ((rnd_im == GMP_RNDU && mpfr_sgn (u) < 0)
+          || (rnd_im == GMP_RNDD && mpfr_sgn (u) > 0))
         {
           ok = 0;
-          rnd_re = INV_RND(rnd_re);
+          rnd_im = INV_RND(rnd_im);
         }
+    }
 
-      if (ok) /* compute imaginary part */
-        {
-          inex_im = mpfr_mul (u, MPC_RE(b), MPC_IM(c), INV_RND(rnd_im));
-          inex_im |= mpfr_mul (v, MPC_IM(b), MPC_RE(c), rnd_im);
-          if (MPFR_IS_ZERO(u))
-            {
-              if (MPFR_IS_ZERO(v))
-                cancel = 0;
-              else
-                cancel = MPFR_EXP(v);
-            }
-          else if (MPFR_IS_ZERO(v))
-            cancel = MPFR_EXP(u);
-          else
-            cancel = MAX(MPFR_EXP(u), MPFR_EXP(v));
-          inex_im |= mpfr_sub (u, v, u, rnd_im);
-          if (!MPFR_IS_ZERO(u))
-            cancel = cancel - MPFR_EXP(u);
-          inex_im |= mpfr_mul (u, u, q, rnd_im) || inexact_q;
-          err = (cancel <= 1) ? 5 : ((cancel == 2) ? 6 :
-                                     ((cancel <= 4) ? 7 : cancel + 3));
-          ok = (inex_im == 0) || ((err < prec) && mpfr_can_round (u,
-             prec - err, GMP_RNDN, MPC_RND_IM(rnd), MPFR_PREC(MPC_IM(a))));
-          if ((rnd_im == GMP_RNDU && mpfr_sgn (u) < 0)
-              || (rnd_im == GMP_RNDD && mpfr_sgn (u) > 0))
-            {
-              ok = 0;
-              rnd_im = INV_RND(rnd_im);
-            }
-        }
-
-      /* now loop with two real divisions, to detect exact quotients */
+  /* now loop with two real divisions, to detect exact quotients */
   while (ok == 0)
     {
       prec += mpc_ceil_log2 (prec) + 3;
@@ -177,7 +177,7 @@ mpc_div_ref (mpc_ptr a, mpc_srcptr b, mpc_srcptr c, mpc_rnd_t rnd)
        */
       err = (cancel <= 0) ? 4 : cancel + 3;
       ok = (inex_re == 0) || ((err < prec) && mpfr_can_round (t, prec - err,
-                            rnd_re, MPC_RND_RE(rnd), MPFR_PREC(MPC_RE(a))));
+                                                              rnd_re, MPC_RND_RE(rnd), MPFR_PREC(MPC_RE(a))));
       if ((rnd_re == GMP_RNDU && mpfr_sgn (t) < 0)
           || (rnd_re == GMP_RNDD && mpfr_sgn (t) > 0))
         {
@@ -206,7 +206,7 @@ mpc_div_ref (mpc_ptr a, mpc_srcptr b, mpc_srcptr c, mpc_rnd_t rnd)
           inex_im |= mpfr_div (u, u, q, rnd_im) || inexact_q;
           err = (cancel <= 0) ? 4 : cancel + 3;
           ok = (inex_im == 0) || ((err < prec) && mpfr_can_round (u,
-             prec - err, GMP_RNDN, MPC_RND_IM(rnd), MPFR_PREC(MPC_IM(a))));
+                                                                  prec - err, GMP_RNDN, MPC_RND_IM(rnd), MPFR_PREC(MPC_IM(a))));
           if ((rnd_im == GMP_RNDU && mpfr_sgn (u) < 0)
               || (rnd_im == GMP_RNDD && mpfr_sgn (u) > 0))
             {
@@ -318,6 +318,6 @@ main()
   mpc_clear (c);
   mpc_clear (q);
   mpc_clear (q_ref);
-  
+
   return 0;
 }

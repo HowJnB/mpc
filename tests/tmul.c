@@ -53,18 +53,18 @@ void cmpmul (mpc_srcptr x, mpc_srcptr y, mpc_rnd_t rnd)
    /* algorithm might still be wrong, though, since there are two          */
    /* consecutive roundings.                                               */
 {
-   mpc_t z, t, u;
-   int   inexact_z, inexact_t;
+  mpc_t z, t, u;
+  int   inexact_z, inexact_t;
 
-   mpc_init2 (z, MPC_MAX_PREC (x));
-   mpc_init2 (t, MPC_MAX_PREC (x));
-   mpc_init2 (u, 4 * MPC_MAX_PREC (x));
+  mpc_init2 (z, MPC_MAX_PREC (x));
+  mpc_init2 (t, MPC_MAX_PREC (x));
+  mpc_init2 (u, 4 * MPC_MAX_PREC (x));
 
-   inexact_z = mpc_mul_naive (z, x, y, rnd);
-   inexact_t = mpc_mul_karatsuba (t, x, y, rnd);
+  inexact_z = mpc_mul_naive (z, x, y, rnd);
+  inexact_t = mpc_mul_karatsuba (t, x, y, rnd);
 
-   if (mpc_cmp (z, t))
-   {
+  if (mpc_cmp (z, t))
+    {
       fprintf (stderr, "mul and mul2 differ for rnd=(%s,%s) \nx=",
                mpfr_print_rnd_mode(MPC_RND_RE(rnd)),
                mpfr_print_rnd_mode(MPC_RND_IM(rnd)));
@@ -77,9 +77,9 @@ void cmpmul (mpc_srcptr x, mpc_srcptr y, mpc_rnd_t rnd)
       mpc_out_str (stderr, 2, 0, t, MPC_RNDNN);
       fprintf (stderr, "\n");
       exit (1);
-   }
-   if (inexact_z != inexact_t)
-   {
+    }
+  if (inexact_z != inexact_t)
+    {
       fprintf (stderr, "The return values of mul and mul2 differ for rnd=(%s,%s) \nx=",
                mpfr_print_rnd_mode(MPC_RND_RE(rnd)),
                mpfr_print_rnd_mode(MPC_RND_IM(rnd)));
@@ -92,12 +92,12 @@ void cmpmul (mpc_srcptr x, mpc_srcptr y, mpc_rnd_t rnd)
       fprintf (stderr, "\nmpc_mul_karatsuba gives %i", inexact_t);
       fprintf (stderr, "\n");
       exit (1);
-   }
+    }
 
-   mpc_set (t, x, MPC_RNDNN);
-   inexact_t = mpc_mul (t, t, y, rnd);
-   if (mpc_cmp (z, t))
-   {
+  mpc_set (t, x, MPC_RNDNN);
+  inexact_t = mpc_mul (t, t, y, rnd);
+  if (mpc_cmp (z, t))
+    {
       fprintf (stderr, "mul and mul with the first variable in place differ for rnd=(%s,%s) \nx=",
                mpfr_print_rnd_mode(MPC_RND_RE(rnd)),
                mpfr_print_rnd_mode(MPC_RND_IM(rnd)));
@@ -110,9 +110,9 @@ void cmpmul (mpc_srcptr x, mpc_srcptr y, mpc_rnd_t rnd)
       mpc_out_str (stderr, 2, 0, t, MPC_RNDNN);
       fprintf (stderr, "\n");
       exit (1);
-   }
-   if (inexact_z != inexact_t)
-   {
+    }
+  if (inexact_z != inexact_t)
+    {
       fprintf (stderr, "The return values of mul and mul with the first variable in place differ for rnd=(%s,%s) \nx=",
                mpfr_print_rnd_mode(MPC_RND_RE(rnd)),
                mpfr_print_rnd_mode(MPC_RND_IM(rnd)));
@@ -125,48 +125,48 @@ void cmpmul (mpc_srcptr x, mpc_srcptr y, mpc_rnd_t rnd)
       fprintf (stderr, "\nmpc_mul in place gives %i", inexact_t);
       fprintf (stderr, "\n");
       exit (1);
-   }
+    }
 
-   /* the following test is valid only when y can be copied in t exactly */
-   if (mpc_set (t, y, MPC_RNDNN) == 0)
-     {
-   inexact_t = mpc_mul (t, x, t, rnd);
-   if (mpc_cmp (z, t))
-   {
-      fprintf (stderr, "mul and mul with the second variable in place differ for rnd=(%s,%s) \nx=",
-               mpfr_print_rnd_mode(MPC_RND_RE(rnd)),
-               mpfr_print_rnd_mode(MPC_RND_IM(rnd)));
-      mpc_out_str (stderr, 2, 0, x, MPC_RNDNN);
-      fprintf (stderr, "\nand y=");
-      mpc_out_str (stderr, 2, 0, y, MPC_RNDNN);
-      fprintf (stderr, "\nmpc_mul          gives ");
-      mpc_out_str (stderr, 2, 0, z, MPC_RNDNN);
-      fprintf (stderr, "\nmpc_mul in place gives ");
-      mpc_out_str (stderr, 2, 0, t, MPC_RNDNN);
-      fprintf (stderr, "\n");
-      exit (1);
-   }
-   if (inexact_z != inexact_t)
-   {
-      fprintf (stderr, "The return values of mul and mul with the second variable in place differ for rnd=(%s,%s) \nx=",
-               mpfr_print_rnd_mode(MPC_RND_RE(rnd)),
-               mpfr_print_rnd_mode(MPC_RND_IM(rnd)));
-      mpc_out_str (stderr, 2, 0, x, MPC_RNDNN);
-      fprintf (stderr, "\nand y=");
-      mpc_out_str (stderr, 2, 0, y, MPC_RNDNN);
-      fprintf (stderr, "\nand x*y=");
-      mpc_out_str (stderr, 2, 0, z, MPC_RNDNN);
-      fprintf (stderr, "\nmpc_mul          gives %i", inexact_z);
-      fprintf (stderr, "\nmpc_mul in place gives %i", inexact_t);
-      fprintf (stderr, "\n");
-      exit (1);
-   }
-     }
+  /* the following test is valid only when y can be copied in t exactly */
+  if (mpc_set (t, y, MPC_RNDNN) == 0)
+    {
+      inexact_t = mpc_mul (t, x, t, rnd);
+      if (mpc_cmp (z, t))
+        {
+          fprintf (stderr, "mul and mul with the second variable in place differ for rnd=(%s,%s) \nx=",
+                   mpfr_print_rnd_mode(MPC_RND_RE(rnd)),
+                   mpfr_print_rnd_mode(MPC_RND_IM(rnd)));
+          mpc_out_str (stderr, 2, 0, x, MPC_RNDNN);
+          fprintf (stderr, "\nand y=");
+          mpc_out_str (stderr, 2, 0, y, MPC_RNDNN);
+          fprintf (stderr, "\nmpc_mul          gives ");
+          mpc_out_str (stderr, 2, 0, z, MPC_RNDNN);
+          fprintf (stderr, "\nmpc_mul in place gives ");
+          mpc_out_str (stderr, 2, 0, t, MPC_RNDNN);
+          fprintf (stderr, "\n");
+          exit (1);
+        }
+      if (inexact_z != inexact_t)
+        {
+          fprintf (stderr, "The return values of mul and mul with the second variable in place differ for rnd=(%s,%s) \nx=",
+                   mpfr_print_rnd_mode(MPC_RND_RE(rnd)),
+                   mpfr_print_rnd_mode(MPC_RND_IM(rnd)));
+          mpc_out_str (stderr, 2, 0, x, MPC_RNDNN);
+          fprintf (stderr, "\nand y=");
+          mpc_out_str (stderr, 2, 0, y, MPC_RNDNN);
+          fprintf (stderr, "\nand x*y=");
+          mpc_out_str (stderr, 2, 0, z, MPC_RNDNN);
+          fprintf (stderr, "\nmpc_mul          gives %i", inexact_z);
+          fprintf (stderr, "\nmpc_mul in place gives %i", inexact_t);
+          fprintf (stderr, "\n");
+          exit (1);
+        }
+    }
 
-   mpc_mul (u, x, y, rnd);
-   mpc_set (t, u, rnd);
-   if (mpc_cmp (z, t))
-   {
+  mpc_mul (u, x, y, rnd);
+  mpc_set (t, u, rnd);
+  if (mpc_cmp (z, t))
+    {
       fprintf (stderr, "rounding in mul might be incorrect for rnd=(%s,%s) \nx=",
                mpfr_print_rnd_mode(MPC_RND_RE(rnd)),
                mpfr_print_rnd_mode(MPC_RND_IM(rnd)));
@@ -181,36 +181,36 @@ void cmpmul (mpc_srcptr x, mpc_srcptr y, mpc_rnd_t rnd)
       mpc_out_str (stderr, 2, 0, t, MPC_RNDNN);
       fprintf (stderr, "\n");
       exit (1);
-  }
+    }
 
-   mpc_clear (z);
-   mpc_clear (t);
-   mpc_clear (u);
+  mpc_clear (z);
+  mpc_clear (t);
+  mpc_clear (u);
 }
 
 
 void cmpmului (mpc_srcptr x, unsigned long int y, mpc_rnd_t rnd)
-   /* computes the product of x and y using mpc_mul_fr and mpc_mul_ui      */
-   /* using the rounding mode rnd and compares the results and return      */
-   /* values.                                                              */
-   /* In our current test suite, the real and imaginary parts of x have    */
-   /* the same precision, and we use this precision also for the result.   */
+     /* computes the product of x and y using mpc_mul_fr and mpc_mul_ui      */
+     /* using the rounding mode rnd and compares the results and return      */
+     /* values.                                                              */
+     /* In our current test suite, the real and imaginary parts of x have    */
+     /* the same precision, and we use this precision also for the result.   */
 
 {
-   mpc_t z, t;
-   mpfr_t yf;
-   int   inexact_z, inexact_t;
+  mpc_t z, t;
+  mpfr_t yf;
+  int   inexact_z, inexact_t;
 
-   mpc_init2 (z, MPC_MAX_PREC (x));
-   mpc_init2 (t, MPC_MAX_PREC (x));
-   mpfr_init2 (yf, 8 * sizeof (long int));
-   mpfr_set_si (yf, y, GMP_RNDN);
-   
-   inexact_z = mpc_mul_fr (z, x, yf, rnd);
-   inexact_t = mpc_mul_ui (t, x, y, rnd);
+  mpc_init2 (z, MPC_MAX_PREC (x));
+  mpc_init2 (t, MPC_MAX_PREC (x));
+  mpfr_init2 (yf, 8 * sizeof (long int));
+  mpfr_set_si (yf, y, GMP_RNDN);
 
-   if (mpc_cmp (z, t))
-   {
+  inexact_z = mpc_mul_fr (z, x, yf, rnd);
+  inexact_t = mpc_mul_ui (t, x, y, rnd);
+
+  if (mpc_cmp (z, t))
+    {
       fprintf (stderr, "mul_fr and mul_ui differ for rnd=(%s,%s) \nx=",
                mpfr_print_rnd_mode(MPC_RND_RE(rnd)),
                mpfr_print_rnd_mode(MPC_RND_IM(rnd)));
@@ -222,9 +222,9 @@ void cmpmului (mpc_srcptr x, unsigned long int y, mpc_rnd_t rnd)
       mpc_out_str (stderr, 2, 0, t, MPC_RNDNN);
       fprintf (stderr, "\n");
       exit (1);
-   }
-   if (inexact_z != inexact_t)
-   {
+    }
+  if (inexact_z != inexact_t)
+    {
       fprintf (stderr, "The return values of mul_fr and mul_ui differ for ");
       fprintf (stderr, "rnd=(%s,%s) \nx=",
                mpfr_print_rnd_mode(MPC_RND_RE(rnd)),
@@ -237,35 +237,35 @@ void cmpmului (mpc_srcptr x, unsigned long int y, mpc_rnd_t rnd)
       fprintf (stderr, "\nmpc_mul_ui gives %i", inexact_t);
       fprintf (stderr, "\n");
       exit (1);
-   }
-   
-   mpc_clear (z);
-   mpc_clear (t);
-   mpfr_clear (yf);
+    }
+
+  mpc_clear (z);
+  mpc_clear (t);
+  mpfr_clear (yf);
 }
 
 void cmpmulsi (mpc_srcptr x, long int y, mpc_rnd_t rnd)
-   /* computes the product of x and y using mpc_mul_fr and mpc_mul_si      */
-   /* using the rounding mode rnd and compares the results and return      */
-   /* values.                                                              */
-   /* In our current test suite, the real and imaginary parts of x have    */
-   /* the same precision, and we use this precision also for the result.   */
+     /* computes the product of x and y using mpc_mul_fr and mpc_mul_si      */
+     /* using the rounding mode rnd and compares the results and return      */
+     /* values.                                                              */
+     /* In our current test suite, the real and imaginary parts of x have    */
+     /* the same precision, and we use this precision also for the result.   */
 
 {
-   mpc_t z, t;
-   mpfr_t yf;
-   int   inexact_z, inexact_t;
+  mpc_t z, t;
+  mpfr_t yf;
+  int   inexact_z, inexact_t;
 
-   mpc_init2 (z, MPC_MAX_PREC (x));
-   mpc_init2 (t, MPC_MAX_PREC (x));
-   mpfr_init2 (yf, 8 * sizeof (long int));
-   mpfr_set_si (yf, y, GMP_RNDN);
-   
-   inexact_z = mpc_mul_fr (z, x, yf, rnd);
-   inexact_t = mpc_mul_si (t, x, y, rnd);
+  mpc_init2 (z, MPC_MAX_PREC (x));
+  mpc_init2 (t, MPC_MAX_PREC (x));
+  mpfr_init2 (yf, 8 * sizeof (long int));
+  mpfr_set_si (yf, y, GMP_RNDN);
 
-   if (mpc_cmp (z, t))
-   {
+  inexact_z = mpc_mul_fr (z, x, yf, rnd);
+  inexact_t = mpc_mul_si (t, x, y, rnd);
+
+  if (mpc_cmp (z, t))
+    {
       fprintf (stderr, "mul_fr and mul_si differ for rnd=(%s,%s) \nx=",
                mpfr_print_rnd_mode(MPC_RND_RE(rnd)),
                mpfr_print_rnd_mode(MPC_RND_IM(rnd)));
@@ -277,9 +277,9 @@ void cmpmulsi (mpc_srcptr x, long int y, mpc_rnd_t rnd)
       mpc_out_str (stderr, 2, 0, t, MPC_RNDNN);
       fprintf (stderr, "\n");
       exit (1);
-   }
-   if (inexact_z != inexact_t)
-   {
+    }
+  if (inexact_z != inexact_t)
+    {
       fprintf (stderr, "The return values of mul_fr and mul_si differ for ");
       fprintf (stderr, "rnd=(%s,%s) \nx=",
                mpfr_print_rnd_mode(MPC_RND_RE(rnd)),
@@ -292,11 +292,11 @@ void cmpmulsi (mpc_srcptr x, long int y, mpc_rnd_t rnd)
       fprintf (stderr, "\nmpc_mul_si gives %i", inexact_t);
       fprintf (stderr, "\n");
       exit (1);
-   }
-   
-   mpc_clear (z);
-   mpc_clear (t);
-   mpfr_clear (yf);
+    }
+
+  mpc_clear (z);
+  mpc_clear (t);
+  mpfr_clear (yf);
 }
 
 
@@ -357,21 +357,21 @@ special ()
 void
 timemul ()
 {
-   /* measures the time needed with different precisions for naive and */
-   /* Karatsuba multiplication                                         */
+  /* measures the time needed with different precisions for naive and */
+  /* Karatsuba multiplication                                         */
 
-   mpc_t             x, y, z;
-   unsigned long int i, j;
-   const unsigned long int tests = 10000;
-   struct tms        time_old, time_new;
-   double            passed1, passed2;
+  mpc_t             x, y, z;
+  unsigned long int i, j;
+  const unsigned long int tests = 10000;
+  struct tms        time_old, time_new;
+  double            passed1, passed2;
 
-   mpc_init (x);
-   mpc_init (y);
-   mpc_init_set_ui_ui (z, 1, 0, MPC_RNDNN);
+  mpc_init (x);
+  mpc_init (y);
+  mpc_init_set_ui_ui (z, 1, 0, MPC_RNDNN);
 
-   for (i = 1; i < 50; i++)
-   {
+  for (i = 1; i < 50; i++)
+    {
       mpc_set_prec (x, i * BITS_PER_MP_LIMB);
       mpc_set_prec (y, i * BITS_PER_MP_LIMB);
       mpc_set_prec (z, i * BITS_PER_MP_LIMB);
@@ -380,23 +380,23 @@ timemul ()
 
       times (&time_old);
       for (j = 0; j < tests; j++)
-         mpc_mul_naive (z, x, y, MPC_RNDNN);
+        mpc_mul_naive (z, x, y, MPC_RNDNN);
       times (&time_new);
       passed1 = ((double) (time_new.tms_utime - time_old.tms_utime)) / 100;
 
       times (&time_old);
       for (j = 0; j < tests; j++)
-         mpc_mul_karatsuba (z, x, y, MPC_RNDNN);
+        mpc_mul_karatsuba (z, x, y, MPC_RNDNN);
       times (&time_new);
       passed2 = ((double) (time_new.tms_utime - time_old.tms_utime)) / 100;
 
       printf ("Time for %3li limbs naive/Karatsuba: %5.2f %5.2f\n", i,
-                 passed1, passed2);
-   }
+              passed1, passed2);
+    }
 
-   mpc_clear (x);
-   mpc_clear (y);
-   mpc_clear (z);
+  mpc_clear (x);
+  mpc_clear (y);
+  mpc_clear (z);
 }
 #endif
 
@@ -432,25 +432,25 @@ main()
 
   for (prec = 2; prec < 1000; prec++) {
 
-  mpc_set_prec (x, prec);
-  mpc_set_prec (y, prec);
+    mpc_set_prec (x, prec);
+    mpc_set_prec (y, prec);
 
-  for (i = 0; i < 1000/prec; i++)
-    {
+    for (i = 0; i < 1000/prec; i++)
+      {
 
-      mpc_random (x);
-      mpc_random (y);
-      ysi = rand ();
+        mpc_random (x);
+        mpc_random (y);
+        ysi = rand ();
 
-      for (rnd_re = 0; rnd_re < 4; rnd_re ++)
-        for (rnd_im = 0; rnd_im < 4; rnd_im ++)
-         {
-            cmpmul (x, y, RNDC(rnd_re, rnd_im));
-            cmpmului (x, (unsigned long int) ysi, RNDC(rnd_re, rnd_im));
-            cmpmulsi (x, ysi, RNDC(rnd_re, rnd_im));
-            cmpmulsi (x, -ysi, RNDC(rnd_re, rnd_im));
-         }
-    }
+        for (rnd_re = 0; rnd_re < 4; rnd_re ++)
+          for (rnd_im = 0; rnd_im < 4; rnd_im ++)
+            {
+              cmpmul (x, y, RNDC(rnd_re, rnd_im));
+              cmpmului (x, (unsigned long int) ysi, RNDC(rnd_re, rnd_im));
+              cmpmulsi (x, ysi, RNDC(rnd_re, rnd_im));
+              cmpmulsi (x, -ysi, RNDC(rnd_re, rnd_im));
+            }
+      }
   }
 
   mpc_clear (x);

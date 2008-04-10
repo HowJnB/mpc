@@ -60,24 +60,24 @@ main()
       mpfr_set_prec (MPC_RE (z), prec);
       mpfr_set_prec (MPC_IM (z), prec + 1);
       if (mpc_get_prec (z) != 0)
-      {
-         fprintf (stderr, "Error in mpc_get_prec for prec (re) = %li, prec (im) = %li\n",
-            prec, prec + 1);
-         exit (1);
-      }
+        {
+          fprintf (stderr, "Error in mpc_get_prec for prec (re) = %li, prec (im) = %li\n",
+                   prec, prec + 1);
+          exit (1);
+        }
       mpc_get_prec2 (&pr, &pi, z);
       if (pr != prec || pi != prec + 1)
-      {
-         fprintf (stderr, "Error in mpc_get_prec2 for prec (re) = %li, prec (im) = %li\n",
-            prec, prec + 1);
-         exit (1);
-      }
+        {
+          fprintf (stderr, "Error in mpc_get_prec2 for prec (re) = %li, prec (im) = %li\n",
+                   prec, prec + 1);
+          exit (1);
+        }
       mpc_set_prec (z, prec);
       if (mpc_get_prec (z) != prec)
-      {
-         fprintf (stderr, "Error in mpc_get_prec for prec = %li\n", prec);
-         exit (1);
-      }
+        {
+          fprintf (stderr, "Error in mpc_get_prec for prec = %li\n", prec);
+          exit (1);
+        }
 
       mpc_set_ui (x, 1, MPC_RNDNN);
       mpc_mul_2exp (x, x, prec, MPC_RNDNN);
@@ -143,7 +143,7 @@ main()
 
       PRINT ("Testing mpc_div_2exp\n");
       mpc_div_2exp (z, x, 1, MPC_RNDZZ);
-      
+
       PRINT ("Testing mpc_div_fr\n");
       mpc_div_fr (z, x, f, MPC_RNDZU);
 
@@ -152,17 +152,17 @@ main()
 
       PRINT ("Testing mpc_inp_str\n");
       if (!(file = fopen (filename, "w")))
-      {
-         fprintf (stderr, "Could not open file %s\n", filename);
-         exit (1);
-      };
+        {
+          fprintf (stderr, "Could not open file %s\n", filename);
+          exit (1);
+        };
       fprintf (file, "1+I*1\n");
       fclose (file);
       if (!(file = fopen (filename, "r")))
-      {
-         fprintf (stderr, "Could not open file %s\n", filename);
-         exit (1);
-      };
+        {
+          fprintf (stderr, "Could not open file %s\n", filename);
+          exit (1);
+        };
       nread = mpc_inp_str (z, file, 10, MPC_RNDUZ);
       fclose (file);
       mpc_set_si_si (x, 1, 1, MPC_RNDNN);
@@ -194,10 +194,10 @@ main()
 
       PRINT ("Testing mpc_out_str\n");
       if (!(file = fopen (filename, "w")))
-      {
-         fprintf (stderr, "Could not open file %s\n", filename);
-         exit (1);
-      };
+        {
+          fprintf (stderr, "Could not open file %s\n", filename);
+          exit (1);
+        };
       mpc_out_str (file, 10, 0, z, MPC_RNDNN);
       fclose (file);
 
@@ -212,7 +212,7 @@ main()
 
       PRINT ("Testing mpc_set_default_prec\n");
       mpc_set_default_prec (prec);
-      
+
       PRINT ("Testing mpc_get_default_prec\n");
       if (mpc_get_default_prec () != prec)
         abort ();
@@ -232,7 +232,7 @@ main()
       PRINT ("Testing mpc_ui_div\n");
       mpc_ui_div (z, 17, x, MPC_RNDNN);
     }
-  
+
 
   mpc_clear (x);
   mpc_clear (y);

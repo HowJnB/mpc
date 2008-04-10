@@ -54,21 +54,21 @@ main()
       mpc_exp (z, x, MPC_RNDNN);
       mpfr_sin_cos (f, g, MPC_IM(x), GMP_RNDN);
       if (mpfr_cmp (g, MPC_RE(z)) || mpfr_cmp (f, MPC_IM(z)))
-	{
-	  fprintf (stderr, "Error in mpc_exp: exp(I*x) <> cos(x)+I*sin(x)\n"
-		   "got      ");
-	  mpc_out_str (stderr, 10, 0, z, MPC_RNDNN);
-	  fprintf (stderr, "\nexpected ");
-	  mpfr_set (MPC_RE(z), g, GMP_RNDN);
-	  mpfr_set (MPC_IM(z), f, GMP_RNDN);
-	  mpc_out_str (stderr, 10, 0, z, MPC_RNDNN);
-	  fprintf (stderr, "\n");
-	  exit (1);
-	}
+        {
+          fprintf (stderr, "Error in mpc_exp: exp(I*x) <> cos(x)+I*sin(x)\n"
+                   "got      ");
+          mpc_out_str (stderr, 10, 0, z, MPC_RNDNN);
+          fprintf (stderr, "\nexpected ");
+          mpfr_set (MPC_RE(z), g, GMP_RNDN);
+          mpfr_set (MPC_IM(z), f, GMP_RNDN);
+          mpc_out_str (stderr, 10, 0, z, MPC_RNDNN);
+          fprintf (stderr, "\n");
+          exit (1);
+        }
     }
 
   tgeneric ();
-   
+
   mpc_clear (x);
   mpc_clear (z);
   mpfr_clear (f);
