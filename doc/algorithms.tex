@@ -1,0 +1,50 @@
+\documentclass {article}
+
+\usepackage[a4paper]{geometry}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{amsmath,amssymb}
+
+\newcommand {\mpc}{\texttt {mpc}}
+\newcommand {\ulp}[1]{#1~ulp}
+
+\title {MPC: Algorithms and Error Analysis}
+\author {The {\mpc} team}
+\date {April 10, 2008}
+
+
+\begin {document}
+\maketitle
+\tableofcontents
+
+
+\section {Error analysis}
+
+This section is devoted to the analysis of error propagation: Given a function whose input arguments already have a certain error, what is the error bound on the function output? The output error usually consists of two components: The error propagated from the input, which may be arbitrarily amplified; and an additional small error accounting for the rounding of the output. The results are needed for algorithms that combine several arithmetic operations.
+
+
+\section {Algorithms}
+
+This section describes in detail the algorithms used in \mpc, together with the error analysis that allows to prove that the results are correct in the {\mpc} semantics: The input numbers are assumed to be exact, and the output corresponds to the exact result rounded in the desired direction.
+
+
+\subsection {\texttt {mpc\_sqrt}}
+
+Let $z = x + i y$.
+
+Let $w = \sqrt { \frac {|x| + \sqrt {x^2 + y^2}}{2}}$ and
+$t = \frac {y}{2w}$. Then $(w + it)^2 = |x| + iy$, and with the branch cut on the negative real axis we obtain
+\[
+\sqrt z = \left\{
+\begin {array}{cl}
+w + i t & \text {if } x > 0 \\
+t + i w & \text {if } x < 0, y > 0 \\
+-t - i w & \text {if } x < 0, y < 0
+\end {array}
+\right.
+\]
+
+$w$ is rounded down. $\sqrt {x^2 + y^2}$ is computed with an error of \ulp{1}; $|x|$ is added with an error of \ulp{1}, since both terms are positive. The generic error of the real square root in the special case that the argument was rounded down is \ulp{1}, so that the total error in computing $w$ is \ulp{3}.
+
+$t$ is rounded up. The generic error of real division, applied to an error of \ulp{3} for $w$ and \ulp{0} for $y$ implies an error of \ulp{7}.
+\end {document}
