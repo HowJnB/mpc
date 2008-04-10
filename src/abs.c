@@ -1,6 +1,6 @@
 /* mpc_abs -- Absolute value of a complex number.
 
-Copyright (C) 2002, 2004, 2005, 2008 Andreas Enge, Paul Zimmermann
+Copyright (C) 2008 Andreas Enge
 
 This file is part of the MPC Library.
 

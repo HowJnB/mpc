@@ -1,6 +1,6 @@
 /* mpc_sqrt -- Take the square root of a complex number.
 
-Copyright (C) 2002 Andreas Enge, Paul Zimmermann
+Copyright (C) 2002, 2008 Andreas Enge, Paul Zimmermann
 
 This file is part of the MPC Library.
 
@@ -39,8 +39,8 @@ mpc_sqrt (mpc_ptr a, mpc_srcptr b, mpc_rnd_t rnd)
   mp_prec_t prec;
   int inexact, loops = 0;
 
-  im_cmp = mpfr_cmp_ui (MPC_IM (b), 0);  
-  re_cmp = mpfr_cmp_ui (MPC_RE (b), 0);  
+  im_cmp = mpfr_cmp_ui (MPC_IM (b), 0);
+  re_cmp = mpfr_cmp_ui (MPC_RE (b), 0);
   if (im_cmp == 0)
   {
     if (re_cmp == 0)
@@ -57,7 +57,7 @@ mpc_sqrt (mpc_ptr a, mpc_srcptr b, mpc_rnd_t rnd)
     else
     {
       mpfr_init2 (w, MPFR_PREC (MPC_RE (b)));
-      inexact = mpfr_neg (w, MPC_RE (b), GMP_RNDN);
+      mpfr_neg (w, MPC_RE (b), GMP_RNDN);
       inexact = mpfr_sqrt (MPC_IM (a), w, MPC_RND_IM (rnd));
       mpfr_set_ui (MPC_RE (a), 0, GMP_RNDN);
       mpfr_clear (w);
@@ -69,7 +69,7 @@ mpc_sqrt (mpc_ptr a, mpc_srcptr b, mpc_rnd_t rnd)
 
   mpfr_init (w);
   mpfr_init (t);
-  
+
   if (re_cmp >= 0)
   {
     rnd_w = MPC_RND_RE (rnd);
@@ -85,17 +85,10 @@ mpc_sqrt (mpc_ptr a, mpc_srcptr b, mpc_rnd_t rnd)
     prec_t = MPFR_PREC (MPC_RE (a));
     if (im_cmp < 0)
     {
-      if (rnd_w == GMP_RNDD)
-        rnd_w = GMP_RNDU;
-      else if (rnd_w == GMP_RNDU)
-        rnd_w = GMP_RNDD;
-      if (rnd_t == GMP_RNDD)
-        rnd_t = GMP_RNDU;
-      if (rnd_t == GMP_RNDU)
-        rnd_t = GMP_RNDD;
+       rnd_w = INV_RND(rnd_w);
+       rnd_t = INV_RND(rnd_t);
     }
   }
-
   do
   {
       loops ++;
@@ -127,18 +120,18 @@ mpc_sqrt (mpc_ptr a, mpc_srcptr b, mpc_rnd_t rnd)
 
   if (re_cmp > 0)
   {
-    inexact |= mpfr_set (MPC_RE (a), w, rnd_w);
-    inexact |= mpfr_set (MPC_IM (a), t, rnd_t);
+     inexact |= mpfr_set (MPC_RE (a), w, MPC_RND_RE(rnd));
+     inexact |= mpfr_set (MPC_IM (a), t, MPC_RND_IM(rnd));
+  }
+  else if (im_cmp > 0)
+  {
+     inexact |= mpfr_set (MPC_RE(a), t, MPC_RND_RE(rnd));
+     inexact |= mpfr_set (MPC_IM(a), w, MPC_RND_IM(rnd));
   }
   else
   {
-    inexact |= mpfr_set (MPC_RE(a), t, MPC_RND_RE(rnd));
-    inexact |= mpfr_set (MPC_IM(a), w, MPC_RND_IM(rnd));
-    if (im_cmp < 0)
-    {
-      inexact |= mpfr_neg (MPC_RE (a), MPC_RE (a), MPC_RND_RE (rnd));
-      inexact |= mpfr_neg (MPC_IM (a), MPC_IM (a), MPC_RND_IM (rnd));
-    }
+     inexact |= mpfr_neg (MPC_RE (a), t, MPC_RND_RE(rnd));
+     inexact |= mpfr_neg (MPC_IM (a), w, MPC_RND_IM(rnd));
   }
 
   mpfr_clear (w);

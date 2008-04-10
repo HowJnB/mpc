@@ -1,6 +1,6 @@
 /* mpc-impl.h -- Internal include file for mpc.
 
-Copyright (C) 2002, 2004, 2005 Andreas Enge, Paul Zimmermann
+Copyright (C) 2002, 2004, 2005, 2008 Andreas Enge, Paul Zimmermann
 
 This file is part of the MPC Library.
 
@@ -55,7 +55,6 @@ extern "C" {
   int  mpc_mul_naive     __MPC_PROTO ((mpc_ptr, mpc_srcptr, mpc_srcptr, mpc_rnd_t));
   int  mpc_mul_karatsuba __MPC_PROTO ((mpc_ptr, mpc_srcptr, mpc_srcptr, mpc_rnd_t));
   unsigned long  mpc_ceil_log2 __MPC_PROTO ((unsigned long));
-  int  mpc_abs_basic __MPC_PROTO ((mpfr_ptr, mpc_srcptr, mpc_rnd_t));
 
 #if defined (__cplusplus)
 }

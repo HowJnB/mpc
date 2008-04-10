@@ -16,13 +16,8 @@ New functions to implement:
       rop = op1 ^ op2
 - from Rob <sisyphus1@optusnet.com.au> 6 Oct 2007:
   const char * mpc_get_version (void)
-- from Rob <sisyphus1@optusnet.com.au> 27 Jan 2008
-  print "All tests passed" for make check
 - from Andreas Enge 9 April 2008:
   mpc_pow_ui
-- from Andreas Enge and Philippe Théveny 9 April 2008
-  factor out code for testing with various precisions and rounding
-  modes, as done in mpfr
 - from Andreas Enge and Philippe Théveny 9 April 2008
   systematic testing whether ok when output variable equals some
   input variable
