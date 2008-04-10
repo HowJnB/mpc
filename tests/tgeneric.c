@@ -28,12 +28,22 @@ MA 02111-1307, USA. */
 #define NAME_STR(F) #F
 
 static void
-message_failed (mpc_srcptr op, mpc_srcptr rop, mpc_srcptr rop4,
-                mpc_srcptr rop4rnd, mpc_rnd_t rnd)
+#ifdef TWOARGS
+message_failed (mpc_srcptr op, mpc_srcptr op2, mpc_srcptr rop,
+		mpc_srcptr rop4, mpc_srcptr rop4rnd, mpc_rnd_t rnd)
+#else
+message_failed (mpc_srcptr op, mpc_srcptr rop,
+		mpc_srcptr rop4, mpc_srcptr rop4rnd, mpc_rnd_t rnd)
+#endif
 {
   fprintf (stderr, "rounding in " FUNCTION_NAME(TEST_FUNCTION) " might be "
            "incorrect for\nx=");
   mpc_out_str (stderr, 2, 0, op, rnd);
+
+#ifdef TWOARGS
+  fprintf (stderr, "\ny=");
+  mpc_out_str (stderr, 2, 0, op2, rnd);
+#endif
 
   fprintf (stderr, "\nwith rounding mode (%s, %s)",
            mpfr_print_rnd_mode (MPC_RND_RE (rnd)),
@@ -56,9 +66,15 @@ static void
 tgeneric()
 {
   mpc_t  x, z, t, u;
-  mp_prec_t prec;
   mpc_rnd_t rnd_re;
   mpc_rnd_t rnd_im;
+  mp_prec_t prec;
+
+#ifdef TWOARGS
+  mpc_t y;
+
+  mpc_init (y);
+#endif
 
   mpc_init (x);
   mpc_init (z);
@@ -68,11 +84,17 @@ tgeneric()
   for (prec = 2; prec <= 1000; prec++)
     {
       mpc_set_prec (x, prec);
+#ifdef TWOARGS
+      mpc_set_prec (y, prec);
+#endif
       mpc_set_prec (z, prec);
       mpc_set_prec (t, prec);
       mpc_set_prec (u, 4*prec);
 
       mpc_random (x);
+#ifdef TWOARGS
+      mpc_random (y);
+#endif
 
       for (rnd_re = 0; rnd_re < 4; rnd_re ++)
         for (rnd_im = 0; rnd_im < 4; rnd_im ++)
@@ -82,14 +104,28 @@ tgeneric()
             /* algorithm might still be wrong, though, since there are two          */
             /* consecutive roundings.                                               */
             const mpc_rnd_t rnd = RNDC (rnd_re, rnd_im);
+
+#ifdef TWOARGS
+	    TEST_FUNCTION (u, x, y, rnd);
+	    TEST_FUNCTION (z, x, y, rnd);
+#else
             TEST_FUNCTION (u, x, rnd);
             TEST_FUNCTION (z, x, rnd);
+#endif
             mpc_set (t, u, rnd);
 
             if (mpc_cmp (z, t))
+#ifdef TWOARGS
+              message_failed (x, y, z, u, t, rnd);
+#else
               message_failed (x, z, u, t, rnd);
+#endif
           }
     }
+
+#ifdef TWOARGS
+  mpc_clear (y);
+#endif
 
   mpc_clear (x);
   mpc_clear (z);
