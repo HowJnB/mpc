@@ -62,7 +62,7 @@ mpc_log (mpc_ptr a, mpc_srcptr b, mpc_rnd_t rnd)
          mpfr_const_pi (MPC_IM (a), MPC_RND_IM (rnd));
 
          if (overlap)
-            mpfr_free (w);
+            mpfr_clear (w);
 
          return;
       }
