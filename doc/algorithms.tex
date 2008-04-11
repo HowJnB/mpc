@@ -9,12 +9,13 @@
 \newcommand {\mpfr}{\texttt {mpfr}}
 \newcommand {\ulp}[1]{#1~ulp}
 \newcommand {\atantwo}{\operatorname {atan2}}
-
+\DeclareMathOperator{\error}{error}
+\newcommand {\Ulp}{{\rm ulp}}
+\newcommand {\Exp}{{\rm \textsc exp}}
 
 \title {MPC: Algorithms and Error Analysis}
-\author {Andreas Enge}
+\author {Andreas Enge \and Philippe Th\'eveny}
 \date {April 11, 2008}
-
 
 \begin {document}
 \maketitle
@@ -25,6 +26,38 @@
 
 This section is devoted to the analysis of error propagation: Given a function whose input arguments already have a certain error, what is the error bound on the function output? The output error usually consists of two components: The error propagated from the input, which may be arbitrarily amplified; and an additional small error accounting for the rounding of the output. The results are needed for algorithms that combine several arithmetic operations.
 
+\subsection {Generic error for addition/substraction}
+
+Let $z_1 = \circ(\tilde{z_1})$ and $z_2 = \circ(\tilde{z_2})$, with
+$\tilde{z_n} = \tilde{x_n} + i \tilde{y_n}$ and $z_n = x_n + i y_n$,
+the two operand of the addition rounded at the working precision, the error on
+real and imaginary parts are $\error(x_1) \leq k_{R,1} \Ulp(x_1)$,
+$\error(y_1) \leq k_{I,1} \Ulp(y_1)$, $\error(x_2) \leq k_{R,2}
+\Ulp(x_2)$, and $\error(y_2) \leq k_{I,2} \Ulp(y_2)$.
+
+\begin{eqnarray}
+z&=&\circ(\tilde{z_1}+\tilde{z_2})\\\nonumber
+\end{eqnarray}
+\begin{eqnarray}\nonumber
+\error(x)&=&|x-\Re(\tilde{z_1}-\tilde{z_2})|\\\nonumber
+&\leq&|x-\Re(z_1-z_2)|+|\Re(z_1+z_2)-\Re(\tilde{z_1}+\tilde{z_2})|\\\nonumber
+&\leq&c_R \Ulp(x) + |x_1 - \tilde{x_1}| + |x_2 - \tilde{x_2}|\\\nonumber
+&\leq&c_R \Ulp(x) + k_{R,1} \Ulp(x_1) + k_{R,2} \Ulp(x_2)\\\nonumber
+&\leq&\left(c_R + 2^{d_{R,1}} k_{R,1} + 2^{d_{R,2}} k_{R,2} \right) \Ulp(x)
+\nonumber
+\end{eqnarray}
+where $d_{R,n}=\Exp(x_n)-\Exp(x)$. If $x_1x_2 \leq 0$, then we have a simpler expression
+\[
+\error(x) \leq (c_R+k_{R,1}+k_{R,2}) \Ulp(x)
+\]
+In the same way, we can show that the generic error of the imaginary part is
+\[
+\error (y) \leq \left(c_I + 2^{d_{I,1}} k_{I,1} + 2^{d_{I,2}} k_{I,2} \right) \Ulp(y)
+\]
+where $d_{R,n}=\Exp(x_n)-\Exp(x)$. If $y_1y_2 \leq 0$, then we have the simpler expression
+\[
+\error(y) \leq (c_I+k_{I,1}+k_{I,2}) \Ulp(y)
+\]
 
 \section {Algorithms}
 
