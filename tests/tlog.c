@@ -51,7 +51,10 @@ main()
       mpc_set_prec (z2, prec);
       mpc_set_prec (tmp, 4*prec);
 
-      mpc_random (z);
+      /* The case of a purely imaginary number is treated below. */
+      do {
+         mpc_random (z);
+      } while (mpfr_zero_p (MPC_RE (z)));
       mpc_log (tmp, z, MPC_RNDNN);
       mpc_exp (z2, tmp, MPC_RNDNN);
 
@@ -84,7 +87,7 @@ main()
       if (   mpfr_cmp (MPC_IM (z), MPC_IM (z2)) != 0
           || MPFR_EXP (MPC_RE (z)) > -4 * (mp_exp_t) prec)
       {
-         printf ("Possible error in log; difference between z and z2=log(exp(z)):\n");
+         printf ("Possible error in purely imaginary log; difference between z and z2=log(exp(z)):\n");
          OUT (z);
          OUT (tmp);
          OUT (z2);
