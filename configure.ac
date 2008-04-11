@@ -9,7 +9,7 @@ AC_CONFIG_HEADER([config.h])
 AM_INIT_AUTOMAKE([1.9 -Wall -Werror])
 AM_MAINTAINER_MODE
 
-AM_CFLAGS="-O2 -g"
+CFLAGS="-O2 -g -Wall"
 
 dnl Extra arguments to configure
 AC_ARG_WITH([mpfr],
