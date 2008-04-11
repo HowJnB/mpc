@@ -34,9 +34,9 @@ int mpc_div_ref (mpc_ptr, mpc_srcptr, mpc_srcptr, mpc_rnd_t);
 int
 mpc_div_ref (mpc_ptr a, mpc_srcptr b, mpc_srcptr c, mpc_rnd_t rnd)
 {
-  int ok = 0, inexact_q, inex_re, inex_im = 0, cancel = 0, err, sgn;
+  int ok = 0, inexact_q, inex_re, inex_im = 0, cancel = 0, sgn;
   mpfr_t u, v, q, t;
-  mp_prec_t prec;
+  mp_prec_t prec, err;
   mp_rnd_t rnd_re, rnd_im;
 
   if (mpfr_cmp_ui (MPC_IM(c), 0) == 0) /* c is real */
@@ -88,7 +88,7 @@ mpc_div_ref (mpc_ptr a, mpc_srcptr b, mpc_srcptr c, mpc_rnd_t rnd)
     cancel = MPFR_EXP(u) - MPFR_EXP(t);
   else
     {
-      cancel = (MPFR_IS_ZERO(t)) ? prec
+       cancel = (MPFR_IS_ZERO(t)) ? (mp_exp_t) prec
         : MAX(MPFR_EXP(u), MPFR_EXP(v)) - MPFR_EXP(t);
     }
   /* err(t) <= [1 + 2*2^cancel] ulp(t) */
@@ -168,7 +168,7 @@ mpc_div_ref (mpc_ptr a, mpc_srcptr b, mpc_srcptr c, mpc_rnd_t rnd)
       else if (MPFR_IS_ZERO(v))
         cancel = MPFR_EXP(u) - MPFR_EXP(t);
       else
-        cancel = (MPFR_IS_ZERO(t)) ? prec
+         cancel = (MPFR_IS_ZERO(t)) ? (mp_exp_t) prec
           : MAX(MPFR_EXP(u), MPFR_EXP(v)) - MPFR_EXP(t);
       /* err(t) <= [1 + 2*2^cancel] ulp(t) */
       inex_re |= mpfr_div (t, t, q, rnd_re) || inexact_q;
@@ -276,7 +276,7 @@ main()
       mpc_set_prec (q, prec);
       mpc_set_prec (q_ref, prec);
 
-      for (i = 0; i < 1000/prec; i++)
+      for (i = 0; i < (int) (1000/prec); i++)
         {
           mpc_random (b);
           /* generate a non-zero divisor */

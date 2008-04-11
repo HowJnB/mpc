@@ -1,6 +1,6 @@
 /* tmul -- test file for mpc_mul.
 
-Copyright (C) 2002, 2005 Andreas Enge, Paul Zimmermann
+Copyright (C) 2002, 2005, 2008 Andreas Enge, Paul Zimmermann
 
 This file is part of the MPC Library.
 
@@ -204,7 +204,7 @@ void cmpmului (mpc_srcptr x, unsigned long int y, mpc_rnd_t rnd)
   mpc_init2 (z, MPC_MAX_PREC (x));
   mpc_init2 (t, MPC_MAX_PREC (x));
   mpfr_init2 (yf, 8 * sizeof (long int));
-  mpfr_set_si (yf, y, GMP_RNDN);
+  mpfr_set_ui (yf, y, GMP_RNDN);
 
   inexact_z = mpc_mul_fr (z, x, yf, rnd);
   inexact_t = mpc_mul_ui (t, x, y, rnd);
@@ -435,7 +435,7 @@ main()
     mpc_set_prec (x, prec);
     mpc_set_prec (y, prec);
 
-    for (i = 0; i < 1000/prec; i++)
+    for (i = 0; i < (int) (1000/prec); i++)
       {
 
         mpc_random (x);

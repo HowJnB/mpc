@@ -1,6 +1,6 @@
 /* tsqr -- test file for mpc_sqr.
 
-Copyright (C) 2002, 2005 Andreas Enge, Paul Zimmermann
+Copyright (C) 2002, 2005, 2008 Andreas Enge, Paul Zimmermann
 
 This file is part of the MPC Library.
 
@@ -204,7 +204,7 @@ main()
     {
       mpc_set_prec (x, prec);
 
-      for (i = 0; i < 1000/prec; i++)
+      for (i = 0; i < (int) (1000/prec); i++)
         {
           mpc_random (x);
 

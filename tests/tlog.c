@@ -81,13 +81,14 @@ main()
       mpc_log (z2, tmp, MPC_RNDNN);
 
       /* There is a tiny real part, do not care if it si sufficiently small. */
-      if (mpfr_cmp (MPC_IM (z), MPC_IM (z2)) != 0 || MPFR_EXP (MPC_RE (z)) > -4*prec)
+      if (   mpfr_cmp (MPC_IM (z), MPC_IM (z2)) != 0
+          || MPFR_EXP (MPC_RE (z)) > -4 * (mp_exp_t) prec)
       {
          printf ("Possible error in log; difference between z and z2=log(exp(z)):\n");
          OUT (z);
          OUT (tmp);
          OUT (z2);
-         //exit (1);
+         exit (1);
       }
    }
 
