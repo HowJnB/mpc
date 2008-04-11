@@ -22,6 +22,8 @@ MA 02111-1307, USA. */
 #ifndef __MPC_IMPL_H
 #define __MPC_IMPL_H
 
+#include <stdio.h>
+
 #define MPFR_PREC(x) mpfr_get_prec(x)
 #define MPFR_EXP(x)  mpfr_get_exp(x)
 #define MPFR_CHANGE_SIGN(x) mpfr_neg(x,x,GMP_RNDN)
@@ -47,6 +49,15 @@ MA 02111-1307, USA. */
 /* Safe absolute value (to avoid possible integer overflow) */
 /* type is the target (unsigned) type (copied from mpfr-impl.h */
 #define SAFE_ABS(type,x) ((x) >= 0 ? (type)(x) : -(type)(x))
+
+#define OUT(x) \
+do { \
+   printf (#x "=");\
+   mpfr_print_binary (MPC_RE(x)); \
+   printf ("+I*"); \
+   mpfr_print_binary (MPC_IM(x)); \
+   printf ("\n"); \
+} while (0)
 
 /* Define internal functions */
 

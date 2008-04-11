@@ -1,6 +1,6 @@
 /* file for generic tests.
 
-Copyright (C) 2008 INRIA.
+Copyright (C) 2008 Philippe Th\'eveny.
 
 This file is part of the MPC Library.
 
@@ -23,6 +23,7 @@ MA 02111-1307, USA. */
 #include <stdlib.h>
 #include "mpfr.h"
 #include "mpc.h"
+#include "mpc-impl.h"
 
 #define FUNCTION_NAME(F) NAME_STR(F)
 #define NAME_STR(F) #F
@@ -36,28 +37,24 @@ message_failed (mpc_srcptr op, mpc_srcptr rop,
 		mpc_srcptr rop4, mpc_srcptr rop4rnd, mpc_rnd_t rnd)
 #endif
 {
-  fprintf (stderr, "rounding in " FUNCTION_NAME(TEST_FUNCTION) " might be "
-           "incorrect for\nx=");
-  mpc_out_str (stderr, 2, 0, op, rnd);
+  printf ("rounding in " FUNCTION_NAME(TEST_FUNCTION) " might be "
+	  "incorrect for\n");
+  OUT (op);
 
 #ifdef TWOARGS
-  fprintf (stderr, "\ny=");
-  mpc_out_str (stderr, 2, 0, op2, rnd);
+  OUT (op2);
 #endif
 
-  fprintf (stderr, "\nwith rounding mode (%s, %s)",
-           mpfr_print_rnd_mode (MPC_RND_RE (rnd)),
-           mpfr_print_rnd_mode (MPC_RND_IM (rnd)));
+  printf ("with rounding mode (%s, %s)",
+	  mpfr_print_rnd_mode (MPC_RND_RE (rnd)),
+	  mpfr_print_rnd_mode (MPC_RND_IM (rnd)));
 
-  fprintf (stderr, "\n" FUNCTION_NAME(TEST_FUNCTION) "                     "
-           "gives ");
-  mpc_out_str (stderr, 2, 0, rop, rnd);
-  fprintf (stderr, "\n" FUNCTION_NAME(TEST_FUNCTION) " quadruple precision "
-           "gives ");
-  mpc_out_str (stderr, 2, 0, rop4, rnd);
-  fprintf (stderr, "\nand is rounded to                  ");
-  mpc_out_str (stderr, 2, 0, rop4rnd, rnd);
-  fprintf (stderr, "\n");
+  printf ("\n" FUNCTION_NAME(TEST_FUNCTION) "                     gives ");
+  OUT (rop);
+  printf (FUNCTION_NAME(TEST_FUNCTION) " quadruple precision gives ");
+  OUT (rop4);
+  printf ("and is rounded to                  ");
+  OUT (rop4rnd);
 
   exit (1);
 }
