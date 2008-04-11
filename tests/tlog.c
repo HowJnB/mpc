@@ -31,7 +31,70 @@ MA 02111-1307, USA. */
 int
 main()
 {
-  tgeneric ();
+   mpc_t z, z2, tmp;
+   mpfr_t twopi;
+   mp_prec_t prec;
 
-  return 0;
+   tgeneric ();
+
+   mpc_init (z);
+   mpc_init (z2);
+   mpc_init (tmp);
+   mpfr_init2 (twopi, 1000);
+   mpfr_const_pi (twopi, GMP_RNDD);
+   mpfr_div_2ui (twopi, twopi, 1, GMP_RNDN);
+
+   /* Test whether exp (log (z)) = z */
+   for (prec = 2; prec <= 1000; prec++)
+   {
+      mpc_set_prec (z, prec);
+      mpc_set_prec (z2, prec);
+      mpc_set_prec (tmp, 4*prec);
+
+      mpc_random (z);
+      mpc_log (tmp, z, MPC_RNDNN);
+      mpc_exp (z2, tmp, MPC_RNDNN);
+
+      if (mpc_cmp (z, z2) != 0)
+      {
+         printf ("Possible error in log; difference between z and z2=exp(log(z)):\n");
+         OUT (z);
+         OUT (tmp);
+         OUT (z2);
+         exit (1);
+      }
+   }
+
+
+   /* Test whether log (exp (z)) = z for purely imaginary z; then exp (x) */
+   /* lies on the unit cercle, a critical case for the logarithm.         */
+   for (prec = 2; prec <= 1000; prec++)
+   {
+      mpc_set_prec (z, prec);
+      mpc_set_prec (z2, prec);
+      mpc_set_prec (tmp, 4*prec);
+
+      mpfr_set_ui (MPC_RE (z), 0, GMP_RNDN);
+      mpfr_random (MPC_IM (z));
+      mpfr_remainder (MPC_IM (z), MPC_IM (z), twopi, GMP_RNDZ);
+      mpc_exp (tmp, z, MPC_RNDNN);
+      mpc_log (z2, tmp, MPC_RNDNN);
+
+      /* There is a tiny real part, do not care if it si sufficiently small. */
+      if (mpfr_cmp (MPC_IM (z), MPC_IM (z2)) != 0 || MPFR_EXP (MPC_RE (z)) > -4*prec)
+      {
+         printf ("Possible error in log; difference between z and z2=log(exp(z)):\n");
+         OUT (z);
+         OUT (tmp);
+         OUT (z2);
+         //exit (1);
+      }
+   }
+
+   mpc_clear (z);
+   mpc_clear (z2);
+   mpc_clear (tmp);
+   mpfr_clear (twopi);
+
+   return 0;
 }

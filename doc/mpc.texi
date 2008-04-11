@@ -154,8 +154,8 @@ modified MPC is provided.
 Everyone should read @ref{MPC Basics}.  If you need to install the library
 yourself, you need to read @ref{Installing MPC}, too.
 
-The rest of the manual can be used for later reference, although it is
-probably a good idea to glance through it.
+The remainder of the manual can be used for later reference, although it is
+probably a good idea to skim through it.
 
 @node Installing MPC, Reporting Bugs, Introduction to MPC, Top
 @comment  node-name,  next,  previous,  up
@@ -424,14 +424,16 @@ of the IEEE P754 arithmetic. The results obtained on one
 computer should not differ from the results obtained on a computer with a
 different word size.
 
+
 @menu
 * Rounding Modes::
 * Initializing Complex Numbers::
 * Assigning Complex Numbers::
 * Simultaneous Init & Assign::
-* Complex Arithmetic::
 * Complex Comparison::
-* Special Complex Functions::
+* Basic Arithmetic::
+* Power Functions and Logarithm::
+* Trigonometric Functions::
 * I/O of Complex Numbers::
 * Miscellaneous Complex Functions::
 * Internals::
@@ -554,6 +556,7 @@ Returns the precision of the real part of @var{x} via @var{pr} and of its imagin
 via @var{pi}.
 @end deftypefun
 
+
 @node Assigning Complex Numbers, Simultaneous Init & Assign, Initializing Complex Numbers, Complex Functions
 @comment  node-name,  next,  previous,  up
 @section Assignment Functions
@@ -588,7 +591,7 @@ Set the real part of @var{rop} from @var{op1}, and its imaginary part from
 @end deftypefun
 
 
-@node Simultaneous Init & Assign, Complex Arithmetic, Assigning Complex Numbers, Complex Functions
+@node Simultaneous Init & Assign, Complex Comparison, Assigning Complex Numbers, Complex Functions
 @comment  node-name,  next,  previous,  up
 @section Combined Initialization and Assignment Functions
 @cindex Initialization and assignment functions
@@ -610,7 +613,35 @@ The precision of @var{rop} will be taken from the active default precision,
 as set by @code{mpc_set_default_prec}.
 @end deftypefn
 
-@node Complex Arithmetic, Complex Comparison, Simultaneous Init & Assign, Complex Functions
+
+
+@node Complex Comparison, Basic Arithmetic, Simultaneous Init & Assign, Complex Functions
+@comment  node-name,  next,  previous,  up
+@section Comparison Functions
+@cindex Complex comparisons functions
+@cindex Comparison functions
+
+@deftypefn Function int mpc_cmp (mpc_t @var{op1}, mpc_t @var{op2})
+@deftypefnx Function int mpc_cmp_si_si (mpc_t @var{op1}, long int @var{op2r}, long int @var{op2i})
+@deftypefnx Macro int mpc_cmp_si (mpc_t @var{op1}, long int @var{op2})
+
+Compare @var{op1} and @var{op2}, where in the case of @code{mpc_cmp_si_si},
+@var{op2} is taken to be @var{op2r} + i @var{op2i}.
+The return value @var{c} can be decomposed into @code{x = MPC_INEX_RE(c)}
+and @code{y = MPC_INEX_IM(c)}, such that @var{x} is
+positive if the real part of @var{op1} is greater than that of @var{op2},
+zero if both real parts are equal, and negative if the real part of @var{op1}
+is less than that of @var{op2}, and likewise for @var{y}.
+Both @var{op1} and @var{op2} are considered to their full own precision,
+which may differ.
+It is not allowed that one of the operands has a NaN (Not-a-Number) part.
+
+The storage of the return value is such that equality can be simply checked
+with @code{mpc_cmp (op1, op2) == 0}.
+@end deftypefn
+
+
+@node Basic Arithmetic, Power Functions and Logarithm, Complex Comparison, Complex Functions
 @comment  node-name,  next,  previous,  up
 @section Basic Arithmetic Functions
 @cindex Complex arithmetic functions
@@ -661,12 +692,6 @@ For @code{mpc_div} and @code{mpc_ui_div}, the return value may fail to
 recognize some exact results, and its sign is not significant.
 @end deftypefun
 
-@deftypefun int mpc_sqrt (mpc_t @var{rop}, mpc_t @var{op}, mpc_rnd_t @var{rnd})
-Set @var{rop} to the square root of @var{op} rounded according to @var{rnd}.
-Here, when the return value is 0, it means the result is exact, but the
-contrary may be false.
-@end deftypefun
-
 @deftypefun int mpc_neg (mpc_t @var{rop}, mpc_t @var{op}, mpc_rnd_t @var{rnd})
 Set @var{rop} to @minus{}@var{op} rounded according to @var{rnd}.
 Just changes the sign if @var{rop} and @var{op} are the same variable.
@@ -707,49 +732,50 @@ of the real and imaginary parts by @var{op2}
 when @var{rop} and @var{op1} are identical.
 @end deftypefun
 
-@node Complex Comparison, Special Complex Functions, Complex Arithmetic, Complex Functions
+
+@node Power Functions and Logarithm, Trigonometric Functions, Basic Arithmetic, Complex Functions
 @comment  node-name,  next,  previous,  up
-@section Comparison Functions
-@cindex Complex comparisons functions
-@cindex Comparison functions
+@section Power Functions and Logarithm
+@cindex Power functions
+@cindex Logarithm
 
-@deftypefn Function int mpc_cmp (mpc_t @var{op1}, mpc_t @var{op2})
-@deftypefnx Function int mpc_cmp_si_si (mpc_t @var{op1}, long int @var{op2r}, long int @var{op2i})
-@deftypefnx Macro int mpc_cmp_si (mpc_t @var{op1}, long int @var{op2})
-
-Compare @var{op1} and @var{op2}, where in the case of @code{mpc_cmp_si_si},
-@var{op2} is taken to be @var{op2r} + i @var{op2i}.
-The return value @var{c} can be decomposed into @code{x = MPC_INEX_RE(c)}
-and @code{y = MPC_INEX_IM(c)}, such that @var{x} is
-positive if the real part of @var{op1} is greater than that of @var{op2},
-zero if both real parts are equal, and negative if the real part of @var{op1}
-is less than that of @var{op2}, and likewise for @var{y}.
-Both @var{op1} and @var{op2} are considered to their full own precision,
-which may differ.
-It is not allowed that one of the operands has a NaN (Not-a-Number) part.
-
-The storage of the return value is such that equality can be simply checked
-with @code{mpc_cmp (op1, op2) == 0}.
-@end deftypefn
-
-
-@node Special Complex Functions, I/O of Complex Numbers, Complex Comparison, Complex Functions
-@comment  node-name,  next,  previous,  up
-@section Special Functions
-@cindex Special functions
-@cindex Special complex functions
+@deftypefun int mpc_sqrt (mpc_t @var{rop}, mpc_t @var{op}, mpc_rnd_t @var{rnd})
+Set @var{rop} to the square root of @var{op} rounded according to @var{rnd}.
+Here, when the return value is 0, it means the result is exact, but the
+contrary may be false.
+@end deftypefun
 
 @deftypefun void mpc_exp (mpc_t @var{rop}, mpc_t @var{op}, mpc_rnd_t @var{rnd})
 Set @var{rop} to the exponential of @var{op},
 rounded according to @var{rnd} with the precision of @var{rop}.
 @end deftypefun
 
+@deftypefun void mpc_log (mpc_t @var{rop}, mpc_t @var{op}, mpc_rnd_t @var{rnd})
+Set @var{rop} to the logarithm of @var{op},
+rounded according to @var{rnd} with the precision of @var{rop}.
+The principal branch is chosen, with the branch cut on the negative real axis,
+so that the imaginary part of the result lies in
+@math{]-\pi , \pi]}.
+@end deftypefun
+
+
+@node Trigonometric Functions, I/O of Complex Numbers, Power Functions and Logarithm, Complex Functions
+@comment  node-name,  next,  previous,  up
+@section Trigonometric Functions
+@cindex Trigonometric functions
+
 @deftypefun void mpc_sin (mpc_t @var{rop}, mpc_t @var{op}, mpc_rnd_t @var{rnd})
 Set @var{rop} to the sine of @var{op},
 rounded according to @var{rnd} with the precision of @var{rop}.
 @end deftypefun
 
-@node I/O of Complex Numbers, Miscellaneous Complex Functions, Special Complex Functions, Complex Functions
+@deftypefun void mpc_cos (mpc_t @var{rop}, mpc_t @var{op}, mpc_rnd_t @var{rnd})
+Set @var{rop} to the cosine of @var{op},
+rounded according to @var{rnd} with the precision of @var{rop}.
+@end deftypefun
+
+
+@node I/O of Complex Numbers, Miscellaneous Complex Functions, Trigonometric Functions, Complex Functions
 @comment  node-name,  next,  previous,  up
 @section Input and Output Functions
 @cindex Complex input and output functions

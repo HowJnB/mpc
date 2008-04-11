@@ -29,8 +29,7 @@ New functions to implement:
 - from Andreas Enge and Philippe Théveny 9 April 2008
   work plan for completing functionality
   1) tan
-  2) log and agm
-  3) inverse trigonometric functions, require log
+  2) inverse trigonometric functions, require log
   hyperbolic functions and cproj at any moment (relatively easy)
 - from Andreas Enge and Philippe Théveny 9 April 2008
   correct handling of Nan and infinities:

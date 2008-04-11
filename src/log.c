@@ -102,7 +102,7 @@ mpc_log (mpc_ptr a, mpc_srcptr b, mpc_rnd_t rnd)
       mpc_norm (w, b, GMP_RNDD);
          /* error 1 ulp */
       mpfr_log (w, w, GMP_RNDD);
-      /* generic error of log: (2^(2 - exp(w)) + 0.5) ulp */
+      /* generic error of log: (2^(2 - exp(w)) + 1) ulp */
 
       if (MPFR_EXP (w) >= 2)
          ok = mpfr_can_round (w, prec - 2, GMP_RNDD, MPC_RND_RE(rnd), MPC_PREC_RE(a));

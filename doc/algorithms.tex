@@ -6,11 +6,14 @@
 \usepackage{amsmath,amssymb}
 
 \newcommand {\mpc}{\texttt {mpc}}
+\newcommand {\mpfr}{\texttt {mpfr}}
 \newcommand {\ulp}[1]{#1~ulp}
+\newcommand {\atantwo}{\operatorname {atan2}}
+
 
 \title {MPC: Algorithms and Error Analysis}
-\author {The {\mpc} team}
-\date {April 10, 2008}
+\author {Andreas Enge}
+\date {April 11, 2008}
 
 
 \begin {document}
@@ -47,4 +50,12 @@ t + i w & \text {if } x < 0, y > 0 \\
 $w$ is rounded down. $\sqrt {x^2 + y^2}$ is computed with an error of \ulp{1}; $|x|$ is added with an error of \ulp{1}, since both terms are positive. The generic error of the real square root in the special case that the argument was rounded down is \ulp{1}, so that the total error in computing $w$ is \ulp{3}.
 
 $t$ is rounded up. The generic error of real division, applied to an error of \ulp{3} for $w$ and \ulp{0} for $y$ implies an error of \ulp{7}.
+
+
+\subsection {\texttt {mpc\_log}}
+
+Let $z = x + i y$. Then $\log (z) = \frac {1}{2} \log (x^2 + y^2) + i \atantwo (y, x)$. The imaginary part is computed by a call to the corresponding {\mpfr} function.
+
+Let $w = \log (x^2 + y^2)$, rounded down. The error of the complex norm is \ulp{1}. The generic error of the real logarithm is then given by \ulp{$2^{2 - e_w} + 1$}, where $e_w$ is the exponent of $w$. For $e_w \geq 2$, this is bounded by \ulp{2} or 2~digits; otherwise, it is bounded by \ulp{$2^{3 - e_w}$} or $3 - e_w$ digits.
+
 \end {document}

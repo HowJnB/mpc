@@ -26,7 +26,6 @@ MA 02111-1307, USA. */
 #include "mpc.h"
 #include "mpc-impl.h"
 
-#define OUT(x) { mpc_out_str (stdout, 2, 0, x, MPC_RNDNN); putchar ('\n'); }
 #define ERR(x) { mpc_out_str (stderr, 2, 0, x, MPC_RNDNN); \
                  fprintf (stderr, "\n"); }
 

@@ -1,6 +1,6 @@
 /* test file for mpc_add.
 
-Copyright (C) 2008 INRIA.
+Copyright (C) 2008 Philippe Th\'eveny
 
 This file is part of the MPC Library.
 
