@@ -31,9 +31,8 @@ This section is devoted to the analysis of error propagation: Given a function w
 Let $z_1 = \circ(\tilde{z_1})$ and $z_2 = \circ(\tilde{z_2})$, with
 $\tilde{z_n} = \tilde{x_n} + i \tilde{y_n}$ and $z_n = x_n + i y_n$,
 the two operand of the addition rounded at the working precision, the error on
-real and imaginary parts are $\error(x_1) \leq k_{R,1} \Ulp(x_1)$,
-$\error(y_1) \leq k_{I,1} \Ulp(y_1)$, $\error(x_2) \leq k_{R,2}
-\Ulp(x_2)$, and $\error(y_2) \leq k_{I,2} \Ulp(y_2)$.
+real and imaginary parts are $\error(x_n) \leq k_{R,n} \Ulp(x_n)$, and 
+$\error(y_n) \leq k_{I,n} \Ulp(y_n)$.
 
 \begin{eqnarray}
 z&=&\circ(\tilde{z_1}+\tilde{z_2})\\\nonumber
@@ -46,7 +45,9 @@ z&=&\circ(\tilde{z_1}+\tilde{z_2})\\\nonumber
 &\leq&\left(c_R + 2^{d_{R,1}} k_{R,1} + 2^{d_{R,2}} k_{R,2} \right) \Ulp(x)
 \nonumber
 \end{eqnarray}
-where $d_{R,n}=\Exp(x_n)-\Exp(x)$. If $x_1x_2 \leq 0$, then we have a simpler expression
+where $d_{R,n}=\Exp(x_n)-\Exp(x)$ and $c_R=\frac{1}{2}$ if the real part is
+rounded to nearest, else $c_R=1$. If $x_1x_2 \geq 0$, then we have a simpler
+expression
 \[
 \error(x) \leq (c_R+k_{R,1}+k_{R,2}) \Ulp(x)
 \]
@@ -54,7 +55,8 @@ In the same way, we can show that the generic error of the imaginary part is
 \[
 \error (y) \leq \left(c_I + 2^{d_{I,1}} k_{I,1} + 2^{d_{I,2}} k_{I,2} \right) \Ulp(y)
 \]
-where $d_{R,n}=\Exp(x_n)-\Exp(x)$. If $y_1y_2 \leq 0$, then we have the simpler expression
+where $d_{I,n}=\Exp(y_n)-\Exp(y)$ and $c_I=\frac{1}{2}$ if the imaginary part
+is rounded to nearest, else $c_I=1$. If $y_1y_2 \geq 0$, then we have the simpler expression
 \[
 \error(y) \leq (c_I+k_{I,1}+k_{I,2}) \Ulp(y)
 \]
