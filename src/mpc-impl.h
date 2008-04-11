@@ -1,6 +1,6 @@
 /* mpc-impl.h -- Internal include file for mpc.
 
-Copyright (C) 2002, 2004, 2005, 2008 Andreas Enge, Paul Zimmermann
+Copyright (C) 2002, 2004, 2005, 2008 Andreas Enge, Philippe Th\'eveny, Paul Zimmermann
 
 This file is part of the MPC Library.
 
@@ -53,9 +53,7 @@ MA 02111-1307, USA. */
 #define OUT(x) \
 do { \
    printf (#x "=");\
-   mpfr_print_binary (MPC_RE(x)); \
-   printf ("+I*"); \
-   mpfr_print_binary (MPC_IM(x)); \
+   mpc_out_str (stdout, 2, 0, x, MPC_RNDNN); \
    printf ("\n"); \
 } while (0)
 

@@ -1,7 +1,7 @@
 2008-04-11  Andreas Enge  <enge@lix.polytechnique.fr>
 	* new function mpc_log
 	* bug fix in mpc_sqrt with directed rounding
-	* algorithms and error analysis document
+	* added algorithms and error analysis document
 
 2008-03-27  Philippe THEVENY  <philippe DOT theveny AT loria DOT fr>
 	* new function mpc_cos

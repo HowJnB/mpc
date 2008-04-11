@@ -1,6 +1,6 @@
 /* mpc_mul -- Multiply two complex numbers.
 
-Copyright (C) 2002, 2004, 2005 Andreas Enge, Paul Zimmermann
+Copyright (C) 2002, 2004, 2005, 2008 Andreas Enge, Paul Zimmermann
 
 This file is part of the MPC Library.
 
@@ -36,7 +36,7 @@ mpc_mul (mpc_ptr a, mpc_srcptr b, mpc_srcptr c, mpc_rnd_t rnd)
    int inex_re, inex_im;
    int overlap;
    mpc_t result;
-   
+
    /* first check for real multiplication */
    if (MPFR_IS_ZERO(MPC_IM(b))) /* b * (x+i*y) = b*x + i *(b*y) */
    {
@@ -88,13 +88,13 @@ mpc_mul (mpc_ptr a, mpc_srcptr b, mpc_srcptr c, mpc_rnd_t rnd)
          mpc_clear (result);
       return MPC_INEX(inex_re, inex_im);
    }
-   
+
    /* If the real and imaginary part of one argument have a very different */
    /* exponent, it is not reasonable to use Karatsuba multiplication.      */
    if (   SAFE_ABS (mp_exp_t, MPFR_EXP (MPC_RE (b)) - MPFR_EXP (MPC_IM (b)))
-          > MPC_MAX_PREC (b) / 2
+          > (mp_exp_t) MPC_MAX_PREC (b) / 2
        || SAFE_ABS (mp_exp_t, MPFR_EXP (MPC_RE (c)) - MPFR_EXP (MPC_IM (c)))
-          > MPC_MAX_PREC (c) / 2)
+          > (mp_exp_t) MPC_MAX_PREC (c) / 2)
       return mpc_mul_naive (a, b, c, rnd);
    else
       return ((MPC_MAX_PREC(a)
@@ -176,7 +176,7 @@ mpc_mul_karatsuba (mpc_ptr rop, mpc_srcptr op1, mpc_srcptr op2, mpc_rnd_t rnd)
                         MPFR_PREC (MPC_IM (rop)));
   else
      result [0] = rop [0];
-  
+
   a = MPC_RE(op1);
   b = MPC_IM(op1);
   c = MPC_RE(op2);
@@ -285,7 +285,7 @@ mpc_mul_karatsuba (mpc_ptr rop, mpc_srcptr op1, mpc_srcptr op2, mpc_rnd_t rnd)
          inexact |= mpfr_mul (u, u, x, rnd_u); /* (a+b)*(c-d) */
 
 	 /* if all computations are exact up to here, it may be that
-	    the real part is exact, thus we need if possible to 
+	    the real part is exact, thus we need if possible to
 	    compute v - w exactly */
 	 if (inexact == 0)
 	   {
@@ -395,7 +395,7 @@ mpc_mul_karatsuba (mpc_ptr rop, mpc_srcptr op1, mpc_srcptr op2, mpc_rnd_t rnd)
       }
    }
    while (ok == 0);
-   
+
    mpc_set (rop, result, MPC_RNDNN);
 
    mpfr_clear (u);
@@ -404,6 +404,6 @@ mpc_mul_karatsuba (mpc_ptr rop, mpc_srcptr op1, mpc_srcptr op2, mpc_rnd_t rnd)
    mpfr_clear (x);
    if (overlap)
       mpc_clear (result);
-     
+
    return MPC_INEX(inex_re, inex_im);
 }

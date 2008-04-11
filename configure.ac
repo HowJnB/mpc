@@ -9,7 +9,7 @@ AC_CONFIG_HEADER([config.h])
 AM_INIT_AUTOMAKE([1.9 -Wall -Werror])
 AM_MAINTAINER_MODE
 
-CFLAGS="-O2 -g -Wall"
+CFLAGS="-g -O2 -ansi -pedantic-errors -Wall -Wextra -Werror"
 
 dnl Extra arguments to configure
 AC_ARG_WITH([mpfr],

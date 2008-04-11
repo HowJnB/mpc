@@ -1,6 +1,6 @@
 /* mpc_sqr -- Square a complex number.
 
-Copyright (C) 2002, 2005 Andreas Enge, Paul Zimmermann
+Copyright (C) 2002, 2005, 2008 Andreas Enge, Paul Zimmermann
 
 This file is part of the MPC Library.
 
@@ -59,22 +59,22 @@ mpc_sqr (mpc_ptr a, mpc_srcptr b, mpc_rnd_t rnd)
    /* exactly with the standard formulae instead, even if this means an    */
    /* additional multiplication.                                           */
    if (SAFE_ABS (mp_exp_t, MPFR_EXP (MPC_RE (b)) - MPFR_EXP (MPC_IM (b)))
-       > MPC_MAX_PREC (b) / 2)
+       > (mp_exp_t) MPC_MAX_PREC (b) / 2)
    {
       mpfr_init2 (u, 2*MPFR_PREC (MPC_RE (b)));
       mpfr_init2 (v, 2*MPFR_PREC (MPC_IM (b)));
-      
+
       mpfr_sqr (u, MPC_RE (b), GMP_RNDN);
       mpfr_sqr (v, MPC_IM (b), GMP_RNDN); /* both are exact */
       inex_im = mpfr_mul (a->im, b->re, b->im, MPC_RND_IM (rnd));
       mpfr_mul_2exp (a->im, a->im, 1, GMP_RNDN);
       inex_re = mpfr_sub (a->re, u, v, MPC_RND_RE (rnd));
-      
+
       mpfr_clear (u);
       mpfr_clear (v);
       return MPC_INEX (inex_re, inex_im);
    }
-   
+
 
    mpfr_init (u);
    mpfr_init (v);
@@ -165,7 +165,7 @@ mpc_sqr (mpc_ptr a, mpc_srcptr b, mpc_rnd_t rnd)
       }
    }
    while (!ok);
-      
+
    /* compute the imaginary part as 2*x*y, which is always possible */
    inex_im = mpfr_mul (MPC_IM (a), x, MPC_IM (b),
                           MPC_RND_IM (rnd));
