@@ -12,6 +12,8 @@ New functions to implement:
       rop = op1 - op2
   int mpc_set_fr (mpc_t rop,  mpfr_t op1, mpc_rnd_t)
       rop = op1
+- from Mickael Gastineau <gastineau@imcce.fr> 14 Apr 2008:
+  mpc_fma: d=a*b+c
 - from Rob <sisyphus1@optusnet.com.au> 6 Oct 2007:
   const char * mpc_get_version (void)
 - from Andreas Enge 9 April 2008:
@@ -29,7 +31,7 @@ New functions to implement:
 - from Andreas Enge and Philippe Théveny 9 April 2008
   work plan for completing functionality
   1) tan
-  2) inverse trigonometric functions, require log
+  2) inverse trigonometric functions
   hyperbolic functions and cproj at any moment (relatively easy)
 - from Andreas Enge and Philippe Théveny 9 April 2008
   correct handling of Nan and infinities:
@@ -37,3 +39,4 @@ New functions to implement:
      (we need special code)
   beware of strange specifications in C99, that we want to follow,
      but that are not automatic from the behaviour of mpfr
+
