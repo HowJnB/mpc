@@ -26,74 +26,106 @@
 
 This section is devoted to the analysis of error propagation: Given a function
 whose input arguments already have a certain error, what is the error bound on
-the function output? The output error usually consists of two components: The
+the function output? The output error usually consists of two components: the
 error propagated from the input, which may be arbitrarily amplified; and an
 additional small error accounting for the rounding of the output. The results
 are needed for algorithms that combine several arithmetic operations.
 
 We will assume that the real and imaginary parts of the operands have the same
-precision.
+precision $p$.  We will also assume that the two operands $z_1$ and $z_2$ in
+the following operations are approximations of exact values $\widetilde{z_1}$
+and $\widetilde{z_2}$ respectively. For $n=1, 2$, let $\widetilde{z_n} =
+\widetilde{x_n} + i \widetilde{y_n}$ and $z_n = x_n + i y_n$, let $k_{R,n}$
+and $k_{I,n}$ the error bound coefficients: $\error(x_n) \leq k_{R,n}
+\Ulp(x_n)$ and $\error(y_n) \leq k_{I,n} \Ulp(y_n)$.  Note that we have
+$x_n.c_{R,n}^- \leq \widetilde{x_n} \leq x_n.c_{R,n}^+$ and $y_n.c_{I,n}^-
+\leq \widetilde{y_n} \leq y_n.c_{I,n}^+$, with $c_{\cdot,n}^- =
+1-k_{\cdot,n}2^{1-p}$ and $c_{\cdot,n}^+ = 1+k_{\cdot,n}2^{-p}$.
 
-Let $z_1 = \circ(\widetilde{z_1})$ and $z_2 = \circ(\widetilde{z_2})$, with
-$\widetilde{z_n} = \widetilde{x_n} + i \widetilde{y_n}$ and $z_n = x_n + i
-y_n$, the two operands in the following operations rounded at the working
-precision, the error on real and imaginary parts are $\error(x_n) \leq k_{R,n}
-\Ulp(x_n)$, and $\error(y_n) \leq k_{I,n} \Ulp(y_n)$.
+Let $z=\circ(z_1 \Diamond z_2)$ the result of the operation $\Diamond$ with
+$z=x+iy$. Let $c_R$ the bound coefficient for the rounding error of the real
+part: $\error(x) = |x-\Re(z_1 \Diamond z_2)| \leq c_R \Ulp(x)$, if the
+rounding mode is rounding to nearest $c_R=\frac{1}{2}$, else $c_r=1$ (same
+relations for $c_I$, the coefficient for the imaginary part \emph{mutatis
+  mutandis}).
 
-\subsection {Generic error for addition/substraction}
+\subsection {Generic error of addition/substraction}
 
+Let
 \[
-z=\circ(\widetilde{z_1}+\widetilde{z_2})
+z=\circ(z_1+z_2).
 \]
-\begin{eqnarray}\nonumber
-\error(x)&=&|x-\Re(\widetilde{z_1}-\widetilde{z_2})|\\\nonumber
-&\leq&|x-\Re(z_1-z_2)|+|\Re(z_1+z_2)-\Re(\widetilde{z_1}+\widetilde{z_2})|\\\nonumber
-&\leq&c_R \Ulp(x) + |x_1 - \widetilde{x_1}| + |x_2 -
-\widetilde{x_2}|\\\nonumber &\leq&c_R \Ulp(x) + k_{R,1} \Ulp(x_1) + k_{R,2}
-\Ulp(x_2)\\\nonumber &\leq&\left(c_R + 2^{d_{R,1}} k_{R,1} + 2^{d_{R,2}}
-k_{R,2} \right) \Ulp(x) \nonumber
-\end{eqnarray}
-where $d_{R,n}=\Exp(x_n)-\Exp(x)$ and $c_R=\frac{1}{2}$ if the real part is
-rounded to nearest, else $c_R=1$. If $x_1x_2 \geq 0$, then we have a simpler
+We have
+\begin{align*}
+\error(x)&= |x-\Re(\widetilde{z_1}-\widetilde{z_2})|
+\\
+&\leq |x-\Re(z_1-z_2)|+|\Re(z_1+z_2)-\Re(\widetilde{z_1}+\widetilde{z_2})|
+\\
+&\leq c_R\Ulp(x)+|x_1-\widetilde{x_1}|+|x_2-\widetilde{x_2}|
+\\
+&\leq c_R\Ulp(x)+k_{R,1}\Ulp(x_1)+k_{R,2}\Ulp(x_2)
+\\
+&\leq \left(c_R+k_{R,1}2^{d_{R,1}}+k_{R,2}2^{d_{R,2}}\right)\Ulp(x)
+\end{align*}
+where $d_{R,n}=\Exp(x_n)-\Exp(x)$. If $x_1x_2 \geq 0$, then we have a simpler
 expression
 \[
-\error(x) \leq (c_R+k_{R,1}+k_{R,2}) \Ulp(x)
+\error(x) \leq (c_R+k_{R,1}+k_{R,2}) \Ulp(x).
 \]
 In the same way, we can show that the generic error of the imaginary part is
 \[
-\error (y) \leq \left(c_I + 2^{d_{I,1}} k_{I,1} + 2^{d_{I,2}} k_{I,2} \right)
-\Ulp(y)
+\error (y) \leq \left(c_I+k_{I,1}2^{d_{I,1}}+k_{I,2}2^{d_{I,2}}\right) \Ulp(y)
 \]
-where $d_{I,n}=\Exp(y_n)-\Exp(y)$ and $c_I=\frac{1}{2}$ if the imaginary part
-is rounded to nearest, else $c_I=1$. If $y_1y_2 \geq 0$, then we have the
+where $d_{I,n}=\Exp(y_n)-\Exp(y)$. If $y_1y_2 \geq 0$, then we have the
 simpler expression
 \[
-\error(y) \leq (c_I+k_{I,1}+k_{I,2}) \Ulp(y)
+\error(y) \leq (c_I+k_{I,1}+k_{I,2}) \Ulp(y).
 \]
 
 
-\subsection {generic error for multiplication}
+\subsection {Generic error of multiplication}
 
+Let
 \[
-z=\circ(\widetilde{z_1}\times\widetilde{z_2})
+z=\circ(z_1\times z_2).
 \]
-\begin{eqnarray}\nonumber
-\error(x)&=&|x-\Re(\widetilde{z_1}\times \widetilde{z_2})|\\\nonumber &\leq&
-|x-\Re(z_1\times z_2)|+|\Re(z_1\times
-z_2)-\Re(\widetilde{z_1}\times\widetilde{z_2})| \\\nonumber &\leq&
-c_R\Ulp(x)+|x_1x_2-y_1y_2-(\widetilde{x_1}\widetilde{x_2}-\widetilde{y_1}\widetilde{y_2})|
-\\\nonumber &\leq&
-c_R\Ulp(x)+|x_1x_2-\widetilde{x_1}\widetilde{x_2}|+|y_1y_2-\widetilde{y_1}\widetilde{y_2}|
-\\\nonumber
-\end{eqnarray}
+We have
+\[
+\error(x) = |x-\Re(\widetilde{z_1}\times \widetilde{z_2})| \leq
+|x-\Re(z_1\times z_2)|
++|\Re(z_1\times z_2)-\Re(\widetilde{z_1}\times\widetilde{z_2})|.
+\]
+The first term on the right hand side is the rounding error, so
+\[
+|x-\Re(z_1\times z_2)| \leq c_R \Ulp(x),
+\]
+the second term can be split as follows
+\[
+|\Re(z_1\times z_2)-\Re(\widetilde{z_1}\times\widetilde{z_2})| \leq
+|x_1x_2-\widetilde{x_1}\widetilde{x_2}|
++|y_1y_2-\widetilde{y_1}\widetilde{y_2}|.
+\]
+Let us bound the real part:
+\begin{align*}
+|x_1x_2-\widetilde{x_1}\widetilde{x_2}| &\leq
+\frac{1}{2}\left(|x_2||x_1-\widetilde{x_1}|
++|\widetilde{x_1}||x_2-\widetilde{x_2}|+|x_1||x_2-\widetilde{x_2}|
++|\widetilde{x_2}||x_1-\widetilde{x_1}|\right)
+\\
+&\leq \left((1+c_{R,1}^+)k_{R,2}+(1+c_{R,2}^+)k_{R,1}\right)\Ulp(x_1x_2).
+\end{align*}
+In a similar way, we have
+\[
+|y_1y_2-\widetilde{y_1}\widetilde{y_2}| \leq
+\left((1+c_{I,1}^+)k_{I,2}+(1+c_{I,2}^+)k_{I,1}\right)\Ulp(y_1y_2).
+\]
 If [$x_1x_2 \geq 0$ and $y_1y_2 \geq 0$] or [$x_1x_2 \leq 0$ and $y_1y_2 \leq
   0$] then $\Ulp(x_1x_2) \leq \Ulp(x)$ and $\Ulp(y_1y_2) \leq \Ulp(x)$, so we
 have
 \[
 \error(x) \leq \left(c_R + (1+c_{R,1}^+)k_{R,2} + (1+c_{R,2}^+)k_{R,1} +
-(1+c_{I,1}^+)k_{I,2} + (1+c_{I,2}^+)k_{I,1} \right) \Ulp(x)
+(1+c_{I,1}^+)k_{I,2} + (1+c_{I,2}^+)k_{I,1} \right) \Ulp(x).
 \]
-where $c_{\cdot,n}^+ = 1+k_{\cdot,n}2^{1-p}$.
 If $x_1x_2$ and $y_1y_2$ don't have the same sign, then the inequality is
 \[
 \error(x) \leq \left( c_R + \left( (1+c_{R,1}^+)k_{R,2} + (1+c_{R,2}^+)k_{R,1}
@@ -101,22 +133,22 @@ If $x_1x_2$ and $y_1y_2$ don't have the same sign, then the inequality is
 \right) \Ulp(x)
 \]
 where $d = \Exp(x_1x_2)-\Exp(x) \leq \Exp(x_1)+\Exp(x_2)-\Exp(x)$ and $d' =
-\Exp(y_1y_2)-\Exp(x) \leq \Exp(y_1)+\Exp(y_2)-\Exp(x)$
+\Exp(y_1y_2)-\Exp(x) \leq \Exp(y_1)+\Exp(y_2)-\Exp(x)$.
 
 Error of the imaginary part can be bounded the same way. If $x_1y_2$ and
 $x_2y_1$ have the same sign, then
 \[
 \error(y) \leq \left(c_I + (1+c_{R,1}^+)k_{I,2} + (1+c_{I,2}^+)k_{R,1} +
-(1+c_{I,1}^+)k_{R,2} + (1+c_{R,2}^+)k_{I,1} \right) \Ulp(y)
+(1+c_{I,1}^+)k_{R,2} + (1+c_{R,2}^+)k_{I,1} \right) \Ulp(y).
 \]
 If $x_1y_2$ and $y_1x_2$ don't have the same sign, then
 \[
 \error(y) \leq \left( c_I + \left( (1+c_{R,1}^+)k_{I,2} + (1+c_{I,2}^+)k_{R,1}
 \right)2^{\delta} + \left( (1+c_{I,1}^+)k_{R,2} + (1+c_{R,2}^+)k_{I,1} \right)
-2^{\delta'}\right) \Ulp(y)
+2^{\delta'}\right) \Ulp(y).
 \]
 where $\delta = \Exp(x_1y_2)-\Exp(y) \leq \Exp(x_1)+\Exp(y_2)-\Exp(y)$ and
-$\delta' = \Exp(y_1x_2)-\Exp(y) \leq \Exp(y_1)+\Exp(x_2)-\Exp(y)$
+$\delta' = \Exp(y_1x_2)-\Exp(y) \leq \Exp(y_1)+\Exp(x_2)-\Exp(y)$.
 
 
 \section {Algorithms}
