@@ -136,12 +136,12 @@ where $d = \Exp(x_1x_2)-\Exp(x) \leq \Exp(x_1)+\Exp(x_2)-\Exp(x)$ and $d' =
 \Exp(y_1y_2)-\Exp(x) \leq \Exp(y_1)+\Exp(y_2)-\Exp(x)$.
 
 Error of the imaginary part can be bounded the same way. If $x_1y_2$ and
-$x_2y_1$ have the same sign, then
+$x_2y_1$ {\bf do not have} the same sign, then
 \[
 \error(y) \leq \left(c_I + (1+c_{R,1}^+)k_{I,2} + (1+c_{I,2}^+)k_{R,1} +
 (1+c_{I,1}^+)k_{R,2} + (1+c_{R,2}^+)k_{I,1} \right) \Ulp(y).
 \]
-If $x_1y_2$ and $y_1x_2$ don't have the same sign, then
+If $x_1y_2$ and $y_1x_2$ {\bf have} the same sign, then
 \[
 \error(y) \leq \left( c_I + \left( (1+c_{R,1}^+)k_{I,2} + (1+c_{I,2}^+)k_{R,1}
 \right)2^{\delta} + \left( (1+c_{I,1}^+)k_{R,2} + (1+c_{R,2}^+)k_{I,1} \right)
