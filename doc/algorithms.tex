@@ -160,6 +160,139 @@ If $x_1y_2$ and $y_1x_2$ {\bf have} the same sign, then
 where $\delta = \Exp(x_1y_2)-\Exp(y) \leq \Exp(x_1)+\Exp(y_2)-\Exp(y)$ and
 $\delta' = \Exp(y_1x_2)-\Exp(y) \leq \Exp(y_1)+\Exp(x_2)-\Exp(y)$.
 
+\subsection {Generic error of division}
+
+Let
+\[
+z=\circ(\frac{z_1}{z_2}).
+\]
+
+We note
+\begin{align*}
+A&=\widetilde{x_1}\widetilde{x_2}+\widetilde{y_1}\widetilde{y_2}&
+B&=\widetilde{y_1}\widetilde{x_2}-\widetilde{x_1}\widetilde{y_2}&
+D&=\widetilde{x_2}^2+\widetilde{y_2}^2\\
+a&=x_1x_2+y_1y_2&
+b&=y_1x_2-x_1y_2&
+d&=x_2^2+y_2^2
+\end{align*}
+then the error of the real part is
+\[
+\error(x) = |x-\frac{A}{D}| \leq |x-\frac{a}{d}| + |\frac{a}{d}-\frac{A}{D}|.
+\]
+The first term of the right hand side is the rounding error:
+\[
+|x-\frac{a}{d}|\leq c_R \Ulp(x).
+\]
+The second term can be bounded as follows:
+\[
+|\frac{a}{d}-\frac{A}{D}| \leq \frac{1}{d} |a-A|
++\left|\frac{A}{D}\right|\frac{1}{d}|d-D|.
+\]
+We have
+\[
+|a-A| \leq |x_1x_2-\widetilde{x_1}\widetilde{x_2}|
++|y_1y_2-\widetilde{y_1}\widetilde{y_2}|,
+\]
+with
+\begin{align*}
+|x_1x_2-\widetilde{x_1}\widetilde{x_2}| &\leq \frac{1}{2} \left(
+|x_1||x_2-\widetilde{x_2}|+|\widetilde{x_2}||x_1-\widetilde{x_1}|
++|x_2||x_1-\widetilde{x_1}|+|\widetilde{x_1}||x_2-\widetilde{x_2}| \right)\\
+&\leq \left[ (1+c_{R,1})k_{R,2}+(1+c_{R,2})k_{R,1} \right] \Ulp(x_1x_2),
+\end{align*}
+where $c_{r,n}$ is such that $|\widetilde{x_n}| \leq c_{R,n} |x_n|$ (see the
+introductory paragraphs above) and using the folowing general rule
+\[
+|u|\cdot\Ulp(v) \leq 2\Ulp(uv);
+\]
+let $d=\Exp(x_1x_2)-\Exp(a)$, we have
+\[
+|x_1x_2-\widetilde{x_1}\widetilde{x_2}| \leq 
+\left((1+c_{R,1})k_{R,2}+(1+c_{R,2})k_{R,1}\right)2^d \Ulp(a),
+\]
+and we can show in a similar way that
+\[
+|y_1y_2-\widetilde{y_1}\widetilde{y_2}| \leq \left( (1+c_{I,1})k_{I,2}
++(1+c_{I,2})k_{I,1} \right)2^{d'} \Ulp(a),
+\]
+where $d'=\Exp(y_1y_2)-\Exp(a)$. Using the preceding inequalities we have
+\[
+\frac{1}{d}|a-A| \leq \left[
+\left((1+c_{R,1})k_{R,2}+(1+c_{R,2})k_{R,1}\right)2^{1+d}
++\left((1+c_{I,1})k_{I,2}+(1+c_{I,2})k_{I,1}\right)2^{1+d'}
+\right] \Ulp(x).
+\]
+In addition, we have
+\[
+|d-D| \leq |x_2^2-\widetilde{x_2}^2| + |y_2-\widetilde{y_2}^2|,
+\]
+with
+\begin{align*}
+|x_2^2-\widetilde{x_2}| &\leq |x_2+\widetilde{x_2}||x_2-\widetilde{x_2}|\\
+&\leq (1+c_{R,2})|x_2|k_{R,2} \Ulp(x_2)\\
+&\leq 2(1+c_{R,2})k_{R,2}\Ulp(x_2^2),
+\end{align*}
+we can show in a similar way that
+\[
+|y_2^2-\widetilde{y_2}^2| \leq 2(1+c_{I,2})k_{I,2}\Ulp(y_2^2).
+\]
+But $\Ulp(x_2^2) \leq \Ulp(x_2^2+y_2^2) = \Ulp(d)$, and the same relation
+holds for $\Ulp(y_2^2)$, thus
+\[
+|d-D| \leq 2\left[(1+c_{R,2})k_{R,2}+(1+c_{I,2})k_{I,2}\right]\Ulp(d);
+\]
+note that
+\[
+\left|\frac{A}{D}\right| \leq
+\frac{c_{R,1}c_{R,2}+c_{I,1}c_{I,2}}{(c_{R,2}^-)^2+(c_{I,2}^-)^2}
+\left|\frac{a}{d}\right|,
+\]
+thus we have
+\[
+\left|\frac{A}{D}\right|\frac{1}{d}|d-D| \leq
+4\frac{c_{R,1}c_{R,2}+c_{I,1}c_{I,2}}{(c_{R,2}^-)^2+(c_{I,2}^-)^2}
+\left((1+c_{R,2})k_{R,2}+(1+c_{I,2})k_{I,2}\right)\Ulp(x).
+\]
+Gathering the relevant inequalities, we show that the error on the real part
+is bounded in the following way
+\begin{equation*}
+  \begin{split}
+    \error(x) &\leq [c_R\\
+    &\quad+\left((1+c_{R,1})k_{R,2}+(1+c_{R,2})k_{R,1}\right)2^{1+d}
+    +\left((1+c_{I,1})k_{I,2}+(1+c_{I,2})k_{I,1}\right)2^{1+d'}\\
+    &\quad+4\frac{c_{R,1}c_{R,2}+c_{I,1}c_{I,2}}{(c_{R,2}^-)^2+(c_{I,2}^-)^2}
+    \left((1+c_{R,2})k_{R,2}+(1+c_{I,2})k_{I,2}\right)]
+    \Ulp(x).
+  \end{split}
+\end{equation*}
+
+An analog process gives
+\begin{equation*}
+  \begin{split}
+    \error(y) &\leq [c_R\\
+    &\quad+\left((1+c_{I,1})k_{R,2}+(1+c_{R,2})k_{I,1}\right)2^{1+\delta}
+    +\left((1+c_{R,1})k_{I,2}+(1+c_{I,2})k_{R,1}\right)2^{1+\delta'}\\
+    &\quad+4\frac{c_{R,1}c_{R,2}+c_{I,1}c_{I,2}}{(c_{R,2}^-)^2+(c_{I,2}^-)^2}
+    \left((1+c_{R,2})k_{R,2}+(1+c_{I,2})k_{I,2}\right)]
+    \Ulp(y),
+  \end{split}
+\end{equation*}
+with $\delta=\Exp(y_1x_2)-\Exp(b)$ and $\delta'=\Exp(x_1y_2)-\Exp(b)$.
+
+Note that, when $z_1$ and $z_2$ are the rounded values of $\widetilde{z_1}$
+and $\widetilde{z_2}$ respectively, with rounding towards plus infinity, we
+have the much simpler inequalities:
+\begin{align*}
+\error(x) &\leq c_R + 2^{3+d} + 2^{3+d'} + 2^6\\
+\error(y) &\leq c_R + 2^{3+\delta} + 2^{3+\delta'} + 2^6.
+\end{align*}
+
+At last, remark that $x_1x_2$ and $y_1y_2$ cannot have the same sign if
+$y_1x_2$ and $-x_1y_2$ do have the same sign, thus there is always a
+cancellation sometimes in real part, sometimes in imaginary part of the
+division.
+
 
 \section {Algorithms}
 
