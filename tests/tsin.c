@@ -154,7 +154,8 @@ special ()
   if (!mpfr_nan_p (MPC_RE (s)) || !mpfr_inf_p (MPC_IM (s)))
     test_failed (z, s, c99);
 
-  /* sin(x +/-i*infinity) = infinity*(sin x -i*cos x) where 0<|x|<infinity */
+  /* sin(x -i*infinity) = infinity*(sin x -i*cos x) where 0<|x|<infinity */
+  /* sin(x +i*infinity) = infinity*(sin x +i*cos x) where 0<|x|<infinity */
   mpfr_set_ui (MPC_RE (z), 1, GMP_RNDN);
   mpfr_set_inf (MPC_RE (c99), +1);
   mpfr_set_inf (MPC_IM (c99), +1);
@@ -162,6 +163,7 @@ special ()
   if (mpc_cmp (s, c99) != 0)
     test_failed (z, s, c99);
   mpc_conj (z, z, MPC_RNDNN);
+  mpc_conj (c99, c99, MPC_RNDNN);
   mpc_sin (s, z, MPC_RNDUU);
   if (mpc_cmp (s, c99) != 0)
     test_failed (z, s, c99);
@@ -171,6 +173,7 @@ special ()
   if (mpc_cmp (s, c99) != 0)
     test_failed (z, s, c99);
   mpc_conj (z, z, MPC_RNDNN);
+  mpc_conj (c99, c99, MPC_RNDNN);
   mpc_sin (s, z, MPC_RNDUU);
   if (mpc_cmp (s, c99) != 0)
     test_failed (z, s, c99);

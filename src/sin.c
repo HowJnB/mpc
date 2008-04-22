@@ -39,14 +39,20 @@ mpc_sin (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
           mpc_set (rop, op, rnd);
 
           if (mpfr_nan_p (MPC_IM (op)))
-            /* OP = x +i NaN, then ROP = NaN +i*NaN except for x=0 */
+            /* sin(x +i*NaN) = NaN +i*NaN, except for x=0 */
+            /* sin(-0 +i*NaN) = -0 +i*NaN */
+            /* sin(+0 +i*NaN) = +0 +i*NaN */
             {
               if (!mpfr_zero_p (MPC_RE (op)))
                 mpfr_set_nan (MPC_RE (rop));
               return;
             }
 
-          /* OP = NaN +i*y, then ROP = NaN +i*NaN except if x=0 or infinity */
+          /* sin(NaN -i*Inf) = NaN -i*Inf */
+          /* sin(NaN -i*0) = NaN -i*0 */
+          /* sin(NaN +i*0) = NaN +i*0 */
+          /* sin(NaN +i*Inf) = NaN +i*Inf */
+          /* sin(NaN +i*y) = NaN +i*NaN, when 0<|y|<Inf */
           if (!mpfr_inf_p (MPC_IM (op)) && !mpfr_zero_p (MPC_IM (op)))
             mpfr_set_nan (MPC_IM (rop));
 
@@ -54,7 +60,11 @@ mpc_sin (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
         }
 
       if (mpfr_inf_p (MPC_RE (op)))
-        /* OP = infinity +i*y where y is not NaN */
+        /* sin(+/-Inf -i*Inf) = NaN -i*Inf */
+        /* sin(+/-Inf -i*0) = NaN -i*0 */
+        /* sin(+/-Inf +i*0) = NaN +i*0 */
+        /* sin(+/-Inf +i*Inf) = NaN +i*Inf */
+        /* sin(+/-Inf +i*y) = NaN +i*NaN, when 0<|y|<Inf */
         {
           mpfr_set_nan (MPC_RE (rop));
 
@@ -66,20 +76,24 @@ mpc_sin (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
           return;
         }
 
-      /* OP = x +i*infinity where x is finite */
       if (mpfr_zero_p (MPC_RE (op)))
+        /* sin(-0 -i*Inf) = -0 -i*Inf */
+        /* sin(+0 -i*Inf) = +0 -i*Inf */
+        /* sin(-0 +i*Inf) = -0 +i*Inf */
+        /* sin(+0 +i*Inf) = +0 +i*Inf */
         {
           mpc_set (rop, op, rnd);
 
           return;
         }
 
-      /* ROP = infinity*(sin x -i*cos x) */
+      /* sin(x -i*Inf) = +Inf*(sin(x) -i*cos(x)) */
+      /* sin(x +i*Inf) = +Inf*(sin(x) +i*cos(x)) */
       mpfr_init (x);
       mpfr_init (y);
       mpfr_sin_cos (x, y, MPC_RE (op), GMP_RNDZ);
-      mpfr_set_inf (MPC_RE (rop), mpfr_sgn (x));
-      mpfr_set_inf (MPC_IM (rop), mpfr_sgn (y));
+      mpfr_set_inf (MPC_RE (rop), MPFR_SIGN (x));
+      mpfr_set_inf (MPC_IM (rop), MPFR_SIGN (y)*MPFR_SIGN (MPC_IM (op)));
       mpfr_clear (y);
       mpfr_clear(x);
 
@@ -110,13 +124,13 @@ mpc_sin (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
 
      (1) x = o(sin(a))
      (2) y = o(cosh(b))
-     (3) r = o(x*y)     
+     (3) r = o(x*y)
      then the error on r is at most 4 ulps, since we can write
      r = sin(a)*cosh(b)*(1+t)^3 with |t| <= 2^(-w),
      thus for w >= 2, r = sin(a)*cosh(b)*(1+4*t) with |t| <= 2^(-w),
      thus the relative error is bounded by 4*2^(-w) <= 4*ulp(r).
   */
-  
+
   prec = MPC_MAX_PREC(rop);
 
   mpfr_init2 (x, 2);
