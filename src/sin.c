@@ -86,18 +86,19 @@ mpc_sin (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
       return;
     }
 
-  /* special case when the input is real: sin(x) = sin(x) */
+  /* special case when the input is real: sin(x +/-0*i) = sin(x) +/-0*i */
   if (mpfr_cmp_ui (MPC_IM(op), 0) == 0)
     {
       mpfr_sin (MPC_RE(rop), MPC_RE(op), MPC_RND_RE(rnd));
-      mpfr_set_ui (MPC_IM(rop), 0, MPC_RND_IM(rnd));
+      mpfr_set (MPC_IM(rop), MPC_IM(op), MPC_RND_IM(rnd));
       return;
     }
 
-  /* special case when the input is imaginary: sin(I*y) = sinh(y)*I */
+  /* special case when the input is imaginary:
+     sin(+/-O +i*y) = +/-0 +i*sinh(y) */
   if (mpfr_cmp_ui (MPC_RE(op), 0) == 0)
     {
-      mpfr_set_ui (MPC_RE(rop), 0, MPC_RND_RE(rnd));
+      mpfr_set (MPC_RE(rop), MPC_RE(op), MPC_RND_RE(rnd));
       mpfr_sinh (MPC_IM(rop), MPC_IM(op), MPC_RND_IM(rnd));
       return;
     }
