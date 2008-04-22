@@ -31,18 +31,18 @@ mpc_cos (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
   int ok = 0;
 
   /* special values */
-  if (!mpfr_number_p (MPC_RE (op)) && !mpfr_number_p (MPC_IM (op)))
+  if (!mpfr_number_p (MPC_RE (op)) || !mpfr_number_p (MPC_IM (op)))
     {
       if (mpfr_nan_p (MPC_RE (op)))
         {
           /* cos(NaN + i * NaN) = NaN + i * NaN */
           /* cos(NaN - i * Inf) = +Inf + i * NaN */
-          /* cos(NaN + i * Inf) = +Inf + i * NaN */
+          /* cos(NaN + i * Inf) = -Inf + i * NaN */
           /* cos(NaN - i * 0) = NaN - i * 0 */
           /* cos(NaN + i * 0) = NaN + i * 0 */
           /* cos(NaN + i * y) = NaN + i * NaN, when y != 0 */
           if (mpfr_inf_p (MPC_IM (op)))
-            mpfr_set_inf (MPC_RE (rop), +1);
+            mpfr_set_inf (MPC_RE (rop), -MPFR_SIGN (MPC_IM (op)));
           else
             mpfr_set_nan (MPC_RE (rop));
 
@@ -56,20 +56,15 @@ mpc_cos (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
 
       if (mpfr_nan_p (MPC_IM (op)))
         {
-          /* cos(-Inf + i * NaN) = NaN + i * Inf */
-          /* cos(+Inf + i * NaN) = NaN - i * Inf */
+          /* cos(-Inf + i * NaN) = NaN + i * NaN */
+          /* cos(+Inf + i * NaN) = NaN + i * NaN */
           /* cos(-0 + i * NaN) = NaN - i * 0 */
           /* cos(+0 + i * NaN) = NaN + i * 0 */
           /* cos(x + i * NaN) = NaN + i * NaN, when x != 0 */
-          if (mpfr_number_p (MPC_RE (op)))
-            {
-              if (mpfr_zero_p (MPC_RE (op)))
-                mpfr_set (MPC_IM (rop), MPC_RE (op), MPC_RND_IM (rnd));
-              else
-                mpfr_set_nan (MPC_IM (rop));
-            }
+          if (mpfr_zero_p (MPC_RE (op)))
+            mpfr_set (MPC_IM (rop), MPC_RE (op), MPC_RND_IM (rnd));
           else
-            mpfr_set (MPC_IM(rop), MPC_RE (op), MPC_RND_IM (rnd));
+            mpfr_set_nan (MPC_IM (rop));
 
           mpfr_set_nan (MPC_RE (rop));
 
@@ -78,12 +73,11 @@ mpc_cos (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
 
       if (mpfr_inf_p (MPC_RE (op)))
         {
-          /* cos(-Inf - i * Inf) = cos(+Inf + i * 0) = +Inf + i * NaN */
-          /* cos(-Inf + i * Inf) = cos(+Inf - i * 0) = +Inf + i * NaN */
-          /* cos(-Inf - i * 0) = cos(+Inf + i * 0) = NaN - i * 0 */
-          /* cos(-Inf + i * 0) = cos(+Inf - i * 0) = NaN + i * 0 */
-          /* cos(-Inf + i * y) = cos(+Inf + i * y) = NaN + i * NaN,
-             when y != 0 */
+          /* cos(-Inf -i*Inf) = cos(+Inf +i*Inf) = -Inf +i*NaN */
+          /* cos(-Inf +i*Inf) = cos(+Inf -i*Inf) = +Inf +i*NaN */
+          /* cos(-Inf -i*0) = cos(+Inf +i*0) = NaN -i*0 */
+          /* cos(-Inf +i*0) = cos(+Inf -i*0) = NaN +i*0 */
+          /* cos(-Inf +i*y) = cos(+Inf +i*y) = NaN +i*NaN, when y != 0 */
 
           /* SAME_SIGN is useful only if op == (+/-)Inf + i * (+/-)0, but, as
              MPC_RE(OP) might be erased (when ROP == OP), we compute it now */
@@ -91,7 +85,7 @@ mpc_cos (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
             mpfr_signbit (MPC_RE (op)) == mpfr_signbit (MPC_IM (op));
 
           if (mpfr_inf_p (MPC_IM (op)))
-            mpfr_set_inf (MPC_RE (rop), +1);
+            mpfr_set_inf (MPC_RE (rop), (same_sign ? -1 : +1));
           else
             mpfr_set_nan (MPC_RE (rop));
 
@@ -117,9 +111,8 @@ mpc_cos (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
         }
       else
         {
-          /* cos(x - i * Inf) = +Inf * cos(x) + i * Inf * sin(x),
-             cos(x + i * Inf) = +Inf * cos(x) - i * Inf * sin(x),
-             when x != 0 */
+          /* cos(x -i*Inf) = +Inf*cos(x) +i*Inf*sin(x), when x != 0 */
+          /* cos(x +i*Inf) = +Inf*cos(x) -i*Inf*sin(x), when x != 0 */
           mpfr_t c;
           mpfr_t s;
 
@@ -128,7 +121,8 @@ mpc_cos (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
 
           mpfr_sin_cos (s, c, MPC_RE (op), GMP_RNDN);
           mpfr_set_inf (MPC_RE (rop), mpfr_sgn (c));
-          mpfr_set_inf (MPC_IM (rop), -mpfr_sgn (MPC_IM (op)) * mpfr_sgn (s));
+          mpfr_set_inf (MPC_IM (rop), 
+                        (mpfr_sgn (MPC_IM (op)) == mpfr_sgn (s) ? -1 : +1));
 
           mpfr_clear (s);
           mpfr_clear (c);
@@ -176,16 +170,16 @@ mpc_cos (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
 
   /* let op = a + i*b, then cos(op) = cos(a)*cosh(b) - i*sin(a)*sinh(b).
 
-  We use the following algorithm (same for the imaginary part),
-  with rounding to nearest for all operations, and working precision w:
+     We use the following algorithm (same for the imaginary part),
+     with rounding to nearest for all operations, and working precision w:
 
-  (1) x = o(cos(a))
-  (2) y = o(cosh(b))
-  (3) r = o(x*y)
-  then the error on r is at most 4 ulps, since we can write
-  r = cos(a)*cosh(b)*(1+t)^3 with |t| <= 2^(-w),
-  thus for w >= 2, r = cos(a)*cosh(b)*(1+4*t) with |t| <= 2^(-w),
-  thus the relative error is bounded by 4*2^(-w) <= 4*ulp(r).
+     (1) x = o(cos(a))
+     (2) y = o(cosh(b))
+     (3) r = o(x*y)
+     then the error on r is at most 4 ulps, since we can write
+     r = cos(a)*cosh(b)*(1+t)^3 with |t| <= 2^(-w),
+     thus for w >= 2, r = cos(a)*cosh(b)*(1+4*t) with |t| <= 2^(-w),
+     thus the relative error is bounded by 4*2^(-w) <= 4*ulp(r).
   */
 
   prec = MPC_MAX_PREC(rop);
