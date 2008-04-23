@@ -284,14 +284,14 @@ Note that, when $z_1$ and $z_2$ are the rounded values of $\widetilde{z_1}$
 and $\widetilde{z_2}$ respectively, with rounding towards plus infinity, we
 have the much simpler inequalities:
 \begin{align*}
-\error(x) &\leq c_R + 2^{3+d} + 2^{3+d'} + 2^6\\
-\error(y) &\leq c_R + 2^{3+\delta} + 2^{3+\delta'} + 2^6.
+\error(x) &\leq [c_R + 2^{3+d} + 2^{3+d'} + 2^6] \Ulp(x)\\
+\error(y) &\leq [c_I + 2^{3+\delta} + 2^{3+\delta'} + 2^6] \Ulp(y).
 \end{align*}
 
-At last, remark that $x_1x_2$ and $y_1y_2$ cannot have the same sign if
-$y_1x_2$ and $-x_1y_2$ do have the same sign, thus there is always a
-cancellation sometimes in real part, sometimes in imaginary part of the
-division.
+At last, let us remark that $x_1x_2$ and $y_1y_2$ cannot have the same
+sign if $y_1x_2$ and $-x_1y_2$ do have the same sign, thus there is
+always a cancellation sometimes in real part, sometimes in imaginary
+part of the division.
 
 
 \section {Algorithms}
