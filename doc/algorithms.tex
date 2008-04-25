@@ -171,23 +171,23 @@ We note
 \begin{align*}
 A&=\widetilde{x_1}\widetilde{x_2}+\widetilde{y_1}\widetilde{y_2}&
 B&=\widetilde{y_1}\widetilde{x_2}-\widetilde{x_1}\widetilde{y_2}&
-D&=\widetilde{x_2}^2+\widetilde{y_2}^2\\
+C&=\widetilde{x_2}^2+\widetilde{y_2}^2\\
 a&=x_1x_2+y_1y_2&
 b&=y_1x_2-x_1y_2&
-d&=x_2^2+y_2^2
+c&=x_2^2+y_2^2
 \end{align*}
 then the error of the real part is
 \[
-\error(x) = |x-\frac{A}{D}| \leq |x-\frac{a}{d}| + |\frac{a}{d}-\frac{A}{D}|.
+\error(x) = |x-\frac{A}{C}| \leq |x-\frac{a}{c}| + |\frac{a}{c}-\frac{A}{C}|.
 \]
 The first term of the right hand side is the rounding error:
 \[
-|x-\frac{a}{d}|\leq c_R \Ulp(x).
+|x-\frac{a}{c}|\leq c_R \Ulp(x).
 \]
 The second term can be bounded as follows:
 \[
-|\frac{a}{d}-\frac{A}{D}| \leq \frac{1}{d} |a-A|
-+\left|\frac{A}{D}\right|\frac{1}{d}|d-D|.
+|\frac{a}{c}-\frac{A}{C}| \leq \frac{1}{c} |a-A|
++\left|\frac{A}{C}\right|\frac{1}{c}|c-C|.
 \]
 We have
 \[
@@ -218,14 +218,14 @@ and we can show in a similar way that
 \]
 where $d'=\Exp(y_1y_2)-\Exp(a)$. Using the preceding inequalities we have
 \[
-\frac{1}{d}|a-A| \leq \left[
+\frac{1}{c}|a-A| \leq \left[
 \left((1+c_{R,1})k_{R,2}+(1+c_{R,2})k_{R,1}\right)2^{1+d}
 +\left((1+c_{I,1})k_{I,2}+(1+c_{I,2})k_{I,1}\right)2^{1+d'}
 \right] \Ulp(x).
 \]
 In addition, we have
 \[
-|d-D| \leq |x_2^2-\widetilde{x_2}^2| + |y_2-\widetilde{y_2}^2|,
+|c-C| \leq |x_2^2-\widetilde{x_2}^2| + |y_2-\widetilde{y_2}^2|,
 \]
 with
 \begin{align*}
@@ -237,20 +237,20 @@ we can show in a similar way that
 \[
 |y_2^2-\widetilde{y_2}^2| \leq 2(1+c_{I,2})k_{I,2}\Ulp(y_2^2).
 \]
-But $\Ulp(x_2^2) \leq \Ulp(x_2^2+y_2^2) = \Ulp(d)$, and the same relation
+But $\Ulp(x_2^2) \leq \Ulp(x_2^2+y_2^2) = \Ulp(c)$, and the same relation
 holds for $\Ulp(y_2^2)$, thus
 \[
-|d-D| \leq 2\left[(1+c_{R,2})k_{R,2}+(1+c_{I,2})k_{I,2}\right]\Ulp(d);
+|c-C| \leq 2\left[(1+c_{R,2})k_{R,2}+(1+c_{I,2})k_{I,2}\right]\Ulp(c);
 \]
 note that
 \[
-\left|\frac{A}{D}\right| \leq
+\left|\frac{A}{C}\right| \leq
 \frac{c_{R,1}c_{R,2}+c_{I,1}c_{I,2}}{(c_{R,2}^-)^2+(c_{I,2}^-)^2}
-\left|\frac{a}{d}\right|,
+\left|\frac{a}{c}\right|,
 \]
 thus we have
 \[
-\left|\frac{A}{D}\right|\frac{1}{d}|d-D| \leq
+\left|\frac{A}{C}\right|\frac{1}{c}|c-C| \leq
 4\frac{c_{R,1}c_{R,2}+c_{I,1}c_{I,2}}{(c_{R,2}^-)^2+(c_{I,2}^-)^2}
 \left((1+c_{R,2})k_{R,2}+(1+c_{I,2})k_{I,2}\right)\Ulp(x).
 \]
