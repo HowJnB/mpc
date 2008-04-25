@@ -9,9 +9,12 @@
 \newcommand {\mpfr}{\texttt {mpfr}}
 \newcommand {\ulp}[1]{#1~ulp}
 \newcommand {\atantwo}{\operatorname {atan2}}
-\DeclareMathOperator{\error}{error}
 \newcommand {\Ulp}{{\rm ulp}}
-\newcommand {\Exp}{{\rm \textsc exp}}
+\DeclareMathOperator{\error}{error}
+\DeclareMathOperator{\Exp}{{\rm \textsc exp}}
+\DeclareMathOperator{\pinf}{\bigtriangleup}
+\DeclareMathOperator{\minf}{\bigtriangledown}
+\DeclareMathOperator{\N}{\mathcal N}
 
 \title {MPC: Algorithms and Error Analysis}
 \author {Andreas Enge \and Philippe Th\'eveny}
@@ -33,7 +36,7 @@ are needed for algorithms that combine several arithmetic operations.
 
 We will assume that the real and imaginary parts of the operands have the same
 precision $p$. We write any nonzero real number $x$ in the form $x = m \cdot
-2^e$ with $\frac{1}{2} \le |m| < 1$ and $e := \Exp(x)$, and we define $\Ulp(x)
+2^e$ with $\frac{1}{2} \le |m| < 1$, and we define $\Exp(x) := e$ and $\Ulp(x)
 := 2^{\Exp(x) - p}$.  We will also assume that the two operands $z_1$ and
 $z_2$ in the following operations are approximations of exact values
 $\widetilde{z_1}$ and $\widetilde{z_2}$ respectively. For $n=1, 2$, let
@@ -42,12 +45,13 @@ y_n$, let $k_{R,n}$ and $k_{I,n}$ the upper bound coefficients: $\error(x_n)
 \leq k_{R,n} \Ulp(x_n)$ and $\error(y_n) \leq k_{I,n} \Ulp(y_n)$.  Note that
 we always have $x_n.c_{R,n}^- \leq \widetilde{x_n} \leq x_n.c_{R,n}^+$ and
 $y_n.c_{I,n}^- \leq \widetilde{y_n} \leq y_n.c_{I,n}^+$, with $c_{\cdot,n}^- =
-1-k_{\cdot,n}2^{1-p}$ and $c_{\cdot,n}^+ = 1+k_{\cdot,n}2^{-p}$. When $z_n$ is
+1-k_{\cdot,n}2^{-p}$ and $c_{\cdot,n}^+ = 1+k_{\cdot,n}2^{1-p}$. When $z_n$ is
 obtained by rounding $\widetilde{z_n}$ to the precision $p$ (we note
-$z_n=\circ(\widetilde{z_n})$), we have another inequalities: $\frac{1}{2}|z_n|
-\leq |\widetilde{z_n}| \leq 2|z_n|$; if the rounding mode is rounding towards
-plus infinity $|\widetilde{z_n}| \leq |z_n|$, and if the rounding mode is
-toward minus infinity $|z_n| \leq |\widetilde{z_n}|$.
+$z_n=\circ(\widetilde{z_n})$), we have another inequalities: $\frac{1}{2}|x_n|
+\leq |\widetilde{x_n}| \leq 2|x_n|$; if the rounding mode is rounding towards
+plus infinity: $\widetilde{x_n} \leq x_n$, and if the rounding mode is toward
+minus infinity: $x_n \leq \widetilde{x_n}$ (similar relations hold for the
+imaginary part).
 
 Let $z=x+iy$ the result of the operation $z_1\diamond z_2$ rounded to the
 precision of $z$ (we note $z=\circ(z_1 \diamond z_2)$). Let $c_R$ the bound
@@ -121,10 +125,10 @@ Let us bound the part with real components:
 \\
 &\leq \left[(1+c_{R,2})k_{R,1}+(1+c_{R,1})k_{R,2}\right] \Ulp(x_1x_2),
 \end{align*}
-where $c_{R,n}$ is such that $|\widetilde{z_n}| \leq c_{R,n}|z_n|$, it could
-be $c_{R,n}^+=1+k_{R,n}2^{-p}$ or even 1 if $z_n$ is $\widetilde{z_n}$ rounded
-towards plus infinity (see the introductory paragraphs above). In a similar
-way, we have
+where $c_{R,n}$ is such that $|\widetilde{x_n}| \leq c_{R,n}|x_n|$, it could
+be $c_{R,n}^+=1+k_{R,n}2^{1-p}$ or even 1 if $x_n$ is $\widetilde{x_n}$ rounded
+away from zero (see the introductory paragraphs above). In a similar way, we
+have
 \[
 |y_1y_2-\widetilde{y_1}\widetilde{y_2}| \leq
 \left[(1+c_{I,1})k_{I,2}+(1+c_{I,2})k_{I,1}\right] \Ulp(y_1y_2).
@@ -160,7 +164,7 @@ If $x_1y_2$ and $y_1x_2$ {\bf have} the same sign, then
 where $\delta = \Exp(x_1y_2)-\Exp(y) \leq \Exp(x_1)+\Exp(y_2)-\Exp(y)$ and
 $\delta' = \Exp(y_1x_2)-\Exp(y) \leq \Exp(y_1)+\Exp(x_2)-\Exp(y)$.
 
-\subsection {Generic error of division}
+\subsection {Generic error of division}\label{generic:div}
 
 Let
 \[
@@ -201,8 +205,8 @@ with
 +|x_2||x_1-\widetilde{x_1}|+|\widetilde{x_1}||x_2-\widetilde{x_2}| \right)\\
 &\leq \left[ (1+c_{R,1})k_{R,2}+(1+c_{R,2})k_{R,1} \right] \Ulp(x_1x_2),
 \end{align*}
-where $c_{r,n}$ is such that $|\widetilde{x_n}| \leq c_{R,n} |x_n|$ (see the
-introductory paragraphs above) and using the folowing general rule
+where $c_{R,n}$ is such that $|\widetilde{x_n}| \leq c_{R,n} |x_n|$ (see the
+introductory paragraphs above) and using the following general rule
 \[
 |u|\cdot\Ulp(v) \leq 2\Ulp(uv);
 \]
@@ -229,7 +233,7 @@ In addition, we have
 \]
 with
 \begin{align*}
-|x_2^2-\widetilde{x_2}| &\leq |x_2+\widetilde{x_2}||x_2-\widetilde{x_2}|\\
+|x_2^2-\widetilde{x_2}^2| &\leq |x_2+\widetilde{x_2}||x_2-\widetilde{x_2}|\\
 &\leq (1+c_{R,2})|x_2|k_{R,2} \Ulp(x_2)\\
 &\leq 2(1+c_{R,2})k_{R,2}\Ulp(x_2^2),
 \end{align*}
@@ -281,12 +285,20 @@ An analog process gives
 with $\delta=\Exp(y_1x_2)-\Exp(b)$ and $\delta'=\Exp(x_1y_2)-\Exp(b)$.
 
 Note that, when $z_1$ and $z_2$ are the rounded values of $\widetilde{z_1}$
-and $\widetilde{z_2}$ respectively, with rounding towards plus infinity, we
-have the much simpler inequalities:
+and $\widetilde{z_2}$ respectively, with rounding away from zero, we have the
+much simpler inequalities:
 \begin{align*}
 \error(x) &\leq [c_R + 2^{3+d} + 2^{3+d'} + 2^6] \Ulp(x)\\
 \error(y) &\leq [c_I + 2^{3+\delta} + 2^{3+\delta'} + 2^6] \Ulp(y).
 \end{align*}
+If the rounding mode is rounding to nearest, we have:
+\begin{align*}
+\error(x) &\leq [c_R + 3\times 2^{1+d} +3\times 2^{1+d'} + 48] \Ulp(x)
+\\
+\error(x) 
+&\leq [c_R + 3\times 2^{1+\delta} +3\times 2^{1+\delta'} + 48] \Ulp(y),
+\end{align*}
+note that the preceding equations still hold.
 
 At last, let us remark that $x_1x_2$ and $y_1y_2$ cannot have the same
 sign if $y_1x_2$ and $-x_1y_2$ do have the same sign, thus there is
