@@ -338,4 +338,56 @@ Let $z = x + i y$. Then $\log (z) = \frac {1}{2} \log (x^2 + y^2) + i \atantwo (
 
 Let $w = \log (x^2 + y^2)$, rounded down. The error of the complex norm is \ulp{1}. The generic error of the real logarithm is then given by \ulp{$2^{2 - e_w} + 1$}, where $e_w$ is the exponent of $w$. For $e_w \geq 2$, this is bounded by \ulp{2} or 2~digits; otherwise, it is bounded by \ulp{$2^{3 - e_w}$} or $3 - e_w$ digits.
 
+\subsection {\texttt {mpc\_tan}}
+
+Let $z = x + i y$ with $x \neq 0$ and $y \neq 0$.
+
+We compute $\tan z$ as follows:
+\begin{align*}
+u &\leftarrow \N(\sin z) &\error(\Re(u)) &\leq 1 \Ulp(\Re(u))
+&\error(\Im(u)) &\leq 1 \Ulp(\Im(u))
+\\
+v &\leftarrow \N(\cos z) &\error(\Re(v)) &\leq 1 \Ulp(\Re(v))
+&\error(\Im(v)) &\leq 1 \Ulp(\Im(v))
+\\
+t &\leftarrow \N(u/v) &\error(\Re(t)) &\leq k_R \Ulp(\Re(t))
+&\error(\Im(t)) &\leq k_I \Ulp(\Im(t))
+\end{align*}
+where $w_2 \leftarrow \N(w_1)$ means that the real and imaginary parts of
+$w_2$ are respectively the real and imaginary part of $w_1$ rounded to nearest
+to the working precision.
+
+We know that $\Re(\frac{a+i b}{c+i d})=\frac{a c +b d}{c^2 + d^2}$ and
+$\Im(\frac{a+i b}{c+i d})=\frac{a d -b c}{c^2 + d^2}$, so in the special case
+of $\tan z=\frac{\sin x\cosh y+i\cos x\sinh y}{\cos x\cosh y-i\sin x\sinh y}$,
+we have $abcd < 0$ which means that there might be a cancellation in the
+computation of the real part while it does never happen in the one of the
+imaginary part.  Then, using the generic error of the division (see
+\ref{generic:div}), we have
+\begin{align*}
+\error(\Re(t)) &\leq [1+3\times 2^{1+e_1}+3\times 2^{1+e_2} +48] \Ulp(\Re(t)),
+\\
+\error(\Im(t)) &\leq [1 + 3\times2 + 3\times 2 + 48] \Ulp(\Im(t)),
+\end{align*}
+where $e_1=\Exp(a c) -\Exp(a c+b d)$ and $e_2=\Exp(b d) -\Exp(a c+b d)$.  The
+second inequality shows that $2^6$ is suitable choice for $k_I$. As $|\sinh
+y|<\cosh y$ for every nonzero $y$, we have $b d<a c$, thus $e_2\leq e_1$. We
+know that $\Exp(\frac{a c+b d}{c^2+d^2})\leq \Exp(a c+b d) -\Exp(c^2+d^2)$,
+$\Exp(c^2+d^2)\geq2 \min(\Exp(c), \Exp(d))$, and $\Exp(ac) \leq \Exp(a) +
+\Exp(c)$, this gives an upper bound for $e_1$:
+\[
+e_1 \leq e = \Exp(\Re(u)) +\Exp(\Re(v)) -\Exp(\Re(t))
+-2 \min(\Exp(\Re(v)), \Exp(\Im(v))).
+\]
+and a suitable value for $k_R$:
+\begin{equation*}
+k_R=\left\{
+\begin{array}{l l}
+  2^7 & \mbox{if $e < 3$;}
+  \\
+  2^{5 + e} & \mbox{else.}
+\end{array}
+\right.
+\end{equation*}
+
 \end {document}
