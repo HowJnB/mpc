@@ -127,13 +127,6 @@ AC_ARG_WITH([gmp],
 AC_PROG_CC
 AC_PROG_LIBTOOL
 
-# Checks for CC flags.
-AX_C_CHECK_FLAG(ansi,,,CFLAGS="$CFLAGS -ansi",)
-AX_C_CHECK_FLAG(pedantic,,,CFLAGS="$CFLAGS -pedantic",)
-AX_C_CHECK_FLAG(Wall,,,CFLAGS="$CFLAGS -Wall",)
-AX_C_CHECK_FLAG(Wextra,,,CFLAGS="$CFLAGS -Wextra",)
-AX_C_CHECK_FLAG(Werror,,,CFLAGS="$CFLAGS -Werror",)
-
 # Checks for libraries.
 AC_CHECK_LIB([mpfr], [mpfr_clear],,
              [AC_MSG_ERROR([MPC library needs the MPFR library])])
@@ -147,6 +140,15 @@ AC_C_CONST
 AC_TYPE_SIZE_T
 
 # Checks for library functions.
+
+# Checks for CC flags.
+# Modification PT: move in the last place so as to avoid test failure in
+# AC_C_CONST due to additional flags "-Wall -Werror"
+AX_C_CHECK_FLAG(ansi,,,CFLAGS="$CFLAGS -ansi",)
+AX_C_CHECK_FLAG(pedantic,,,CFLAGS="$CFLAGS -pedantic",)
+AX_C_CHECK_FLAG(Wall,,,CFLAGS="$CFLAGS -Wall",)
+AX_C_CHECK_FLAG(Wextra,,,CFLAGS="$CFLAGS -Wextra",)
+AX_C_CHECK_FLAG(Werror,,,CFLAGS="$CFLAGS -Werror",)
 
 AC_CONFIG_FILES([Makefile src/Makefile tests/Makefile doc/Makefile])
 AC_OUTPUT
