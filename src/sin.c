@@ -100,11 +100,15 @@ mpc_sin (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
       return;
     }
 
-  /* special case when the input is real: sin(x +/-0*i) = sin(x) +/-0*i */
+  /* special case when the input is real: */
+  /* sin(x -0*i) = sin(x) -0*i*cos(x) */
+  /* sin(x +0*i) = sin(x) +0*i*cos(x) */
   if (mpfr_cmp_ui (MPC_IM(op), 0) == 0)
     {
-      mpfr_sin (MPC_RE(rop), MPC_RE(op), MPC_RND_RE(rnd));
-      mpfr_set (MPC_IM(rop), MPC_IM(op), MPC_RND_IM(rnd));
+      mpfr_init (x);
+      mpfr_sin_cos (MPC_RE (rop), x, MPC_RE (op), MPC_RND_RE (rnd));
+      mpfr_mul (MPC_IM(rop), MPC_IM(op), x, MPC_RND_IM(rnd));
+      mpfr_clear (x);
       return;
     }
 

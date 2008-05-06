@@ -154,15 +154,18 @@ mpc_cos (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
 
   if (mpfr_zero_p (MPC_IM (op)))
     {
-      /* cos(-x - i * 0) = cos(x + i * 0) = cos(x) - i * 0
-         cos(-x + i * 0) = cos(x - i * 0) = cos(x) + i * 0,
-         when x > 0 */
-      const int imag_sign =
-        mpfr_signbit (MPC_RE (op)) ==  mpfr_signbit (MPC_IM (op));
+      /* cos(x + i * 0) = cos(x) + i * 0 * sin(x)
+         cos(x - i * 0) = cos(x) - i * 0 * sin(x), when x is non zero */
+      mpfr_t zero;
 
-      mpfr_setsign (MPC_IM (rop), MPC_IM (op), imag_sign, MPC_RND_IM (rnd));
-      mpfr_cos (MPC_RE (rop), MPC_RE (op), MPC_RND_RE (rnd));
+      mpfr_init (zero);
+      mpfr_set_ui (zero, 0, GMP_RNDN);
+      mpfr_setsign (zero, zero, mpfr_signbit (MPC_IM (op)), GMP_RNDN);
 
+      mpfr_sin_cos (MPC_IM (rop), MPC_RE (rop), MPC_RE (op), MPC_RND_RE (rnd));
+      mpfr_mul (MPC_IM (rop), MPC_IM (rop), zero, MPC_RND_IM (rnd));
+
+      mpfr_clear (zero);
       return;
     }
 

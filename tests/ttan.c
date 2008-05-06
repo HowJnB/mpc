@@ -161,8 +161,50 @@ special ()
   if (!mpfr_nan_p (MPC_RE (t)) || !mpfr_nan_p (MPC_IM (t)))
     test_failed (z, t, c99);
 
+  /* tan(NaN +i*NaN) = NaN +i*NaN */
+  mpfr_set_nan (MPC_RE (z));
+  mpc_tan (t, z, MPC_RNDNN);
+  if (!mpfr_nan_p (MPC_RE (t)) || !mpfr_nan_p (MPC_IM (t)))
+    test_failed (z, t, c99);
+
+  /* tan(NaN +i*y) = NaN +i*NaN, when y is finite */
+  mpfr_set_ui (MPC_IM (z), -1, GMP_RNDN);
+  mpc_tan (t, z, MPC_RNDNN);
+  if (!mpfr_nan_p (MPC_RE (t)) || !mpfr_nan_p (MPC_IM (t)))
+    test_failed (z, t, c99);
+
+  mpc_conj (z, z, MPC_RNDNN);
+  mpc_tan (t, z, MPC_RNDNN);
+  if (!mpfr_nan_p (MPC_RE (t)) || !mpfr_nan_p (MPC_IM (t)))
+    test_failed (z, t, c99);
+
+  mpfr_set_ui (MPC_IM (z), 0, GMP_RNDN);
+  mpc_tan (t, z, MPC_RNDNN);
+  if (!mpfr_nan_p (MPC_RE (t)) || !mpfr_nan_p (MPC_IM (t)))
+    test_failed (z, t, c99);
+
+  mpc_conj (z, z, MPC_RNDNN);
+  mpc_tan (t, z, MPC_RNDNN);
+  if (!mpfr_nan_p (MPC_RE (t)) || !mpfr_nan_p (MPC_IM (t)))
+    test_failed (z, t, c99);
+
+  /* tan (NaN -i*Inf) = +/-0 -i */
+  mpfr_set_inf (MPC_IM (z), -1);
+  mpc_set_si_si (c99, 0, -1, MPC_RNDNN);
+  mpc_tan (t, z, MPC_RNDNN);
+  if (!mpfr_zero_p (MPC_RE (t)) || mpfr_cmp_si (MPC_IM (t), -1) != 0)
+    test_failed (z, t, c99);
+
+  /* tan (NaN +i*Inf) = +/-0 +i */
+  mpc_conj (z, z, MPC_RNDNN);
+  mpc_conj (c99, c99, MPC_RNDNN);
+  mpc_tan (t, z, MPC_RNDNN);
+  if (!mpfr_zero_p (MPC_RE (t)) || mpfr_cmp_si (MPC_IM (t), +1) !=0)
+    test_failed (z, t, c99);
+
   /* tan(+0 +i*NaN) = +0 +i*NaN */
   mpfr_set_ui (MPC_RE (z), 0, GMP_RNDN);
+  mpfr_set_nan (MPC_IM (z));
   mpc_tan (t, z, MPC_RNDNN);
   if (!mpfr_zero_p (MPC_RE (t)) || mpfr_signbit (MPC_RE (t))
       || !mpfr_nan_p (MPC_IM (t)))
@@ -176,6 +218,7 @@ special ()
     test_failed (z, t, z);
 
   /* tan(x -i*Inf) = 0*sin(2*x)-i */
+  /* tan(x +i*Inf) = 0*sin(2*x)+i */
   /*  tan(0.5 -i*Inf) = +0 -i */
   mpfr_set_ui_2exp (MPC_RE (z), 1, -1, GMP_RNDN);
   mpfr_set_inf (MPC_IM (z), -1);
@@ -233,6 +276,30 @@ special ()
   mpc_tan (t, z, MPC_RNDNN);
   if (mpc_cmp (t, c99))
     test_failed (z, t, c99);
+
+  /* tan(+0 +0*i) = +0 +0*i */
+  mpc_set_ui_ui (z, 0, 0, MPC_RNDNN);
+  mpc_tan (t, z, MPC_RNDNN);
+  if (mpc_cmp (t, z))
+    test_failed (z, t, z);
+
+  /* tan(+0 -0*i) = +0 -0*i */
+  mpc_conj (z, z, MPC_RNDNN);
+  mpc_tan (t, z, MPC_RNDNN);
+  if (mpc_cmp (t, z))
+    test_failed (z, t, z);
+
+  /* tan(-0 +0*i) = -0 +0*i */
+  mpc_neg (z, z, MPC_RNDNN);
+  mpc_tan (t, z, MPC_RNDNN);
+  if (mpc_cmp (t, z))
+    test_failed (z, t, z);
+
+  /* tan(-0 -0*i) = -0 -0*i */
+  mpc_conj (z, z, MPC_RNDNN);
+  mpc_tan (t, z, MPC_RNDNN);
+  if (mpc_cmp (t, z))
+    test_failed (z, t, z);
 
   mpc_clear (c99);
   mpc_clear (t);
@@ -351,19 +418,61 @@ pure_imaginary_argument ()
   if (mpfr_cmp (MPC_IM (tan_z), tanh_y) != 0
       || !mpfr_zero_p (MPC_RE (tan_z)) || mpfr_signbit (MPC_RE (tan_z)))
     {
-      printf ("mpc_tan(+0 + i) failed\n");
-      exit (1);
+      mpc_t c99;
+
+      mpc_init (c99);
+      mpfr_set_ui (MPC_RE (c99), 0, GMP_RNDN);
+      mpfr_set (MPC_IM (c99), tanh_y, GMP_RNDN);
+
+      test_failed (z, tan_z, c99);
     }
 
-  /* tan(-0 -i) = -0 +i*tan(-1) */
+  /* tan(0 -i) = +0 +i*tanh(-1) */
+  mpc_conj (z, z, MPC_RNDNN);
+  mpfr_neg (tanh_y, tanh_y, GMP_RNDN);
+  mpc_tan (tan_z, z, MPC_RNDNN);
+  if (mpfr_cmp (MPC_IM (tan_z), tanh_y) != 0
+      || !mpfr_zero_p (MPC_RE (tan_z)) || mpfr_signbit (MPC_RE (tan_z)))
+    {
+      mpc_t c99;
+
+      mpc_init (c99);
+      mpfr_set_ui (MPC_RE (c99), 0, GMP_RNDN);
+      mpfr_set (MPC_IM (c99), tanh_y, GMP_RNDN);
+
+      test_failed (z, tan_z, c99);
+    }
+
+  /* tan(-0 +i) = -0 +i*tanh(1) */
   mpc_neg (z, z, MPC_RNDNN);
   mpfr_neg (tanh_y, tanh_y, GMP_RNDN);
   mpc_tan (tan_z, z, MPC_RNDNN);
   if (mpfr_cmp (MPC_IM (tan_z), tanh_y) != 0
       || !mpfr_zero_p (MPC_RE (tan_z)) || !mpfr_signbit (MPC_RE (tan_z)))
     {
-      printf ("mpc_tan(-0 - i) failed\n");
-      exit (1);
+      mpc_t c99;
+
+      mpc_init (c99);
+      mpfr_set_ui (MPC_RE (c99), 0, GMP_RNDN);
+      mpfr_set (MPC_IM (c99), tanh_y, GMP_RNDN);
+
+      test_failed (z, tan_z, c99);
+    }
+
+  /* tan(-0 -i) = -0 +i*tanh(-1) */
+  mpc_conj (z, z, MPC_RNDNN);
+  mpfr_neg (tanh_y, tanh_y, GMP_RNDN);
+  mpc_tan (tan_z, z, MPC_RNDNN);
+  if (mpfr_cmp (MPC_IM (tan_z), tanh_y) != 0
+      || !mpfr_zero_p (MPC_RE (tan_z)) || !mpfr_signbit (MPC_RE (tan_z)))
+    {
+      mpc_t c99;
+
+      mpc_init (c99);
+      mpfr_set_ui (MPC_RE (c99), 0, GMP_RNDN);
+      mpfr_set (MPC_IM (c99), tanh_y, GMP_RNDN);
+
+      test_failed (z, tan_z, c99);
     }
 
   mpc_clear (tan_z);
@@ -375,40 +484,48 @@ pure_imaginary_argument ()
 static void
 check_53()
 {
-  mpfr_t hpi;
   mpc_t z;
   mpc_t tan_z;
   mpc_t t;
 
-  mpfr_init2 (hpi, 53);
   mpc_init2 (z, 53);
   mpc_init2 (tan_z, 53);
   mpc_init2 (t, 53);
 
-  /* hpi = Pi/2 rounded to nearest to 53-bits precision. */
-  mpfr_const_pi (hpi, GMP_RNDN);
-  mpfr_div_2ui (hpi, hpi, 1, GMP_RNDN);
-
-  /* Im(z) = 2^{-52} */
-  mpfr_set_si_2exp (MPC_IM (z), 1, -52, GMP_RNDN);
-
-  /* Re(z) = Pi/2 - 2^{-52} rounded to nearest to 53-bits precision */
-  if (mpfr_sub (MPC_RE (z), hpi, MPC_IM (z), GMP_RNDN) != 0)
-    {
-      printf ("Error: N(Pi/2)-2^{-53} should equal N(Pi/2 - 2^{-53})\n");
-      exit (1);
-    }
-
+  /* Let's play around the poles */
+  /* x = Re(z) = Pi/2 rounded to nearest to 53 bits precision */
+  /* y = Im(z) = Pi/2 - Re(z) rounded to nearest to 53 bits precision */
+  mpfr_set_str (MPC_RE (z), "3243F6A8885A30p-53", 16, GMP_RNDN);
+  mpfr_set_str (MPC_IM (z), "11A62633145C07p-106", 16, GMP_RNDN);
+  mpfr_set_str (MPC_RE (t), "1D02967C31CDB5", 16, GMP_RNDN);
+  mpfr_set_str (MPC_IM (t), "1D02967C31CDB5", 16, GMP_RNDN);
   mpc_tan (tan_z, z, MPC_RNDNN);
-  mpfr_set_str (MPC_RE (t), "1F12E8A6080473P-2", 16, GMP_RNDN);
-  mpfr_set_str (MPC_IM (t), "C2DB2FB340F81P-1", 16, GMP_RNDN);
+  if (mpc_cmp (tan_z, t) != 0)
+    test_failed (z, tan_z, t);
+
+  mpfr_set_str (MPC_RE (t), "1D02967C31CDB4", 16, GMP_RNDN);
+  mpc_tan (tan_z, z, MPC_RNDDU);
+  if (mpc_cmp (tan_z, t) != 0)
+    test_failed (z, tan_z, t);
+
+  mpfr_set_str (MPC_IM (t), "1D02967C31CDB4", 16, GMP_RNDN);
+  mpc_tan (tan_z, z, MPC_RNDZD);
+  if (mpc_cmp (tan_z, t) != 0)
+    test_failed (z, tan_z, t);
+
+  /* Re(z) = x + 2^(-52) */
+  /* Im(z) = y - 2^(-52) */
+  mpfr_set_str (MPC_RE (z), "1921FB54442D19p-52", 16, GMP_RNDN);
+  mpfr_set_str (MPC_IM (z), "-172CECE675D1FDp-105", 16, GMP_RNDN);
+  mpfr_set_str (MPC_RE (t), "-B0BD0AA4A3B3D", 16, GMP_RNDN);
+  mpfr_set_str (MPC_IM (t), "-B0BD0AA4A3B3D", 16, GMP_RNDN);
+  mpc_tan (tan_z, z, MPC_RNDNN);
   if (mpc_cmp (tan_z, t) != 0)
     test_failed (z, tan_z, t);
 
   mpc_clear (t);
   mpc_clear (tan_z);
   mpc_clear (z);
-  mpfr_clear (hpi);
 }
 
 int

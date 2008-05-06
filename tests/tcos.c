@@ -31,7 +31,7 @@ MA 02111-1307, USA. */
 static void
 test_failed (mpc_t op, mpc_t get, mpc_t expected)
 {
-  printf ("mpc_sin(op) failed with ");
+  printf ("mpc_cos(op) failed\nwith  ");
   OUT (op);
   printf ("     ");
   OUT (get);
@@ -55,7 +55,7 @@ special ()
   /* cos(NaN +i*NaN) = NaN +i*NaN */
   mpfr_set_nan (MPC_IM (z));
   mpc_cos (c, z, MPC_RNDNN);
-  if (!mpfr_nan_p (MPC_RE (c)) && !mpfr_nan_p (MPC_IM (c)))
+  if (!mpfr_nan_p (MPC_RE (c)) || !mpfr_nan_p (MPC_IM (c)))
     test_failed (z, c, z);
 
   /* cos(NaN +i*Inf) = -Inf +i*NaN */
@@ -79,23 +79,23 @@ special ()
   mpfr_set_ui (MPC_IM (z), 1, GMP_RNDN);
   mpfr_set_nan (MPC_RE (c99));
   mpc_cos (c, z, MPC_RNDNN);
-  if (!mpfr_nan_p (MPC_RE (c)) && !mpfr_nan_p (MPC_IM (c)))
+  if (!mpfr_nan_p (MPC_RE (c)) || !mpfr_nan_p (MPC_IM (c)))
     test_failed (z, c, c99);
   mpc_conj (z, z, MPC_RNDNN);
   mpc_cos (c, z, MPC_RNDNN);
-  if (!mpfr_nan_p (MPC_RE (c)) && !mpfr_nan_p (MPC_IM (c)))
+  if (!mpfr_nan_p (MPC_RE (c)) || !mpfr_nan_p (MPC_IM (c)))
     test_failed (z, c, c99);
 
   /* cos(NaN +i*0) = NaN +/-i*0 */
   mpfr_set_ui (MPC_IM (z), 0, GMP_RNDN);
   mpc_cos (c, z, MPC_RNDNN);
-  if (!mpfr_nan_p (MPC_RE (c)) && !mpfr_zero_p (MPC_IM (c)))
+  if (!mpfr_nan_p (MPC_RE (c)) || !mpfr_zero_p (MPC_IM (c)))
     test_failed (z, c, z);
 
   /* cos(NaN -i*0) = NaN +/-i*0 */
   mpc_conj (z, z, MPC_RNDNN);
   mpc_cos (c, z, MPC_RNDNN);
-  if (!mpfr_nan_p (MPC_RE (c)) && !mpfr_zero_p (MPC_IM (c)))
+  if (!mpfr_nan_p (MPC_RE (c)) || !mpfr_zero_p (MPC_IM (c)))
     test_failed (z, c, z);
 
   /* cos(+0 +i*NaN) = NaN +/-i*0 */
@@ -113,19 +113,19 @@ special ()
   /* cos(x +i*NaN) = NaN +i*NaN where x!=0 */
   mpfr_set_inf (MPC_RE (z), +1);
   mpc_cos (c, z, MPC_RNDNN);
-  if (!mpfr_nan_p (MPC_RE (c)) && !mpfr_nan_p (MPC_IM (c)))
+  if (!mpfr_nan_p (MPC_RE (c)) || !mpfr_nan_p (MPC_IM (c)))
     test_failed (z, c, c99);
   mpc_neg (z, z, MPC_RNDNN);
   mpc_cos (c, z, MPC_RNDNN);
-  if (!mpfr_nan_p (MPC_RE (c)) && !mpfr_nan_p (MPC_IM (c)))
+  if (!mpfr_nan_p (MPC_RE (c)) || !mpfr_nan_p (MPC_IM (c)))
     test_failed (z, c, c99);
   mpfr_set_ui (MPC_RE (z), +1, MPC_RNDNN);
   mpc_cos (c, z, MPC_RNDNN);
-  if (!mpfr_nan_p (MPC_RE (c)) && !mpfr_nan_p (MPC_IM (c)))
+  if (!mpfr_nan_p (MPC_RE (c)) || !mpfr_nan_p (MPC_IM (c)))
     test_failed (z, c, c99);
   mpc_neg (z, z, MPC_RNDNN);
   mpc_cos (c, z, MPC_RNDNN);
-  if (!mpfr_nan_p (MPC_RE (c)) && !mpfr_nan_p (MPC_IM (c)))
+  if (!mpfr_nan_p (MPC_RE (c)) || !mpfr_nan_p (MPC_IM (c)))
     test_failed (z, c, c99);
 
   mpfr_set_inf (MPC_RE(z), -1);
@@ -258,54 +258,193 @@ special ()
   if (!mpfr_nan_p (MPC_RE (c)) || !mpfr_nan_p (MPC_IM (c)))
     test_failed (z, c, c99);
 
+  /* cos(+0 +i*0) = 1 -i*0 */
+  mpc_set_ui_ui (z, 0, 0, MPC_RNDNN);
+  mpc_set_ui_ui (c99, 1, 0, MPC_RNDNN);
+  mpc_conj (c99, c99, MPC_RNDNN);
+  mpc_cos (c, z, MPC_RNDNN);
+  if (mpc_cmp (c, c99) != 0 || !mpfr_signbit (MPC_IM (c)))
+    test_failed (z, c, c99);
+
+  /* cos(+0 -i*0) = 1 +i*0 */
+  mpc_conj (z, z, MPC_RNDNN);
+  mpc_conj (c99, c99, MPC_RNDNN);
+  mpc_cos (c, z, MPC_RNDNN);
+  if (mpc_cmp (c, c99) != 0 || mpfr_signbit (MPC_IM (c)))
+    test_failed (z, c, c99);
+
+  /* cos(-0 +i*0) = 1 +i*0 */
+  mpc_neg (z, z, MPC_RNDNN);
+  mpc_cos (c, z, MPC_RNDNN);
+  if (mpc_cmp (c, c99) != 0 || mpfr_signbit (MPC_IM (c)))
+    test_failed (z, c, c99);
+
+  /* cos(-0 -i*0) = 1 -i*0 */
+  mpc_conj (z, z, MPC_RNDNN);
+  mpc_conj (c99, c99, MPC_RNDNN);
+  mpc_cos (c, z, MPC_RNDNN);
+  if (mpc_cmp (c, c99) != 0 || !mpfr_signbit (MPC_IM (c)))
+    test_failed (z, c, c99);
+
   mpc_clear (c99);
   mpc_clear (c);
+  mpc_clear (z);
+}
+
+static void
+pure_real_argument ()
+{
+  /* cos(x -i*0) = cos(x) -i*0*sin(x) */
+  /* sin(x +i*0) = cos(x) +i*0*sin(x) */
+  mpc_t u;
+  mpc_t z;
+  mpc_t cos_z;
+
+  mpc_init (u);
+  mpc_init (z);
+  mpc_init (cos_z);
+
+  /* cos(1 +i*0) = cos(1) +i*0*sin(1) */
+  mpc_set_ui_ui (z, 1, 0, MPC_RNDNN);
+  mpfr_cos (MPC_RE (u), MPC_RE (z), GMP_RNDN);
+  mpfr_set_ui (MPC_IM (u), 0, GMP_RNDN);
+  mpc_cos (cos_z, z, MPC_RNDNN);
+  if (mpc_cmp (cos_z, u) != 0 || mpfr_signbit (MPC_IM (cos_z)))
+    test_failed (z, cos_z, u);
+
+  /* cos(1 -i*0) = cos(1) -i*0*sin(1) */
+  mpc_conj (z, z, MPC_RNDNN);
+  mpc_conj (u, u, MPC_RNDNN);
+  mpc_cos (cos_z, z, MPC_RNDNN);
+  if (mpc_cmp (cos_z, u) != 0 || !mpfr_signbit (MPC_IM (cos_z)))
+    test_failed (z, cos_z, u);
+
+  /* cos(-1 +i*0) = cos(-1) +i*0*sin(-1) */
+  mpc_neg (z, z, MPC_RNDNN);
+  mpc_cos (cos_z, z, MPC_RNDNN);
+  if (mpc_cmp (cos_z, u) != 0 || !mpfr_signbit (MPC_IM (cos_z)))
+    test_failed (z, cos_z, u);
+
+  /* cos(-1 -i*0) = cos(-1) -i*0*sin(-1) */
+  mpc_conj (z, z, MPC_RNDNN);
+  mpc_conj (u, u, MPC_RNDNN);
+  mpc_cos (cos_z, z, MPC_RNDNN);
+  if (mpc_cmp (cos_z, u) != 0 || mpfr_signbit (MPC_IM (cos_z)))
+    test_failed (z, cos_z, u);
+
+  /* cos(2 +i*0) = cos(2) +i*0*sin(2) */
+  mpc_set_ui_ui (z, 2, 0, MPC_RNDNN);
+  mpfr_cos (MPC_RE (u), MPC_RE (z), GMP_RNDN);
+  mpc_cos (cos_z, z, MPC_RNDNN);
+  if (mpc_cmp (cos_z, u) != 0 || mpfr_signbit (MPC_IM (cos_z)))
+    test_failed (z, cos_z, u);
+
+  /* cos(2 -i*0) = cos(2) -i*0*sin(2) */
+  mpc_conj (z, z, MPC_RNDNN);
+  mpc_conj (u, u, MPC_RNDNN);
+  mpc_cos (cos_z, z, MPC_RNDNN);
+  if (mpc_cmp (cos_z, u) != 0 || !mpfr_signbit (MPC_IM (cos_z)))
+    test_failed (z, cos_z, u);
+
+  /* cos(-2 +i*0) = cos(-2) +i*0*sin(-2) */
+  mpc_neg (z, z, MPC_RNDNN);
+  mpc_cos (cos_z, z, MPC_RNDNN);
+  if (mpc_cmp (cos_z, u) != 0 || !mpfr_signbit (MPC_IM (cos_z)))
+    test_failed (z, cos_z, u);
+
+  /* cos(-2 -i*0) = cos(-2) -i*0*sin(-2) */
+  mpc_conj (z, z, MPC_RNDNN);
+  mpc_conj (u, u, MPC_RNDNN);
+  mpc_cos (cos_z, z, MPC_RNDNN);
+  if (mpc_cmp (cos_z, u) != 0 || mpfr_signbit (MPC_IM (cos_z)))
+    test_failed (z, cos_z, u);
+
+  mpc_clear (cos_z);
+  mpc_clear (z);
+  mpc_clear (u);
+}
+
+static void
+pure_imaginary_argument ()
+{
+  /* cos(-0 +i*y) = cosh(y) -i*0, when y < 0 */
+  /* cos(-0 +i*y) = cosh(y) +i*0, when y > 0 */
+  /* cos(+0 +i*y) = cosh(y) +i*0, when y < 0 */
+  /* cos(+0 +i*y) = cosh(y) -i*0, when y > 0 */
+  mpc_t u;
+  mpc_t z;
+  mpc_t cos_z;
+
+  mpc_init (u);
+  mpc_init (z);
+  mpc_init (cos_z);
+
+  /* cos(+0 -i) = cosh(-1) +i*0 */
+  mpc_set_si_si (z, 0, -1, MPC_RNDNN);
+  mpfr_cosh (MPC_RE (u), MPC_IM (z), GMP_RNDN);
+  mpfr_set_ui (MPC_IM (u), 0, GMP_RNDN);
+  mpc_cos (cos_z, z, MPC_RNDNN);
+  if (mpc_cmp (cos_z, u) != 0 || mpfr_signbit (MPC_IM (cos_z)))
+    test_failed (z, cos_z, u);
+
+  /* cos(-0 +i) = cosh(1) +i*0 */
+  mpc_neg (z, z, MPC_RNDNN);
+  mpc_cos (cos_z, z, MPC_RNDNN);
+  if (mpc_cmp (cos_z, u) != 0 || mpfr_signbit (MPC_IM (cos_z)))
+    test_failed (z, cos_z, u);
+
+  /* cos(-0 -i) = cosh(-1) -i*0 */
+  mpc_conj (z, z, MPC_RNDNN);
+  mpc_conj (u, u, MPC_RNDNN);
+  mpc_cos (cos_z, z, MPC_RNDNN);
+  if (mpc_cmp (cos_z, u) != 0 || !mpfr_signbit (MPC_IM (cos_z)))
+    test_failed (z, cos_z, u);
+
+  /* cos(+0 +i) = cosh(1) -i*0 */
+  mpc_neg (z, z, MPC_RNDNN);
+  mpc_cos (cos_z, z, MPC_RNDNN);
+  if (mpc_cmp (cos_z, u) != 0 || !mpfr_signbit (MPC_IM (cos_z)))
+    test_failed (z, cos_z, u);
+
+  mpc_clear (cos_z);
+  mpc_clear (z);
+  mpc_clear (u);
+}
+
+static void
+check_53()
+{
+  mpc_t z;
+  mpc_t cos_z;
+  mpc_t c;
+
+  mpc_init2 (z, 53);
+  mpc_init2 (cos_z, 53);
+  mpc_init2 (c, 53);
+
+  /* cos(z) is 514 */
+  mpfr_set_ui (MPC_RE (z), 0, GMP_RNDN);
+  mpfr_set_str (MPC_IM (z), "1BBDD1808C59A3p-50", 16, GMP_RNDN);
+  mpc_set_ui_ui (c, 514, 0, MPC_RNDNN);
+  mpc_cos (cos_z, z, MPC_RNDNN);
+  if (mpc_cmp (cos_z, c) != 0)
+    test_failed (z, cos_z, c);
+
+  mpc_clear (c);
+  mpc_clear (cos_z);
   mpc_clear (z);
 }
 
 int
 main()
 {
-  mpc_t  x, z;
-  mpfr_t g;
-  mp_prec_t prec;
-
-  mpc_init (x);
-  mpc_init (z);
-  mpfr_init (g);
-
-  for (prec = 2; prec <= 1000; prec+=2)
-    {
-      mpc_set_prec (x, prec);
-      mpc_set_prec (z, prec);
-      mpfr_set_prec (g, prec);
-
-      /* check that cos(I*b) = cosh(b) */
-      mpfr_set_ui (MPC_RE (x), 0, GMP_RNDN);
-      mpfr_random (MPC_IM (x));
-
-      mpc_cos (z, x, MPC_RNDNN);
-      mpfr_cosh (g, MPC_IM(x), GMP_RNDN);
-      if (mpfr_cmp_ui (MPC_IM(z), 0) || mpfr_cmp (g, MPC_RE(z)))
-        {
-          fprintf (stderr, "Error in mpc_cos: cos(I*x) <> cosh(x)\n"
-                   "got      ");
-          mpc_out_str (stderr, 10, 0, z, MPC_RNDNN);
-          fprintf (stderr, "\nexpected ");
-          mpfr_set (MPC_RE (z), g, GMP_RNDN);
-          mpfr_set_ui (MPC_IM (z), 0, GMP_RNDN);
-          mpc_out_str (stderr, 10, 0, z, MPC_RNDNN);
-          fprintf (stderr, "\n");
-          exit (1);
-        }
-    }
-
   special ();
+  pure_real_argument ();
+  pure_imaginary_argument ();
+
   tgeneric ();
 
-  mpc_clear (x);
-  mpc_clear (z);
-  mpfr_clear (g);
+  check_53 ();
 
   return 0;
 }
