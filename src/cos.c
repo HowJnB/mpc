@@ -1,6 +1,6 @@
 /* mpc_cos -- cosine of a complex number.
 
-Copyright (C) 2008 Philippe Th\'eveny, Andreas Enge
+Copyright (C) 2008 Philippe Th\'eveny
 
 This file is part of the MPC Library.
 
@@ -37,12 +37,12 @@ mpc_cos (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
         {
           /* cos(NaN + i * NaN) = NaN + i * NaN */
           /* cos(NaN - i * Inf) = +Inf + i * NaN */
-          /* cos(NaN + i * Inf) = -Inf + i * NaN */
+          /* cos(NaN + i * Inf) = +Inf + i * NaN */
           /* cos(NaN - i * 0) = NaN - i * 0 */
           /* cos(NaN + i * 0) = NaN + i * 0 */
           /* cos(NaN + i * y) = NaN + i * NaN, when y != 0 */
           if (mpfr_inf_p (MPC_IM (op)))
-            mpfr_set_inf (MPC_RE (rop), -MPFR_SIGN (MPC_IM (op)));
+            mpfr_set_inf (MPC_RE (rop), +1);
           else
             mpfr_set_nan (MPC_RE (rop));
 

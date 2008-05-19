@@ -58,20 +58,19 @@ special ()
   if (!mpfr_nan_p (MPC_RE (c)) || !mpfr_nan_p (MPC_IM (c)))
     test_failed (z, c, z);
 
-  /* cos(NaN +i*Inf) = -Inf +i*NaN */
+  /* cos(NaN +i*Inf) = +Inf +i*NaN */
   mpfr_set_inf (MPC_IM (z), +1);
-  mpfr_set_inf (MPC_RE (c99), -1);
+  mpfr_set_inf (MPC_RE (c99), +1);
   mpfr_set_nan (MPC_IM (c99));
   mpc_cos (c, z, MPC_RNDNN);
-  if (!mpfr_inf_p (MPC_RE (c)) || mpfr_sgn (MPC_RE (c)) >=0
+  if (!mpfr_inf_p (MPC_RE (c)) || mpfr_signbit (MPC_RE (c))
       || !mpfr_nan_p (MPC_IM (c)))
     test_failed (z, c, c99);
 
   /* cos(NaN -i*Inf) = +Inf +i*NaN */
   mpc_conj (z, z, MPC_RNDNN);
-  mpc_neg (c99, c99, MPC_RNDNN);
   mpc_cos (c, z, MPC_RNDNN);
-  if (!mpfr_inf_p (MPC_RE (c)) || mpfr_sgn (MPC_RE (c)) <=0
+  if (!mpfr_inf_p (MPC_RE (c)) || mpfr_signbit (MPC_RE (c))
       || !mpfr_nan_p (MPC_IM (c)))
     test_failed (z, c, z);
 
