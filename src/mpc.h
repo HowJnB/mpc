@@ -139,6 +139,7 @@ void mpc_sin __MPC_PROTO ((mpc_ptr, mpc_srcptr, mpc_rnd_t));
 void mpc_cos __MPC_PROTO ((mpc_ptr, mpc_srcptr, mpc_rnd_t));
 void mpc_tan __MPC_PROTO ((mpc_ptr, mpc_srcptr, mpc_rnd_t));
 void mpc_sinh __MPC_PROTO ((mpc_ptr, mpc_srcptr, mpc_rnd_t));
+void mpc_cosh __MPC_PROTO ((mpc_ptr, mpc_srcptr, mpc_rnd_t));
 void mpc_clear __MPC_PROTO ((mpc_ptr));
 void mpc_init  __MPC_PROTO ((mpc_ptr));
 void mpc_random __MPC_PROTO ((mpc_ptr));
