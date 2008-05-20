@@ -31,7 +31,7 @@ MA 02111-1307, USA. */
 static void
 test_failed (mpc_t op, mpc_t get, mpc_t expected)
 {
-  printf ("mpc_sin(op) failed with ");
+  printf ("mpc_sin(op) failed\n with ");
   OUT (op);
   printf ("     ");
   OUT (get);
@@ -286,108 +286,131 @@ pure_real_argument ()
 {
   /* sin(x -i*0) = sin(x) -i*0*cos(x) */
   /* sin(x +i*0) = sin(x) +i*0*cos(x) */
-  mpfr_t x;
-  mpfr_t sin_x;
+  mpfr_t s;
   mpc_t z;
   mpc_t sin_z;
 
-  mpfr_init (x);
-  mpfr_init (sin_x);
+  mpfr_init (s);
   mpc_init (z);
   mpc_init (sin_z);
 
   /* sin(1 +i*0) = sin(1) +i*0*cos(1) */
   mpc_set_ui_ui (z, 1, 0, MPC_RNDNN);
-  mpfr_set_ui (x, 1, GMP_RNDN);
-  mpfr_sin (sin_x, x, GMP_RNDN);
+  mpfr_sin (s, MPC_RE (z), GMP_RNDN);
   mpc_sin (sin_z, z, MPC_RNDNN);
-  if (mpfr_cmp (MPC_RE (sin_z), sin_x) != 0
+  if (!mpfr_equal_p (MPC_RE (sin_z), s)
       || !mpfr_zero_p (MPC_IM (sin_z)) || mpfr_signbit (MPC_IM (sin_z)))
     {
-      printf ("mpc_sin(1 + i * 0) failed\n");
-      exit (1);
+      mpc_t s_z;
+      mpc_init (s_z);
+      mpfr_set (MPC_RE (s_z), s, GMP_RNDN);
+      mpfr_set_ui (MPC_IM (s_z), 0, GMP_RNDN);
+      test_failed (z, sin_z, s_z);
     }
 
   /* sin(-1 -i*0) = sin(-1) -i*0*cos(1) */
   mpc_neg (z, z, MPC_RNDNN);
-  mpfr_neg (sin_x, sin_x, GMP_RNDN);
+  mpfr_neg (s, s, GMP_RNDN);
   mpc_sin (sin_z, z, MPC_RNDNN);
-  if (mpfr_cmp (MPC_RE (sin_z), sin_x) != 0
+  if (!mpfr_equal_p (MPC_RE (sin_z), s)
       || !mpfr_zero_p (MPC_IM (sin_z)) || !mpfr_signbit (MPC_IM (sin_z)))
     {
-      printf ("mpc_sin(-1 - i * 0) failed\n");
-      exit (1);
+      mpc_t s_z;
+      mpc_init (s_z);
+      mpfr_set (MPC_RE (s_z), s, GMP_RNDN);
+      mpfr_set_ui (MPC_IM (s_z), 0, GMP_RNDN);
+      mpc_conj (s_z, s_z, MPC_RNDNN);
+      test_failed (z, sin_z, s_z);
     }
 
   /* sin(-1 +i*0) = sin(-1) +i*0*cos(1) */
   mpc_conj (z, z, MPC_RNDNN);
   mpc_sin (sin_z, z, MPC_RNDNN);
-  if (mpfr_cmp (MPC_RE (sin_z), sin_x) != 0
+  if (!mpfr_equal_p (MPC_RE (sin_z), s)
       || !mpfr_zero_p (MPC_IM (sin_z)) || mpfr_signbit (MPC_IM (sin_z)))
     {
-      printf ("mpc_sin(-1 + i * 0) failed\n");
-      exit (1);
+      mpc_t s_z;
+      mpc_init (s_z);
+      mpfr_set (MPC_RE (s_z), s, GMP_RNDN);
+      mpfr_set_ui (MPC_IM (s_z), 0, GMP_RNDN);
+      test_failed (z, sin_z, s_z);
     }
 
   /* sin(1 -i*0) = sin(1) -i*0*cos(1) */
   mpc_neg (z, z, MPC_RNDNN);
-  mpfr_neg (sin_x, sin_x, GMP_RNDN);
+  mpfr_neg (s, s, GMP_RNDN);
   mpc_sin (sin_z, z, MPC_RNDNN);
-  if (mpfr_cmp (MPC_RE (sin_z), sin_x) != 0
+  if (!mpfr_equal_p (MPC_RE (sin_z), s)
       || !mpfr_zero_p (MPC_IM (sin_z)) || !mpfr_signbit (MPC_IM (sin_z)))
     {
-      printf ("mpc_sin(1 - i * 0) failed\n");
-      exit (1);
+      mpc_t s_z;
+      mpc_init (s_z);
+      mpfr_set (MPC_RE (s_z), s, GMP_RNDN);
+      mpfr_set_ui (MPC_IM (s_z), 0, GMP_RNDN);
+      mpc_conj (s_z, s_z, MPC_RNDNN);
+      test_failed (z, sin_z, s_z);
     }
 
   /* sin(2 +i*0) = sin(2) +i*0*cos(2) */
   mpc_set_ui_ui (z, 2, 0, MPC_RNDNN);
-  mpfr_set_ui (x, 2, GMP_RNDN);
-  mpfr_sin (sin_x, x, GMP_RNDN);
+  mpfr_sin (s, MPC_RE (z), GMP_RNDN);
   mpc_sin (sin_z, z, MPC_RNDNN);
-  if (mpfr_cmp (MPC_RE (sin_z), sin_x) != 0
+  if (!mpfr_equal_p (MPC_RE (sin_z), s)
       || !mpfr_zero_p (MPC_IM (sin_z)) || !mpfr_signbit (MPC_IM (sin_z)))
     {
-      printf ("mpc_sin(2 + i * 0) failed\n");
-      exit (1);
+      mpc_t s_z;
+      mpc_init (s_z);
+      mpfr_set (MPC_RE (s_z), s, GMP_RNDN);
+      mpfr_set_ui (MPC_IM (s_z), 0, GMP_RNDN);
+      mpc_conj (s_z, s_z, MPC_RNDNN);
+      test_failed (z, sin_z, s_z);
     }
 
   /* sin(-2 -i*0) = sin(-2) -i*0*cos(-2) */
   mpc_neg (z, z, MPC_RNDNN);
-  mpfr_neg (sin_x, sin_x, GMP_RNDN);
+  mpfr_neg (s, s, GMP_RNDN);
   mpc_sin (sin_z, z, MPC_RNDNN);
-  if (mpfr_cmp (MPC_RE (sin_z), sin_x) != 0
+  if (!mpfr_equal_p (MPC_RE (sin_z), s)
       || !mpfr_zero_p (MPC_IM (sin_z)) || mpfr_signbit (MPC_IM (sin_z)))
     {
-      printf ("mpc_sin(1 - i * 0) failed\n");
-      exit (1);
+      mpc_t s_z;
+      mpc_init (s_z);
+      mpfr_set (MPC_RE (s_z), s, GMP_RNDN);
+      mpfr_set_ui (MPC_IM (s_z), 0, GMP_RNDN);
+      test_failed (z, sin_z, s_z);
     }
 
   /* sin(-2 +i*0) = sin(-2) +i*0*cos(-2) */
   mpc_conj (z, z, MPC_RNDNN);
   mpc_sin (sin_z, z, MPC_RNDNN);
-  if (mpfr_cmp (MPC_RE (sin_z), sin_x) != 0
+  if (!mpfr_equal_p (MPC_RE (sin_z), s)
       || !mpfr_zero_p (MPC_IM (sin_z)) || !mpfr_signbit (MPC_IM (sin_z)))
     {
-      printf ("mpc_sin(-2 + i * 0) failed\n");
-      exit (1);
+      mpc_t s_z;
+      mpc_init (s_z);
+      mpfr_set (MPC_RE (s_z), s, GMP_RNDN);
+      mpfr_set_ui (MPC_IM (s_z), 0, GMP_RNDN);
+      mpc_conj (s_z, s_z, MPC_RNDNN);
+      test_failed (z, sin_z, s_z);
     }
 
   /* sin(2 -i*0) = sin(2) -i*0*cos(2) */
   mpc_neg (z, z, MPC_RNDNN);
-  mpfr_neg (sin_x, sin_x, GMP_RNDN);
+  mpfr_neg (s, s, GMP_RNDN);
   mpc_sin (sin_z, z, MPC_RNDNN);
-  if (mpfr_cmp (MPC_RE (sin_z), sin_x) != 0
+  if (!mpfr_equal_p (MPC_RE (sin_z), s)
       || !mpfr_zero_p (MPC_IM (sin_z)) || mpfr_signbit (MPC_IM (sin_z)))
     {
-      printf ("mpc_sin(2 - i * 0) failed\n");
-      exit (1);
+      mpc_t s_z;
+      mpc_init (s_z);
+      mpfr_set (MPC_RE (s_z), s, GMP_RNDN);
+      mpfr_set_ui (MPC_IM (s_z), 0, GMP_RNDN);
+      test_failed (z, sin_z, s_z);
     }
 
   mpc_clear (sin_z);
   mpc_clear (z);
-  mpfr_clear (sin_x);
-  mpfr_clear (x);
+  mpfr_clear (s);
 }
 
 static void
@@ -395,65 +418,75 @@ pure_imaginary_argument ()
 {
   /* sin(-0 +i*y) = -0 +i*sinh(y) */
   /* sin(+0 +i*y) = +0 +i*sinh(y) */
-  mpfr_t y;
-  mpfr_t sinh_y;
+  mpfr_t sh;
   mpc_t z;
   mpc_t sin_z;
 
-  mpfr_init (y);
-  mpfr_init (sinh_y);
+  mpfr_init (sh);
   mpc_init (z);
   mpc_init (sin_z);
 
   /* sin(+0 +i) = +0 +i*sinh(1) */
   mpc_set_ui_ui (z, 0, 1, MPC_RNDNN);
-  mpfr_set_ui (y, 1, GMP_RNDN);
-  mpfr_sinh (sinh_y, y, GMP_RNDN);
+  mpfr_sinh (sh, MPC_IM (z), GMP_RNDN);
   mpc_sin (sin_z, z, MPC_RNDNN);
-  if (mpfr_cmp (MPC_IM (sin_z), sinh_y) != 0
+  if (!mpfr_equal_p (MPC_IM (sin_z), sh)
       || !mpfr_zero_p (MPC_RE (sin_z)) || mpfr_signbit (MPC_RE (sin_z)))
     {
-      printf ("mpc_sin(+0 + i) failed\n");
-      exit (1);
+      mpc_t s_z;
+      mpc_init (s_z);
+      mpfr_set_ui (MPC_RE (s_z), 0, GMP_RNDN);
+      mpfr_set (MPC_IM (s_z), sh, GMP_RNDN);
+      test_failed (z, sin_z, s_z);
     }
 
   /* sin(+0 -i) = +0 +i*sinh(-1) */
   mpc_conj (z, z, MPC_RNDNN);
-  mpfr_neg (sinh_y, sinh_y, GMP_RNDN);
+  mpfr_neg (sh, sh, GMP_RNDN);
   mpc_sin (sin_z, z, MPC_RNDNN);
-  if (mpfr_cmp (MPC_IM (sin_z), sinh_y) != 0
+  if (!mpfr_equal_p (MPC_IM (sin_z), sh)
       || !mpfr_zero_p (MPC_RE (sin_z)) || mpfr_signbit (MPC_RE (sin_z)))
     {
-      printf ("mpc_sin(+0 - i) failed\n");
-      exit (1);
+      mpc_t s_z;
+      mpc_init (s_z);
+      mpfr_set_ui (MPC_RE (s_z), 0, GMP_RNDN);
+      mpfr_set (MPC_IM (s_z), sh, GMP_RNDN);
+      test_failed (z, sin_z, s_z);
     }
 
   /* sin(-0 +i) = -0 +i*sinh(1) */
   mpc_neg (z, z, MPC_RNDNN);
-  mpfr_neg (sinh_y, sinh_y, GMP_RNDN);
+  mpfr_neg (sh, sh, GMP_RNDN);
   mpc_sin (sin_z, z, MPC_RNDNN);
-  if (mpfr_cmp (MPC_IM (sin_z), sinh_y) != 0
+  if (!mpfr_equal_p (MPC_IM (sin_z), sh)
       || !mpfr_zero_p (MPC_RE (sin_z)) || !mpfr_signbit (MPC_RE (sin_z)))
     {
-      printf ("mpc_sin(-0 + i) failed\n");
-      exit (1);
+      mpc_t s_z;
+      mpc_init (s_z);
+      mpfr_set_ui (MPC_RE (s_z), 0, GMP_RNDN);
+      mpfr_neg (MPC_RE (s_z), MPC_RE (s_z), GMP_RNDN);
+      mpfr_set (MPC_IM (s_z), sh, GMP_RNDN);
+      test_failed (z, sin_z, s_z);
     }
 
   /* sin(-0 -i) = -0 -i*sinh(1) */
   mpc_conj (z, z, MPC_RNDNN);
-  mpfr_neg (sinh_y, sinh_y, GMP_RNDN);
+  mpfr_neg (sh, sh, GMP_RNDN);
   mpc_sin (sin_z, z, MPC_RNDNN);
-  if (mpfr_cmp (MPC_IM (sin_z), sinh_y) != 0
+  if (!mpfr_equal_p (MPC_IM (sin_z), sh)
       || !mpfr_zero_p (MPC_RE (sin_z)) || !mpfr_signbit (MPC_RE (sin_z)))
     {
-      printf ("mpc_sin(-0 - i) failed\n");
-      exit (1);
+      mpc_t s_z;
+      mpc_init (s_z);
+      mpfr_set_ui (MPC_RE (s_z), 0, GMP_RNDN);
+      mpfr_neg (MPC_RE (s_z), MPC_RE (s_z), GMP_RNDN);
+      mpfr_set (MPC_IM (s_z), sh, GMP_RNDN);
+      test_failed (z, sin_z, s_z);
     }
 
   mpc_clear (sin_z);
   mpc_clear (z);
-  mpfr_clear (sinh_y);
-  mpfr_clear (y);
+  mpfr_clear (sh);
 }
 
 static void

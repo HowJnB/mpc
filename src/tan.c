@@ -123,8 +123,8 @@ mpc_tan (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
 
   if (mpfr_zero_p (MPC_RE (op)))
     {
-      /* tan(-0 - i * y) = -0 +i*tanh(y), when y is finite. */
-      /* tan(-0 + i * y) = +0 +i*tanh(y), when y is finite. */
+      /* tan(-0 -i*y) = -0 +i*tanh(y), when y is finite. */
+      /* tan(+0 +i*y) = +0 +i*tanh(y), when y is finite. */
       mpfr_set (MPC_RE (rop), MPC_RE (op), MPC_RND_RE (rnd));
       mpfr_tanh (MPC_IM (rop), MPC_IM (op), MPC_RND_IM (rnd));
 
@@ -133,8 +133,8 @@ mpc_tan (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
 
   if (mpfr_zero_p (MPC_IM (op)))
     {
-      /* tan(x - i * 0) = tan(x) - i * 0
-         tan(x + i * 0) = tan(x) + i * 0, when x is finite. */
+      /* tan(x -i*0) = tan(x) -i*0, when x is finite. */
+      /* tan(x +i*0) = tan(x) +i*0, when x is finite. */
       mpfr_tan (MPC_RE (rop), MPC_RE (op), MPC_RND_RE (rnd));
       mpfr_set (MPC_IM (rop), MPC_IM (op), MPC_RND_IM (rnd));
 

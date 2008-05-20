@@ -100,8 +100,8 @@ mpc_cos (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
 
       if (mpfr_zero_p (MPC_RE (op)))
         {
-          /* cos(-0 - i * Inf) = cos(+0 + i * Inf) = +Inf - i * 0 */
-          /* cos(-0 + i * Inf) = cos(+0 - i * Inf) = +Inf + i * 0 */
+          /* cos(-0 -i*Inf) = cos(+0 +i*Inf) = +Inf -i*0 */
+          /* cos(-0 +i*Inf) = cos(+0 -i*Inf) = +Inf +i*0 */
           const int same_sign =
             mpfr_signbit (MPC_RE (op)) == mpfr_signbit (MPC_IM (op));
 

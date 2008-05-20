@@ -32,7 +32,7 @@ MA 02111-1307, USA. */
 static void
 test_failed (mpc_t op, mpc_t get, mpc_t expected)
 {
-  printf ("mpc_tan(op) failed with ");
+  printf ("mpc_tan(op) failed\n with ");
   OUT (op);
   printf ("     ");
   OUT (get);
