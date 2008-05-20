@@ -110,7 +110,7 @@ mpc_tan (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
         mpfr_sin_cos (s, c, MPC_RE (op), GMP_RNDN);
         mpfr_set_ui (MPC_RE (rop), 0, MPC_RND_RE (rnd));
         mpfr_setsign (MPC_RE (rop), MPC_RE (rop),
-                      mpfr_signbit (c) == mpfr_signbit (s), MPC_RNDNN);
+                      mpfr_signbit (c) != mpfr_signbit (s), MPC_RNDNN);
         mpfr_set_si (MPC_IM (rop), (mpfr_signbit (MPC_IM (op)) ? -1 : +1),
                      MPC_RND_IM (rnd));
 
