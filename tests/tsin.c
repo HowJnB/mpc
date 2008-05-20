@@ -182,25 +182,25 @@ special ()
   /* sin(+0 -i*infinity) = +0 -i*infinity */
   mpfr_set_ui (MPC_RE (z), 0, GMP_RNDN);
   mpc_sin (s, z, MPC_RNDNN);
-  if (mpc_cmp (s, z) != 0)
+  if (mpc_cmp (s, z) != 0 || mpfr_signbit (MPC_RE (s)))
     test_failed (z, s, z);
 
   /* sin(+0 +i*infinity) = +0 +i*infinity */
   mpc_conj (z, z, MPC_RNDNN);
   mpc_sin (s, z, MPC_RNDNN);
-  if (mpc_cmp (s, z) != 0)
+  if (mpc_cmp (s, z) != 0 || mpfr_signbit (MPC_RE (s)))
     test_failed (z, s, z);
 
   /* sin(-0 -i*infinity) = -0 -i*infinity */
   mpc_neg (z, z, MPC_RNDNN);
   mpc_sin (s, z, MPC_RNDNN);
-  if (mpc_cmp (s, z) != 0)
+  if (mpc_cmp (s, z) != 0 || !mpfr_signbit (MPC_RE (s)))
     test_failed (z, s, z);
 
   /* sin(-0 +i*infinity) = -0 +i*infinity */
   mpc_conj (z, z, MPC_RNDNN);
   mpc_sin (s, z, MPC_RNDNN);
-  if (mpc_cmp (s, z) != 0)
+  if (mpc_cmp (s, z) != 0 || !mpfr_signbit (MPC_RE (s)))
     test_failed (z, s, z);
 
   /* sin(-infinity +i*0) = NaN +/-i*0 */

@@ -181,32 +181,33 @@ special ()
   if (mpc_cmp (c, c99) != 0)
     test_failed (z, c, c99);
 
-  /* cos(+0 -i*Inf) = +Inf +i*0 */
+  /* cos(+0 +i*Inf) = +Inf -i*0 */
   mpfr_set_ui (MPC_RE (z), 0, GMP_RNDN);
   mpfr_set_inf (MPC_RE (c99), +1);
   mpfr_set_ui (MPC_IM (c99), 0, GMP_RNDN);
+  mpc_conj (c99, c99, MPC_RNDNN);
   mpc_cos (c, z, MPC_RNDNN);
-  if (mpc_cmp (c, c99) != 0)
+  if (mpc_cmp (c, c99) != 0 || !mpfr_signbit (MPC_IM (c)))
     test_failed (z, c, c99);
 
-  /* cos(+0 +i*Inf) = +Inf -i*0 */
+  /* cos(+0 -i*Inf) = +Inf +i*0 */
   mpc_conj (z, z, MPC_RNDNN);
   mpc_conj (c99, c99, MPC_RNDNN);
   mpc_cos (c, z, MPC_RNDNN);
-  if (mpc_cmp (c, c99) != 0)
-    test_failed (z, c, z);
+  if (mpc_cmp (c, c99) != 0 || mpfr_signbit (MPC_IM (c)))
+    test_failed (z, c, c99);
 
-  /* cos(-0 -i*Inf) = +Inf -i0 */
+  /* cos(-0 +i*Inf) = +Inf +i0 */
   mpc_neg (z, z, MPC_RNDNN);
   mpc_cos (c, z, MPC_RNDNN);
-  if (mpc_cmp (c, c99) != 0)
+  if (mpc_cmp (c, c99) != 0 || mpfr_signbit (MPC_IM (c)))
     test_failed (z, c, c99);
 
-  /* cos(-0 +i*Inf) = +Inf +i*0 */
+  /* cos(-0 -i*Inf) = +Inf -i*0 */
   mpc_conj (z, z, MPC_RNDNN);
   mpc_conj (c99, c99, MPC_RNDNN);
   mpc_cos (c, z, MPC_RNDNN);
-  if (mpc_cmp (c, c99) != 0)
+  if (mpc_cmp (c, c99) != 0 || !mpfr_signbit (MPC_IM (c)))
     test_failed (z, c, c99);
 
   /* cos(-Inf +i*0) = NaN +/-i*0 */
