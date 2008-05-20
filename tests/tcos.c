@@ -294,8 +294,8 @@ special ()
 static void
 pure_real_argument ()
 {
-  /* cos(x -i*0) = cos(x) -i*0*sin(x) */
-  /* sin(x +i*0) = cos(x) +i*0*sin(x) */
+  /* cos(x -i*0) = cos(x) +i*0*sin(x) */
+  /* cos(x +i*0) = cos(x) -i*0*sin(x) */
   mpc_t u;
   mpc_t z;
   mpc_t cos_z;
@@ -304,59 +304,60 @@ pure_real_argument ()
   mpc_init (z);
   mpc_init (cos_z);
 
-  /* cos(1 +i*0) = cos(1) +i*0*sin(1) */
+  /* cos(1 +i*0) = cos(1) -i*0*sin(1) */
   mpc_set_ui_ui (z, 1, 0, MPC_RNDNN);
   mpfr_cos (MPC_RE (u), MPC_RE (z), GMP_RNDN);
   mpfr_set_ui (MPC_IM (u), 0, GMP_RNDN);
-  mpc_cos (cos_z, z, MPC_RNDNN);
-  if (mpc_cmp (cos_z, u) != 0 || mpfr_signbit (MPC_IM (cos_z)))
-    test_failed (z, cos_z, u);
-
-  /* cos(1 -i*0) = cos(1) -i*0*sin(1) */
-  mpc_conj (z, z, MPC_RNDNN);
   mpc_conj (u, u, MPC_RNDNN);
   mpc_cos (cos_z, z, MPC_RNDNN);
   if (mpc_cmp (cos_z, u) != 0 || !mpfr_signbit (MPC_IM (cos_z)))
     test_failed (z, cos_z, u);
 
-  /* cos(-1 +i*0) = cos(-1) +i*0*sin(-1) */
+  /* cos(1 -i*0) = cos(1) +i*0*sin(1) */
+  mpc_conj (z, z, MPC_RNDNN);
+  mpc_conj (u, u, MPC_RNDNN);
+  mpc_cos (cos_z, z, MPC_RNDNN);
+  if (mpc_cmp (cos_z, u) != 0 || mpfr_signbit (MPC_IM (cos_z)))
+    test_failed (z, cos_z, u);
+
+  /* cos(-1 +i*0) = cos(-1) -i*0*sin(-1) */
   mpc_neg (z, z, MPC_RNDNN);
   mpc_cos (cos_z, z, MPC_RNDNN);
-  if (mpc_cmp (cos_z, u) != 0 || !mpfr_signbit (MPC_IM (cos_z)))
-    test_failed (z, cos_z, u);
-
-  /* cos(-1 -i*0) = cos(-1) -i*0*sin(-1) */
-  mpc_conj (z, z, MPC_RNDNN);
-  mpc_conj (u, u, MPC_RNDNN);
-  mpc_cos (cos_z, z, MPC_RNDNN);
   if (mpc_cmp (cos_z, u) != 0 || mpfr_signbit (MPC_IM (cos_z)))
     test_failed (z, cos_z, u);
 
-  /* cos(2 +i*0) = cos(2) +i*0*sin(2) */
+  /* cos(-1 -i*0) = cos(-1) +i*0*sin(-1) */
+  mpc_conj (z, z, MPC_RNDNN);
+  mpc_conj (u, u, MPC_RNDNN);
+  mpc_cos (cos_z, z, MPC_RNDNN);
+  if (mpc_cmp (cos_z, u) != 0 || !mpfr_signbit (MPC_IM (cos_z)))
+    test_failed (z, cos_z, u);
+
+  /* cos(2 +i*0) = cos(2) -i*0*sin(2) */
   mpc_set_ui_ui (z, 2, 0, MPC_RNDNN);
   mpfr_cos (MPC_RE (u), MPC_RE (z), GMP_RNDN);
   mpc_cos (cos_z, z, MPC_RNDNN);
-  if (mpc_cmp (cos_z, u) != 0 || mpfr_signbit (MPC_IM (cos_z)))
-    test_failed (z, cos_z, u);
-
-  /* cos(2 -i*0) = cos(2) -i*0*sin(2) */
-  mpc_conj (z, z, MPC_RNDNN);
-  mpc_conj (u, u, MPC_RNDNN);
-  mpc_cos (cos_z, z, MPC_RNDNN);
   if (mpc_cmp (cos_z, u) != 0 || !mpfr_signbit (MPC_IM (cos_z)))
     test_failed (z, cos_z, u);
 
-  /* cos(-2 +i*0) = cos(-2) +i*0*sin(-2) */
+  /* cos(2 -i*0) = cos(2) +i*0*sin(2) */
+  mpc_conj (z, z, MPC_RNDNN);
+  mpc_conj (u, u, MPC_RNDNN);
+  mpc_cos (cos_z, z, MPC_RNDNN);
+  if (mpc_cmp (cos_z, u) != 0 || mpfr_signbit (MPC_IM (cos_z)))
+    test_failed (z, cos_z, u);
+
+  /* cos(-2 +i*0) = cos(-2) -i*0*sin(-2) */
   mpc_neg (z, z, MPC_RNDNN);
   mpc_cos (cos_z, z, MPC_RNDNN);
-  if (mpc_cmp (cos_z, u) != 0 || !mpfr_signbit (MPC_IM (cos_z)))
+  if (mpc_cmp (cos_z, u) != 0 || mpfr_signbit (MPC_IM (cos_z)))
     test_failed (z, cos_z, u);
 
-  /* cos(-2 -i*0) = cos(-2) -i*0*sin(-2) */
+  /* cos(-2 -i*0) = cos(-2) +i*0*sin(-2) */
   mpc_conj (z, z, MPC_RNDNN);
   mpc_conj (u, u, MPC_RNDNN);
   mpc_cos (cos_z, z, MPC_RNDNN);
-  if (mpc_cmp (cos_z, u) != 0 || mpfr_signbit (MPC_IM (cos_z)))
+  if (mpc_cmp (cos_z, u) != 0 || !mpfr_signbit (MPC_IM (cos_z)))
     test_failed (z, cos_z, u);
 
   mpc_clear (cos_z);
