@@ -484,49 +484,46 @@ special ()
 static void
 pure_real_argument ()
 {
-  /* cosh(x -i*0) = cosh(x) +i*0 if x<0 */
-  /* cosh(x -i*0) = cosh(x) -i*0 if x>0 */
-  /* cosh(x +i*0) = cosh(x) -i*0 if x<0 */
-  /* cosh(x -i*0) = cosh(x) +i*0 if x>0 */
+  /* tanh(x -i*0) = tanh(x) -i*0 */
+  /* tanh(x +i*0) = tanh(x) +i*0 */
   mpc_t u;
   mpc_t z;
-  mpc_t cosh_z;
-
-  return;
+  mpc_t tanh_z;
 
   mpc_init (u);
   mpc_init (z);
-  mpc_init (cosh_z);
+  mpc_init (tanh_z);
 
-  /* cosh(1 +i*0) = cosh(1) +i*0 */
+  /* tanh(1 +i*0) = tanh(1) +i*0 */
   mpc_set_ui_ui (z, 1, 0, MPC_RNDNN);
-  mpfr_cosh (MPC_RE (u), MPC_RE (z), GMP_RNDN);
+  mpfr_tanh (MPC_RE (u), MPC_RE (z), GMP_RNDN);
   mpfr_set_ui (MPC_IM (u), 0, GMP_RNDN);
-  mpc_cosh (cosh_z, z, MPC_RNDNN);
-  if (mpc_cmp (cosh_z, u) != 0)
-    test_failed (z, cosh_z, u);
+  mpc_tanh (tanh_z, z, MPC_RNDNN);
+  if (mpc_cmp (tanh_z, u) != 0 || mpfr_signbit (MPC_IM (tanh_z)))
+    test_failed (z, tanh_z, u);
 
-  /* cosh(1 -i*0) = cosh(1) -i*0 */
+  /* tanh(1 -i*0) = tanh(1) -i*0 */
   mpc_conj (z, z, MPC_RNDNN);
   mpc_conj (u, u, MPC_RNDNN);
-  mpc_cosh (cosh_z, z, MPC_RNDNN);
-  if (mpc_cmp (cosh_z, u) != 0)
-    test_failed (z, cosh_z, u);
+  mpc_tanh (tanh_z, z, MPC_RNDNN);
+  if (mpc_cmp (tanh_z, u) != 0 || !mpfr_signbit (MPC_IM (tanh_z)))
+    test_failed (z, tanh_z, u);
 
-  /* cosh(-1 +i*0) = cosh(1) -i*0 */
+  /* tanh(-1 +i*0) = -tanh(1) +i*0 */
   mpc_neg (z, z, MPC_RNDNN);
-  mpc_cosh (cosh_z, z, MPC_RNDNN);
-  if (mpc_cmp (cosh_z, u) != 0)
-    test_failed (z, cosh_z, u);
+  mpc_neg (u, u, MPC_RNDNN);
+  mpc_tanh (tanh_z, z, MPC_RNDNN);
+  if (mpc_cmp (tanh_z, u) != 0 || mpfr_signbit (MPC_IM (tanh_z)))
+    test_failed (z, tanh_z, u);
 
-  /* cosh(-1 -i*0) = cosh(1) +i*0 */
+  /* tanh(-1 -i*0) = -tanh(1) -i*0 */
   mpc_conj (z, z, MPC_RNDNN);
   mpc_conj (u, u, MPC_RNDNN);
-  mpc_cosh (cosh_z, z, MPC_RNDNN);
-  if (mpc_cmp (cosh_z, u) != 0)
-    test_failed (z, cosh_z, u);
+  mpc_tanh (tanh_z, z, MPC_RNDNN);
+  if (mpc_cmp (tanh_z, u) != 0 || !mpfr_signbit (MPC_IM (tanh_z)))
+    test_failed (z, tanh_z, u);
 
-  mpc_clear (cosh_z);
+  mpc_clear (tanh_z);
   mpc_clear (z);
   mpc_clear (u);
 }
@@ -534,43 +531,46 @@ pure_real_argument ()
 static void
 pure_imaginary_argument ()
 {
-  /* cosh(+0 +i*y) = cos y +i*0*sin y */
-  /* cosh(-0 +i*y) = cos y -i*0*sin y */
+  /* tanh(+0 +i*y) = +0 +i*tan y */
+  /* tanh(-0 +i*y) = -0 +i*tan y */
   mpc_t u;
   mpc_t z;
-  mpc_t cosh_z;
-
-  return;
+  mpc_t tanh_z;
 
   mpc_init (u);
   mpc_init (z);
-  mpc_init (cosh_z);
+  mpc_init (tanh_z);
 
-  /* cosh(+0 +i) = cos(1) +i*0 */
+  /* tanh(+0 +i) = +0 +i*tan(1) */
   mpc_set_ui_ui (z, 0, 1, MPC_RNDNN);
-  mpfr_cos (MPC_RE (u), MPC_IM (z), GMP_RNDN);
-  mpfr_set_ui (MPC_IM (u), 0, GMP_RNDN);
-  if (mpc_cmp (cosh_z, u) != 0)
-    test_failed (z, cosh_z, u);
+  mpfr_tan (MPC_IM (u), MPC_IM (z), GMP_RNDN);
+  mpfr_set_ui (MPC_RE (u), 0, GMP_RNDN);
+  mpc_tanh (tanh_z, z, MPC_RNDNN);
+  if (mpc_cmp (tanh_z, u) != 0 || mpfr_signbit (MPC_RE (tanh_z)))
+    test_failed (z, tanh_z, u);
 
-  /* cosh(+0 -i) = cos(1) -i*0 */
+  /* tanh(+0 -i) = +0 -i*tan(1) */
   mpc_conj (z, z, MPC_RNDNN);
   mpc_conj (u, u, MPC_RNDNN);
-  if (mpc_cmp (cosh_z, u) != 0)
-    test_failed (z, cosh_z, u);
+  mpc_tanh (tanh_z, z, MPC_RNDNN);
+  if (mpc_cmp (tanh_z, u) != 0 || mpfr_signbit (MPC_RE (tanh_z)))
+    test_failed (z, tanh_z, u);
 
-  /* cosh(-0 +i) = cos(1) -i*0 */
+  /* tanh(-0 +i) = -0 +i*tan(1) */
   mpc_neg (z, z, MPC_RNDNN);
-  if (mpc_cmp (cosh_z, u) != 0)
-    test_failed (z, cosh_z, u);
+  mpc_neg (u, u, MPC_RNDNN);
+  mpc_tanh (tanh_z, z, MPC_RNDNN);
+  if (mpc_cmp (tanh_z, u) != 0 || !mpfr_signbit (MPC_RE (tanh_z)))
+    test_failed (z, tanh_z, u);
 
-  /* cosh(-0 -i) = cos(1) +i*0 */
+  /* tanh(-0 -i) = -0 -i*tan(1) */
   mpc_conj (z, z, MPC_RNDNN);
   mpc_conj (u, u, MPC_RNDNN);
-  if (mpc_cmp (cosh_z, u) != 0)
-    test_failed (z, cosh_z, u);
+  mpc_tanh (tanh_z, z, MPC_RNDNN);
+  if (mpc_cmp (tanh_z, u) != 0 || !mpfr_signbit (MPC_RE (tanh_z)))
+    test_failed (z, tanh_z, u);
 
-  mpc_clear (cosh_z);
+  mpc_clear (tanh_z);
   mpc_clear (z);
   mpc_clear (u);
 }
@@ -582,17 +582,15 @@ check_53()
   mpc_t tanh_z;
   mpc_t t;
 
-  return;
-
   mpc_init2 (z, 53);
   mpc_init2 (tanh_z, 53);
   mpc_init2 (t, 53);
 
-  /* cosh(z) is near (1+2^(-53)) *(0.5+i) */
-  mpfr_set_str (MPC_RE (z), "1DA2E1BD2C9EBCp-53", 16, GMP_RNDN);
-  mpfr_set_str (MPC_IM (z), "138AADEA15829Fp-52", 16, GMP_RNDN);
+  /* tanh(z) is near 0.5+2^(-53)+i */
+  mpfr_set_str (MPC_RE (z), "1E938CBCEB16DFp-55", 16, GMP_RNDN);
+  mpfr_set_str (MPC_IM (z), "1B1F56FDEEF00Fp-53", 16, GMP_RNDN);
   mpfr_set_str (MPC_RE (t), "10000000000001p-53", 16, GMP_RNDN);
-  mpfr_set_str (MPC_IM (t), "10000000000001p-52", 16, GMP_RNDN);
+  mpfr_set_str (MPC_IM (t), "1FFFFFFFFFFFFFp-53", 16, GMP_RNDN);
   mpc_tanh (tanh_z, z, MPC_RNDNN);
   if (mpc_cmp (tanh_z, t) != 0)
     test_failed (z, tanh_z, t);
