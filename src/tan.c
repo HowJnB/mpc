@@ -176,9 +176,9 @@ mpc_tan (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
       mpc_set_prec (y, prec);
       mpc_set_prec (z, prec);
 
-      mpc_sin (x, op, MPC_RNDNN);
-      mpc_cos (y, op, MPC_RNDNN);
-      mpc_div (z, x, y, MPC_RNDNN);
+      mpc_sin (x, op, MPC_RNDUU);
+      mpc_cos (y, op, MPC_RNDUU);
+      mpc_div (z, x, y, MPC_RNDUU);
 
       err = 5 + MAX(2, mpfr_get_exp (MPC_RE (x)) + mpfr_get_exp (MPC_RE (y))
                     - mpfr_get_exp (MPC_IM (y)) - mpfr_get_exp (MPC_RE (z)));
@@ -187,13 +187,13 @@ mpc_tan (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
          floating point representation. For the time being, do as if it were
          true. */
       ok = mpfr_inf_p (MPC_RE (z))
-        ||mpfr_can_round (MPC_RE(z), prec - err, GMP_RNDN, MPC_RND_RE(rnd),
+        ||mpfr_can_round (MPC_RE(z), prec - err, GMP_RNDU, MPC_RND_RE(rnd),
                           MPFR_PREC(MPC_RE(rop)));
 
       if (ok) /* compute imaginary part */
         {
           ok = mpfr_inf_p (MPC_RE (z))
-            || mpfr_can_round (MPC_IM(z), prec - 6, GMP_RNDN, MPC_RND_IM(rnd),
+            || mpfr_can_round (MPC_IM(z), prec - 6, GMP_RNDU, MPC_RND_IM(rnd),
                                MPFR_PREC(MPC_IM(rop)));
         }
     }
