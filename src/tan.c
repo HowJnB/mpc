@@ -51,7 +51,6 @@ mpc_tan (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
               mpfr_set_nan (MPC_IM (rop));
             }
 
-
           return;
         }
 
@@ -69,6 +68,7 @@ mpc_tan (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
               mpfr_set_nan (MPC_RE (rop));
               mpfr_set_nan (MPC_IM (rop));
             }
+
           return;
         }
 
