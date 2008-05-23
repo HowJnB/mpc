@@ -50,12 +50,48 @@ MA 02111-1307, USA. */
 /* type is the target (unsigned) type (copied from mpfr-impl.h */
 #define SAFE_ABS(type,x) ((x) >= 0 ? (type)(x) : -(type)(x))
 
-#define OUT(x) \
-do { \
-   printf (#x "=");\
-   mpc_out_str (stdout, 2, 0, x, MPC_RNDNN); \
-   printf ("\n"); \
+#define OUT(x)                                                  \
+  do {                                                          \
+  printf (#x "[%ld,%ld]=", MPC_PREC_RE (x), MPC_PREC_IM (x));   \
+  mpc_out_str (stdout, 2, 0, x, MPC_RNDNN);                     \
+  printf ("\n");                                                \
 } while (0)
+
+
+/* Logging macros */
+#ifdef MPC_USE_LOGGING
+
+#define MPC_LOG_VAR(x)                          \
+  do {                                          \
+    if (getenv ("MPC_LOG") != NULL)             \
+      {                                         \
+        printf ("%s.%d:", __func__, __LINE__);  \
+        OUT (x);                                \
+      }                                         \
+  } while (0)
+#define MPC_LOG_RND(r)                                  \
+  do {                                                  \
+    if (getenv ("MPC_LOG") != NULL)                     \
+      {                                                 \
+        printf ("%s.%d: rounding_mode [%s, %s]\n",      \
+                __func__, __LINE__,                     \
+                mpfr_print_rnd_mode (MPC_RND_RE(r)),    \
+                mpfr_print_rnd_mode (MPC_RND_IM(r)));   \
+      }                                                 \
+  } while (0)
+#define MPC_LOG_MSG(format, ...)                                        \
+  do {                                                                  \
+    if (getenv("MPC_LOG") != NULL)                                      \
+      printf ("%s.%d:"format"\n", __func__, __LINE__, __VA_ARGS__);     \
+  } while (0);
+
+#else /* MPC_USE_LOGGING */
+#define MPC_LOG_VAR(x)
+#define MPC_LOG_RND(r)
+#define MPC_LOG_MSG(format, ...)
+
+#endif /* MPC_USE_LOGGING */
+
 
 /* Define internal functions */
 
