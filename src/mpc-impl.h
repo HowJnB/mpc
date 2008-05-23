@@ -22,7 +22,7 @@ MA 02111-1307, USA. */
 #ifndef __MPC_IMPL_H
 #define __MPC_IMPL_H
 
-#include <stdio.h>
+#include <stdlib.h>
 
 #define MPFR_PREC(x) mpfr_get_prec(x)
 #define MPFR_EXP(x)  mpfr_get_exp(x)
