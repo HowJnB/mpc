@@ -153,9 +153,10 @@ mpc_tan (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
      (2) y = N(cos(op))
      (3) z = N(x/y)
 
-     the error on Im(z) is at most 61 ulp,
+     the error on Im(z) is at most 81 ulp,
      the error on Re(z) is at most
-     7 ulp if k < 3,
+     7 ulp if k < 2,
+     8 ulp if k = 2,
      else 5+k ulp, where
      k = Exp(Re(x))+Exp(Re(y))-2min{Exp(Re(y)), Exp(Im(y))}-Exp(Re(x/y))
      see proof in algorithms.tex.
@@ -174,6 +175,7 @@ mpc_tan (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
 
   do
     {
+      mp_exp_t k;
       prec += mpc_ceil_log2 (prec) + err;
 
       MPC_LOG_MSG ("loop prec=%ld", prec);
@@ -186,8 +188,10 @@ mpc_tan (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
       mpc_cos (y, op, MPC_RNDUU);
       mpc_div (z, x, y, MPC_RNDUU);
 
-      err = 5 + MAX(2, mpfr_get_exp (MPC_RE (x)) + mpfr_get_exp (MPC_RE (y))
-                    - mpfr_get_exp (MPC_IM (y)) - mpfr_get_exp (MPC_RE (z)));
+      k = mpfr_get_exp (MPC_RE (x)) + mpfr_get_exp (MPC_RE (y))
+        - mpfr_get_exp (MPC_RE (z))
+        +2 * MAX (-mpfr_get_exp (MPC_RE (y)), -mpfr_get_exp (MPC_IM (y)));
+      err = k < 2 ? 7 : k == 2 ? 8 : 5 + k;
 
       /* TODO: prove that overflow occurs only when the exact result has no
          floating point representation. For the time being, do as if it were
@@ -199,7 +203,7 @@ mpc_tan (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
       if (ok) /* compute imaginary part */
         {
           ok = mpfr_inf_p (MPC_RE (z))
-            || mpfr_can_round (MPC_IM(z), prec - 6, GMP_RNDU, MPC_RND_IM(rnd),
+            || mpfr_can_round (MPC_IM(z), prec - 7, GMP_RNDU, MPC_RND_IM(rnd),
                                MPFR_PREC(MPC_IM(rop)));
         }
       MPC_LOG_MSG ("err: %ld", err);
