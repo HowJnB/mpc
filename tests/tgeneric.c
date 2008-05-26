@@ -28,6 +28,18 @@ MA 02111-1307, USA. */
 #define FUNCTION_NAME(F) NAME_STR(F)
 #define NAME_STR(F) #F
 
+#ifndef TGEN_PREC_MIN
+#define TGEN_PREC_MIN 2
+#endif
+
+#ifndef TGEN_PREC_MAX
+#define TGEN_PREC_MAX 100
+#endif
+
+#ifndef TGEN_EXP_MAX
+#define TGEN_EXP_MAX 10
+#endif
+
 static void
 #ifdef TWOARGS
 message_failed (mpc_srcptr op, mpc_srcptr op2, mpc_srcptr rop,
@@ -37,7 +49,7 @@ message_failed (mpc_srcptr op, mpc_srcptr rop,
 		mpc_srcptr rop4, mpc_srcptr rop4rnd, mpc_rnd_t rnd)
 #endif
 {
-  printf ("rounding in " FUNCTION_NAME(TEST_FUNCTION) " might be "
+  printf ("Rounding in " FUNCTION_NAME(TEST_FUNCTION) " might be "
 	  "incorrect for\n");
   OUT (op);
 
@@ -78,8 +90,10 @@ tgeneric()
   mpc_init (t);
   mpc_init (u);
 
-  for (prec = 2; prec <= 1000; prec++)
+  for (prec = TGEN_PREC_MIN; prec <= TGEN_PREC_MAX; prec++)
     {
+      const size_t s = 1 + (prec-1)/BITS_PER_MP_LIMB;
+
       mpc_set_prec (x, prec);
 #ifdef TWOARGS
       mpc_set_prec (y, prec);
@@ -88,18 +102,19 @@ tgeneric()
       mpc_set_prec (t, prec);
       mpc_set_prec (u, 4*prec);
 
-      mpc_random (x);
+      mpc_random2 (x, s, TGEN_EXP_MAX);
 #ifdef TWOARGS
-      mpc_random (y);
+      mpc_random2 (y, s, TGEN_EXP_MAX);
 #endif
 
       for (rnd_re = 0; rnd_re < 4; rnd_re ++)
         for (rnd_im = 0; rnd_im < 4; rnd_im ++)
           {
-            /* We compute the result with four times the precision and check        */
-            /* whether the rounding is correct. Error reports in this part of the   */
-            /* algorithm might still be wrong, though, since there are two          */
-            /* consecutive roundings.                                               */
+
+            /* We compute the result with four times the precision and      */
+            /* check whether the rounding is correct. Error reports in this */
+            /* part of the algorithm might still be wrong, though, since    */
+            /* there are two consecutive roundings.                         */
             const mpc_rnd_t rnd = RNDC (rnd_re, rnd_im);
 
 #ifdef TWOARGS
