@@ -26,9 +26,41 @@ MA 02111-1307, USA. */
 #define TWOARGS
 #include "tgeneric.c"
 
+static void
+check_ternary_value ()
+{
+  mpc_t x, y, z;
+  mp_prec_t prec;
+
+  mpc_init (x);
+  mpc_init (y);
+  mpc_init2 (z, 2);
+
+  for (prec = 2; prec <= 1000; prec++)
+    {
+      mpc_set_prec (x, prec);
+      mpc_set_prec (y, prec);
+
+      mpc_set_ui (x, 1, MPC_RNDNN);
+      mpc_mul_2exp (x, x, prec, MPC_RNDNN);
+      mpc_set_ui (y, 1, MPC_RNDNN);
+
+      if (mpc_add (z, x, y, MPC_RNDNN) == 0)
+        {
+          fprintf (stderr, "Error in mpc_add: 2^(-prec)+1 cannot be exact\n");
+          exit (1);
+        }
+    }
+
+  mpc_clear (x);
+  mpc_clear (y);
+  mpc_clear (z);
+}
+
 int
 main()
 {
+  check_ternary_value();
   tgeneric ();
 
   return 0;

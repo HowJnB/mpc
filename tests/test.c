@@ -24,14 +24,9 @@ MA 02111-1307, USA. */
 #include "gmp.h"
 #include "mpfr.h"
 #include "mpc.h"
+#include "mpc-impl.h"
 
 #define PRINT(x) {}
-#define OUT(x) { \
-   mpfr_print_binary (MPC_RE(x)); \
-   printf ("+I*"); \
-   mpfr_print_binary (MPC_IM(x)); \
-   printf ("\n"); \
-}
 
 int
 main()
@@ -92,15 +87,6 @@ main()
 
       mpc_random2 (y, 1 + (prec - 1) / mp_bits_per_limb, 0);
 
-      PRINT ("Testing mpc_add\n");
-      mpc_add (z, x, y, MPC_RNDNN);
-      if (mpc_add (z, z, z, MPC_RNDNN))
-        {
-          fprintf (stderr, "Error in mpc_add: z+z should be exact\n");
-          fprintf (stderr, "Precision %li\n", prec);
-          exit (1);
-        }
-
       PRINT ("Testing mpc_add_fr\n");
       mpfr_random (f);
       mpc_add_fr (z, x, f, MPC_RNDNZ);
@@ -138,9 +124,6 @@ main()
       PRINT ("Testing mpc_conj\n");
       mpc_conj (z, z, MPC_RNDND);
 
-      PRINT ("Testing mpc_div\n");
-      mpc_div (z, x, y, MPC_RNDZN);
-
       PRINT ("Testing mpc_div_2exp\n");
       mpc_div_2exp (z, x, 1, MPC_RNDZZ);
 
@@ -173,9 +156,6 @@ main()
           fprintf (stderr, "\n");
           exit (1);
         }
-
-      PRINT ("Testing mpc_mul\n");
-      mpc_mul (z, x, y, MPC_RNDUU);
 
       PRINT ("Testing mpc_mul_2exp\n");
       mpc_mul_2exp (z, x, 17, MPC_RNDUD);
@@ -225,9 +205,6 @@ main()
 
       PRINT ("Testing mpc_set_ui_ui\n");
       mpc_set_ui_ui (z, 17, 17, MPC_RNDNN);
-
-      PRINT ("Testing mpc_sub\n");
-      mpc_sub (z, x, y, MPC_RNDNN);
 
       PRINT ("Testing mpc_ui_div\n");
       mpc_ui_div (z, 17, x, MPC_RNDNN);
