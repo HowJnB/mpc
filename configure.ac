@@ -47,19 +47,24 @@ if test "x$SED" = "xno"; then
 fi
 
 # Checks for libraries.
-AC_CHECK_LIB([mpfr], [mpfr_clear],,
-             [AC_MSG_ERROR([MPC library needs the MPFR library])])
+AC_CHECK_LIB([mpfr], [mpfr_clear],
+             [LIBS="-lmpfr $LIBS"],
+             [AC_MSG_ERROR([libmpfr not found or uses a different ABI.])])
+AC_CHECK_LIB([gmp], [__gmpz_init],
+             [LIBS="-lgmp $LIBS"],
+             [AC_MSG_ERROR([libgmp not found or uses a different ABI.])])
 
 # Checks for header files.
 AC_HEADER_STDC
-AC_CHECK_HEADERS([limits.h stdlib.h])
+AC_CHECK_HEADERS([limits.h stdlib.h sys/time.h])
 
 # Checks for typedefs, structures, and compiler characteristics.
 AC_C_CONST
 AC_TYPE_SIZE_T
+AC_HEADER_TIME
 
 # Checks for library functions.
-
+AC_CHECK_FUNCS([gettimeofday])
 
 # Checks for CC flags.
 # Modification PT: move in the last place so as to avoid test failure in
