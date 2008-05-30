@@ -26,6 +26,8 @@ MA 02111-1307, USA. */
 #include "mpc.h"
 #include "mpc-impl.h"
 
+#include "random.c"
+
 #define TEST_FUNCTION mpc_tan
 #include "tgeneric.c"
 
@@ -531,13 +533,16 @@ check_53()
 int
 main()
 {
+  test_start ();
+
   special ();
   pure_real_argument ();
   pure_imaginary_argument ();
 
   tgeneric ();
-
   check_53 ();
+
+  test_end ();
 
   return 0;
 }

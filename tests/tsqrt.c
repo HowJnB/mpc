@@ -25,13 +25,19 @@ MA 02111-1307, USA. */
 #include "mpc.h"
 #include "mpc-impl.h"
 
+#include "random.c"
+
 #define TEST_FUNCTION mpc_sqrt
 #include "tgeneric.c"
 
 int
 main()
 {
+  test_start ();
+
   tgeneric ();
+
+  test_end ();
 
   return 0;
 }

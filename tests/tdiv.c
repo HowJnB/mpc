@@ -26,6 +26,8 @@ MA 02111-1307, USA. */
 #include "mpc.h"
 #include "mpc-impl.h"
 
+#include "random.c"
+
 #define ERR(x) { mpc_out_str (stderr, 2, 0, x, MPC_RNDNN); \
                  fprintf (stderr, "\n"); }
 
@@ -235,6 +237,8 @@ main()
   mp_rnd_t rnd_re, rnd_im;
   mpc_rnd_t rnd;
 
+  test_start ();
+
   mpc_init (b);
   mpc_init (c);
   mpc_init (q);
@@ -271,6 +275,8 @@ main()
 
   for (prec = 2; prec < 1000; prec++)
     {
+      const size_t s = 1 + (prec-1)/BITS_PER_MP_LIMB;
+
       mpc_set_prec (b, prec);
       mpc_set_prec (c, prec);
       mpc_set_prec (q, prec);
@@ -278,11 +284,11 @@ main()
 
       for (i = 0; i < (int) (1000/prec); i++)
         {
-          mpc_random (b);
+          mpc_random2 (b, s, 0);
           /* generate a non-zero divisor */
           do
             {
-              mpc_random (c);
+              mpc_random2 (c, s, 0);
             }
           while (mpfr_sgn (MPC_RE(c)) == 0 && mpfr_sgn (MPC_IM(c)) == 0);
 
@@ -317,6 +323,8 @@ main()
   mpc_clear (c);
   mpc_clear (q);
   mpc_clear (q_ref);
+
+  test_end ();
 
   return 0;
 }

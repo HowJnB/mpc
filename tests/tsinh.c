@@ -25,6 +25,8 @@ MA 02111-1307, USA. */
 #include "mpfr.h"
 #include "mpc.h"
 
+#include "random.c"
+
 #define TEST_FUNCTION mpc_sinh
 #include "tgeneric.c"
 
@@ -433,6 +435,8 @@ check_53()
 int
 main()
 {
+  test_start ();
+
   special ();
   pure_real_argument ();
   pure_imaginary_argument ();
@@ -440,6 +444,8 @@ main()
   tgeneric ();
 
   check_53 ();
+
+  test_end ();
 
   return 0;
 }

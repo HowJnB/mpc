@@ -22,6 +22,8 @@ MA 02111-1307, USA. */
 #include <stdio.h>
 #include "mpc.h"
 
+#include "random.c"
+
 #define TEST_FUNCTION mpc_add
 #define TWOARGS
 #include "tgeneric.c"
@@ -60,8 +62,12 @@ check_ternary_value ()
 int
 main()
 {
+  test_start ();
+
   check_ternary_value();
   tgeneric ();
+
+  test_end ();
 
   return 0;
 }

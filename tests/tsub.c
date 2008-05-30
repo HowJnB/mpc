@@ -22,6 +22,8 @@ MA 02111-1307, USA. */
 #include <stdio.h>
 #include "mpc.h"
 
+#include "random.c"
+
 #define TEST_FUNCTION mpc_sub
 #define TWOARGS
 #include "tgeneric.c"
@@ -29,7 +31,11 @@ MA 02111-1307, USA. */
 int
 main()
 {
+  test_start ();
+
   tgeneric ();
+
+  test_end ();
 
   return 0;
 }

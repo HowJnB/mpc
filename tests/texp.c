@@ -25,6 +25,8 @@ MA 02111-1307, USA. */
 #include "mpfr.h"
 #include "mpc.h"
 
+#include "random.c"
+
 #define TEST_FUNCTION mpc_exp
 #include "tgeneric.c"
 
@@ -34,6 +36,8 @@ main()
   mpc_t  x, z;
   mpfr_t f, g;
   mp_prec_t prec;
+
+  test_start ();
 
   mpc_init (x);
   mpc_init (z);
@@ -73,6 +77,8 @@ main()
   mpc_clear (z);
   mpfr_clear (f);
   mpfr_clear (g);
+
+  test_end ();
 
   return 0;
 }
