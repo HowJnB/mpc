@@ -29,10 +29,10 @@ mpc_cosh (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
   /* cosh(op) = cos(i*op) */
   mpc_t z;
 
-  mpc_init3 (z, MPFR_PREC (MPC_IM (op)), MPFR_PREC (MPC_RE (op)));
+  /* z = i*op without copying significand */
+  MPC_RE (z)[0] = MPC_IM (op)[0];
+  MPC_IM (z)[0] = MPC_RE (op)[0];
+  MPFR_CHANGE_SIGN (MPC_RE (z));
 
-  mpc_mul_i (z, op, +1, MPC_RNDNN); /* exact */
   mpc_cos (rop, z, rnd);
-
-  mpc_clear (z);
 }

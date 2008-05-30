@@ -29,24 +29,18 @@ mpc_tanh (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
   /* tanh(op) = -i*tan(i*op) = conj(-i*tan(conj(-i*op))) */
   mpc_t z;
   mpc_t tan_z;
-  mpc_rnd_t rnd_z;
 
-  rnd_z = RNDC (MPC_RND_IM (rnd), MPC_RND_RE (rnd));
+  /* z := conj(-i * op) and rop = conj(-i * tan(z)), in other words, we have
+     to switch real and imaginary parts. Let us set them without copying 
+     significands. */
+  MPC_RE (z)[0] = MPC_IM (op)[0];
+  MPC_IM (z)[0] = MPC_RE (op)[0];
+  MPC_RE (tan_z)[0] = MPC_IM (rop)[0];
+  MPC_IM (tan_z)[0] = MPC_RE (rop)[0];
 
-  mpc_init3 (z, MPFR_PREC (MPC_IM (op)), MPFR_PREC (MPC_RE (op)));
-  mpc_init3 (tan_z, MPFR_PREC (MPC_IM (rop)), MPFR_PREC (MPC_RE (rop)));
+  mpc_tan (tan_z, z, RNDC (MPC_RND_IM (rnd), MPC_RND_RE (rnd)));
 
-  /* z := conj(-i * op), note that the real and imaginary precisions
-     may differ. */
-  mpfr_set (MPC_RE (z), MPC_IM (op), GMP_RNDN); /* exact */
-  mpfr_set (MPC_IM (z), MPC_RE (op), GMP_RNDN); /* exact */
-
-  /* rop = conj(-i * tan(z)) */
-  mpc_tan (tan_z, z, rnd_z);
-
-  mpfr_set (MPC_RE (rop), MPC_IM (tan_z), GMP_RNDN); /* exact */
-  mpfr_set (MPC_IM (rop), MPC_RE (tan_z), GMP_RNDN); /* exact */
-
-  mpc_clear (z);
-  mpc_clear (tan_z);
+  /* tan_z and rop parts share the same significands, copy the rest now. */
+  MPC_RE (rop)[0] = MPC_IM (tan_z)[0];
+  MPC_IM (rop)[0] = MPC_RE (tan_z)[0];
 }

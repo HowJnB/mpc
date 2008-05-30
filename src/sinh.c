@@ -29,24 +29,18 @@ mpc_sinh (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
   /* sinh(op) = -i*sin(i*op) = conj(-i*sin(conj(-i*op))) */
   mpc_t z;
   mpc_t sin_z;
-  mpc_rnd_t rnd_z;
 
-  rnd_z = RNDC (MPC_RND_IM (rnd), MPC_RND_RE (rnd));
+  /* z := conj(-i * op) and rop = conj(-i * sin(z)), in other words, we have
+     to switch real and imaginary parts. Let us set them without copying 
+     significands. */
+  MPC_RE (z)[0] = MPC_IM (op)[0];
+  MPC_IM (z)[0] = MPC_RE (op)[0];
+  MPC_RE (sin_z)[0] = MPC_IM (rop)[0];
+  MPC_IM (sin_z)[0] = MPC_RE (rop)[0];
 
-  mpc_init3 (z, MPFR_PREC (MPC_IM (op)), MPFR_PREC (MPC_RE (op)));
-  mpc_init3 (sin_z, MPFR_PREC (MPC_IM (rop)), MPFR_PREC (MPC_RE (rop)));
+  mpc_sin (sin_z, z, RNDC (MPC_RND_IM (rnd), MPC_RND_RE (rnd)));
 
-  /* z := conj(-i * op), note that the real and imaginary precision
-     may differ. */
-  mpfr_set (MPC_RE (z), MPC_IM (op), GMP_RNDN); /* exact */
-  mpfr_set (MPC_IM (z), MPC_RE (op), GMP_RNDN); /* exact */
-
-  /* rop = conj(-i * sin(z)) */
-  mpc_sin (sin_z, z, rnd_z);
-
-  mpfr_set (MPC_RE (rop), MPC_IM (sin_z), GMP_RNDN); /* exact */
-  mpfr_set (MPC_IM (rop), MPC_RE (sin_z), GMP_RNDN); /* exact */
-
-  mpc_clear (z);
-  mpc_clear (sin_z);
+  /* sin_z and rop parts share the same significands, copy the rest now. */
+  MPC_RE (rop)[0] = MPC_IM (sin_z)[0];
+  MPC_IM (rop)[0] = MPC_RE (sin_z)[0];
 }
