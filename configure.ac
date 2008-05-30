@@ -122,6 +122,18 @@ AC_ARG_WITH([gmp],
             CPPFLAGS="$CPPFLAGS -I$withval/include"
             LDFLAGS="$LDFLAGS -L$withval/lib"
             ])
+AC_ARG_VAR([MPC_USE_LOGGING], [defined if logging support wanted])
+AC_ARG_ENABLE([logging],
+              [AC_HELP_STRING([--enable-logging],
+                              [enable MPC logging [default=no]])],
+              [
+               case $enableval in
+                yes) AC_DEFINE([MPC_USE_LOGGING],1,[Logging support]) ;;
+                no)  ;;
+                *)   AC_MSG_ERROR([bad value for --enable-logging: yes or no])
+                     ;;
+               esac
+               ])
 
 # Checks for programs.
 AC_PROG_CC

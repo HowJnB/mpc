@@ -24,6 +24,8 @@ MA 02111-1307, USA. */
 
 #include <stdlib.h>
 
+#include "config.h" /* for MPC_USE_LOGGING */
+
 #define MPFR_PREC(x) mpfr_get_prec(x)
 #define MPFR_EXP(x)  mpfr_get_exp(x)
 #define MPFR_CHANGE_SIGN(x) mpfr_neg(x,x,GMP_RNDN)
