@@ -175,7 +175,7 @@ size_t mpc_out_str __MPC_PROTO ((FILE *, int, size_t, mpc_srcptr, mpc_rnd_t));
 #define mpc_init_set_si_si(x, y, z, rnd) \
  ( mpc_init(x), mpc_set_si_si((x), (y), (z), (rnd)) )
 #define mpc_add_si(x, y, z, rnd) \
- ( (z) >= 0 ? mpc_add_ui ((x), (y), (z), (rnd)) : mpc_sub_ui ((x), (y), (unsigned long int) (-(z)), (rnd)) )
+ ( (z) >= 0 ? mpc_add_ui ((x), (y), (unsigned long int) (z), (rnd)) : mpc_sub_ui ((x), (y), (unsigned long int) (-(z)), (rnd)) )
 #define mpc_cmp_si(x, y) \
  ( mpc_cmp_si_si ((x), (y), 0) )
 #define mpc_ui_sub(x, y, z, r) mpc_ui_ui_sub (x, y, 0, z, r)
