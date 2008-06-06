@@ -38,7 +38,6 @@ main()
   mp_prec_t prec, pr, pi;
   mpfr_t f, g;
   FILE *file;
-  int nread;
   const char *filename = "mpc_test";
 
   test_start ();
@@ -144,17 +143,24 @@ main()
           fprintf (stderr, "Could not open file %s\n", filename);
           exit (1);
         };
-      fprintf (file, "1+I*1\n");
+      fprintf (file, "1 +I*1\n");
       fclose (file);
       if (!(file = fopen (filename, "r")))
         {
           fprintf (stderr, "Could not open file %s\n", filename);
           exit (1);
         };
-      nread = mpc_inp_str (z, file, 10, MPC_RNDUZ);
+      if (mpc_inp_str (z, file, 10, MPC_RNDUZ) == 0)
+        {
+          fprintf (stderr, "mpc_inp_str cannot correctly re-read number "
+                   "in file %s\n", filename);
+          exit (1);
+        }
       fclose (file);
       mpc_set_si_si (x, 1, 1, MPC_RNDNN);
-      if (nread && mpc_cmp (z, x))
+      mpfr_clear_flags (); /* mpc_cmp set erange flag when an operand is
+                              a NaN */
+      if (mpc_cmp (z, x) != 0 || mpfr_erangeflag_p())
         {
           fprintf (stderr, "inp_str o out_str <> Id\n");
           mpc_out_str (stderr, 10, 0, z, MPC_RNDNN);

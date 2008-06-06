@@ -30,6 +30,7 @@ mpc_inp_str (mpc_ptr rop, FILE *stream, int base, mpc_rnd_t rnd_mode)
 {
   size_t size, size_im;
   int c;
+  int sign;
 
   if (stream == NULL)
     stream = stdin;
@@ -47,8 +48,18 @@ mpc_inp_str (mpc_ptr rop, FILE *stream, int base, mpc_rnd_t rnd_mode)
     }
   while (isspace (c));
 
-  if (c != '+')
-    return 0; /* error */
+  switch (c)
+    {
+    case '+':
+      sign = 0;
+      break;
+    case '-':
+      sign = 1;
+      break;
+    default:
+      /* error */
+      return 0;
+    }
 
   c = getc (stream);
   size ++;
@@ -63,6 +74,9 @@ mpc_inp_str (mpc_ptr rop, FILE *stream, int base, mpc_rnd_t rnd_mode)
   size_im = mpfr_inp_str (MPC_IM(rop), stream, base, MPC_RND_IM(rnd_mode));
   if (size_im == 0) /* error while reading the imaginary part */
     return 0;
+
+  if (sign)
+    mpfr_setsign (MPC_IM (rop), MPC_IM (rop), sign, GMP_RNDN);
   
   return size + size_im;
 }
