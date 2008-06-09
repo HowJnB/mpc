@@ -313,7 +313,8 @@ This section describes in detail the algorithms used in \mpc, together with the 
 
 \subsection {\texttt {mpc\_sqrt}}
 
-Let $z = x + i y$.
+The following algorithm is due to Friedland \cite{Friedland67,Smith98}.
+Let $z = x + i y$. 
 
 Let $w = \sqrt { \frac {|x| + \sqrt {x^2 + y^2}}{2}}$ and
 $t = \frac {y}{2w}$. Then $(w + it)^2 = |x| + iy$, and with the branch cut on the negative real axis we obtain
@@ -389,5 +390,8 @@ k_R=\left\{
 \end{array}
 \right.
 \end{equation*}
+
+\bibliographystyle{acm}
+\bibliography{algorithms}
 
 \end {document}
