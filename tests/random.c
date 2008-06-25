@@ -41,10 +41,8 @@ MA 02111-1307, USA. */
 # endif
 #endif
 
-/* Use the global variables of MPFR since we are using mpfr_random2 through
-   mpc_random2. */
-extern gmp_randstate_t  mpfr_rands;
-extern char             mpfr_rands_initialized;
+gmp_randstate_t  rands;
+char             rands_initialized;
 
 void
 test_start ()
@@ -52,19 +50,19 @@ test_start ()
   char *environment_seed;
   unsigned long seed;
 
-  if (mpfr_rands_initialized)
+  if (rands_initialized)
     {
       fprintf (stderr,
                "Put test_start at the beginning of your test function.\n");
       exit (1);
     }
 
-  gmp_randinit_default (mpfr_rands);
-  mpfr_rands_initialized = 1;
+  gmp_randinit_default (rands);
+  rands_initialized = 1;
 
   environment_seed = getenv ("GMP_CHECK_RANDOMIZE");
   if (environment_seed == NULL)
-      gmp_randseed_ui (mpfr_rands, 0xfac11e);
+      gmp_randseed_ui (rands, 0xfac11e);
   else
     {
       seed = atoi (environment_seed);
@@ -79,14 +77,14 @@ test_start ()
           time (&tv);
           seed = tv;
 #endif
-          gmp_randseed_ui (mpfr_rands, seed);
+          gmp_randseed_ui (rands, seed);
           printf ("Seed GMP_CHECK_RANDOMIZE=%lu "
                   "(include this in bug reports)\n", seed);
         }
       else
         {
           printf ("Re-seeding with GMP_CHECK_RANDOMIZE=%lu\n", seed);
-          gmp_randseed_ui (mpfr_rands, seed);
+          gmp_randseed_ui (rands, seed);
         }
     }
 }
@@ -94,9 +92,9 @@ test_start ()
 void
 test_end ()
 {
-  if (mpfr_rands_initialized)
+  if (rands_initialized)
     {
-      mpfr_rands_initialized = 0;
-      gmp_randclear (mpfr_rands);
+      rands_initialized = 0;
+      gmp_randclear (rands);
     }
 }
