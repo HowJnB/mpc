@@ -27,7 +27,7 @@ MA 02111-1307, USA. */
 void
 mpc_tan (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
 {
-  mpc_t x, y, z;
+  mpc_t x, y;
   mp_prec_t prec;
   mp_exp_t err;
   int ok = 0;
@@ -146,12 +146,12 @@ mpc_tan (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
 
   /* tan(op) = sin(op) / cos(op).
 
-     We use the following algorithm
-     with rounding towards +infinity for all operations, and working precision w:
+     We use the following algorithm with rounding away from 0 for all
+     operations, and working precision w:
 
-     (1) x = N(sin(op))
-     (2) y = N(cos(op))
-     (3) z = N(x/y)
+     (1) x = A(sin(op))
+     (2) y = A(cos(op))
+     (3) z = A(x/y)
 
      the error on Im(z) is at most 81 ulp,
      the error on Re(z) is at most
@@ -169,53 +169,85 @@ mpc_tan (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
 
   mpc_init2 (x, 2);
   mpc_init2 (y, 2);
-  mpc_init2 (z, 2);
 
   err = 7;
 
   do
     {
       mp_exp_t k;
+      mp_exp_t exr, eyr, eyi, ezr;
+      int inex;
+
+      ok = 0;
+
+      /* FIXME: prevent addition overflow */
       prec += mpc_ceil_log2 (prec) + err;
+      mpc_set_prec (x, prec);
+      mpc_set_prec (y, prec);
 
       MPC_LOG_MSG ("loop prec=%ld", prec);
 
-      mpc_set_prec (x, prec);
-      mpc_set_prec (y, prec);
-      mpc_set_prec (z, prec);
+      /* rounding away from zero: except in the cases x=0 or y=0 (processed
+         above), sin x and cos y are never exact, so rounding away from 0 is
+         rounding towards 0 and adding one ulp to the absolute value */
+      mpc_sin (x, op, MPC_RNDZZ);
+      mpfr_signbit (MPC_RE (x)) ?
+        mpfr_nextbelow (MPC_RE (x)) : mpfr_nextabove (MPC_RE (x));
+      mpfr_signbit (MPC_IM (x)) ?
+        mpfr_nextbelow (MPC_IM (x)) : mpfr_nextabove (MPC_IM (x));
+      exr = mpfr_get_exp (MPC_RE (x));
+      mpc_cos (y, op, MPC_RNDZZ);
+      mpfr_signbit (MPC_RE (y)) ?
+        mpfr_nextbelow (MPC_RE (y)) : mpfr_nextabove (MPC_RE (y));
+      mpfr_signbit (MPC_IM (y)) ?
+        mpfr_nextbelow (MPC_IM (y)) : mpfr_nextabove (MPC_IM (y));
+      eyr = mpfr_get_exp (MPC_RE (y));
+      eyi = mpfr_get_exp (MPC_IM (y));
 
-      mpc_sin (x, op, MPC_RNDUU);
-      mpc_cos (y, op, MPC_RNDUU);
-      mpc_div (z, x, y, MPC_RNDUU);
-
-      k = mpfr_get_exp (MPC_RE (x)) + mpfr_get_exp (MPC_RE (y))
-        - mpfr_get_exp (MPC_RE (z))
-        +2 * MAX (-mpfr_get_exp (MPC_RE (y)), -mpfr_get_exp (MPC_IM (y)));
-      err = k < 2 ? 7 : k == 2 ? 8 : 5 + k;
-
-      /* TODO: prove that overflow occurs only when the exact result has no
-         floating point representation. For the time being, do as if it were
-         true. */
-      ok = mpfr_inf_p (MPC_RE (z))
-        ||mpfr_can_round (MPC_RE(z), prec - err, GMP_RNDU, MPC_RND_RE(rnd),
-                          MPFR_PREC(MPC_RE(rop)));
-
-      if (ok) /* compute imaginary part */
+      /* some parts of the quotient may be exact */
+      inex = mpc_div (x, x, y, MPC_RNDZZ);
+      /* OP is no pure real nor pure imaginary, so the real and imaginary
+         parts of its tangent cannot be null. */
+      if (mpfr_zero_p (MPC_RE (x)) || mpfr_zero_p (MPC_IM (x)))
         {
-          ok = mpfr_inf_p (MPC_RE (z))
-            || mpfr_can_round (MPC_IM(z), prec - 7, GMP_RNDU, MPC_RND_IM(rnd),
+          err = prec; /* double precision */
+          continue;
+        }
+      if (MPC_INEX_RE (inex))
+        mpfr_signbit (MPC_RE (x)) ?
+          mpfr_nextbelow (MPC_RE (x)) : mpfr_nextabove (MPC_RE (x));
+      if (MPC_INEX_IM (inex))
+        mpfr_signbit (MPC_IM (x)) ?
+          mpfr_nextbelow (MPC_IM (x)) : mpfr_nextabove (MPC_IM (x));
+      ezr = mpfr_get_exp (MPC_RE (x));
+
+      /* FIXME: compute
+         k = Exp(Re(x))+Exp(Re(y))-2min{Exp(Re(y)), Exp(Im(y))}-Exp(Re(x/y))
+         avoiding overflow */
+      k = exr - ezr + MAX(-eyr, eyr - 2 * eyi);
+      err = k < 2 ? 7 : (k == 2 ? 8 : (5 + k));
+
+      /* Can the real part be rounded ? */
+      ok = mpfr_inf_p (MPC_RE (x))
+        || mpfr_can_round (MPC_RE(x), prec - err, GMP_RNDN,
+                           MPC_RND_RE(rnd), MPFR_PREC(MPC_RE(rop)));
+
+      if (ok)
+        {
+          /* Can the imaginary part be rounded ? */
+          ok = mpfr_inf_p (MPC_IM (x))
+            || mpfr_can_round (MPC_IM(x), prec - 6, GMP_RNDN, MPC_RND_IM(rnd),
                                MPFR_PREC(MPC_IM(rop)));
         }
       MPC_LOG_MSG ("err: %ld", err);
-      MPC_LOG_VAR (z);
+      MPC_LOG_VAR (x);
     }
   while (ok == 0);
 
-  mpc_set (rop, z, rnd);
+  mpc_set (rop, x, rnd);
 
   MPC_LOG_VAR (rop);
 
   mpc_clear (x);
   mpc_clear (y);
-  mpc_clear (z);
 }

@@ -15,6 +15,7 @@
 \DeclareMathOperator{\pinf}{\bigtriangleup}
 \DeclareMathOperator{\minf}{\bigtriangledown}
 \DeclareMathOperator{\N}{\mathcal N}
+\DeclareMathOperator{\A}{\mathcal A}
 
 \title {MPC: Algorithms and Error Analysis}
 \author {Andreas Enge \and Philippe Th\'eveny}
@@ -43,15 +44,15 @@ $\widetilde{z_1}$ and $\widetilde{z_2}$ respectively. For $n=1, 2$, let
 $\widetilde{z_n} = \widetilde{x_n} + i \widetilde{y_n}$ and $z_n = x_n + i
 y_n$, let $k_{R,n}$ and $k_{I,n}$ the upper bound coefficients: $\error(x_n)
 \leq k_{R,n} \Ulp(x_n)$ and $\error(y_n) \leq k_{I,n} \Ulp(y_n)$.  Note that
-we always have $x_n.c_{R,n}^- \leq \widetilde{x_n} \leq x_n.c_{R,n}^+$ and
-$y_n.c_{I,n}^- \leq \widetilde{y_n} \leq y_n.c_{I,n}^+$, with $c_{\cdot,n}^- =
-1-k_{\cdot,n}2^{-p}$ and $c_{\cdot,n}^+ = 1+k_{\cdot,n}2^{1-p}$. When $z_n$ is
-obtained by rounding $\widetilde{z_n}$ to the precision $p$ (we note
-$z_n=\circ(\widetilde{z_n})$), we have another inequalities: $\frac{1}{2}|x_n|
-\leq |\widetilde{x_n}| \leq 2|x_n|$; if the rounding mode is rounding towards
-plus infinity: $\widetilde{x_n} \leq x_n$, and if the rounding mode is toward
-minus infinity: $x_n \leq \widetilde{x_n}$ (similar relations hold for the
-imaginary part).
+we always have $|x_n|.c_{R,n}^- \leq |\widetilde{x_n}| \leq |x_n|.c_{R,n}^+$
+and $|y_n|.c_{I,n}^- \leq |\widetilde{y_n}| \leq |y_n|.c_{I,n}^+$, with
+$c_{\cdot,n}^- = 1-k_{\cdot,n}2^{1-p}$ and $c_{\cdot,n}^+ =
+1+k_{\cdot,n}2^{1-p}$. When $z_n$ is obtained by rounding $\widetilde{z_n}$ to
+the precision $p$ (we note $z_n=\circ(\widetilde{z_n})$), we have another
+inequalities: $\frac{1}{2}|x_n| \leq |\widetilde{x_n}| \leq 2|x_n|$; if the
+rounding mode is rounding towards plus infinity: $\widetilde{x_n} \leq x_n$,
+and if the rounding mode is toward minus infinity: $x_n \leq \widetilde{x_n}$
+(similar relations hold for the imaginary part).
 
 Let $z=x+iy$ the result of the operation $z_1\diamond z_2$ rounded to the
 precision of $z$ (we note $z=\circ(z_1 \diamond z_2)$). Let $c_R$ the bound
@@ -62,7 +63,7 @@ the imaginary part, \emph{mutatis mutandis}).
 
 \subsection {Generic error of addition/substraction}
 
-Let
+Using the notations of the introductory paragraphs above, let
 \[
 z=\circ(z_1+z_2).
 \]
@@ -96,7 +97,7 @@ simpler expression
 
 \subsection {Generic error of multiplication}
 
-Let
+Using the notations of the introductory paragraphs above, let
 \[
 z=\circ(z_1\times z_2).
 \]
@@ -166,7 +167,7 @@ $\delta' = \Exp(y_1x_2)-\Exp(y) \leq \Exp(y_1)+\Exp(x_2)-\Exp(y)$.
 
 \subsection {Generic error of division}\label{generic:div}
 
-Let
+Using the notations of the introductory paragraphs above, let
 \[
 z=\circ(\frac{z_1}{z_2}).
 \]
@@ -182,15 +183,16 @@ c&=x_2^2+y_2^2
 \end{align*}
 then the error of the real part is
 \[
-\error(x) = |x-\frac{A}{C}| \leq |x-\frac{a}{c}| + |\frac{a}{c}-\frac{A}{C}|.
+\error(x) = \left|x-\frac{A}{C}\right| \leq \left|x-\frac{a}{c}\right| +
+\left|\frac{a}{c}-\frac{A}{C}\right|.
 \]
 The first term of the right hand side is the rounding error:
 \[
-|x-\frac{a}{c}|\leq c_R \Ulp(x).
+\left|x-\frac{a}{c}\right|\leq c_R \Ulp(x).
 \]
 The second term can be bounded as follows:
 \[
-|\frac{a}{c}-\frac{A}{C}| \leq \frac{1}{c} |a-A|
+\left|\frac{a}{c}-\frac{A}{C}\right| \leq \frac{1}{c} |a-A|
 +\left|\frac{A}{C}\right|\frac{1}{c}|c-C|.
 \]
 We have
@@ -220,7 +222,10 @@ and we can show in a similar way that
 |y_1y_2-\widetilde{y_1}\widetilde{y_2}| \leq \left( (1+c_{I,1})k_{I,2}
 +(1+c_{I,2})k_{I,1} \right)2^{d'} \Ulp(a),
 \]
-where $d'=\Exp(y_1y_2)-\Exp(a)$. Using the preceding inequalities we have
+where $d'=\Exp(y_1y_2)-\Exp(a)$. Because $x$ is $a/c$ rounded to the working
+precision, we have $\Ulp(a/c) \leq \Ulp(x)$ and, as $c$ is positive,
+$\Ulp(a)/c \leq 2\Ulp(a/c)$. Thus $\Ulp(a)/c \leq 2\Ulp(x)$. Using the
+preceding inequalities we have
 \[
 \frac{1}{c}|a-A| \leq \left[
 \left((1+c_{R,1})k_{R,2}+(1+c_{R,2})k_{R,1}\right)2^{1+d}
@@ -229,30 +234,34 @@ where $d'=\Exp(y_1y_2)-\Exp(a)$. Using the preceding inequalities we have
 \]
 In addition, we have
 \[
-|c-C| \leq |x_2^2-\widetilde{x_2}^2| + |y_2-\widetilde{y_2}^2|,
+|c-C| \leq \left|x_2^2-\widetilde{x_2}^2\right| +
+\left|y_2^2-\widetilde{y_2}^2\right|,
 \]
 with
 \begin{align*}
-|x_2^2-\widetilde{x_2}^2| &\leq |x_2+\widetilde{x_2}||x_2-\widetilde{x_2}|\\
-&\leq (1+c_{R,2})|x_2|k_{R,2} \Ulp(x_2)\\
-&\leq 2(1+c_{R,2})k_{R,2}\Ulp(x_2^2),
+\left|x_2^2-\widetilde{x_2}^2\right| &= \left|x_2+\widetilde{x_2}\right|
+\left|x_2-\widetilde{x_2}\right|\\ &\leq (1+c_{R,2})|x_2|k_{R,2}
+\Ulp(x_2)\\ &\leq 2(1+c_{R,2})k_{R,2}\Ulp(x_2^2),
 \end{align*}
 we can show in a similar way that
 \[
-|y_2^2-\widetilde{y_2}^2| \leq 2(1+c_{I,2})k_{I,2}\Ulp(y_2^2).
+\left|y_2^2-\widetilde{y_2}^2\right| \leq 2(1+c_{I,2})k_{I,2}\Ulp(y_2^2).
 \]
 But $\Ulp(x_2^2) \leq \Ulp(x_2^2+y_2^2) = \Ulp(c)$, and the same relation
 holds for $\Ulp(y_2^2)$, thus
 \[
 |c-C| \leq 2\left[(1+c_{R,2})k_{R,2}+(1+c_{I,2})k_{I,2}\right]\Ulp(c);
 \]
-note that
+let $c_{R,2}^-$ and $c_{I,2}^-$ two positive numbers such that $c_{R,2}^-|x_2|
+\leq \left|\widetilde{x_2}\right|$ and $c_{I,2}^-|y_2| \leq
+\left|\widetilde{y_2}\right|$, then
 \[
 \left|\frac{A}{C}\right| \leq
 \frac{c_{R,1}c_{R,2}+c_{I,1}c_{I,2}}{(c_{R,2}^-)^2+(c_{I,2}^-)^2}
 \left|\frac{a}{c}\right|,
 \]
-thus we have
+and, noticing that $\left|\frac{a}{c}\right|\frac{1}{c}\Ulp(c) \leq 2\Ulp(x)$,
+we have
 \[
 \left|\frac{A}{C}\right|\frac{1}{c}|c-C| \leq
 4\frac{c_{R,1}c_{R,2}+c_{I,1}c_{I,2}}{(c_{R,2}^-)^2+(c_{I,2}^-)^2}
@@ -274,7 +283,7 @@ is bounded in the following way
 An analog process gives
 \begin{equation*}
   \begin{split}
-    \error(y) &\leq [c_R\\
+    \error(y) &\leq [c_I\\
     &\quad+\left((1+c_{I,1})k_{R,2}+(1+c_{R,2})k_{I,1}\right)2^{1+\delta}
     +\left((1+c_{R,1})k_{I,2}+(1+c_{I,2})k_{R,1}\right)2^{1+\delta'}\\
     &\quad+4\frac{c_{R,1}c_{R,2}+c_{I,1}c_{I,2}}{(c_{R,2}^-)^2+(c_{I,2}^-)^2}
@@ -285,20 +294,22 @@ An analog process gives
 with $\delta=\Exp(y_1x_2)-\Exp(b)$ and $\delta'=\Exp(x_1y_2)-\Exp(b)$.
 
 Note that, when $z_1$ and $z_2$ are the rounded values of $\widetilde{z_1}$
-and $\widetilde{z_2}$ respectively, with rounding away from zero, we have the
-much simpler inequalities:
+and $\widetilde{z_2}$ respectively, with rounding away from zero, then we can
+substitute 1 for $k_{R,n}$, $c_{R,n}$, $k_{I,n}$, $c_{I,n}$ (with $n=1,2$),
+$\frac{1}{2}$ for $c_{R,2}^-$, $c_{I,2}^-$, giving the much simpler
+inequalities:
 \begin{align*}
 \error(x) &\leq [c_R + 2^{3+d} + 2^{3+d'} + 2^6] \Ulp(x)\\
 \error(y) &\leq [c_I + 2^{3+\delta} + 2^{3+\delta'} + 2^6] \Ulp(y).
 \end{align*}
-If the rounding mode is rounding to nearest, we have:
+If the rounding mode is rounding to nearest, then we can substitute
+$\frac{1}{2}$ for $k_{R,n}$, $k_{I,n}$, $c_{R,2}^-$, $c_{I,2}^-$, 2 for
+$c_{R,n}$, $c_{I,n}$ and we have:
 \begin{align*}
-\error(x) &\leq [c_R + 3\times 2^{1+d} +3\times 2^{1+d'} + 48] \Ulp(x)
-\\
-\error(x) 
-&\leq [c_R + 3\times 2^{1+\delta} +3\times 2^{1+\delta'} + 48] \Ulp(y),
+\error(x) &\leq [c_R + 3\times 2^{1+d} +3\times 2^{1+d'} + 192] \Ulp(x)\\
+\error(x) &\leq [c_R + 3\times 2^{1+\delta} +3\times 2^{1+\delta'} + 192]
+\Ulp(y).
 \end{align*}
-note that the preceding equations still hold.
 
 At last, let us remark that $x_1x_2$ and $y_1y_2$ cannot have the same
 sign if $y_1x_2$ and $-x_1y_2$ do have the same sign, thus there is
@@ -345,18 +356,18 @@ Let $z = x + i y$ with $x \neq 0$ and $y \neq 0$.
 
 We compute $\tan z$ as follows:
 \begin{align*}
-u &\leftarrow \N(\sin z) &\error(\Re(u)) &\leq 1 \Ulp(\Re(u))
+u &\leftarrow \A(\sin z) &\error(\Re(u)) &\leq 1 \Ulp(\Re(u))
 &\error(\Im(u)) &\leq 1 \Ulp(\Im(u))
 \\
-v &\leftarrow \N(\cos z) &\error(\Re(v)) &\leq 1 \Ulp(\Re(v))
+v &\leftarrow \A(\cos z) &\error(\Re(v)) &\leq 1 \Ulp(\Re(v))
 &\error(\Im(v)) &\leq 1 \Ulp(\Im(v))
 \\
-t &\leftarrow \N(u/v) &\error(\Re(t)) &\leq k_R \Ulp(\Re(t))
+t &\leftarrow \A(u/v) &\error(\Re(t)) &\leq k_R \Ulp(\Re(t))
 &\error(\Im(t)) &\leq k_I \Ulp(\Im(t))
 \end{align*}
-where $w_2 \leftarrow \N(w_1)$ means that the real and imaginary parts of
-$w_2$ are respectively the real and imaginary part of $w_1$ rounded to nearest
-to the working precision.
+where $w_2 \leftarrow \A(w_1)$ means that the real and imaginary parts of
+$w_2$ are respectively the real and imaginary part of $w_1$ rounded away from
+zero to the working precision.
 
 We know that $\Re(\frac{a+i b}{c+i d})=\frac{a c +b d}{c^2 + d^2}$ and
 $\Im(\frac{a+i b}{c+i d})=\frac{a d -b c}{c^2 + d^2}$, so in the special case
@@ -366,13 +377,13 @@ computation of the real part while it does never happen in the one of the
 imaginary part.  Then, using the generic error of the division (see
 \ref{generic:div}), we have
 \begin{align*}
-\error(\Re(t)) &\leq [1+3\times 2^{1+e_1}+3\times 2^{1+e_2} +48] \Ulp(\Re(t)),
+\error(\Re(t)) &\leq [1+2^{3+e_1}+2^{3+e_2}+2^6] \Ulp(\Re(t)),
 \\
-\error(\Im(t)) &\leq [1 + 3\times2 + 3\times 2 + 48] \Ulp(\Im(t)),
+\error(\Im(t)) &\leq [1+2^3+2^3+2^6] \Ulp(\Im(t)),
 \end{align*}
 where $e_1=\Exp(a c) -\Exp(a c+b d)$ and $e_2=\Exp(b d) -\Exp(a c+b d)$.  The
-second inequality shows that $2^6$ is suitable choice for $k_I$. As $|\sinh
-y|<\cosh y$ for every nonzero $y$, we have $b d<a c$, thus $e_2\leq e_1$. We
+second inequality shows that $2^7$ is suitable choice for $k_I$. As $|\sinh
+y|<\cosh y$ for every nonzero $y$, we have $bd<ac$, thus $e_2\leq e_1$. We
 know that $\Exp(\frac{a c+b d}{c^2+d^2})\leq \Exp(a c+b d) -\Exp(c^2+d^2)$,
 $\Exp(c^2+d^2)\geq2 \min(\Exp(c), \Exp(d))$, and $\Exp(ac) \leq \Exp(a) +
 \Exp(c)$, this gives an upper bound for $e_1$:
@@ -384,7 +395,9 @@ and a suitable value for $k_R$:
 \begin{equation*}
 k_R=\left\{
 \begin{array}{l l}
-  2^7 & \mbox{if $e < 3$;}
+  2^7 & \mbox{if $e < 2$;}
+  \\
+  2^8 & \mbox{if $e = 2$}
   \\
   2^{5 + e} & \mbox{else.}
 \end{array}
