@@ -81,16 +81,19 @@ MA 02111-1307, USA. */
                 mpfr_print_rnd_mode (MPC_RND_IM(r)));   \
       }                                                 \
   } while (0)
-#define MPC_LOG_MSG(format, ...)                                        \
+/* use the same trick as in MPFR so as to allow MPC to be compiled with a C89
+   compiler (variable argument list macros are C99). */
+#define MPC_LOG_MSG2(format, ...)                                       \
   do {                                                                  \
     if (getenv("MPC_LOG") != NULL)                                      \
       printf ("%s.%d:"format"\n", __func__, __LINE__, __VA_ARGS__);     \
-  } while (0);
+  } while (0)
+#define MPC_LOG_MSG(x) MPC_LOG_MSG2 x
 
 #else /* MPC_USE_LOGGING */
 #define MPC_LOG_VAR(x)
 #define MPC_LOG_RND(r)
-#define MPC_LOG_MSG(format, ...)
+#define MPC_LOG_MSG(x)
 
 #endif /* MPC_USE_LOGGING */
 

@@ -185,7 +185,7 @@ mpc_tan (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
       mpc_set_prec (x, prec);
       mpc_set_prec (y, prec);
 
-      MPC_LOG_MSG ("loop prec=%ld", prec);
+      MPC_LOG_MSG (("loop prec=%ld", prec));
 
       /* rounding away from zero: except in the cases x=0 or y=0 (processed
          above), sin x and cos y are never exact, so rounding away from 0 is
@@ -239,7 +239,7 @@ mpc_tan (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
             || mpfr_can_round (MPC_IM(x), prec - 6, GMP_RNDN, MPC_RND_IM(rnd),
                                MPFR_PREC(MPC_IM(rop)));
         }
-      MPC_LOG_MSG ("err: %ld", err);
+      MPC_LOG_MSG (("err: %ld", err));
       MPC_LOG_VAR (x);
     }
   while (ok == 0);

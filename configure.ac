@@ -71,8 +71,8 @@ AC_CHECK_FUNCS([gettimeofday])
 # AC_C_CONST due to additional flags "-Wall -Werror"
 
 # Variadic macros (used by logging macros) were introduced in C99
-#AX_C_CHECK_FLAG(ansi,,,CFLAGS="$CFLAGS -ansi",)
-AX_C_CHECK_FLAG(-std=c99,,,CFLAGS="$CFLAGS -std=c99",)
+AX_C_CHECK_FLAG(-ansi,,,CFLAGS="$CFLAGS -ansi",)
+#AX_C_CHECK_FLAG(-std=c99,,,CFLAGS="$CFLAGS -std=c99",)
 
 AX_C_CHECK_FLAG(-pedantic,,,CFLAGS="$CFLAGS -pedantic",)
 AX_C_CHECK_FLAG(-Wall,,,CFLAGS="$CFLAGS -Wall",)
