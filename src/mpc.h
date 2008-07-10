@@ -145,6 +145,7 @@ void mpc_clear __MPC_PROTO ((mpc_ptr));
 void mpc_init  __MPC_PROTO ((mpc_ptr));
 void mpc_random __MPC_PROTO ((mpc_ptr));
 void mpc_random2 __MPC_PROTO ((mpc_ptr, mp_size_t, mp_exp_t));
+int  mpc_urandom __MPC_PROTO ((mpc_ptr, gmp_randstate_t));
 void mpc_init2  __MPC_PROTO ((mpc_ptr, mp_prec_t));
 void mpc_init3  __MPC_PROTO ((mpc_ptr, mp_prec_t, mp_prec_t));
 mp_prec_t mpc_get_prec (mpc_t x);

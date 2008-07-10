@@ -100,6 +100,13 @@ Complex Library, version @value{VERSION}
 * Function Index::
 @end menu
 
+@c  @times{} made available as a "*" in info and html (already works in tex).
+@ifnottex
+@macro times
+*
+@end macro
+@end ifnottex
+
 @node Copying, Introduction to MPC, Top, Top
 @comment  node-name, next, previous,  up
 @unnumbered MPC Copying Conditions
@@ -853,9 +860,18 @@ Return the number of bytes read, or if an error occurred, return 0.
 @section Miscellaneous Functions
 @cindex Miscellaneous complex functions
 
+@deftypefun int mpc_urandom (mpc_t @var{rop}, gmp_randstate_t @var{state})
+Generate a uniformly distributed random complex in the unit square @math{[0,
+1] @times [0, 1]}. Return 0, unless an exponent in the real or imaginary part
+is not in the current exponent range, in which case that part is set to NaN
+and a zero value is returned. The second argument is a @code{gmp_randstate_t}
+structure which should be created using the GMP @code{rand_init} function, see
+the GMP manual.
+@end deftypefun
+
 @deftypefun void mpc_random (mpc_t @var{rop})
-Generate a random complex, with real and imaginary parts
-uniformly distributed in the interval -1 < X < 1.
+Generate a random complex, with real and imaginary parts uniformly
+distributed in the interval -1 < X < 1.
 @end deftypefun
 
 @deftypefun void mpc_random2 (mpc_t @var{rop}, mp_size_t @var{max_size}, mp_exp_t @var{max_exp})
