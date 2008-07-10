@@ -19,6 +19,8 @@ along with the MPC Library; see the file COPYING.LIB.  If not, write to
 the Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston,
 MA 02111-1307, USA. */
 
+#include <stdio.h>
+
 #include "gmp.h"
 #include "mpfr.h"
 #include "mpc.h"
@@ -55,6 +57,14 @@ mpc_exp (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
       return;
     }
 
+  /* special case when the input is imaginary */
+  if (mpfr_zero_p (MPC_RE (op)))
+    {
+      mpfr_cos (MPC_RE (rop), MPC_IM (op), MPC_RND_RE(rnd));
+      mpfr_sin (MPC_IM (rop), MPC_IM (op), MPC_RND_IM(rnd));
+      return;
+    }
+
   prec = MPC_MAX_PREC(rop);
 
   mpfr_init2 (x, 2);
@@ -69,15 +79,20 @@ mpc_exp (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
       mpfr_set_prec (y, prec);
       mpfr_set_prec (z, prec);
 
-      mpfr_exp (x, MPC_RE(op), GMP_RNDU);
+      /* FIXME: x may overflow so x.y does overflow too, while Re(exp(op))
+         could be represented in the precision of rop. */
+      mpfr_exp (x, MPC_RE(op), GMP_RNDN);
       mpfr_sin_cos (z, y, MPC_IM(op), GMP_RNDN);
       mpfr_mul (y, y, x, GMP_RNDN);
-      ok = mpfr_can_round (y, prec - 2, GMP_RNDN, MPC_RND_RE(rnd),
+
+      ok = mpfr_inf_p (y) || mpfr_zero_p (x)
+        || mpfr_can_round (y, prec - 2, GMP_RNDN, MPC_RND_RE(rnd),
                            MPFR_PREC(MPC_RE(rop)));
       if (ok) /* compute imaginary part */
         {
           mpfr_mul (z, z, x, GMP_RNDN);
-          ok = mpfr_can_round (z, prec - 2, GMP_RNDN, MPC_RND_IM(rnd),
+          ok = mpfr_inf_p (z) || mpfr_zero_p (x)
+            || mpfr_can_round (z, prec - 2, GMP_RNDN, MPC_RND_IM(rnd),
                                MPFR_PREC(MPC_IM(rop)));
         }
     }
