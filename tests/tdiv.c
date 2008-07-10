@@ -26,8 +26,6 @@ MA 02111-1307, USA. */
 #include "mpc.h"
 #include "mpc-impl.h"
 
-#include "random.c"
-
 #define ERR(x) { mpc_out_str (stderr, 2, 0, x, MPC_RNDNN); \
                  fprintf (stderr, "\n"); }
 
@@ -237,8 +235,6 @@ main()
   mp_rnd_t rnd_re, rnd_im;
   mpc_rnd_t rnd;
 
-  test_start ();
-
   mpc_init (b);
   mpc_init (c);
   mpc_init (q);
@@ -323,8 +319,6 @@ main()
   mpc_clear (c);
   mpc_clear (q);
   mpc_clear (q_ref);
-
-  test_end ();
 
   return 0;
 }

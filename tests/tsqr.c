@@ -26,8 +26,6 @@ MA 02111-1307, USA. */
 #include "mpc.h"
 #include "mpc-impl.h"
 
-#include "random.c"
-
 void cmpsqr (mpc_srcptr, mpc_rnd_t);
 void testsqr (long, long, mp_prec_t, mpc_rnd_t);
 void special (void);
@@ -188,8 +186,6 @@ main()
   mp_prec_t prec;
   int i;
 
-  test_start ();
-
   special ();
 
   testsqr (247, -65, 8, 24);
@@ -219,8 +215,6 @@ main()
     }
 
   mpc_clear (x);
-
-  test_end ();
 
   return 0;
 }

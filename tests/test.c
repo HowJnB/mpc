@@ -25,7 +25,6 @@ MA 02111-1307, USA. */
 #include "mpfr.h"
 #include "mpc.h"
 #include "mpc-impl.h"
-#include "random.c"
 
 #define PRINT(x) {}
 
@@ -39,8 +38,6 @@ main()
   mpfr_t f, g;
   FILE *file;
   const char *filename = "mpc_test";
-
-  test_start ();
 
   mpc_init (x);
   mpc_init2 (y, 2);
@@ -227,8 +224,6 @@ main()
   mpc_clear (z);
   mpfr_clear (f);
   mpfr_clear (g);
-
-  test_end ();
 
   return 0;
 }

@@ -33,7 +33,7 @@ main()
 {
   test_start ();
 
-  tgeneric ();
+  tgeneric (2, 1024, -1);
 
   test_end ();
 

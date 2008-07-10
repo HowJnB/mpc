@@ -26,8 +26,7 @@ MA 02111-1307, USA. */
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "gmp.h"
-
+#include "mpc-impl.h"
 #include "config.h"
 
 #ifdef TIME_WITH_SYS_TIME
@@ -44,7 +43,7 @@ MA 02111-1307, USA. */
 gmp_randstate_t  rands;
 char             rands_initialized;
 
-void
+static void
 test_start ()
 {
   char *environment_seed;
@@ -89,12 +88,53 @@ test_start ()
     }
 }
 
-void
+static void
 test_end ()
 {
   if (rands_initialized)
     {
       rands_initialized = 0;
       gmp_randclear (rands);
+    }
+}
+
+/* Set z to a non zero value random value with absolute values of Re(z) and
+   Im(z) either zero (but not both in the same time) or otherwise greater than
+   or equal to 2^{emin-1} and less than 2^emax.
+   If NEG_NUMBERS_P is zero then real and imaginary parts are positive, else
+   they are negative half of the time. */
+static void
+test_default_random (mpc_ptr z, mp_exp_t emin, mp_exp_t emax,\
+                     int neg_numbers_p)
+{
+  const unsigned long range = (long)emax - (long)emin + 1;
+  
+  if (!rands_initialized)
+    {
+      fprintf (stderr,
+               "Put test_start at the beginning of your test function.\n");
+      exit (1);
+    }
+
+  do
+    {
+      mpc_urandom (z, rands);
+    } while (mpfr_zero_p (MPC_RE (z)) && mpfr_zero_p (MPC_IM (z)));
+    
+  if (!mpfr_zero_p (MPC_RE (z)))
+    mpfr_set_exp (MPC_RE (z),
+                  (mp_exp_t) gmp_urandomm_ui (rands, range) + emin);
+
+  if (!mpfr_zero_p (MPC_IM (z)))
+    mpfr_set_exp (MPC_IM (z),
+                  (mp_exp_t) gmp_urandomm_ui (rands, range) + emin);
+
+  if (neg_numbers_p)
+    {
+      unsigned long r = gmp_urandomb_ui (rands, 2);
+      if (r & 1)
+        mpfr_neg (MPC_RE (z), MPC_RE (z), GMP_RNDN);
+      if (r & 2)
+        mpfr_neg (MPC_IM (z), MPC_IM (z), GMP_RNDN);
     }
 }

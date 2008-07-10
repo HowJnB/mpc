@@ -20,6 +20,8 @@ the Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston,
 MA 02111-1307, USA. */
 
 #include <stdio.h>
+#include <gmp.h>
+#include <mpfr.h>
 #include "mpc.h"
 
 #include "random.c"
@@ -65,7 +67,7 @@ main()
   test_start ();
 
   check_ternary_value();
-  tgeneric ();
+  tgeneric (2, 1024, -1);
 
   test_end ();
 

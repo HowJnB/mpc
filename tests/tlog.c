@@ -39,7 +39,7 @@ main()
 
    test_start ();
 
-   tgeneric ();
+   tgeneric (2, 512, 256);
 
    mpc_init (z);
    mpc_init (z2);

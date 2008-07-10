@@ -447,7 +447,7 @@ main()
   pure_real_argument ();
   pure_imaginary_argument ();
 
-  tgeneric ();
+  tgeneric (2, 512, 10);
 
   check_53 ();
 

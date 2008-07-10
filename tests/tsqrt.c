@@ -683,7 +683,7 @@ main()
   pure_real_argument ();
   pure_imaginary_argument ();
 
-  tgeneric ();
+  tgeneric (2, 1024, 256);
 
   test_end ();
 

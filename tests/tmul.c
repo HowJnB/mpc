@@ -29,8 +29,6 @@ MA 02111-1307, USA. */
 #include "mpc.h"
 #include "mpc-impl.h"
 
-#include "random.c"
-
 void cmpmul (mpc_srcptr, mpc_srcptr, mpc_rnd_t);
 void cmpmului (mpc_srcptr, unsigned long int, mpc_rnd_t);
 void cmpmulsi (mpc_srcptr, long int, mpc_rnd_t);
@@ -411,8 +409,6 @@ main()
   int i;
   long int ysi;
 
-  test_start ();
-
 #ifdef TIMING
   timemul ();
 #endif
@@ -459,8 +455,6 @@ main()
 
   mpc_clear (x);
   mpc_clear (y);
-
-  test_end ();
 
   return 0;
 }

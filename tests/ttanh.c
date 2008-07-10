@@ -578,7 +578,7 @@ pure_imaginary_argument ()
 }
 
 static void
-check_53()
+check_53bits ()
 {
   mpc_t z;
   mpc_t tanh_z;
@@ -611,9 +611,9 @@ main()
   pure_real_argument ();
   pure_imaginary_argument ();
 
-  tgeneric ();
+  tgeneric (2, 512, 10);
 
-  check_53 ();
+  check_53bits ();
 
   test_end ();
 

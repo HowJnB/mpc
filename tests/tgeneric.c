@@ -28,17 +28,9 @@ MA 02111-1307, USA. */
 #define FUNCTION_NAME(F) NAME_STR(F)
 #define NAME_STR(F) #F
 
-#ifndef TGEN_PREC_MIN
-#define TGEN_PREC_MIN 2
-#endif
-
-#ifndef TGEN_PREC_MAX
-#define TGEN_PREC_MAX 100
-#endif
-
-#ifndef TGEN_EXP_MAX
-#define TGEN_EXP_MAX 10
-#endif
+/* tgeneric usage:                                                          */
+/*  define TEST_FUNCTION as the function under test                         */
+/*  define TWOARGS when the function under test combine two mpc_t arguments */
 
 static void
 #ifdef TWOARGS
@@ -72,12 +64,13 @@ message_failed (mpc_srcptr op, mpc_srcptr rop,
 }
 
 static void
-tgeneric()
+tgeneric(mpfr_prec_t prec_min, mpfr_prec_t prec_max, mp_exp_t exp_max)
 {
   mpc_t  x, z, t, u;
   mpc_rnd_t rnd_re;
   mpc_rnd_t rnd_im;
-  mp_prec_t prec;
+  mpfr_prec_t prec;
+  mp_exp_t exp_min;
 
 #ifdef TWOARGS
   mpc_t y;
@@ -90,21 +83,26 @@ tgeneric()
   mpc_init (t);
   mpc_init (u);
 
-  for (prec = TGEN_PREC_MIN; prec <= TGEN_PREC_MAX; prec++)
-    {
-      const size_t s = 1 + (prec-1)/BITS_PER_MP_LIMB;
+  exp_min = mpfr_get_emin ();
+  if (exp_max <= 0)
+    exp_max = mpfr_get_emax ();
+  else if (exp_max > mpfr_get_emax ())
+    exp_max = mpfr_get_emax();
+  if (-exp_max > exp_min)
+    exp_min = - exp_max;
 
+  for (prec = prec_min; prec <= prec_max; prec++)
+    {
       mpc_set_prec (x, prec);
-#ifdef TWOARGS
-      mpc_set_prec (y, prec);
-#endif
       mpc_set_prec (z, prec);
       mpc_set_prec (t, prec);
       mpc_set_prec (u, 4*prec);
 
-      mpc_random2 (x, s, TGEN_EXP_MAX);
+      test_default_random (x, exp_min, exp_max, 1);
+
 #ifdef TWOARGS
-      mpc_random2 (y, s, TGEN_EXP_MAX);
+      mpc_set_prec (y, prec);
+      test_default_random (y, exp_min, exp_max, 1);
 #endif
 
       for (rnd_re = 0; rnd_re < 4; rnd_re ++)
@@ -114,7 +112,8 @@ tgeneric()
             /* We compute the result with four times the precision and      */
             /* check whether the rounding is correct. Error reports in this */
             /* part of the algorithm might still be wrong, though, since    */
-            /* there are two consecutive roundings.                         */
+            /* there are two consecutive roundings (but we try to avoid     */
+            /* them).                                                       */
             const mpc_rnd_t rnd = RNDC (rnd_re, rnd_im);
 
 #ifdef TWOARGS
@@ -124,16 +123,31 @@ tgeneric()
             TEST_FUNCTION (u, x, rnd);
             TEST_FUNCTION (z, x, rnd);
 #endif
-            mpc_set (t, u, rnd);
 
-            if (mpc_cmp (z, t))
+            /* can't use mpfr_can_round when argument is singular */
+            if ((mpfr_zero_p (MPC_RE (u)) || mpfr_inf_p (MPC_RE (u))
+                 || mpfr_can_round (MPC_RE (u), 4 * prec - 1,
+                                    MPC_RND_RE (rnd), MPC_RND_RE (rnd), prec))
+                && (mpfr_zero_p (MPC_IM (u)) || mpfr_inf_p (MPC_IM (u))
+                    || mpfr_can_round (MPC_IM (u), 4 * prec - 1,
+                                       MPC_RND_IM (rnd), MPC_RND_IM (rnd),
+                                       prec)))
+              mpc_set (t, u, rnd);
+            else
+              /* avoid double rounding error */
+                continue;
+
+            if (mpc_cmp (z, t) == 0)
+              continue;
+
 #ifdef TWOARGS
-              message_failed (x, y, z, u, t, rnd);
+            message_failed (x, y, z, u, t, rnd);
 #else
-              message_failed (x, z, u, t, rnd);
+            message_failed (x, z, u, t, rnd);
 #endif
           }
     }
+
 
 #ifdef TWOARGS
   mpc_clear (y);
