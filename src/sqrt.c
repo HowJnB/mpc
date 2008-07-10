@@ -1,6 +1,6 @@
 /* mpc_sqrt -- Take the square root of a complex number.
 
-Copyright (C) 2002, 2008 Andreas Enge, Paul Zimmermann
+Copyright (C) 2002, 2008 Andreas Enge, Paul Zimmermann, Philippe Th\'eveny
 
 This file is part of the MPC Library.
 
@@ -38,20 +38,94 @@ mpc_sqrt (mpc_ptr a, mpc_srcptr b, mpc_rnd_t rnd)
     /* comparison of the real/imaginary part of b with 0 */
   mp_prec_t prec;
   int inexact, loops = 0;
+  const int im_sgn = mpfr_signbit (MPC_IM (b)) ? -1 : 0;
 
   im_cmp = mpfr_cmp_ui (MPC_IM (b), 0);
   re_cmp = mpfr_cmp_ui (MPC_RE (b), 0);
+
+  /* special values */
+  /* sqrt(x +i*Inf) = +Inf +I*Inf, even if x = NaN */
+  /* sqrt(x -i*Inf) = +Inf -I*Inf, even if x = NaN */
+  if (mpfr_inf_p (MPC_IM (b)))
+    {
+      mpfr_set_inf (MPC_RE (a), +1);
+      mpfr_set_inf (MPC_IM (a), im_sgn);
+      return 0;
+    }
+
+  if (mpfr_inf_p (MPC_RE (b)))
+    {
+      if (mpfr_signbit (MPC_RE (b)))
+        {
+          if (mpfr_number_p (MPC_IM (b)))
+            {
+              /* sqrt(-Inf +i*y) = +0 +i*Inf, when y positive */
+              /* sqrt(-Inf +i*y) = +0 -i*Inf, when y positive */
+              mpfr_set_ui (MPC_RE (a), 0, GMP_RNDN);
+              mpfr_set_inf (MPC_IM (a), im_sgn);
+              return 0;
+            }
+          else
+            {
+              if (mpfr_inf_p (MPC_IM (b)))
+                /* sqrt(-Inf -i*Inf) = +Inf -i*Inf */
+                /* sqrt(-Inf +i*Inf) = +Inf +i*Inf */
+                mpfr_set_inf (MPC_RE (a), +1);
+              else
+                /* sqrt(-Inf +i*NaN) = NaN +/-i*Inf */
+                mpfr_set_nan (MPC_RE (a));
+
+              mpfr_set_inf (MPC_IM (a), im_sgn);
+              return 0;
+            }
+        }
+      else
+        {
+          if (mpfr_number_p (MPC_IM (b)))
+            {
+              /* sqrt(+Inf +i*y) = +Inf +i*0, when y positive */
+              /* sqrt(+Inf +i*y) = +Inf -i*0, when y positive */
+              mpfr_set_inf (MPC_RE (a), +1);
+              mpfr_set_ui (MPC_IM (a), 0, GMP_RNDN);
+              if (im_sgn)
+                mpc_conj (a, a, MPC_RNDNN);
+              return 0;
+            }
+          else
+            {
+              /* sqrt(+Inf -i*Inf) = +Inf -i*Inf */
+              /* sqrt(+Inf +i*Inf) = +Inf +i*Inf */
+              /* sqrt(+Inf +i*NaN) = +Inf +i*NaN */
+              return mpc_set (a, b, rnd);
+            }
+        }
+    }
+
+  /* sqrt(x +i*NaN) = NaN +i*NaN, if x is not infinite */
+  /* sqrt(NaN +i*y) = NaN +i*NaN, if y is not infinite */
+  if (mpfr_nan_p (MPC_RE (b)) || mpfr_nan_p (MPC_IM (b)))
+    {
+      mpfr_set_nan (MPC_RE (a));
+      mpfr_set_nan (MPC_IM (a));
+      return 0;
+    }
+
+  /* pure real */
   if (im_cmp == 0)
   {
     if (re_cmp == 0)
     {
       mpc_set_ui_ui (a, 0, 0, MPC_RNDNN);
+      if (im_sgn)
+        mpc_conj (a, a, MPC_RNDNN);
       return 0;
     }
     else if (re_cmp > 0)
     {
       inexact = mpfr_sqrt (MPC_RE (a), MPC_RE (b), MPC_RND_RE (rnd));
       mpfr_set_ui (MPC_IM (a), 0, GMP_RNDN);
+      if (im_sgn)
+        mpc_conj (a, a, MPC_RNDNN);
       return inexact;
     }
     else
@@ -59,11 +133,36 @@ mpc_sqrt (mpc_ptr a, mpc_srcptr b, mpc_rnd_t rnd)
       mpfr_init2 (w, MPFR_PREC (MPC_RE (b)));
       mpfr_neg (w, MPC_RE (b), GMP_RNDN);
       inexact = mpfr_sqrt (MPC_IM (a), w, MPC_RND_IM (rnd));
+      if (im_sgn)
+        mpfr_neg (MPC_IM (a), MPC_IM (a), MPC_RNDNN);
       mpfr_set_ui (MPC_RE (a), 0, GMP_RNDN);
       mpfr_clear (w);
       return inexact;
     }
   }
+
+  /* pure imaginary */
+  if (re_cmp == 0)
+    {
+      mpfr_t y;
+
+      y[0] = MPC_IM (b)[0];
+      /* If y/2 underflows, so does sqrt(y/2) */
+      mpfr_div_2ui (y, y, 1, GMP_RNDN);
+      if (im_cmp > 0)
+        {
+          inexact = mpfr_sqrt (MPC_RE (a), y, MPC_RND_RE (rnd));
+          inexact |= mpfr_sqrt (MPC_IM (a), y, MPC_RND_IM (rnd));
+        }
+      else
+        {
+          mpfr_neg (y, y, GMP_RNDN);
+          inexact = mpfr_sqrt (MPC_RE (a), y, MPC_RND_RE (rnd));
+          inexact |= mpfr_sqrt (MPC_IM (a), y, MPC_RND_IM (rnd));
+          mpfr_neg (MPC_IM (a), MPC_IM (a), GMP_RNDN);
+        }
+      return inexact;
+    }
 
   prec = MPC_MAX_PREC(a);
 
@@ -106,14 +205,14 @@ mpc_sqrt (mpc_ptr a, mpc_srcptr b, mpc_rnd_t rnd)
       inexact |= mpfr_div_2ui (w, w, 1, GMP_RNDD);
       inexact |= mpfr_sqrt (w, w, GMP_RNDD);
 
-      ok = mpfr_can_round (w, prec - 2, GMP_RNDD, rnd_w, prec_w);
+      ok = mpfr_can_round (w, (mp_exp_t)prec - 2, GMP_RNDD, rnd_w, prec_w);
       if (ok)
       {
         /* t = y / 2w, rounded up */
         /* total error bounded by 7 ulps */
         inexact |= mpfr_div (t, MPC_IM (b), w, GMP_RNDU);
         inexact |= mpfr_div_2ui (t, t, 1, GMP_RNDU);
-        ok = mpfr_can_round (t, prec - 3, GMP_RNDU, rnd_t, prec_t);
+        ok = mpfr_can_round (t, (mp_exp_t)prec - 3, GMP_RNDU, rnd_t, prec_t);
       }
   }
   while (inexact != 0 && ok == 0);
