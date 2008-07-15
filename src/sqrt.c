@@ -34,14 +34,13 @@ mpc_sqrt (mpc_ptr a, mpc_srcptr b, mpc_rnd_t rnd)
   mp_prec_t prec_w, prec_t;
     /* the rounding mode and the precision required for w and t, which can */
     /* be either the real or the imaginary part of a */
-  int re_cmp, im_cmp;
-    /* comparison of the real/imaginary part of b with 0 */
   mp_prec_t prec;
   int inexact, loops = 0;
-  const int im_sgn = mpfr_signbit (MPC_IM (b)) ? -1 : 0;
-
-  im_cmp = mpfr_cmp_ui (MPC_IM (b), 0);
-  re_cmp = mpfr_cmp_ui (MPC_RE (b), 0);
+  /* comparison of the real/imaginary part of b with 0 */
+  const int re_cmp = mpfr_cmp_ui (MPC_RE (b), 0);
+  const int im_cmp = mpfr_cmp_ui (MPC_IM (b), 0);
+  /* we need to know the sign of Im(b) when it is +/-0 */
+  const int im_sgn = mpfr_signbit (MPC_IM (b)) == 0? 0 : -1;
 
   /* special values */
   /* sqrt(x +i*Inf) = +Inf +I*Inf, even if x = NaN */
@@ -132,9 +131,14 @@ mpc_sqrt (mpc_ptr a, mpc_srcptr b, mpc_rnd_t rnd)
     {
       mpfr_init2 (w, MPFR_PREC (MPC_RE (b)));
       mpfr_neg (w, MPC_RE (b), GMP_RNDN);
-      inexact = mpfr_sqrt (MPC_IM (a), w, MPC_RND_IM (rnd));
       if (im_sgn)
-        mpfr_neg (MPC_IM (a), MPC_IM (a), MPC_RNDNN);
+        {
+          inexact = mpfr_sqrt (MPC_IM (a), w, INV_RND (MPC_RND_IM (rnd)));
+          mpfr_neg (MPC_IM (a), MPC_IM (a), MPC_RNDNN);
+        }
+      else
+        inexact = mpfr_sqrt (MPC_IM (a), w, MPC_RND_IM (rnd));
+
       mpfr_set_ui (MPC_RE (a), 0, GMP_RNDN);
       mpfr_clear (w);
       return inexact;
@@ -158,7 +162,7 @@ mpc_sqrt (mpc_ptr a, mpc_srcptr b, mpc_rnd_t rnd)
         {
           mpfr_neg (y, y, GMP_RNDN);
           inexact = mpfr_sqrt (MPC_RE (a), y, MPC_RND_RE (rnd));
-          inexact |= mpfr_sqrt (MPC_IM (a), y, MPC_RND_IM (rnd));
+          inexact |= mpfr_sqrt (MPC_IM (a), y, INV_RND (MPC_RND_IM (rnd)));
           mpfr_neg (MPC_IM (a), MPC_IM (a), GMP_RNDN);
         }
       return inexact;
@@ -188,6 +192,7 @@ mpc_sqrt (mpc_ptr a, mpc_srcptr b, mpc_rnd_t rnd)
        rnd_t = INV_RND(rnd_t);
     }
   }
+
   do
   {
       loops ++;
@@ -208,11 +213,12 @@ mpc_sqrt (mpc_ptr a, mpc_srcptr b, mpc_rnd_t rnd)
       ok = mpfr_can_round (w, (mp_exp_t)prec - 2, GMP_RNDD, rnd_w, prec_w);
       if (ok)
       {
-        /* t = y / 2w, rounded up */
+        /* t = y / 2w, rounded away */
         /* total error bounded by 7 ulps */
-        inexact |= mpfr_div (t, MPC_IM (b), w, GMP_RNDU);
-        inexact |= mpfr_div_2ui (t, t, 1, GMP_RNDU);
-        ok = mpfr_can_round (t, (mp_exp_t)prec - 3, GMP_RNDU, rnd_t, prec_t);
+        const mp_rnd_t r = im_sgn ? GMP_RNDD : GMP_RNDU;
+        inexact |= mpfr_div (t, MPC_IM (b), w, r);
+        inexact |= mpfr_div_2ui (t, t, 1, r);
+        ok = mpfr_can_round (t, (mp_exp_t)prec - 3, r, rnd_t, prec_t);
       }
   }
   while (inexact != 0 && ok == 0);

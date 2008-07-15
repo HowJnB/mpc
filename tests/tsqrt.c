@@ -674,6 +674,53 @@ pure_imaginary_argument ()
   mpfr_clear (b);
 }
 
+static void
+bugs_fixed ()
+{
+  mpc_t z;
+  mpc_t sqrt_z;
+  mpc_t expected;
+
+  mpc_init (z);
+  mpc_init (sqrt_z);
+  mpc_init (expected);
+
+  /* bug in v0.4.6 */
+  mpc_set_prec (z, 19);
+  mpc_set_prec (sqrt_z, 19);
+  mpc_set_prec (expected, 19);
+  mpfr_set_str (MPC_RE (z), "1.101010001010100000e117", 2, GMP_RNDN);
+  mpfr_set_str (MPC_IM (z), "-1.001110111101100001e-158", 2, GMP_RNDN);
+  mpfr_set_str (MPC_RE (expected), "1.110100100100100110e58", 2, GMP_RNDN);
+  mpfr_set_str (MPC_IM (expected), "-1.010110101100111011e-218", 2, GMP_RNDN);
+  mpc_sqrt (sqrt_z, z, MPC_RNDNZ);
+  if (mpc_cmp (sqrt_z, expected))
+    test_failed (z, sqrt_z, expected);
+
+  mpc_set_prec (z, 2);
+  mpc_set_prec (sqrt_z, 2);
+  mpc_set_prec (expected, 2);
+  mpfr_set_str (MPC_RE (z), "-0", 2, GMP_RNDN);
+  mpfr_set_str (MPC_IM (z), "-1.1e204", 2, GMP_RNDN);
+  mpfr_set_str (MPC_RE (expected), "1.1e101", 2, GMP_RNDN);
+  mpfr_set_str (MPC_IM (expected), "-1.1e101", 2, GMP_RNDN);
+  mpc_sqrt (sqrt_z, z, MPC_RNDNZ);
+  if (mpc_cmp (sqrt_z, expected))
+    test_failed (z, sqrt_z, expected);
+
+  mpfr_set_str (MPC_RE (z), "-1.1e236", 2, GMP_RNDN);
+  mpfr_set_str (MPC_IM (z), "-0", 2, GMP_RNDN);
+  mpfr_set_str (MPC_RE (expected), "0", 2, GMP_RNDN);
+  mpfr_set_str (MPC_IM (expected), "-1.0e118", 2, GMP_RNDN);
+  mpc_sqrt (sqrt_z, z, MPC_RNDNZ);
+  if (mpc_cmp (sqrt_z, expected))
+    test_failed (z, sqrt_z, expected);
+
+  mpc_clear (z);
+  mpc_clear (sqrt_z);
+  mpc_clear (expected);
+}
+
 int
 main()
 {
@@ -682,6 +729,8 @@ main()
   special ();
   pure_real_argument ();
   pure_imaginary_argument ();
+
+  bugs_fixed ();
 
   tgeneric (2, 1024, 256);
 
