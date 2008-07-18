@@ -2,16 +2,8 @@ New functions to implement:
 - from Mickael Gastineau <gastineau@imcce.fr> 20 Feb 2007:
   int mpc_fr_div (mpc_t rop, mpfr_t op1, mpc_t op2, mpc_rnd_t rnd)
       rop = op1 / op2
-  int mpc_sub_fr (mpc_t rop, mpc_t op1, mpfr_t op2, mpc_rnd_t rnd)
-      rop = op1 - op2
-  int mpc_fr_sub (mpc_t rop, mpfr_t op1, mpc_t op2, mpc_rnd_t rnd)
-      rop = op1 - op2
-  int mpc_set_fr (mpc_t rop,  mpfr_t op1, mpc_rnd_t)
-      rop = op1
 - from Mickael Gastineau <gastineau@imcce.fr> 14 Apr 2008:
   mpc_fma: d=a*b+c
-- from Rob <sisyphus1@optusnet.com.au> 6 Oct 2007:
-  const char * mpc_get_version (void)
 - from Andreas Enge 9 April 2008:
   mpc_pow_ui
 - from Andreas Enge 9 April 2008:
@@ -34,8 +26,8 @@ New tests to add:
 - from Andreas Enge and Philippe Théveny 9 April 2008
   correct handling of Nan and infinities in the following functions: abs, add,
   add_fr, add_ui, cmp, cmp_si_si, conj, div_2exp, div, div_fr, div_ui, exp,
-  log, mul, mul_fr, mul_i, mul_si, mul_ui, neg, norm, sqr, sub, sub_ui,
-  ui_div, and ui_ui_sub.
+  fr_sub, log, mul, mul_fr, mul_i, mul_si, mul_ui, neg, norm, sqr, sub,
+  sub_fr, sub_ui, ui_div, and ui_ui_sub.
   beware of intermediate overflows while the result may fit
      (we need special code)
   beware of strange specifications in C99, that we want to follow,

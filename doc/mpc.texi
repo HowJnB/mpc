@@ -576,10 +576,11 @@ These functions assign new values to already initialized complex numbers
 @deftypefnx Macro int mpc_set_ui (mpc_t @var{rop}, unsigned long int @var{op}, mpc_rnd_t @var{rnd})
 @deftypefnx Macro int mpc_set_si (mpc_t @var{rop}, long int @var{op}, mpc_rnd_t @var{rnd})
 @deftypefnx Macro int mpc_set_d (mpc_t @var{rop}, double @var{op}, mpc_rnd_t @var{rnd})
+@deftypefnx Macro int mpc_set_fr (mpc_t @var{rop}, mpfr_t @var{op}, mpc_rnd_t @var{rnd})
 Set the value of @var{rop} from @var{op}, rounded to the precision of @var{rop}
 with the given rounding mode @var{rnd}.
 Except for @code{mpc_set}, the argument @var{op} is interpreted as real,
-so the imaginary part of @var{rop} is set to zero.
+so the imaginary part of @var{rop} is set to zero with a positive sign.
 Please note that even a @code{long int} may have to be rounded,
 if the destination precision is less than the machine word width.
 For @code{mpc_set_d}, be careful that the input number @var{op}
@@ -666,6 +667,8 @@ Set @var{rop} to @var{op1} @math{+} @var{op2} rounded according to @var{rnd}.
 @end deftypefun
 
 @deftypefn Function int mpc_sub (mpc_t @var{rop}, mpc_t @var{op1}, mpc_t @var{op2}, mpc_rnd_t @var{rnd})
+@deftypefnx Function int mpc_sub_fr (mpc_t @var{rop}, mpc_t @var{op1}, mpfr_t @var{op2}, mpc_rnd_t @var{rnd})
+@deftypefnx Function int mpc_fr_sub (mpc_t @var{rop}, mpfr_t @var{op1}, mpc_t @var{op2}, mpc_rnd_t @var{rnd})
 @deftypefnx Function int mpc_sub_ui (mpc_t @var{rop}, mpc_t @var{op1}, unsigned long int @var{op2}, mpc_rnd_t @var{rnd})
 @deftypefnx Macro int mpc_ui_sub (mpc_t @var{rop}, unsigned long int @var{op1}, mpc_t @var{op2}, mpc_rnd_t @var{rnd})
 @deftypefnx Function int mpc_ui_ui_sub (mpc_t @var{rop}, unsigned long int @var{re1}, unsigned long int @var{im1}, mpc_t @var{op2}, mpc_rnd_t @var{rnd})
@@ -884,6 +887,10 @@ This function is useful for
 testing functions and algorithms, since this kind of random numbers have
 proven to be more likely to trigger corner-case bugs.
 Negative parts are generated when @var{max_size} is negative.
+@end deftypefun
+
+@deftypefun const char * mpc_get_version(void)
+Return the MPC version, as a null-terminated string.
 @end deftypefun
 
 @node Internals, , Miscellaneous Complex Functions, Complex Functions
