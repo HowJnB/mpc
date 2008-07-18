@@ -87,17 +87,35 @@ Complex Library, version @value{VERSION}
 @end ifnottex
 
 @menu
-* Copying::                   MPC Copying Conditions (LGPL).
-* Introduction to MPC ::      Brief introduction to MPC.
-* Installing MPC::            How to configure and compile the MPC library.
-* MPC Basics::                What every MPC user should know.
-* Reporting Bugs::            How to usefully report bugs.
-* Complex Functions::         Functions for arithmetic on complex numbers.
+* Copying::                     MPC Copying Conditions (LGPL).
+* Introduction to MPC::         Brief introduction to MPC.
+* Installing MPC::              How to configure and compile the MPC library.
+* Reporting Bugs::              How to usefully report bugs.
+* MPC Basics::                  What every MPC user should know.
+* Complex Functions::           Functions for arithmetic on complex numbers.
 
-* Contributors::
-* References::
-* Concept Index::
-* Function Index::
+* Contributors::                
+* References::                  
+* Concept Index::               
+* Function Index::              
+
+@detailmenu
+ --- The Detailed Node Listing ---
+
+Complex Functions
+
+* Initializing Complex Numbers::  
+* Assigning Complex Numbers::   
+* Simultaneous Init & Assign::  
+* Complex Comparison::          
+* Basic Arithmetic::            
+* Power Functions and Logarithm::  
+* Trigonometric Functions::     
+* I/O of Complex Numbers::      
+* Miscellaneous Complex Functions::  
+* Internals::                   
+
+@end detailmenu
 @end menu
 
 @c  @times{} made available as a "*" in info and html (already works in tex).
@@ -409,46 +427,7 @@ Hence unless you change its precision, or clear and reinitialize it,
 a complex variable will have the same allocated space during all its
 life.
 
-@node Complex Functions, Contributors, MPC Basics, Top
-@comment  node-name,  next,  previous,  up
-@chapter Complex Functions
-@cindex Complex functions
 
-The complex functions expect arguments of type @code{mpc_t}.
-
-The MPC floating-point functions have an interface that is similar to the
-GNU MP
-integer functions.  The function prefix for operations on complex numbers is
-@code{mpc_}.
-
-@cindex User-defined precision
-The precision of a computation is defined as follows: Compute the requested
-operation exactly (with ``infinite precision''), and round the result to
-the destination variable precision with the given rounding mode.
-
-The MPC complex functions are intended to be a smooth extension
-of the IEEE P754 arithmetic. The results obtained on one
-computer should not differ from the results obtained on a computer with a
-different word size.
-
-
-@menu
-* Rounding Modes::
-* Initializing Complex Numbers::
-* Assigning Complex Numbers::
-* Simultaneous Init & Assign::
-* Complex Comparison::
-* Basic Arithmetic::
-* Power Functions and Logarithm::
-* Trigonometric Functions::
-* I/O of Complex Numbers::
-* Miscellaneous Complex Functions::
-* Internals::
-@end menu
-
-@node Rounding Modes, Initializing Complex Numbers, , Complex Functions
-@comment  node-name,  next, previous, up
-@cindex Rounding modes
 @section Rounding Modes
 
 A complex rounding mode is of the form @code{MPC_RNDxy} where
@@ -478,7 +457,43 @@ is returned although the result is exact; in these cases the
 function documentation explains the exact meaning of the return value.
 However, the return value never wrongly indicates an exact computation.
 
-@node Initializing Complex Numbers, Assigning Complex Numbers, Rounding Modes, Complex Functions
+@node Complex Functions, Contributors, MPC Basics, Top
+@comment  node-name,  next,  previous,  up
+@chapter Complex Functions
+@cindex Complex functions
+
+The complex functions expect arguments of type @code{mpc_t}.
+
+The MPC floating-point functions have an interface that is similar to the
+GNU MP
+integer functions.  The function prefix for operations on complex numbers is
+@code{mpc_}.
+
+@cindex User-defined precision
+The precision of a computation is defined as follows: Compute the requested
+operation exactly (with ``infinite precision''), and round the result to
+the destination variable precision with the given rounding mode.
+
+The MPC complex functions are intended to be a smooth extension
+of the IEEE P754 arithmetic. The results obtained on one
+computer should not differ from the results obtained on a computer with a
+different word size.
+
+
+@menu
+* Initializing Complex Numbers::  
+* Assigning Complex Numbers::   
+* Simultaneous Init & Assign::  
+* Complex Comparison::          
+* Basic Arithmetic::            
+* Power Functions and Logarithm::  
+* Trigonometric Functions::     
+* I/O of Complex Numbers::      
+* Miscellaneous Complex Functions::  
+* Internals::                   
+@end menu
+
+@node Initializing Complex Numbers, Assigning Complex Numbers, Complex Functions, Complex Functions
 @comment  node-name,  next,  previous,  up
 @section Initialization Functions
 
@@ -858,7 +873,7 @@ The argument @var{base} may be in the range 2 to 36.
 Return the number of bytes read, or if an error occurred, return 0.
 @end deftypefun
 
-@node Miscellaneous Complex Functions,  Internals, I/O of Complex Numbers, Complex Functions
+@node Miscellaneous Complex Functions, Internals, I/O of Complex Numbers, Complex Functions
 @comment  node-name,  next,  previous,  up
 @section Miscellaneous Functions
 @cindex Miscellaneous complex functions
@@ -893,7 +908,7 @@ Negative parts are generated when @var{max_size} is negative.
 Return the MPC version, as a null-terminated string.
 @end deftypefun
 
-@node Internals, , Miscellaneous Complex Functions, Complex Functions
+@node Internals,  , Miscellaneous Complex Functions, Complex Functions
 @comment  node-name,  next,  previous,  up
 @section Internals
 
