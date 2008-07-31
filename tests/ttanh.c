@@ -43,7 +43,7 @@ test_failed (mpc_t op, mpc_t get, mpc_t expected)
 
 /* check special values as defined in C99 standard */
 static void
-special ()
+special (void)
 {
   mpc_t z;
   mpc_t t;
@@ -484,7 +484,7 @@ special ()
 }
 
 static void
-pure_real_argument ()
+pure_real_argument (void)
 {
   /* tanh(x -i*0) = tanh(x) -i*0 */
   /* tanh(x +i*0) = tanh(x) +i*0 */
@@ -531,7 +531,7 @@ pure_real_argument ()
 }
 
 static void
-pure_imaginary_argument ()
+pure_imaginary_argument (void)
 {
   /* tanh(+0 +i*y) = +0 +i*tan y */
   /* tanh(-0 +i*y) = -0 +i*tan y */
@@ -578,7 +578,7 @@ pure_imaginary_argument ()
 }
 
 static void
-check_53bits ()
+check_53bits (void)
 {
   mpc_t z;
   mpc_t tanh_z;
@@ -603,7 +603,7 @@ check_53bits ()
 }
 
 int
-main()
+main (void)
 {
   test_start ();
 

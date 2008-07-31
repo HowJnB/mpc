@@ -31,7 +31,7 @@ MA 02111-1307, USA. */
 #include "tgeneric.c"
 
 static void
-check_ternary_value ()
+check_ternary_value (void)
 {
   mpc_t x, y, z;
   mp_prec_t prec;
@@ -62,7 +62,7 @@ check_ternary_value ()
 }
 
 int
-main()
+main (void)
 {
   test_start ();
 

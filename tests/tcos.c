@@ -43,7 +43,7 @@ test_failed (mpc_t op, mpc_t get, mpc_t expected)
 
 /* check special values as defined in C99 standard */
 static void
-special ()
+special (void)
 {
   mpc_t z;
   mpc_t c;
@@ -294,7 +294,7 @@ special ()
 }
 
 static void
-pure_real_argument ()
+pure_real_argument (void)
 {
   /* cos(x -i*0) = cos(x) +i*0*sin(x) */
   /* cos(x +i*0) = cos(x) -i*0*sin(x) */
@@ -368,7 +368,7 @@ pure_real_argument ()
 }
 
 static void
-pure_imaginary_argument ()
+pure_imaginary_argument (void)
 {
   /* cos(-0 +i*y) = cosh(y) -i*0, when y < 0 */
   /* cos(-0 +i*y) = cosh(y) +i*0, when y > 0 */
@@ -415,7 +415,7 @@ pure_imaginary_argument ()
 }
 
 static void
-check_53()
+check_53 (void)
 {
   mpc_t z;
   mpc_t cos_z;
@@ -439,7 +439,7 @@ check_53()
 }
 
 int
-main()
+main (void)
 {
   test_start ();
 

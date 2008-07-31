@@ -31,7 +31,7 @@ MA 02111-1307, USA. */
 #include "tgeneric.c"
 
 int
-main()
+main (void)
 {
    mpc_t z, z2, tmp;
    mpfr_t twopi;

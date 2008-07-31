@@ -149,7 +149,7 @@ testsqr (long a, long b, mp_prec_t prec, mpc_rnd_t rnd)
 
 
 void
-special ()
+special (void)
 {
   mpc_t x, z;
   int inexact;
@@ -179,7 +179,7 @@ special ()
 
 
 int
-main()
+main (void)
 {
   mpc_t x;
   mpc_rnd_t rnd_re, rnd_im;

@@ -31,7 +31,7 @@ MA 02111-1307, USA. */
 /* Crude tests for some functions. */
 /* TODO: use tgeneric instead and remove this. */
 int
-main()
+main (void)
 {
   mpc_t x, y, z;
   mp_prec_t prec, pr, pi;

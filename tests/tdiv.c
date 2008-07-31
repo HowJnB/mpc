@@ -227,7 +227,7 @@ mpc_div_ref (mpc_ptr a, mpc_srcptr b, mpc_srcptr c, mpc_rnd_t rnd)
 }
 
 int
-main()
+main (void)
 {
   mpc_t b, c, q, q_ref;
   int inex, i;

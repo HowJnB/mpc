@@ -29,7 +29,7 @@ MA 02111-1307, USA. */
 #include "tgeneric.c"
 
 int
-main()
+main (void)
 {
   test_start ();
 

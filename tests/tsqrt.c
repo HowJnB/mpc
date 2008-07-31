@@ -43,7 +43,7 @@ test_failed (mpc_t op, mpc_t get, mpc_t expected)
 
 /* check special values as defined in C99 standard */
 static void
-special ()
+special (void)
 {
   mpc_t z;
   mpc_t t;
@@ -519,7 +519,7 @@ special ()
 }
 
 static void
-pure_real_argument ()
+pure_real_argument (void)
 {
   /* sqrt(x +i*0) = sqrt(x) +i*0, when x>0 */
   /* sqrt(x -i*0) = sqrt(x) -i*0, when x>0 */
@@ -598,7 +598,7 @@ pure_real_argument ()
 }
 
 static void
-pure_imaginary_argument ()
+pure_imaginary_argument (void)
 {
   /* sqrt(+/-0 +i*y) = sqrt(y/2) * (1 +i), when y >0     */
   /* sqrt(+/-0 +i*y) = sqrt(-y/2) * (-1 + i), when y < 0 */
@@ -675,7 +675,7 @@ pure_imaginary_argument ()
 }
 
 static void
-bugs_fixed ()
+bugs_fixed (void)
 {
   mpc_t z;
   mpc_t sqrt_z;
@@ -722,7 +722,7 @@ bugs_fixed ()
 }
 
 int
-main()
+main (void)
 {
   test_start ();
 

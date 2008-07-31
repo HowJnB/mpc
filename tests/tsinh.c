@@ -43,7 +43,7 @@ test_failed (mpc_t op, mpc_t get, mpc_t expected)
 
 /* check special values as defined in C99 standard */
 static void
-special ()
+special (void)
 {
   mpc_t z;
   mpc_t s;
@@ -286,7 +286,7 @@ special ()
 }
 
 static void
-pure_real_argument ()
+pure_real_argument (void)
 {
   /* sinh(x -i*0) = sinh(x) -i*0 */
   /* sinh(x +i*0) = sinh(x) +i*0 */
@@ -333,7 +333,7 @@ pure_real_argument ()
 }
 
 static void
-pure_imaginary_argument ()
+pure_imaginary_argument (void)
 {
   /* sinh(-0 +i*y) = -0*cos(y) +i*sin(y) */
   /* sinh(+0 +i*y) = +0*cos(y) +i*sin(y) */
@@ -408,7 +408,7 @@ pure_imaginary_argument ()
 }
 
 static void
-check_53bits ()
+check_53bits (void)
 {
   mpc_t z;
   mpc_t sinh_z;
@@ -433,7 +433,7 @@ check_53bits ()
 }
 
 int
-main ()
+main (void)
 {
   test_start ();
 

@@ -319,7 +319,7 @@ testmul (long a, long b, long c, long d, mp_prec_t prec, mpc_rnd_t rnd)
 
 
 void
-special ()
+special (void)
 {
   mpc_t x, y, z, t;
   int inexact;
@@ -355,7 +355,7 @@ special ()
 
 #ifdef TIMING
 void
-timemul ()
+timemul (void)
 {
   /* measures the time needed with different precisions for naive and */
   /* Karatsuba multiplication                                         */
@@ -401,7 +401,7 @@ timemul ()
 #endif
 
 int
-main()
+main (void)
 {
   mpc_t x, y;
   mpc_rnd_t rnd_re, rnd_im;

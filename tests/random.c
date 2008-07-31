@@ -44,7 +44,7 @@ gmp_randstate_t  rands;
 char             rands_initialized;
 
 static void
-test_start ()
+test_start (void)
 {
   char *environment_seed;
   unsigned long seed;
@@ -89,7 +89,7 @@ test_start ()
 }
 
 static void
-test_end ()
+test_end (void)
 {
   if (rands_initialized)
     {

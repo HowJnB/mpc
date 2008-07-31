@@ -43,7 +43,7 @@ test_failed (mpc_t op, mpc_t get, mpc_t expected)
 
 /* check special values as defined in C99 standard */
 static void
-special ()
+special (void)
 {
   mpc_t z;
   mpc_t s;
@@ -284,7 +284,7 @@ special ()
 }
 
 static void
-pure_real_argument ()
+pure_real_argument (void)
 {
   /* sin(x -i*0) = sin(x) -i*0*cos(x) */
   /* sin(x +i*0) = sin(x) +i*0*cos(x) */
@@ -416,7 +416,7 @@ pure_real_argument ()
 }
 
 static void
-pure_imaginary_argument ()
+pure_imaginary_argument (void)
 {
   /* sin(-0 +i*y) = -0 +i*sinh(y) */
   /* sin(+0 +i*y) = +0 +i*sinh(y) */
@@ -492,7 +492,7 @@ pure_imaginary_argument ()
 }
 
 static void
-check_53bits ()
+check_53bits (void)
 {
   mpc_t z;
   mpc_t sin_z;
@@ -517,7 +517,7 @@ check_53bits ()
 }
 
 int
-main()
+main (void)
 {
   test_start ();
 
