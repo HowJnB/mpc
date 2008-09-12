@@ -712,9 +712,11 @@ Set @var{rop} to the square of @var{op} rounded according to @var{rnd}.
 @deftypefunx int mpc_div_ui (mpc_t @var{rop}, mpc_t @var{op1}, unsigned long int @var{op2}, mpc_rnd_t @var{rnd})
 @deftypefunx int mpc_ui_div (mpc_t @var{rop}, unsigned long int @var{op1}, mpc_t @var{op2}, mpc_rnd_t @var{rnd})
 @deftypefunx int mpc_div_fr (mpc_t @var{rop}, mpc_t @var{op1}, mpfr_t @var{op2}, mpc_rnd_t @var{rnd})
+@deftypefunx int mpc_fr_div (mpc_t @var{rop}, mpfr_t @var{op1}, mpc_t @var{op2}, mpc_rnd_t @var{rnd})
 Set @var{rop} to @var{op1}/@var{op2} rounded according to @var{rnd}.
 For @code{mpc_div} and @code{mpc_ui_div}, the return value may fail to
-recognize some exact results, and its sign is not significant.
+recognize some exact results. The sign of returned value is
+significant only for @code{mpc_div_ui}.
 @end deftypefun
 
 @deftypefun int mpc_neg (mpc_t @var{rop}, mpc_t @var{op}, mpc_rnd_t @var{rnd})
