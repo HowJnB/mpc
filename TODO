@@ -1,7 +1,4 @@
 New functions to implement:
-- from Mickael Gastineau <gastineau@imcce.fr> 20 Feb 2007:
-  int mpc_fr_div (mpc_t rop, mpfr_t op1, mpc_t op2, mpc_rnd_t rnd)
-      rop = op1 / op2
 - from Mickael Gastineau <gastineau@imcce.fr> 14 Apr 2008:
   mpc_fma: d=a*b+c
 - from Andreas Enge 9 April 2008:
@@ -16,7 +13,7 @@ New functions to implement:
 - from Andreas Enge and Philippe Théveny 9 April 2008
   work plan for completing functionality
   1) inverse trigonometric functions
-  2) hyperbolic functions and cproj at any moment (relatively easy)
+  2) cproj at any moment (relatively easy)
 - from Andreas Enge and Philippe Théveny 17 July 2008
   agm (and complex logarithm with agm ?)
 New tests to add:
@@ -26,7 +23,7 @@ New tests to add:
 - from Andreas Enge and Philippe Théveny 9 April 2008
   correct handling of Nan and infinities in the following functions: abs, add,
   add_fr, add_ui, cmp, cmp_si_si, conj, div_2exp, div, div_fr, div_ui, exp,
-  fr_sub, log, mul, mul_fr, mul_i, mul_si, mul_ui, neg, norm, sqr, sub,
+  fr_sub, fr_div, log, mul, mul_fr, mul_i, mul_si, mul_ui, neg, norm, sqr, sub,
   sub_fr, sub_ui, ui_div, and ui_ui_sub.
   See Annex G of the C99 draft
     (http://www.open-std.org/jtc1/sc22/wg14/www/docs/n1124.pdf)
@@ -35,3 +32,4 @@ New tests to add:
      (we need special code)
   beware of strange specifications in C99, that we want to follow,
      but that are not automatic from the behaviour of mpfr
+

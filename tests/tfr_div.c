@@ -46,7 +46,7 @@ random (void)
       mpc_set_prec (q_ref, prec);
 
       test_default_random (c, -8192, 8192, 1);
-      test_default_random (b, 65535, 65535, 1);
+      test_default_random (b, -65535, 65535, 1);
       mpfr_set_ui (MPC_IM (b), 0, GMP_RNDN);
 
       for (rnd_re = (mp_rnd_t)0; rnd_re < (mp_rnd_t)4; ++rnd_re)
