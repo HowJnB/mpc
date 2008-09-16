@@ -64,7 +64,7 @@ message_failed (mpc_srcptr op, mpc_srcptr rop,
 }
 
 static void
-tgeneric(mpfr_prec_t prec_min, mpfr_prec_t prec_max, mp_exp_t exp_max)
+tgeneric(mpfr_prec_t prec_min, mpfr_prec_t prec_max, mpfr_prec_t step, mp_exp_t exp_max)
 {
   mpc_t  x, z, t, u;
   mpc_rnd_t rnd_re;
@@ -91,7 +91,7 @@ tgeneric(mpfr_prec_t prec_min, mpfr_prec_t prec_max, mp_exp_t exp_max)
   if (-exp_max > exp_min)
     exp_min = - exp_max;
 
-  for (prec = prec_min; prec <= prec_max; prec += 7)
+  for (prec = prec_min; prec <= prec_max; prec+=step)
     {
       mpc_set_prec (x, prec);
       mpc_set_prec (z, prec);

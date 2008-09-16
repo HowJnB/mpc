@@ -49,7 +49,7 @@ main (void)
    mpfr_div_2ui (twopi, twopi, 1, GMP_RNDN);
 
    /* Test whether exp (log (z)) = z */
-   for (prec = 2; prec <= 1000; prec+=7)
+   for (prec = 2; prec <= 1000; prec+=11)
    {
       mpc_set_prec (z, prec);
       mpc_set_prec (z2, prec);
@@ -75,7 +75,7 @@ main (void)
 
    /* Test whether log (exp (z)) = z for purely imaginary z; then exp (x) */
    /* lies on the unit cercle, a critical case for the logarithm.         */
-   for (prec = 2; prec <= 1000; prec+=7)
+   for (prec = 2; prec <= 1000; prec+=11)
    {
       mpc_set_prec (z, prec);
       mpc_set_prec (z2, prec);

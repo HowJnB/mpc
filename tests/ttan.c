@@ -539,7 +539,7 @@ main (void)
   pure_real_argument ();
   pure_imaginary_argument ();
 
-  tgeneric (2, 512, 4);
+  tgeneric (2, 512, 7, 4);
   check_53 ();
 
   test_end ();

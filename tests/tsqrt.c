@@ -732,7 +732,7 @@ main (void)
 
   bugs_fixed ();
 
-  tgeneric (2, 1024, 256);
+  tgeneric (2, 1024, 7, 256);
 
   test_end ();
 

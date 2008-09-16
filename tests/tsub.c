@@ -33,7 +33,7 @@ main (void)
 {
   test_start ();
 
-  tgeneric (2, 1024, -1);
+  tgeneric (2, 1024, 7, -1);
 
   test_end ();
 
