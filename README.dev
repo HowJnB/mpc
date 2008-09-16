@@ -1,14 +1,19 @@
-Source code from Subversion repository:
-To compile source code obtained from Subversion repository, you need autoconf,
-automake and libtools packages. To create the configure file, type:
+Source code from the subversion repository
+------------------------------------------
 
+To compile source code obtained from the subversion repository,
+make sure you have installed the autoconf, automake and libtools packages.
+Execute
 $ autoreconf -i
 
 
-To make a new release:
+Creating a new release
+----------------------
 
-  1) create a tag for the new release, for example:
-
-     $ svn cp svn+ssh://zimmerma@scm.gforge.inria.fr/svn/mpc/trunk \
-              svn+ssh://zimmerma@scm.gforge.inria.fr/svn/mpc/tags/0.4.6 
-   
+1) Update the version number in configure.ac ("AC_INIT (mpc, _version_...)")
+   and in INSTALL.
+2) Check that NEWS, BUGS and TODO are up to date.
+3) Execute "autoreconf; touch doc/mpc.texi; make dist".
+   This updates the date and version number in doc/version.texi and
+   creates the tarball for distribution.
+4) Commit the changes to svn.
