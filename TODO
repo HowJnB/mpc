@@ -1,4 +1,10 @@
+Efficiency:
+- from Andreas Enge 16 September 2008:
+  Once mpc_sin_cos exists, improve mpc_tan to use it
+
 New functions to implement:
+- from Andreas Enge 16 September 2008:
+  mpc_sin_cos; needs mpfr_sinh_cosh
 - from Mickael Gastineau <gastineau@imcce.fr> 14 Apr 2008:
   mpc_fma: d=a*b+c
 - from Andreas Enge 9 April 2008:
@@ -16,6 +22,7 @@ New functions to implement:
   2) cproj at any moment (relatively easy)
 - from Andreas Enge and Philippe Théveny 17 July 2008
   agm (and complex logarithm with agm ?)
+
 New tests to add:
 - from Andreas Enge and Philippe Théveny 9 April 2008
   systematic testing whether ok when output variable equals some
