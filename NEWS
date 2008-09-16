@@ -1,0 +1,9 @@
+Changes from version 0.4.6 to 0.5:
+  - Support for autotools
+  - New functions:
+     - logarithm
+     - trigonometric functions: cos, tan
+     - hyperbolic functions: cosh, sinh, tanh
+  - Bug fixes:
+    - sqrt with directed rounding
+

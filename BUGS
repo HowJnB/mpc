@@ -1,0 +1,5 @@
+- No checks are made for intermediate overflows, which may occur
+  in the middle of the algorithms although the final result
+  may be representable.
+- Correct handling of special values (Nan, infinities) is
+  postponed to a later version.

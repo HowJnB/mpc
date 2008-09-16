@@ -1,6 +1,6 @@
 /* test file for mpc_cos.
 
-Copyright (C) 2007 INRIA.
+Copyright (C) 2008 Philippe Th\'eveny
 
 This file is part of the MPC Library.
 
