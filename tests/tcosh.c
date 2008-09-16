@@ -650,7 +650,7 @@ main (void)
   pure_real_argument ();
   pure_imaginary_argument ();
 
-  tgeneric (2, 512, 7);
+  tgeneric (2, 512, 7, 7);
 
   check_53 ();
 

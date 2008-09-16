@@ -91,7 +91,7 @@ tgeneric(mpfr_prec_t prec_min, mpfr_prec_t prec_max, mp_exp_t exp_max)
   if (-exp_max > exp_min)
     exp_min = - exp_max;
 
-  for (prec = prec_min; prec <= prec_max; prec++)
+  for (prec = prec_min; prec <= prec_max; prec += 7)
     {
       mpc_set_prec (x, prec);
       mpc_set_prec (z, prec);

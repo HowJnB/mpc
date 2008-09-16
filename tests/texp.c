@@ -71,7 +71,7 @@ main (void)
         }
     }
 
-  tgeneric (2, 512, 256);
+  tgeneric (2, 512, 7, 256);
 
   mpc_clear (x);
   mpc_clear (z);

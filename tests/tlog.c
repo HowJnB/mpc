@@ -39,7 +39,7 @@ main (void)
 
    test_start ();
 
-   tgeneric (2, 512, 128);
+   tgeneric (2, 512, 7, 128);
 
    mpc_init (z);
    mpc_init (z2);
