@@ -525,7 +525,7 @@ main (void)
   pure_real_argument ();
   pure_imaginary_argument ();
 
-  tgeneric (2, 512, 10);
+  tgeneric (2, 512, 7);
 
   check_53bits ();
 
