@@ -11,9 +11,12 @@ Creating a new release
 ----------------------
 
 1) Update the version number in configure.ac ("AC_INIT (mpc, _version_...)")
-   and in INSTALL.
-2) Check that NEWS, BUGS and TODO are up to date.
+   and in INSTALL, and disactivate the -Werror option in configure.ac.
+2) Check that NEWS, BUGS and TODO are up to date, and that the minimal
+   version numbers of gmp and mpfr in INSTALL and doc/mpc.texi are
+   correct.
 3) Execute "autoreconf; touch doc/mpc.texi; make dist".
    This updates the date and version number in doc/version.texi and
    creates the tarball for distribution.
+4) Reactivate the -Werr option in configure.ac.
 4) Commit the changes to svn.
