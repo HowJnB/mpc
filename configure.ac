@@ -77,7 +77,7 @@ AX_C_CHECK_FLAG(-ansi,,,CFLAGS="$CFLAGS -ansi",)
 AX_C_CHECK_FLAG(-pedantic,,,CFLAGS="$CFLAGS -pedantic",)
 AX_C_CHECK_FLAG(-Wall,,,CFLAGS="$CFLAGS -Wall",)
 AX_C_CHECK_FLAG(-Wextra,,,CFLAGS="$CFLAGS -Wextra",)
-#AX_C_CHECK_FLAG(-Werror,,,CFLAGS="$CFLAGS -Werror",)
+AX_C_CHECK_FLAG(-Werror,,,CFLAGS="$CFLAGS -Werror",)
 
 
 AC_CONFIG_FILES([Makefile src/Makefile tests/Makefile doc/Makefile])
