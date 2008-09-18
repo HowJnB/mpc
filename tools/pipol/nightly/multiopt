@@ -1,0 +1,135 @@
+#!/bin/bash
+SCRIPTS_DIR=$PIPOL_HOMEDIR/.pipol/scripts
+
+# Return value (set it to 1 if a script fails)
+RET=0
+
+#
+# Set RANDOM_OPT to random compiler options
+# [no parameter]
+#
+# Setting random seed enables replay
+RANDOM=$PIPOL_JOB
+
+function random_opt()
+{
+CONFIGURE_OPTIONS=(\
+    --enable-assert=full \
+    --enable-thread-safe \
+    --disable-shared \
+    --disable-alloca)
+
+# we did already compile with --enable-assert=full, so don't use zero value
+local number=${RANDOM:-3}
+
+unset RANDOM_OPT
+for ((i=0; i < ${#CONFIGURE_OPTIONS[*]}; i++)); do
+    if [ $(($((2**i)) & number)) -ne 0 ]; then
+        RANDOM_OPT=$RANDOM_OPT" "${CONFIGURE_OPTIONS[$i]};
+    fi
+done
+
+unset CFLAGS_OPT
+CFLAGS_OPTIONS=(\
+    -O3 \
+    -ansi \
+    "-std=c99 -D_XOPEN_SOURCE=500" \
+    "-D_FORTIFY_SOURCE=2" \
+    -fno-common)
+for ((i=0; i < ${#CFLAGS_OPTIONS[*]}; i++)); do
+    j=$i+${#CONFIGURE_OPTIONS[*]}
+    if [ $(($((2**j)) & number)) -ne 0 ]; then
+    	CFLAGS_OPT=$CFLAGS_OPT" "${CFLAGS_OPTIONS[$i]}
+    fi
+done
+if [ -n "$CFLAGS_OPT" ]; then
+   RANDOM_OPT=$RANDOM_OPT" ""CFLAGS=\"$CFLAGS_OPT\" "
+fi
+}
+
+#
+# Write script result in LOG_FILE
+# [first parameter: command to execute logging results]
+# [optional other parameters: command parameters]
+#
+LOG_FILE=$PIPOL_HOMEDIR/.pipol/log/`date +%y%m%d`-`basename $0`
+
+function log()
+{
+if ($*);
+	then RESULT="OK:    "
+	else RESULT="FAILED:"; RET=1
+fi;
+SCRIPT_NAME=`basename $1`
+shift
+echo $RESULT $REVISION $PIPOL_IMAGE $PIPOL_JOB_ID $SCRIPT_NAME $* >>$LOG_FILE
+}
+
+#
+# Set REVISION to the current revision number of the parameter
+# [parameter: svn directory]
+#
+function get_revision()
+{
+REVISION=$(cd $1; svn info|sed -n 's/Revision: // p');
+} 
+
+#
+# Make clean in compile directory without changing current working dir
+# [parameter: source directory]
+#
+function clean_compile_dir()
+{
+(cd $1; make -s clean)
+}
+
+
+###
+
+#
+# Deploy images
+#
+#PIPOL esn amd64-linux-fedora-core8.dd.gz none 02:00 --silent --user
+#PIPOL esn i386-linux-fedora-core8.dd.gz  none 02:00 --silent --user
+
+#PIPOL esn amd64-linux-redhatEL-5.0.dd.gz none 02:00 --silent --user
+#PIPOL esn i386-linux-redhatEL-5.0.dd.gz  none 02:00 --silent --user
+#PIPOL esn ia64-linux-redhatEL-5.0.dd     none 02:00 --silent --user
+
+
+###
+### Following commands are executed on each and all deployed images
+###
+
+#
+# Get mpc trunk and compile it
+#
+unset REVISION
+log $SCRIPTS_DIR/get-svn.sh mpc/trunk mpc-trunk
+get_revision $PIPOL_WDIR/mpc-trunk
+REVISION="mpc(r$REVISION)"
+log $SCRIPTS_DIR/compile-svn.sh mpc-trunk
+
+#
+# Get mpfr trunk and compile it with various options
+#
+unset REVISION
+log $SCRIPTS_DIR/get-svn.sh mpfr/trunk mpfr-trunk
+get_revision $PIPOL_WDIR/mpfr-trunk
+REVISION="mpfr(r$REVISION)"
+export GMP_CHECK_RANDOMIZE=1
+export MPFR_CHECK_MAX=1
+export MPFR_CHECK_ALL=1
+log $SCRIPTS_DIR/compile-svn.sh mpfr-trunk
+
+clean_compile_dir $PIPOL_WDIR/mpfr-trunk
+log $SCRIPTS_DIR/compile-svn.sh mpfr-trunk --enable-assert=full
+
+clean_compile_dir $PIPOL_WDIR/mpfr-trunk
+random_opt
+log $SCRIPTS_DIR/compile-svn.sh mpfr-trunk $RANDOM_OPT 
+
+#
+# Return value is 0 if no script failed
+#
+exit $RET;
