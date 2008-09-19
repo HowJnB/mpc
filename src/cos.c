@@ -121,7 +121,7 @@ mpc_cos (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
 
           mpfr_sin_cos (s, c, MPC_RE (op), GMP_RNDN);
           mpfr_set_inf (MPC_RE (rop), mpfr_sgn (c));
-          mpfr_set_inf (MPC_IM (rop), 
+          mpfr_set_inf (MPC_IM (rop),
                         (mpfr_sgn (MPC_IM (op)) == mpfr_sgn (s) ? -1 : +1));
 
           mpfr_clear (s);
@@ -157,14 +157,14 @@ mpc_cos (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
       /* cos(x +i*0) = cos(x) -i*0*sin(x) */
       /* cos(x -i*0) = cos(x) +i*0*sin(x) */
       mpfr_t zero;
+      zero[0] = MPC_IM (op)[0];
+      MPFR_CHANGE_SIGN (zero);
 
-      mpfr_init (zero);
-      mpfr_setsign (zero, MPC_IM (op), !mpfr_signbit (MPC_IM (op)), GMP_RNDN);
-
-      mpfr_sin_cos (MPC_IM (rop), MPC_RE (rop), MPC_RE (op), MPC_RND_RE (rnd));
+      mpfr_sin (MPC_IM (rop), MPC_RE (op), INV_RND (MPC_RND_IM (rnd)));
       mpfr_mul (MPC_IM (rop), MPC_IM (rop), zero, MPC_RND_IM (rnd));
 
-      mpfr_clear (zero);
+      mpfr_cos (MPC_RE (rop), MPC_RE (op), MPC_RND_RE (rnd));
+
       return;
     }
 
