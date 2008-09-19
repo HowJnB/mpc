@@ -27,9 +27,8 @@ MA 02111-1307, USA. */
 #include "mpc-impl.h"
 
 #include "random.c"
-
 #define TEST_FUNCTION mpc_tan
-#include "tgeneric.c"
+#include "tgeneric_cc.c"
 
 static void
 test_failed (mpc_t op, mpc_t get, mpc_t expected)

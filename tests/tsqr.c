@@ -26,6 +26,10 @@ MA 02111-1307, USA. */
 #include "mpc.h"
 #include "mpc-impl.h"
 
+#include "random.c"
+#define TEST_FUNCTION mpc_sqr
+#include "tgeneric_cc.c"
+
 void cmpsqr (mpc_srcptr, mpc_rnd_t);
 void testsqr (long, long, mp_prec_t, mpc_rnd_t);
 void special (void);
@@ -181,10 +185,7 @@ special (void)
 int
 main (void)
 {
-  mpc_t x;
-  mpc_rnd_t rnd_re, rnd_im;
-  mp_prec_t prec;
-  int i;
+  test_start ();
 
   special ();
 
@@ -198,23 +199,9 @@ main (void)
   testsqr (0, 1816, 8, 24);
   testsqr (145, 0, 8, 24);
 
-  mpc_init (x);
+  tgeneric (2, 1024, 1, 0);
 
-  for (prec = 2; prec < 1000; prec++)
-    {
-      mpc_set_prec (x, prec);
-
-      for (i = 0; i < (int) (1000/prec); i++)
-        {
-          mpc_random (x);
-
-          for (rnd_re = 0; rnd_re < 4; rnd_re ++)
-            for (rnd_im = 0; rnd_im < 4; rnd_im ++)
-              cmpsqr (x, RNDC(rnd_re, rnd_im));
-        }
-    }
-
-  mpc_clear (x);
+  test_end ();
 
   return 0;
 }
