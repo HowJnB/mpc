@@ -23,10 +23,8 @@ MA 02111-1307, USA. */
 #include "mpc.h"
 
 #include "random.c"
-
 #define TEST_FUNCTION mpc_sub
-#define TWOARGS
-#include "tgeneric.c"
+#include "tgeneric_ccc.c"
 
 int
 main (void)

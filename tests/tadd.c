@@ -25,10 +25,8 @@ MA 02111-1307, USA. */
 #include "mpc.h"
 
 #include "random.c"
-
 #define TEST_FUNCTION mpc_add
-#define TWOARGS
-#include "tgeneric.c"
+#include "tgeneric_ccc.c"
 
 static void
 check_ternary_value (void)

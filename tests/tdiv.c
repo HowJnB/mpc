@@ -26,8 +26,13 @@ MA 02111-1307, USA. */
 #include "mpc.h"
 #include "mpc-impl.h"
 
-#define ERR(x) { mpc_out_str (stderr, 2, 0, x, MPC_RNDNN); \
-                 fprintf (stderr, "\n"); }
+static int
+mpc_div_ref (mpc_ptr, mpc_srcptr, mpc_srcptr, mpc_rnd_t);
+
+#include "random.c"
+#define TEST_FUNCTION mpc_div
+#define REFERENCE_FUNCTION mpc_div_ref
+#include "tgeneric_ccc.c"
 
 static int
 mpc_div_ref (mpc_ptr a, mpc_srcptr b, mpc_srcptr c, mpc_rnd_t rnd)
@@ -210,6 +215,7 @@ mpc_div_ref (mpc_ptr a, mpc_srcptr b, mpc_srcptr c, mpc_rnd_t rnd)
             || ((err < prec) && mpfr_can_round (u, prec - err, rnd_im,
                                                 MPC_RND_IM (rnd),
                                                 MPFR_PREC (MPC_IM (a))));
+
           if ((rnd_im == GMP_RNDU && mpfr_sgn (u) < 0)
               || (rnd_im == GMP_RNDD && mpfr_sgn (u) > 0))
             {
@@ -308,73 +314,14 @@ check_regular (void)
   mpc_clear (q);
 }
 
-
 int
 main (void)
 {
-  mpc_t b, c, q, q_ref;
-  int inex, i;
-  mp_prec_t prec;
-  mp_rnd_t rnd_re, rnd_im;
-  mpc_rnd_t rnd;
+  test_start ();
 
   check_regular ();
+  tgeneric (2, 1024, 1, 4096);
 
-  mpc_init (b);
-  mpc_init (c);
-  mpc_init (q);
-  mpc_init (q_ref);
-
-  for (prec = 2; prec < 1000; prec++)
-    {
-      const size_t s = 1 + (prec-1)/BITS_PER_MP_LIMB;
-
-      mpc_set_prec (b, prec);
-      mpc_set_prec (c, prec);
-      mpc_set_prec (q, prec);
-      mpc_set_prec (q_ref, prec);
-
-      for (i = 0; i < (int) (1000/prec); i++)
-        {
-          mpc_random2 (b, s, 0);
-          /* generate a non-zero divisor */
-          do
-            {
-              mpc_random2 (c, s, 0);
-            }
-          while (mpfr_sgn (MPC_RE(c)) == 0 && mpfr_sgn (MPC_IM(c)) == 0);
-
-          for (rnd_re = (mp_rnd_t)0; rnd_re < (mp_rnd_t)4; ++rnd_re)
-            for (rnd_im = (mp_rnd_t)0; rnd_im < (mp_rnd_t)4; ++rnd_im)
-              {
-                rnd = RNDC(rnd_re, rnd_im);
-                mpc_div     (q,     b, c, rnd);
-                mpc_div_ref (q_ref, b, c, rnd);
-                if (mpc_cmp (q, q_ref))
-                  {
-                    fprintf (stderr, "mpc_div and mpc_div_ref differ"
-                             "for prec=%lu rnd=(%s,%s)\n", prec,
-                             mpfr_print_rnd_mode (rnd_re),
-                             mpfr_print_rnd_mode (rnd_im));
-                    fprintf (stderr, "b=");
-                    ERR(b);
-                    fprintf (stderr, "c=");
-                    ERR(c);
-                    fprintf (stderr, "q=");
-                    ERR(q);
-                    fprintf (stderr, "q_ref=");
-                    ERR(q_ref);
-                    exit (1);
-                  }
-              }
-        }
-
-    }
-
-  mpc_clear (b);
-  mpc_clear (c);
-  mpc_clear (q);
-  mpc_clear (q_ref);
-
+  test_end ();
   return 0;
 }
