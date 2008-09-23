@@ -29,9 +29,7 @@ MA 02111-1307, USA. */
 #define ERR(x) { mpc_out_str (stderr, 2, 0, x, MPC_RNDNN); \
                  fprintf (stderr, "\n"); }
 
-int mpc_div_ref (mpc_ptr, mpc_srcptr, mpc_srcptr, mpc_rnd_t);
-
-int
+static int
 mpc_div_ref (mpc_ptr a, mpc_srcptr b, mpc_srcptr c, mpc_rnd_t rnd)
 {
   int ok = 0, inexact_q, inex_re, inex_im = 0, cancel = 0, sgn;
@@ -93,12 +91,13 @@ mpc_div_ref (mpc_ptr a, mpc_srcptr b, mpc_srcptr c, mpc_rnd_t rnd)
     }
   /* err(t) <= [1 + 2*2^cancel] ulp(t) */
   inex_re |= mpfr_mul (t, t, q, rnd_re) || inexact_q;
-  /* err(t) <= [1 + 3*(1 + 2*2^cancel) + 14] ulp(t)
-   */
+  /* err(t) <= [1 + 3*(1 + 2*2^cancel) + 14] ulp(t) */
   err = (cancel <= 1) ? 5 : ((cancel == 2) ? 6 :
                              ((cancel <= 4) ? 7 : cancel + 3));
-  ok = (inex_re == 0) || ((err < prec) && mpfr_can_round (t, prec - err,
-                                                          rnd_re, MPC_RND_RE(rnd), MPFR_PREC(MPC_RE(a))));
+  ok = (inex_re == 0)
+    || ((err < prec) && mpfr_can_round (t, prec - err, rnd_re,
+                                        MPC_RND_RE (rnd),
+                                        MPFR_PREC (MPC_RE (a))));
   if ((rnd_re == GMP_RNDU && mpfr_sgn (t) < 0)
       || (rnd_re == GMP_RNDD && mpfr_sgn (t) > 0))
     {
@@ -127,8 +126,10 @@ mpc_div_ref (mpc_ptr a, mpc_srcptr b, mpc_srcptr c, mpc_rnd_t rnd)
       inex_im |= mpfr_mul (u, u, q, rnd_im) || inexact_q;
       err = (cancel <= 1) ? 5 : ((cancel == 2) ? 6 :
                                  ((cancel <= 4) ? 7 : cancel + 3));
-      ok = (inex_im == 0) || ((err < prec) && mpfr_can_round (u,
-                                                              prec - err, GMP_RNDN, MPC_RND_IM(rnd), MPFR_PREC(MPC_IM(a))));
+      ok = (inex_im == 0)
+        || ((err < prec) && mpfr_can_round (u, prec - err, rnd_im,
+                                            MPC_RND_IM (rnd),
+                                            MPFR_PREC (MPC_IM (a))));
       if ((rnd_im == GMP_RNDU && mpfr_sgn (u) < 0)
           || (rnd_im == GMP_RNDD && mpfr_sgn (u) > 0))
         {
@@ -147,7 +148,7 @@ mpc_div_ref (mpc_ptr a, mpc_srcptr b, mpc_srcptr c, mpc_rnd_t rnd)
       mpfr_set_prec (q, prec);
       mpfr_set_prec (t, prec);
 
-      /* first compute 1/norm(c)^2 rounded away */
+      /* first compute norm(c)^2 rounded towards zero */
       inexact_q = mpfr_mul (u, MPC_RE(c), MPC_RE(c), GMP_RNDZ);
       inexact_q |= mpfr_mul (v, MPC_IM(c), MPC_IM(c), GMP_RNDZ);
       inexact_q |= mpfr_add (q, u, v, GMP_RNDZ); /* 3 ulps */
@@ -172,11 +173,12 @@ mpc_div_ref (mpc_ptr a, mpc_srcptr b, mpc_srcptr c, mpc_rnd_t rnd)
           : MAX(MPFR_EXP(u), MPFR_EXP(v)) - MPFR_EXP(t);
       /* err(t) <= [1 + 2*2^cancel] ulp(t) */
       inex_re |= mpfr_div (t, t, q, rnd_re) || inexact_q;
-      /* err(t) <= [1 + 2*(1 + 2*2^cancel) + 6] ulp(t)
-       */
-      err = (cancel <= 0) ? 4 : cancel + 3;
-      ok = (inex_re == 0) || ((err < prec) && mpfr_can_round (t, prec - err,
-                                                              rnd_re, MPC_RND_RE(rnd), MPFR_PREC(MPC_RE(a))));
+      /* err(t) <= [1 + 2*(1 + 2*2^cancel) + 6] ulp(t) */
+      err = (cancel <= 0) ? 4 : cancel + 3; /* FIXME: cancel + 4 ? */
+      ok = (inex_re == 0)
+        || ((err < prec) && mpfr_can_round (t, prec - err, rnd_re,
+                                            MPC_RND_RE (rnd),
+                                            MPFR_PREC (MPC_RE (a))));
       if ((rnd_re == GMP_RNDU && mpfr_sgn (t) < 0)
           || (rnd_re == GMP_RNDD && mpfr_sgn (t) > 0))
         {
@@ -204,8 +206,10 @@ mpc_div_ref (mpc_ptr a, mpc_srcptr b, mpc_srcptr c, mpc_rnd_t rnd)
             cancel = cancel - MPFR_EXP(u);
           inex_im |= mpfr_div (u, u, q, rnd_im) || inexact_q;
           err = (cancel <= 0) ? 4 : cancel + 3;
-          ok = (inex_im == 0) || ((err < prec) && mpfr_can_round (u,
-                                                                  prec - err, GMP_RNDN, MPC_RND_IM(rnd), MPFR_PREC(MPC_IM(a))));
+          ok = (inex_im == 0)
+            || ((err < prec) && mpfr_can_round (u, prec - err, rnd_im,
+                                                MPC_RND_IM (rnd),
+                                                MPFR_PREC (MPC_IM (a))));
           if ((rnd_im == GMP_RNDU && mpfr_sgn (u) < 0)
               || (rnd_im == GMP_RNDD && mpfr_sgn (u) > 0))
             {
