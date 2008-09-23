@@ -3,9 +3,10 @@ LDADD = $(top_builddir)/src/libmpc.la
 
 
 AM_CPPFLAGS = -I$(top_srcdir)/src
-check_PROGRAMS = tadd test tconj tcos tcosh tdiv texp tfr_div tlog tmul tneg	\
-tsin tsinh tsqr tsqrt tsub ttan ttanh
-EXTRA_DIST = random.c tgeneric_cc.c tgeneric_ccc.c
+check_PROGRAMS = tadd tadd_ui test tconj tcos tcosh tdiv tdiv_2exp tdiv_ui	\
+texp tfr_div tlog tmul tmul_2exp tmul_ui tneg tsin tsinh tsqr tsqrt tsub	\
+tsub_ui ttan ttanh
+EXTRA_DIST = random.c tgeneric_cc.c tgeneric_ccc.c tgeneric_ccu.c
 
 TESTS = $(check_PROGRAMS)
 CLEANFILES = mpc_test
