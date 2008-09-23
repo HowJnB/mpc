@@ -118,13 +118,13 @@ mpc_div (mpc_ptr a, mpc_srcptr b, mpc_srcptr c, mpc_rnd_t rnd)
          /* The division is inexact, so for efficiency reasons we invert q */
          /* only once and multiply by the inverse. */
          /* We do not decide about the sign of the difference. */
-         if (mpfr_ui_div (q, 1, q, GMP_RNDU))
+         if (mpfr_ui_div (q, 1, q, GMP_RNDU) || inexact_norm)
            {
              /* if 1/q is inexact, the approximations of the real and
                 imaginary part below will be inexact, unless RE(res)
                 or IM(res) is zero */
-             inexact_re = inexact_re || (MPFR_IS_ZERO(MPC_RE(res)) == 0);
-             inexact_im = inexact_im || (MPFR_IS_ZERO(MPC_IM(res)) == 0);
+             inexact_re = inexact_re || !MPFR_IS_ZERO (MPC_RE (res));
+             inexact_im = inexact_im || !MPFR_IS_ZERO (MPC_IM (res));
            }
          if (MPFR_SIGN (MPC_RE (res)) > 0)
          {

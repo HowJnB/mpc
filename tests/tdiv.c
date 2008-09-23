@@ -282,6 +282,27 @@ check_regular (void)
       exit (1);
     }
 
+  /* pure real dividend BUG-20080923 */
+  mpc_set_prec (b, 4);
+  mpc_set_prec (c, 4);
+  mpc_set_prec (q, 4);
+
+  mpc_set_si_si (b, -3, 0, MPC_RNDNN);
+  mpc_div_2exp (b, b, 206, MPC_RNDNN);
+  mpc_set_si_si (c, -1, -5, MPC_RNDNN);
+  mpfr_div_2ui (MPC_RE (c), MPC_RE (c), 733, GMP_RNDN);
+  mpfr_div_2ui (MPC_IM (c), MPC_IM (c), 1750, GMP_RNDN);
+  inex = mpc_div (q, b, c, MPC_RNDNZ);
+  mpc_set_si_si (b, 3, -7, MPC_RNDNN);
+  mpfr_mul_2ui (MPC_RE (b), MPC_RE (b), 527, GMP_RNDN);
+  mpfr_div_2ui (MPC_IM (b), MPC_IM (b), 489, GMP_RNDN);
+
+  if (mpc_cmp (q, b))
+    {
+      printf ("mpc_div failed for -3p-206/(-1p-733 -I* 5p-1750)\n");
+      exit (1);
+    }
+
   mpc_clear (b);
   mpc_clear (c);
   mpc_clear (q);
