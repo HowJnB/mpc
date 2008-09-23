@@ -26,7 +26,7 @@ MA 02111-1307, USA. */
 #include "random.c"
 
 static void
-random (void)
+check_random (void)
 {
   mpc_t b, c, q, q_ref;
   mp_prec_t prec;
@@ -81,7 +81,7 @@ main (void)
 {
   test_start();
 
-  random ();
+  check_random ();
 
   test_end ();
   return 0;
