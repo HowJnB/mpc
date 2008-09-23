@@ -230,6 +230,64 @@ mpc_div_ref (mpc_ptr a, mpc_srcptr b, mpc_srcptr c, mpc_rnd_t rnd)
   return MPC_INEX(inex_re, inex_im);
 }
 
+static void
+check_regular (void)
+{
+  mpc_t b, c, q;
+  int inex;
+
+  mpc_init (b);
+  mpc_init (c);
+  mpc_init (q);
+
+  mpc_set_prec (b, 10);
+  mpc_set_prec (c, 10);
+  mpc_set_prec (q, 10);
+
+  /* inexact result */
+  mpc_set_ui_ui (b, 973, 964, MPC_RNDNN);
+  mpc_set_ui_ui (c, 725, 745, MPC_RNDNN);
+  inex = mpc_div (q, b, c, MPC_RNDZZ);
+  mpc_set_si_si (b, 43136, -787, MPC_RNDNN);
+  mpc_div_2exp (b, b, 15, MPC_RNDNN);
+  if (mpc_cmp (q, b) || MPC_INEX_RE (inex) == 0 || MPC_INEX_IM (inex) == 0)
+    {
+      printf ("mpc_div failed for (973+I*964)/(725+I*745)\n");
+      exit (1);
+    }
+
+  /* exact result */
+  mpc_set_si_si (b, -837, 637, MPC_RNDNN);
+  mpc_set_si_si (c, 63, -5, MPC_RNDNN);
+  inex = mpc_div (q, b, c, MPC_RNDZN);
+  mpc_set_si_si (b, -14, 9, MPC_RNDNN);
+  if (mpc_cmp (q, b) || inex != 0)
+    {
+      printf ("mpc_div failed for (-837+I*637)/(63-I*5)\n");
+      exit (1);
+    }
+
+  mpc_set_prec (b, 2);
+  mpc_set_prec (c, 2);
+  mpc_set_prec (q, 2);
+
+  /* exact result */
+  mpc_set_ui_ui (b, 4, 3, MPC_RNDNN);
+  mpc_set_ui_ui (c, 1, 2, MPC_RNDNN);
+  inex = mpc_div (q, b, c, MPC_RNDNN);
+  mpc_set_si_si (b, 2, -1, MPC_RNDNN);
+  if (mpc_cmp (q, b) || inex != 0)
+    {
+      printf ("mpc_div failed for (4+I*3)/(1+I*2)\n");
+      exit (1);
+    }
+
+  mpc_clear (b);
+  mpc_clear (c);
+  mpc_clear (q);
+}
+
+
 int
 main (void)
 {
@@ -239,39 +297,12 @@ main (void)
   mp_rnd_t rnd_re, rnd_im;
   mpc_rnd_t rnd;
 
+  check_regular ();
+
   mpc_init (b);
   mpc_init (c);
   mpc_init (q);
   mpc_init (q_ref);
-
-  mpc_set_prec (b, 10);
-  mpc_set_prec (c, 10);
-  mpc_set_prec (q, 10);
-
-  mpc_set_ui_ui (b, 973, 964, MPC_RNDNN);
-  mpc_set_ui_ui (c, 725, 745, MPC_RNDNN);
-
-  inex = mpc_div (q, b, c, MPC_RNDZZ);
-  mpc_set_si_si (b, 43136, -787, MPC_RNDNN);
-  mpc_div_2exp (b, b, 15, MPC_RNDNN);
-  if (mpc_cmp (q, b))
-    {
-      fprintf (stderr, "mpc_div failed for (973+I*964)/(725+I*745)\n");
-      exit (1);
-    }
-
-  mpc_set_si_si (b, -837, 637, MPC_RNDNN);
-  mpc_set_si_si (c, 63, -5, MPC_RNDNN);
-  inex = mpc_div (q, b, c, MPC_RNDZN);
-
-  mpc_set_prec (b, 2);
-  mpc_set_prec (c, 2);
-  mpc_set_prec (q, 2);
-
-  mpc_set_ui_ui (b, 4, 3, MPC_RNDNN);
-  mpc_set_ui_ui (c, 1, 2, MPC_RNDNN);
-
-  inex = mpc_div (q, b, c, MPC_RNDNN);
 
   for (prec = 2; prec < 1000; prec++)
     {
