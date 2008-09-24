@@ -30,7 +30,7 @@ mpc_set_fr (mpc_ptr a, mpfr_srcptr b, mpc_rnd_t rnd)
   int inex_re, inex_im;
 
   inex_re = mpfr_set (MPC_RE (a), b, MPC_RND_IM (rnd));
-  inex_im = mpfr_set_ui (MPC_RE (a), 0, MPC_RND_RE (rnd));
+  inex_im = mpfr_set_ui (MPC_IM (a), 0, MPC_RND_RE (rnd));
 
   return MPC_INEX(inex_re, inex_im);
 }
