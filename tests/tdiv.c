@@ -320,7 +320,7 @@ main (void)
   test_start ();
 
   check_regular ();
-  tgeneric (2, 1024, 1, 4096);
+  tgeneric (2, 1024, 7, 4096);
 
   test_end ();
   return 0;

@@ -226,20 +226,17 @@ check_regular (void)
   mpc_init (x);
   mpc_init (y);
 
-  for (prec = 2; prec < 1000; prec++) 
+  for (prec = 2; prec < 1000; prec = prec * 1.1 + 1) 
     {
       mpc_set_prec (x, prec);
       mpc_set_prec (y, prec);
 
-      for (i = 0; i < (int) (1000/prec); i++)
-        {
-          test_default_random (x, -1, 1, 1);
-          test_default_random (y, -1, 1, 1);
+      test_default_random (x, -1024, 1024, 1);
+      test_default_random (y, -1024, 1024, 1);
 
-          for (rnd_re = 0; rnd_re < 4; rnd_re ++)
-            for (rnd_im = 0; rnd_im < 4; rnd_im ++)
-              cmpmul (x, y, RNDC(rnd_re, rnd_im));
-        }
+      for (rnd_re = 0; rnd_re < 4; rnd_re ++)
+        for (rnd_im = 0; rnd_im < 4; rnd_im ++)
+          cmpmul (x, y, RNDC(rnd_re, rnd_im));
     }
 
   mpc_clear (x);
@@ -340,7 +337,7 @@ main (void)
 
   check_special ();
   check_regular ();
-  tgeneric (2, 1024, 1, 4096);
+  tgeneric (2, 1024, 7, 0);
 
   test_end ();
   return 0;
