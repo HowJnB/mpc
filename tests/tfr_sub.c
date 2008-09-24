@@ -1,4 +1,4 @@
-/* tfr_div -- test file for mpc_fr_div.
+/* tfr_div -- test file for mpc_fr_sub.
 
 Copyright (C) 2008 Philippe Th\'eveny
 
@@ -26,22 +26,22 @@ MA 02111-1307, USA. */
 #include "mpc.h"
 
 static int
-mpc_fr_div_ref (mpc_t q, mpfr_t x, mpc_t z, mpc_rnd_t rnd);
+mpc_fr_sub_ref (mpc_t q, mpfr_t x, mpc_t z, mpc_rnd_t rnd);
 
 #include "random.c"
-#define TEST_FUNCTION mpc_fr_div
-#define REFERENCE_FUNCTION mpc_fr_div_ref
+#define TEST_FUNCTION mpc_fr_sub
+#define REFERENCE_FUNCTION mpc_fr_sub_ref
 #include "tgeneric_cfc.c"
 
 static int
-mpc_fr_div_ref (mpc_t q, mpfr_t x, mpc_t z, mpc_rnd_t rnd)
+mpc_fr_sub_ref (mpc_t q, mpfr_t x, mpc_t z, mpc_rnd_t rnd)
 {
   int inexact;
   mpc_t y;
   mpc_init2 (y, MPFR_PREC (x));
   mpc_set_fr (y, x, MPC_RNDNN);
 
-  inexact = mpc_div (q, y, z, rnd);
+  inexact = mpc_sub (q, y, z, rnd);
 
   mpc_clear (y);
   return inexact;
@@ -52,7 +52,7 @@ main (void)
 {
   test_start();
 
-  tgeneric (2, 1024, 7, 65535);
+  tgeneric (2, 4096, 7, 0);
 
   test_end ();
   return 0;

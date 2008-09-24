@@ -22,6 +22,7 @@ MA 02111-1307, USA. */
 #include "gmp.h"
 #include "mpfr.h"
 #include "mpc.h"
+#include "mpc-impl.h"
 
 /* return 0 iff both the real and imaginary parts are exact */
 int
@@ -30,7 +31,8 @@ mpc_fr_sub (mpc_ptr a, mpfr_srcptr b, mpc_srcptr c, mpc_rnd_t rnd)
   int inex_re, inex_im;
 
   inex_re = mpfr_sub (MPC_RE(a), b, MPC_RE(c), MPC_RND_RE(rnd));
-  inex_im = mpfr_set (MPC_IM(a), MPC_IM(c), MPC_RND_IM(rnd));
+  inex_im = mpfr_set (MPC_IM (a), MPC_IM (c), INV_RND (MPC_RND_IM (rnd)));
+  MPFR_CHANGE_SIGN (MPC_IM (a));
 
   return MPC_INEX(inex_re, inex_im);
 }
