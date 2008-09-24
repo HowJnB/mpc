@@ -1,6 +1,6 @@
 /* test file for mpc.
 
-Copyright (C) 2002, 2004, 2007 Andreas Enge, Paul Zimmermann
+Copyright (C) 2002, 2004, 2007, 2008 Andreas Enge, Paul Zimmermann, Philippe Th\'eveny
 
 This file is part of the MPC Library.
 

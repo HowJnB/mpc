@@ -1,6 +1,6 @@
 /* mpc_div -- Divide two complex numbers.
 
-Copyright (C) 2002, 2003, 2004, 2005 Andreas Enge, Paul Zimmermann
+Copyright (C) 2002, 2003, 2004, 2005, 2008 Andreas Enge, Paul Zimmermann, Philippe Th\'eveny
 
 This file is part of the MPC Library.
 

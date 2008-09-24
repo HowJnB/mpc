@@ -1,6 +1,6 @@
 /* tmul_ui -- test file for mpc_mul_ui.
 
-Copyright (C) 2002, 2005, 2008 Andreas Enge, Paul Zimmermann
+Copyright (C) 2002, 2005, 2008 Andreas Enge, Paul Zimmermann, Philippe Theveny
 
 This file is part of the MPC Library.
 
