@@ -33,14 +33,13 @@ MA 02111-1307, USA. */
 int
 main (void)
 {
-  mpc_t x, y, z;
+  mpc_t x, z;
   mp_prec_t prec, pr, pi;
   mpfr_t f, g;
   FILE *file;
   const char *filename = "mpc_test";
 
   mpc_init (x);
-  mpc_init2 (y, 2);
   mpc_init3 (z, 2, 2);
   mpfr_init (f);
   mpfr_init (g);
@@ -48,7 +47,6 @@ main (void)
   for (prec = 2; prec <= 1000; prec++)
     {
       mpc_set_prec (x, prec);
-      mpc_set_prec (y, prec);
       mpfr_set_prec (f, prec);
       mpfr_set_prec (g, prec);
 
@@ -74,65 +72,6 @@ main (void)
           fprintf (stderr, "Error in mpc_get_prec for prec = %li\n", prec);
           exit (1);
         }
-
-      mpc_set_ui (x, 1, MPC_RNDNN);
-      mpc_mul_2exp (x, x, prec, MPC_RNDNN);
-      mpc_set_ui (y, 1, MPC_RNDNN);
-      if (mpc_add (z, x, y, MPC_RNDNN) == 0)
-        {
-          fprintf (stderr, "Error in mpc_add: 2^(-prec)+1 cannot be exact\n");
-          exit (1);
-        }
-
-      mpc_random (x);
-
-      mpc_random2 (y, 1 + (prec - 1) / mp_bits_per_limb, 0);
-
-      PRINT ("Testing mpc_add_fr\n");
-      mpfr_random (f);
-      mpc_add_fr (z, x, f, MPC_RNDNZ);
-      mpc_set_ui (z, 1, MPC_RNDNN);
-      mpfr_set_ui (f, 1, GMP_RNDN);
-      if (mpc_add_fr (z, z, f, MPC_RNDNZ))
-        {
-          fprintf (stderr, "Error in mpc_add_fr: 1+1 should be exact\n");
-          exit (1);
-        }
-      mpc_set_ui (z, 1, MPC_RNDNN);
-      mpc_mul_2exp (z, z, prec, MPC_RNDNN);
-      if (mpc_add_fr (z, z, f, MPC_RNDNN) == 0)
-        {
-          fprintf (stderr, "Error in mpc_add_fr: 2^prec+1 cannot be exact\n");
-          exit (1);
-        }
-
-      PRINT ("Testing mpc_add_ui\n");
-      mpc_add_ui (z, x, 17, MPC_RNDNU);
-      mpc_set_ui (z, 1, MPC_RNDNN);
-      if (mpc_add_ui (z, z, 1, MPC_RNDNZ))
-        {
-          fprintf (stderr, "Error in mpc_add_ui: 1+1 should be exact\n");
-          exit (1);
-        }
-      mpc_set_ui (z, 1, MPC_RNDNN);
-      mpc_mul_2exp (z, z, prec, MPC_RNDNN);
-      if (mpc_add_ui (z, z, 1, MPC_RNDNN) == 0)
-        {
-          fprintf (stderr, "Error in mpc_add_ui: 2^prec+1 cannot be exact\n");
-          exit (1);
-        }
-
-      PRINT ("Testing mpc_conj\n");
-      mpc_conj (z, z, MPC_RNDND);
-
-      PRINT ("Testing mpc_div_2exp\n");
-      mpc_div_2exp (z, x, 1, MPC_RNDZZ);
-
-      PRINT ("Testing mpc_div_fr\n");
-      mpc_div_fr (z, x, f, MPC_RNDZU);
-
-      PRINT ("Testing mpc_div_ui\n");
-      mpc_div_ui (z, x, 17, MPC_RNDZD);
 
       PRINT ("Testing mpc_inp_str\n");
       if (!(file = fopen (filename, "w")))
@@ -164,21 +103,6 @@ main (void)
           fprintf (stderr, "\n");
           exit (1);
         }
-
-      PRINT ("Testing mpc_mul_2exp\n");
-      mpc_mul_2exp (z, x, 17, MPC_RNDUD);
-
-      PRINT ("Testing mpc_mul_fr\n");
-      mpc_mul_fr (z, x, f, MPC_RNDDN);
-
-      PRINT ("Testing mpc_mul_ui\n");
-      mpc_mul_ui (z, x, 17, MPC_RNDDZ);
-
-      PRINT ("Testing mpc_neg\n");
-      mpc_neg (z, x, MPC_RNDDU);
-
-      PRINT ("Testing mpc_norm\n");
-      mpc_norm (f, x, GMP_RNDD);
 
       PRINT ("Testing mpc_out_str\n");
       if (!(file = fopen (filename, "w")))
@@ -213,14 +137,10 @@ main (void)
 
       PRINT ("Testing mpc_set_ui_ui\n");
       mpc_set_ui_ui (z, 17, 17, MPC_RNDNN);
-
-      PRINT ("Testing mpc_ui_div\n");
-      mpc_ui_div (z, 17, x, MPC_RNDNN);
     }
 
 
   mpc_clear (x);
-  mpc_clear (y);
   mpc_clear (z);
   mpfr_clear (f);
   mpfr_clear (g);

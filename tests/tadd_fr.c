@@ -28,11 +28,46 @@ MA 02111-1307, USA. */
 #define TEST_FUNCTION mpc_add_fr
 #include "tgeneric_ccf.c"
 
+static void
+check_ternary_value (mpfr_prec_t prec_max, mpfr_prec_t step)
+{
+  mpfr_prec_t prec;
+  mpc_t u, v;
+
+  mpc_init (u);
+  mpc_init (v);
+
+  for (prec = 2; prec < prec_max; prec += step)
+    {
+      mpc_set_prec (u, prec);
+      mpc_set_prec (v, prec);
+
+      mpc_set_ui (u, 1, MPC_RNDNN);
+      mpfr_set_ui (v, 1, GMP_RNDN);
+      if (mpc_add_fr (u, u, v, MPC_RNDNZ))
+        {
+          printf ("Error in mpc_add_fr: 1+1 should be exact\n");
+          exit (1);
+        }
+
+      mpc_set_ui (u, 1, MPC_RNDNN);
+      mpc_mul_2exp (u, u, prec, MPC_RNDNN);
+      if (mpc_add_fr (u, u, v, MPC_RNDNN) == 0)
+        {
+          fprintf (stderr, "Error in mpc_add_fr: 2^prec+1 cannot be exact\n");
+          exit (1);
+        }
+    }
+  mpc_clear (u);
+  mpc_clear (v);
+}
+
 int
 main (void)
 {
   test_start ();
 
+  check_ternary_value (1024, 1);
   tgeneric (2, 1024, 7, -1);
 
   test_end ();
