@@ -45,7 +45,7 @@ MA 02111-1307, USA. */
  #include "tgeneric_ccf.c"
 
  3. #define TEST_FUNCTION as the function under test before including
- tgeneric_ccu.c in your test file.
+ tgeneric_ccf.c in your test file.
  If you want to check against a reference implementation,
  #define REFERENCE_FUNCTION as it function name.
  
@@ -244,6 +244,7 @@ tgeneric(mpfr_prec_t prec_min, mpfr_prec_t prec_max, mpfr_prec_t step, mp_exp_t 
         }
     }
 
+  mpfr_clear (y);
   mpc_clear (x);
   mpc_clear (z);
   mpc_clear (t);
