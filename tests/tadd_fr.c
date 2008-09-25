@@ -32,34 +32,35 @@ static void
 check_ternary_value (mpfr_prec_t prec_max, mpfr_prec_t step)
 {
   mpfr_prec_t prec;
-  mpc_t u, v;
+  mpc_t z;
+  mpfr_t f;
 
-  mpc_init (u);
-  mpc_init (v);
+  mpc_init (z);
+  mpfr_init (f);
 
   for (prec = 2; prec < prec_max; prec += step)
     {
-      mpc_set_prec (u, prec);
-      mpc_set_prec (v, prec);
+      mpc_set_prec (z, prec);
+      mpfr_set_prec (f, prec);
 
-      mpc_set_ui (u, 1, MPC_RNDNN);
-      mpfr_set_ui (v, 1, GMP_RNDN);
-      if (mpc_add_fr (u, u, v, MPC_RNDNZ))
+      mpc_set_ui (z, 1, MPC_RNDNN);
+      mpfr_set_ui (f, 1, GMP_RNDN);
+      if (mpc_add_fr (z, z, f, MPC_RNDNZ))
         {
           printf ("Error in mpc_add_fr: 1+1 should be exact\n");
           exit (1);
         }
 
-      mpc_set_ui (u, 1, MPC_RNDNN);
-      mpc_mul_2exp (u, u, prec, MPC_RNDNN);
-      if (mpc_add_fr (u, u, v, MPC_RNDNN) == 0)
+      mpc_set_ui (z, 1, MPC_RNDNN);
+      mpc_mul_2exp (z, z, prec, MPC_RNDNN);
+      if (mpc_add_fr (z, z, f, MPC_RNDNN) == 0)
         {
           fprintf (stderr, "Error in mpc_add_fr: 2^prec+1 cannot be exact\n");
           exit (1);
         }
     }
-  mpc_clear (u);
-  mpc_clear (v);
+  mpc_clear (z);
+  mpfr_clear (f);
 }
 
 int
