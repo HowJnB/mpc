@@ -209,7 +209,6 @@ check_regular (void)
   mpc_t x, y;
   mpc_rnd_t rnd_re, rnd_im;
   mp_prec_t prec;
-  int i;
 
   testmul (247, -65, -223, 416, 8, 24);
   testmul (5, -896, 5, -32, 3, 2);
