@@ -3,6 +3,19 @@ Efficiency:
   Once mpc_sin_cos exists, improve mpc_tan to use it
 
 New functions to implement:
+- from Mickael Gastineau 25 September 2008:
+  MPFR_VERSION_MAJOR, MPFR_VERSION_MINOR, MPFR_VERSION_PATCHLEVEL
+  in mpc.h as for mpfr
+  Can we get this from the central version number in
+  configure.ac?
+- from Rob <sisyphus1@optusnet.com.au> 25 September 2008:
+  all combinations of mpc_set_x_y and mpc_init_set_x_y
+  with x, y in fr, d, ui, si
+  suggested compromise: at least unify set and init_set
+- from Philippe Théveny 25 September 2008:
+  mpc_get_real/mpc_get_imag for copying the real and
+  imaginary part, and mpc_realref/mpc_imagref for returning
+  pointers to them (MPC_RE and MPC_IM already do the job)
 - from Andreas Enge 16 September 2008:
   mpc_sin_cos; needs mpfr_sinh_cosh
 - from Mickael Gastineau <gastineau@imcce.fr> 14 Apr 2008:

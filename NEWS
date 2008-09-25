@@ -1,3 +1,8 @@
+Recent changes:
+  - Test framework rewritten
+  - Bug fixes:
+    - set_fr, fr_sub, mul_fr, div_fr, div, cos
+
 Changes in version 0.5 ("Aconitum neomontanum"):
   - Support for autotools
   - New functions:
