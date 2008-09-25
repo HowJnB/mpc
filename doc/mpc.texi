@@ -924,7 +924,7 @@ of the real and imaginary parts.
 
 The main developers of the MPC library are Andreas Enge,
 Philippe Th@'eveny and Paul Zimmermann.
-Patrick Pelissier has helped cleaning up the code.
+Patrick P@'elissier has helped cleaning up the code.
 Marc Helbling contributed the @code{mpc_ui_sub} and
 @code{mpc_ui_ui_sub} functions.
 
