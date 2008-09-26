@@ -41,13 +41,6 @@ cmpmul (mpc_srcptr x, mpc_srcptr y, mpc_rnd_t rnd)
    /* In our current test suite, the real and imaginary parts of x and y   */
    /* all have the same precision, and we use this precision also for the  */
    /* result.                                                              */
-   /* Furthermore, we check whether the multiplication with one of the     */
-   /* input arguments being also the output variable yields the same       */
-   /* result.                                                              */
-   /* We also compute the result with four times the precision and check   */
-   /* whether the rounding is correct. Error reports in this part of the   */
-   /* algorithm might still be wrong, though, since there are two          */
-   /* consecutive roundings.                                               */
 {
   mpc_t z, t;
   int   inexact_z, inexact_t;
