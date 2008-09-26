@@ -47,12 +47,12 @@ if test "x$SED" = "xno"; then
 fi
 
 # Checks for libraries.
-AC_CHECK_LIB([mpfr], [mpfr_clear],
-             [LIBS="-lmpfr $LIBS"],
-             [AC_MSG_ERROR([libmpfr not found or uses a different ABI.])])
 AC_CHECK_LIB([gmp], [__gmpz_init],
              [LIBS="-lgmp $LIBS"],
              [AC_MSG_ERROR([libgmp not found or uses a different ABI.])])
+AC_CHECK_LIB([mpfr], [mpfr_clear],
+             [LIBS="-lmpfr $LIBS"],
+             [AC_MSG_ERROR([libmpfr not found or uses a different ABI.])])
 
 # Checks for header files.
 AC_HEADER_STDC
