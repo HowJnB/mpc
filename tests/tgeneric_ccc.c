@@ -23,6 +23,13 @@ MA 02111-1307, USA. */
 #define FUNCTION_NAME(F) NAME_STR(F)
 #define NAME_STR(F) #F
 
+/* Warning: unlike the MPFR macro (defined in mpfr-impl.h), this one returns
+   true when b is singular */
+#define MPFR_CAN_ROUND(b,err,prec,rnd)                                  \
+  (mpfr_zero_p (b) || mpfr_inf_p (b)                                    \
+   || mpfr_can_round (b, mpfr_get_prec (b) - (err), (rnd), (rnd),       \
+                      (prec) + ((rnd)==GMP_RNDN)))
+
 /* tgeneric usage:
  1. use tgeneric_ccc.c with function whose prototype is
  (mpc_t rop, mpc_t op1, mpc_t op2, mpc_rnd_t rnd)
@@ -124,16 +131,8 @@ tgeneric(mpfr_prec_t prec_min, mpfr_prec_t prec_max, mpfr_prec_t step, mp_exp_t 
 
 	    TEST_FUNCTION (u, x, y, rnd);
 	    TEST_FUNCTION (z, x, y, rnd);
-
-            /* can't use mpfr_can_round when argument is singular */
-            /* and avoid double rounding error */
-            if ((mpfr_zero_p (MPC_RE (u)) || mpfr_inf_p (MPC_RE (u))
-                 || mpfr_can_round (MPC_RE (u), 4 * prec - 1,
-                                    MPC_RND_RE (rnd), MPC_RND_RE (rnd), prec))
-                && (mpfr_zero_p (MPC_IM (u)) || mpfr_inf_p (MPC_IM (u))
-                    || mpfr_can_round (MPC_IM (u), 4 * prec - 1,
-                                       MPC_RND_IM (rnd), MPC_RND_IM (rnd),
-                                       prec)))
+            if (MPFR_CAN_ROUND (MPC_RE (u), 1, prec, rnd_re)
+                && MPFR_CAN_ROUND (MPC_IM (u), 1, prec, rnd_im))
               {
                 mpc_set (t, u, rnd);
                 if (mpc_cmp (z, t) != 0)
