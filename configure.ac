@@ -14,15 +14,15 @@ AC_ARG_WITH([mpfr],
             [AC_HELP_STRING([--with-mpfr=DIR],
                            [MPFR install directory])],
             [
-            CPPFLAGS="$CPPFLAGS -I$withval/include"
-            LDFLAGS="$LDFLAGS -L$withval/lib"
+            CPPFLAGS="-I$withval/include $CPPFLAGS"
+            LDFLAGS="-L$withval/lib $LDFLAGS"
             ])
 AC_ARG_WITH([gmp],
             [AC_HELP_STRING([--with-gmp=DIR],
                            [GMP install directory])],
             [
-            CPPFLAGS="$CPPFLAGS -I$withval/include"
-            LDFLAGS="$LDFLAGS -L$withval/lib"
+            CPPFLAGS="-I$withval/include $CPPFLAGS"
+            LDFLAGS="-L$withval/lib $LDFLAGS"
             ])
 AC_ARG_VAR([MPC_USE_LOGGING], [defined if logging support wanted])
 AC_ARG_ENABLE([logging],
@@ -53,6 +53,19 @@ AC_CHECK_LIB([gmp], [__gmpz_init],
 AC_CHECK_LIB([mpfr], [mpfr_clear],
              [LIBS="-lmpfr $LIBS"],
              [AC_MSG_ERROR([libmpfr not found or uses a different ABI.])])
+
+# Check for a recent MPFR
+AC_MSG_CHECKING(for recent MPFR)
+AC_COMPILE_IFELSE([AC_LANG_SOURCE([[
+#include "mpfr.h"
+#if (MPFR_VERSION_MAJOR*100 + MPFR_VERSION_MINOR*10 < 230)
+# error "min MPFR version is 2.3.0"
+error
+#endif
+]])],[AC_MSG_RESULT(yes)],[
+ AC_MSG_RESULT(no)
+ AC_MSG_ERROR([MPFR 2.3.0 min required])
+])
 
 # Checks for header files.
 AC_HEADER_STDC
