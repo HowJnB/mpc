@@ -10,8 +10,9 @@ $ autoreconf -i
 Creating a new release
 ----------------------
 
-1) Check the version number in configure.ac ("AC_INIT (mpc, _version_...)")
-   and in INSTALL, and disactivate the -Werror option in configure.ac.
+1) Check the version number in configure.ac ("AC_INIT (mpc, _version_...)"),
+   in INSTALL, and in mpc.h (remove suffix in MPC_VERSION STRING"), and
+   disactivate the -Werror option in configure.ac.
 2) Check that NEWS, BUGS and TODO are up to date, and that the minimal
    version numbers of gmp and mpfr in INSTALL and doc/mpc.texi are
    correct.

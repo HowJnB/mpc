@@ -25,6 +25,12 @@ MA 02111-1307, USA. */
 #include "gmp.h"
 #include "mpfr.h"
 
+/* Define MPC version number */
+#define MPC_VERSION_MAJOR 0
+#define MPC_VERSION_MINOR 6
+#define MPC_VERSION_PATCHLEVEL 0
+#define MPC_VERSION_STRING "0.6.0-dev"
+
 /* Check if stdio.h is included */
 #if defined (_GMP_H_HAVE_FILE)
 # define _MPC_H_HAVE_FILE 1
