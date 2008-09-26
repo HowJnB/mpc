@@ -49,12 +49,11 @@ cmpmul (mpc_srcptr x, mpc_srcptr y, mpc_rnd_t rnd)
    /* algorithm might still be wrong, though, since there are two          */
    /* consecutive roundings.                                               */
 {
-  mpc_t z, t, u;
+  mpc_t z, t;
   int   inexact_z, inexact_t;
 
   mpc_init2 (z, MPC_MAX_PREC (x));
   mpc_init2 (t, MPC_MAX_PREC (x));
-  mpc_init2 (u, 4 * MPC_MAX_PREC (x));
 
   inexact_z = mpc_mul_naive (z, x, y, rnd);
   inexact_t = mpc_mul_karatsuba (t, x, y, rnd);
@@ -90,98 +89,8 @@ cmpmul (mpc_srcptr x, mpc_srcptr y, mpc_rnd_t rnd)
       exit (1);
     }
 
-  mpc_set (t, x, MPC_RNDNN);
-  inexact_t = mpc_mul (t, t, y, rnd);
-  if (mpc_cmp (z, t))
-    {
-      fprintf (stderr, "mul and mul with the first variable in place differ for rnd=(%s,%s) \nx=",
-               mpfr_print_rnd_mode(MPC_RND_RE(rnd)),
-               mpfr_print_rnd_mode(MPC_RND_IM(rnd)));
-      mpc_out_str (stderr, 2, 0, x, MPC_RNDNN);
-      fprintf (stderr, "\nand y=");
-      mpc_out_str (stderr, 2, 0, y, MPC_RNDNN);
-      fprintf (stderr, "\nmpc_mul          gives ");
-      mpc_out_str (stderr, 2, 0, z, MPC_RNDNN);
-      fprintf (stderr, "\nmpc_mul in place gives ");
-      mpc_out_str (stderr, 2, 0, t, MPC_RNDNN);
-      fprintf (stderr, "\n");
-      exit (1);
-    }
-  if (inexact_z != inexact_t)
-    {
-      fprintf (stderr, "The return values of mul and mul with the first variable in place differ for rnd=(%s,%s) \nx=",
-               mpfr_print_rnd_mode(MPC_RND_RE(rnd)),
-               mpfr_print_rnd_mode(MPC_RND_IM(rnd)));
-      mpc_out_str (stderr, 2, 0, x, MPC_RNDNN);
-      fprintf (stderr, "\nand y=");
-      mpc_out_str (stderr, 2, 0, y, MPC_RNDNN);
-      fprintf (stderr, "\nand x*y=");
-      mpc_out_str (stderr, 2, 0, z, MPC_RNDNN);
-      fprintf (stderr, "\nmpc_mul          gives %i", inexact_z);
-      fprintf (stderr, "\nmpc_mul in place gives %i", inexact_t);
-      fprintf (stderr, "\n");
-      exit (1);
-    }
-
-  /* the following test is valid only when y can be copied in t exactly */
-  if (mpc_set (t, y, MPC_RNDNN) == 0)
-    {
-      inexact_t = mpc_mul (t, x, t, rnd);
-      if (mpc_cmp (z, t))
-        {
-          fprintf (stderr, "mul and mul with the second variable in place differ for rnd=(%s,%s) \nx=",
-                   mpfr_print_rnd_mode(MPC_RND_RE(rnd)),
-                   mpfr_print_rnd_mode(MPC_RND_IM(rnd)));
-          mpc_out_str (stderr, 2, 0, x, MPC_RNDNN);
-          fprintf (stderr, "\nand y=");
-          mpc_out_str (stderr, 2, 0, y, MPC_RNDNN);
-          fprintf (stderr, "\nmpc_mul          gives ");
-          mpc_out_str (stderr, 2, 0, z, MPC_RNDNN);
-          fprintf (stderr, "\nmpc_mul in place gives ");
-          mpc_out_str (stderr, 2, 0, t, MPC_RNDNN);
-          fprintf (stderr, "\n");
-          exit (1);
-        }
-      if (inexact_z != inexact_t)
-        {
-          fprintf (stderr, "The return values of mul and mul with the second variable in place differ for rnd=(%s,%s) \nx=",
-                   mpfr_print_rnd_mode(MPC_RND_RE(rnd)),
-                   mpfr_print_rnd_mode(MPC_RND_IM(rnd)));
-          mpc_out_str (stderr, 2, 0, x, MPC_RNDNN);
-          fprintf (stderr, "\nand y=");
-          mpc_out_str (stderr, 2, 0, y, MPC_RNDNN);
-          fprintf (stderr, "\nand x*y=");
-          mpc_out_str (stderr, 2, 0, z, MPC_RNDNN);
-          fprintf (stderr, "\nmpc_mul          gives %i", inexact_z);
-          fprintf (stderr, "\nmpc_mul in place gives %i", inexact_t);
-          fprintf (stderr, "\n");
-          exit (1);
-        }
-    }
-
-  mpc_mul (u, x, y, rnd);
-  mpc_set (t, u, rnd);
-  if (mpc_cmp (z, t))
-    {
-      fprintf (stderr, "rounding in mul might be incorrect for rnd=(%s,%s) \nx=",
-               mpfr_print_rnd_mode(MPC_RND_RE(rnd)),
-               mpfr_print_rnd_mode(MPC_RND_IM(rnd)));
-      mpc_out_str (stderr, 2, 0, x, MPC_RNDNN);
-      fprintf (stderr, "\nand y=");
-      mpc_out_str (stderr, 2, 0, y, MPC_RNDNN);
-      fprintf (stderr, "\nmpc_mul                     gives ");
-      mpc_out_str (stderr, 2, 0, z, MPC_RNDNN);
-      fprintf (stderr, "\nmpc_mul quadruple precision gives ");
-      mpc_out_str (stderr, 2, 0, u, MPC_RNDNN);
-      fprintf (stderr, "\nand is rounded to                 ");
-      mpc_out_str (stderr, 2, 0, t, MPC_RNDNN);
-      fprintf (stderr, "\n");
-      exit (1);
-    }
-
   mpc_clear (z);
   mpc_clear (t);
-  mpc_clear (u);
 }
 
 
