@@ -38,9 +38,6 @@ New functions to implement:
 
 New tests to add:
 - from Andreas Enge and Philippe Théveny 9 April 2008
-  systematic testing whether ok when output variable equals some
-  input variable
-- from Andreas Enge and Philippe Théveny 9 April 2008
   correct handling of Nan and infinities in the following functions: abs, add,
   add_fr, add_ui, cmp, cmp_si_si, conj, div_2exp, div, div_fr, div_ui, exp,
   fr_sub, fr_div, log, mul, mul_fr, mul_i, mul_si, mul_ui, neg, norm, sqr, sub,

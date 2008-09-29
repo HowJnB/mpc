@@ -1,6 +1,11 @@
 Recent changes:
+  - New macros:
+    - version number: MPC_VERSION_MAJOR, MPC_VERSION_MINOR,
+      MPC_VERSION_PATCHLEVEL, MPC_VERSION_STRING
+  - configure checks on recent mpfr library
   - Test framework rewritten
   - Bug fixes:
+    - configure looks for gmp first, then for mpfr
     - set_fr, fr_sub, mul_fr, div_fr, div, cos
 
 Changes in version 0.5 ("Aconitum neomontanum"):
@@ -11,4 +16,3 @@ Changes in version 0.5 ("Aconitum neomontanum"):
      - hyperbolic functions: cosh, sinh, tanh
   - Bug fixes:
     - sqrt with directed rounding
-
