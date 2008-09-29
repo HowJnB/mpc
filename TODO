@@ -1,3 +1,8 @@
+Configuration:
+- from Kaveh Ghazi 29 September 2008:
+   add separate --with-gmp/mpfr-include/lib options to configure
+   add --with-gmp/mpfr-build option to configure
+
 Efficiency:
 - from Andreas Enge 16 September 2008:
   Once mpc_sin_cos exists, improve mpc_tan to use it
