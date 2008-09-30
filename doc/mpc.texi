@@ -898,6 +898,26 @@ Negative parts are generated when @var{max_size} is negative.
 Return the MPC version, as a null-terminated string.
 @end deftypefun
 
+@defmac MPC_VERSION_MAJOR
+@defmacx MPC_VERSION_MINOR
+@defmacx MPC_VERSION_PATCHLEVEL
+@defmacx MPC_VERSION_STRING
+@code{MPC_VERSION_MAJOR}, @code{MPC_VERSION_MINOR} and
+@code{MPC_VERSION_PATCHLEVEL} are respectively the major, minor and
+patch level of MPFR version, as preprocessing constants.
+@code{MPC_VERSION_STRING} is the version as a string constant, which
+can be compared to the result of @code{mpc_get_version} to check at
+run time the header file and library used match:
+@example
+if (strcmp (mpc_get_version (), MPC_VERSION_STRING))
+  fprintf (stderr, "Warning: header and library do not match\n");
+@end example
+Note: Obtaining different strings is not necessarily an error, as in
+general, a program compiled with some old MPC version can be
+dynamically linked with a newer MPC library version (if allowed by the
+library versioning system).
+@end defmac
+
 @node Internals,  , Miscellaneous Complex Functions, Complex Functions
 @comment  node-name,  next,  previous,  up
 @section Internals
