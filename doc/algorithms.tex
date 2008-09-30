@@ -18,8 +18,8 @@
 \DeclareMathOperator{\A}{\mathcal A}
 
 \title {MPC: Algorithms and Error Analysis}
-\author {Andreas Enge \and Philippe Th\'eveny}
-\date {April 11, 2008}
+\author {Andreas Enge \and Philippe Th\'eveny \and Paul Zimmermann}
+\date {September 30, 2008}
 
 \begin {document}
 \maketitle
@@ -403,6 +403,25 @@ k_R=\left\{
 \end{array}
 \right.
 \end{equation*}
+
+\subsection {\texttt {mpc\_pow}}
+
+The main issue for the power function is to be able to recognize when the
+real part of the imaginary part of $x^y$ might be exact, since in that case
+Ziv's strategy will loop infinitely.
+Gelfond-Schneider's theorem states that if $x$ is an algebraic number
+different from $0$ and $1$, $y$ is an algebraic non-rational number,
+then $x^y$ is transcendental.
+Since all exact floating-point numbers are rational, and therefore algebraic,
+it suffices to consider the cases where $y$ is rational, thus has no
+imaginary part.
+Unfortunately Gelfond-Schneider's theorem says nothing about the real and
+imaginary parts of $x^y$: $x^y$ might be transcendental, but its real part
+or imaginary part might be an exact (binary) floating-point number.
+
+We conjecture that exact powers can only occur when
+$y = a \cdot 2^b$, for $a$ and $b$ integers. It would then suffice to
+be able to recognize exact squares, as in the real case.
 
 \bibliographystyle{acm}
 \bibliography{algorithms}
