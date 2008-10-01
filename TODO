@@ -8,11 +8,6 @@ Efficiency:
   Once mpc_sin_cos exists, improve mpc_tan to use it
 
 New functions to implement:
-- from Mickael Gastineau 25 September 2008:
-  MPFR_VERSION_MAJOR, MPFR_VERSION_MINOR, MPFR_VERSION_PATCHLEVEL
-  in mpc.h as for mpfr
-  Can we get this from the central version number in
-  configure.ac?
 - from Rob <sisyphus1@optusnet.com.au> 25 September 2008:
   all combinations of mpc_set_x_y and mpc_init_set_x_y
   with x, y in fr, d, ui, si
