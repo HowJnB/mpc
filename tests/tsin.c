@@ -29,14 +29,14 @@ MA 02111-1307, USA. */
 #define TEST_FUNCTION mpc_sin
 #include "tgeneric_cc.c"
 
-#include "read_data.c"
+#include "read_data_cc.c"
 
 int
 main (void)
 {
   test_start ();
 
-  data_check ("sin");
+  data_check ("sin.dat");
   tgeneric (2, 512, 7, 7);
 
   test_end ();
