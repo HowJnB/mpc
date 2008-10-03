@@ -25,6 +25,12 @@
 </subMenuItem>
 
 <menuItem>
+<title>Development</title>
+<anchor>development</anchor>
+<date>2008-10-02</date>
+</menuItem>
+
+<menuItem>
 <title>Applications</title>
 <anchor>applications</anchor>
 <date>2008-09-23</date>
