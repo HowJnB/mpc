@@ -25,7 +25,7 @@ local number=${RANDOM:-3}
 unset RANDOM_OPT
 for ((i=0; i < ${#CONFIGURE_OPTIONS[*]}; i++)); do
     if [ $(($((2**i)) & number)) -ne 0 ]; then
-        RANDOM_OPT=$RANDOM_OPT" "${CONFIGURE_OPTIONS[$i]};
+        RANDOM_OPT+=" "${CONFIGURE_OPTIONS[$i]};
     fi
 done
 
@@ -33,17 +33,17 @@ unset CFLAGS_OPT
 CFLAGS_OPTIONS=(\
     -O3 \
     -ansi \
-    "-std=c99 -D_XOPEN_SOURCE=500" \
-    "-D_FORTIFY_SOURCE=2" \
+    "-std=c99 -D _XOPEN_SOURCE=500" \
+    "-D _FORTIFY_SOURCE=2" \
     -fno-common)
 for ((i=0; i < ${#CFLAGS_OPTIONS[*]}; i++)); do
     j=$i+${#CONFIGURE_OPTIONS[*]}
     if [ $(($((2**j)) & number)) -ne 0 ]; then
-    	CFLAGS_OPT=$CFLAGS_OPT" "${CFLAGS_OPTIONS[$i]}
+    	CFLAGS_OPT+=${CFLAGS_OPTIONS[$i]}" "
     fi
 done
 if [ -n "$CFLAGS_OPT" ]; then
-   RANDOM_OPT=$RANDOM_OPT" ""CFLAGS=\"$CFLAGS_OPT\" "
+   RANDOM_OPT+=" CFLAGS=\"$CFLAGS_OPT\""
 fi
 }
 
@@ -96,10 +96,12 @@ function clean_compile_dir()
 #PIPOL esn i386-linux-redhatEL-5.0.dd.gz  none 02:00 --silent --user
 #PIPOL esn ia64-linux-redhatEL-5.0.dd     none 02:00 --silent --user
 
-
 ###
 ### Following commands are executed on each and all deployed images
 ###
+
+# this understood by mpc and mpfr compilation processes
+export GMP_CHECK_RANDOMIZE=1
 
 #
 # Get mpc trunk and compile it
@@ -117,7 +119,6 @@ unset REVISION
 log $SCRIPTS_DIR/get-svn.sh mpfr/trunk mpfr-trunk
 get_revision $PIPOL_WDIR/mpfr-trunk
 REVISION="mpfr(r$REVISION)"
-export GMP_CHECK_RANDOMIZE=1
 export MPFR_CHECK_MAX=1
 export MPFR_CHECK_ALL=1
 log $SCRIPTS_DIR/compile-svn.sh mpfr-trunk
@@ -127,7 +128,7 @@ log $SCRIPTS_DIR/compile-svn.sh mpfr-trunk --enable-assert=full
 
 clean_compile_dir $PIPOL_WDIR/mpfr-trunk
 random_opt
-log $SCRIPTS_DIR/compile-svn.sh mpfr-trunk $RANDOM_OPT 
+log $SCRIPTS_DIR/compile-svn.sh mpfr-trunk $RANDOM_OPT
 
 #
 # Return value is 0 if no script failed
