@@ -32,11 +32,11 @@ in the Texinfo documentation (type 'info mpc.info').
 
 4. You can optionally create documentation, type
 
-      make mpc.dvi
+      make dvi
 
    or
    
-      make mpc.ps
+      make ps
 
    This requires Texinfo package.
 

@@ -212,12 +212,6 @@ is used to indicate a different location where MPFR is installed.
 
 is used to indicate different locations of GMP and MPFR.
 
-@emph{Warning!} Do not use these options if you have CPPFLAGS and/or LDFLAGS
-containing a -I or -L option with a directory that contains a GMP header or
-library file, as these options just add -I and -L options to CPPFLAGS and
-LDFLAGS @emph{after} the ones that are currently declared, so that DIR will
-have a lower precedence. Also, this may not work if DIR is a system directory.
-
 @item
 @samp{make}
 
@@ -252,27 +246,27 @@ There are some other useful make targets:
 
 @itemize @bullet
 @item
-@samp{mpc.info} or @samp{info}
+@samp{info}
 
 Create an info version of the manual, in @file{mpc.info}.
 
 @item
-@samp{mpc.pdf} or @samp{pdf}
+@samp{pdf}
 
 Create a PDF version of the manual, in @file{mpc.pdf}.
 
 @item
-@samp{mpc.dvi} or @samp{dvi}
+@samp{dvi}
 
 Create a DVI version of the manual, in @file{mpc.dvi}.
 
 @item
-@samp{mpc.ps} or @samp{ps}
+@samp{ps}
 
 Create a Postscript version of the manual, in @file{mpc.ps}.
 
 @item
-@samp{mpc.html} or @samp{html}
+@samp{html}
 
 Create an HTML version of the manual, in several pages in the directory
 @file{mpc.html}; if you want only one output HTML file, then type
