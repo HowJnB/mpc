@@ -29,6 +29,8 @@ MA 02111-1307, USA. */
 #define TEST_FUNCTION mpc_log
 #include "tgeneric_cc.c"
 
+#include "read_data_cc.c"
+
 static void
 check_exp_log (void)
 {
@@ -103,6 +105,7 @@ main (void)
 {
    test_start ();
 
+   data_check ("log.dat");
    check_exp_log ();
    tgeneric (2, 512, 7, 128);
 
