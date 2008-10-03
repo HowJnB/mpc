@@ -86,18 +86,26 @@ same_value (mpc_ptr got, mpc_ptr ref, known_signs_t known_signs)
 {
   int cmp_re, cmp_im;
 
+  /* NaN cannot be compared with mpfr_cmp
+     sign of zeros is not taken into account with mpfr_cmp
+     for zeros and infinities, we just want to check absolute values when
+     known_signs.re (or known_signs.im) is false. */
   cmp_re = (mpfr_nan_p (MPC_RE (got)) && mpfr_nan_p (MPC_RE (ref)))
-    || (!known_signs.re
-        && ((mpfr_inf_p (MPC_RE (got)) && mpfr_inf_p (MPC_RE (ref)))
-            || (mpfr_zero_p (MPC_RE (got)) && mpfr_zero_p (MPC_RE (ref)))))
+    || (mpfr_inf_p (MPC_RE (got)) && mpfr_inf_p (MPC_RE (ref))
+        && !known_signs.re)
+    || (mpfr_zero_p (MPC_RE (got)) && mpfr_zero_p (MPC_RE (ref))
+        && (!known_signs.re 
+            || mpfr_signbit (MPC_RE (got)) == mpfr_signbit (MPC_RE (ref))))
     || mpfr_cmp (MPC_RE (got), MPC_RE (ref)) == 0;
 
   cmp_im = (mpfr_nan_p (MPC_IM (got)) && mpfr_nan_p (MPC_IM (ref)))
-    || (!known_signs.im
-        && ((mpfr_inf_p (MPC_IM (got)) && mpfr_inf_p (MPC_IM (ref)))
-            || (mpfr_zero_p (MPC_IM (got)) && mpfr_zero_p (MPC_IM (ref)))))
+    || (mpfr_inf_p (MPC_IM (got)) && mpfr_inf_p (MPC_IM (ref))
+        && !known_signs.im)
+    || (mpfr_zero_p (MPC_IM (got)) && mpfr_zero_p (MPC_IM (ref))
+        && (!known_signs.im
+            || mpfr_signbit (MPC_IM (got)) == mpfr_signbit (MPC_IM (ref))))
     || mpfr_cmp (MPC_IM (got), MPC_IM (ref)) == 0;
-
+  
   return cmp_re && cmp_im;
 }
 
