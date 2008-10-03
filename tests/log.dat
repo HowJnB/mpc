@@ -1,6 +1,7 @@
 # Data test file for mpc_log.
 
-# Copyright (C) 2008 Paul Zimmermann#
+# Copyright (C) 2008 Paul Zimmermann
+
 # This file is part of the MPC Library.
 #
 # The MPC Library is free software; you can redistribute it and/or modify
@@ -19,11 +20,12 @@
 # MA 02111-1307, USA.
 
 # See file sin.dat for the format description.
-# more precisely Section G.6.3.2 "The clog functions"
+
+# Special values, following ISO C99 standard, Annex G,
+# more precisely Section G.6.3.2 "The clog functions".
 
 # Rule [conj]: log(conj(z)) = conj(log(z))
 
-# Special values (following ISO C99 standard, Annex G)
 # log(-0 + i*0) = -inf + i*pi
 2 -inf 53 0x3243F6A8885A3p-48  2 -0 2 +0     N N
 

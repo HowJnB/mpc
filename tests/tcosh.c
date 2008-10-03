@@ -29,6 +29,8 @@ MA 02111-1307, USA. */
 #define TEST_FUNCTION mpc_cosh
 #include "tgeneric_cc.c"
 
+#include "read_data_cc.c"
+
 static void
 test_failed (mpc_t op, mpc_t get, mpc_t expected)
 {
@@ -645,6 +647,7 @@ main (void)
 {
   test_start ();
 
+  data_check ("cosh.dat");
   special ();
   pure_real_argument ();
   pure_imaginary_argument ();
