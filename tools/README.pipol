@@ -17,19 +17,21 @@ mpc compilation.
 
 nightly/multiopt
 The nightly-build script. It downloads the last version of the code from the
-subversion repository and try to compile it.
+subversion repository and try to compile it. Results are recorded in a log
+file '.pipol/log/<date>-multiopt'.
 
 scripts/get-svn.sh
-Helper script that downloads code source. Display help when launched without
-parameter to .
+Helper script that downloads code source. It displays help when launched
+without parameter.
 
 scripts/compile-svn.sh
-Helper script that compiles code and records results in a log file.
+Helper script that compiles code. It displays help when launched without
+parameter.
 
 Nightly-build HOWTO 
 -------------------
 1. Copy 'pipol/' directory content into the '.pipol/' directory of your pipol 
 homedir.
 2. Check that all scripts and run command files are executable.
-3. Wait until the executables files in the 'nightly/' directory are executed.
+3. Wait until the scripts in the 'nightly/' directory are executed.
 4. Check results in '.pipol/log/' dir.
