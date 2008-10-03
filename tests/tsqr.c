@@ -30,6 +30,8 @@ MA 02111-1307, USA. */
 #define TEST_FUNCTION mpc_sqr
 #include "tgeneric_cc.c"
 
+#include "read_data_cc.c"
+
 void cmpsqr (mpc_srcptr, mpc_rnd_t);
 void testsqr (long, long, mp_prec_t, mpc_rnd_t);
 void special (void);
@@ -199,6 +201,7 @@ main (void)
   testsqr (0, 1816, 8, 24);
   testsqr (145, 0, 8, 24);
 
+  data_check ("sqr.dat");
   tgeneric (2, 1024, 1, 0);
 
   test_end ();

@@ -40,7 +40,7 @@ New tests to add:
 - from Andreas Enge and Philippe Théveny 9 April 2008
   correct handling of Nan and infinities in the following functions: abs, add,
   add_fr, add_ui, cmp, cmp_si_si, conj, div_2exp, div, div_fr, div_ui, exp,
-  fr_sub, fr_div, log, mul, mul_fr, mul_i, mul_si, mul_ui, neg, norm, sqr, sub,
+  fr_sub, fr_div, log, mul, mul_fr, mul_i, mul_si, mul_ui, neg, norm, sub,
   sub_fr, sub_ui, ui_div, and ui_ui_sub.
   See Annex G of the C99 draft
     (http://www.open-std.org/jtc1/sc22/wg14/www/docs/n1124.pdf)
