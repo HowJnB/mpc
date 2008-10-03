@@ -1,17 +1,8 @@
-Configuration:
-- from Kaveh Ghazi 29 September 2008:
-   add separate --with-gmp/mpfr-include/lib options to configure
-   add --with-gmp/mpfr-build option to configure
-
 Efficiency:
 - from Andreas Enge 16 September 2008:
   Once mpc_sin_cos exists, improve mpc_tan to use it
 
 New functions to implement:
-- from Rob <sisyphus1@optusnet.com.au> 25 September 2008:
-  all combinations of mpc_set_x_y and mpc_init_set_x_y
-  with x, y in fr, d, ui, si
-  suggested compromise: at least unify set and init_set
 - from Philippe Théveny 25 September 2008:
   mpc_get_real/mpc_get_imag for copying the real and
   imaginary part, and mpc_realref/mpc_imagref for returning
@@ -38,15 +29,5 @@ New functions to implement:
 
 New tests to add:
 - from Andreas Enge and Philippe Théveny 9 April 2008
-  correct handling of Nan and infinities in the following functions: abs, add,
-  add_fr, add_ui, cmp, cmp_si_si, conj, div_2exp, div, div_fr, div_ui, exp,
-  fr_sub, fr_div, log, mul, mul_fr, mul_i, mul_si, mul_ui, neg, norm, sub,
-  sub_fr, sub_ui, ui_div, and ui_ui_sub.
-  See Annex G of the C99 draft
-    (http://www.open-std.org/jtc1/sc22/wg14/www/docs/n1124.pdf)
-    and check compatibility with LIA-3.
-  beware of intermediate overflows while the result may fit
-     (we need special code)
-  beware of strange specifications in C99, that we want to follow,
-     but that are not automatic from the behaviour of mpfr
-
+  correct handling of Nan and infinities in the case of
+  intermediate overflows while the result may fit (we need special code)
