@@ -1,6 +1,6 @@
 /* test file for mpc_log.
 
-Copyright (C) 2008 Andreas Enge, Philippe Th\'eveny
+Copyright (C) 2008 Andreas Enge, Philippe Th\'eveny, Paul Zimmermann
 
 This file is part of the MPC Library.
 

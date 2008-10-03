@@ -1,6 +1,6 @@
 /* test file for mpc_cosh.
 
-Copyright (C) 2008 Philippe Th\'eveny
+Copyright (C) 2008 Philippe Th\'eveny, Paul Zimmermann.
 
 This file is part of the MPC Library.
 

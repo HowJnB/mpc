@@ -1,6 +1,6 @@
 /* test file for mpc_tan.
 
-Copyright (C) 2008 Philippe Th\'eveny.
+Copyright (C) 2008 Philippe Th\'eveny, Paul Zimmermann.
 
 This file is part of the MPC Library.
 
@@ -29,6 +29,8 @@ MA 02111-1307, USA. */
 #include "random.c"
 #define TEST_FUNCTION mpc_tan
 #include "tgeneric_cc.c"
+
+#include "read_data_cc.c"
 
 static void
 test_failed (mpc_t op, mpc_t get, mpc_t expected)
@@ -534,6 +536,7 @@ main (void)
 {
   test_start ();
 
+  data_check ("tan.dat");
   special ();
   pure_real_argument ();
   pure_imaginary_argument ();
