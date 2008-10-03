@@ -31,6 +31,14 @@ AM_INIT_AUTOMAKE([1.9 -Wall -Werror])
 AM_MAINTAINER_MODE
 
 dnl Extra arguments to configure
+AC_ARG_WITH([mpfr_include],
+            [AC_HELP_STRING([--with-mpfr-include=DIR],
+                            [MPFR include directory])],
+            [CPPFLAGS="-I$withval $CPPFLAGS"])
+AC_ARG_WITH([mpfr_lib],
+            [AC_HELP_STRING([--with-mpfr-lib=DIR],
+                            [MPFR lib directory])],
+            [LDFLAGS="-I$withval $LDFLAGS"])
 AC_ARG_WITH([mpfr],
             [AC_HELP_STRING([--with-mpfr=DIR],
                            [MPFR install directory])],
@@ -38,6 +46,14 @@ AC_ARG_WITH([mpfr],
             CPPFLAGS="-I$withval/include $CPPFLAGS"
             LDFLAGS="-L$withval/lib $LDFLAGS"
             ])
+AC_ARG_WITH([gmp_include],
+            [AC_HELP_STRING([--with-gmp-include=DIR],
+                            [GMP include directory])],
+            [CPPFLAGS="-I$withval $CPPFLAGS"])
+AC_ARG_WITH([gmp_lib],
+            [AC_HELP_STRING([--with-gmp-lib=DIR],
+                            [GMP lib directory])],
+            [LDFLAGS="-I$withval $LDFLAGS"])
 AC_ARG_WITH([gmp],
             [AC_HELP_STRING([--with-gmp=DIR],
                            [GMP install directory])],
@@ -77,16 +93,20 @@ AC_CHECK_LIB([mpfr], [mpfr_clear],
 
 # Check for a recent MPFR
 AC_MSG_CHECKING(for recent MPFR)
-AC_COMPILE_IFELSE([AC_LANG_SOURCE([[
+AC_COMPILE_IFELSE(
+        [AC_LANG_SOURCE(
+        [[
 #include "mpfr.h"
 #if (MPFR_VERSION_MAJOR*100 + MPFR_VERSION_MINOR*10 < 230)
 # error "min MPFR version is 2.3.0"
 error
 #endif
-]])],[AC_MSG_RESULT(yes)],[
- AC_MSG_RESULT(no)
- AC_MSG_ERROR([MPFR 2.3.0 min required])
-])
+        ]])],
+        [AC_MSG_RESULT(yes)],
+        [
+         AC_MSG_RESULT(no)
+         AC_MSG_ERROR([MPFR 2.3.0 min required])
+         ])
 
 # Checks for header files.
 AC_HEADER_STDC

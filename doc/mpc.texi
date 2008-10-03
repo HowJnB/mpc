@@ -202,15 +202,17 @@ that are searched by default by the compiler and the linking tools.
 
 @samp{./configure --with-gmp=<gmp_install_dir>}
 
-is used to indicate a different location where GMP is installed.
+is used to indicate a different location where GMP is
+installed. Alternatively, you can specify directly GMP include and GMP lib
+directories with @samp{./configure --with-gmp-lib=<gmp_lib_dir>
+--with-gmp-include=<gmp_include_dir>}.
 
 @samp{./configure --with-mpfr=<mpfr_install_dir>}
 
-is used to indicate a different location where MPFR is installed.
-
-@samp{./configure --with-gmp=<gmp_install_dir> --with-mpfr=<mpfr_install_dir>}
-
-is used to indicate different locations of GMP and MPFR.
+is used to indicate a different location where MPFR is
+installed. Alternatively, you can specify directly MPFR include and MPFR lib
+directories with @samp{./configure --with-mpf-lib=<mpfr_lib_dir>
+--with-mpfr-include=<mpfr_include_dir>}.
 
 @item
 @samp{make}

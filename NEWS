@@ -3,6 +3,8 @@ Recent changes:
     - version number: MPC_VERSION_MAJOR, MPC_VERSION_MINOR,
       MPC_VERSION_PATCHLEVEL, MPC_VERSION_STRING
   - configure checks on recent mpfr library
+  - new configure options: --with-gmp-lib, --with-gmp-include,
+     --with-mpfr-lib, and --with-mpfr-include
   - Test framework rewritten
   - Bug fixes:
     - configure looks for gmp first, then for mpfr
