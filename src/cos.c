@@ -1,6 +1,6 @@
 /* mpc_cos -- cosine of a complex number.
 
-Copyright (C) 2008 Philippe Th\'eveny
+Copyright (C) 2008 Philippe Th\'eveny, Andreas Enge
 
 This file is part of the MPC Library.
 
@@ -154,17 +154,21 @@ mpc_cos (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
 
   if (mpfr_zero_p (MPC_IM (op)))
     {
-      /* cos(x +i*0) = cos(x) -i*0*sin(x) */
-      /* cos(x -i*0) = cos(x) +i*0*sin(x) */
-      mpfr_t zero;
-      zero[0] = MPC_IM (op)[0];
-      MPFR_CHANGE_SIGN (zero);
-
-      mpfr_sin (MPC_IM (rop), MPC_RE (op), INV_RND (MPC_RND_IM (rnd)));
-      mpfr_mul (MPC_IM (rop), MPC_IM (rop), zero, MPC_RND_IM (rnd));
+      /* cos(x +i*0) = cos(x) -i*0*sign(sin(x)) */
+      /* cos(x -i*0) = cos(x) +i*0*sign(sin(x)) */
+      mpfr_t sign;
+      mpfr_init2 (sign, 2);
+      mpfr_sin (sign, MPC_RE (op), GMP_RNDN);
+      if (!mpfr_signbit (MPC_IM (op)))
+         MPFR_CHANGE_SIGN (sign);
 
       mpfr_cos (MPC_RE (rop), MPC_RE (op), MPC_RND_RE (rnd));
 
+      mpfr_set_ui (MPC_IM (rop), 0ul, GMP_RNDN);
+      if (mpfr_signbit (sign))
+         MPFR_CHANGE_SIGN (MPC_IM (rop));
+
+      mpfr_clear (sign);
       return;
     }
 
