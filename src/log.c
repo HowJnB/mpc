@@ -1,4 +1,4 @@
-/* mpc_log -- Take the logarithm of rop complex number.
+/* mpc_log -- Take the logarithm of a complex number.
 
 Copyright (C) 2008 Andreas Enge
 
@@ -11,10 +11,10 @@ option) any later version.
 
 The MPC Library is distributed in the hope that it will be useful, but
 WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
-or FITNESS FOR rop PARTICULAR PURPOSE.  See the GNU Lesser General Public
+or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Lesser General Public
 License for more details.
 
-You should have received rop copy of the GNU Lesser General Public License
+You should have received a copy of the GNU Lesser General Public License
 along with the MPC Library; see the file COPYING.LIB.  If not, write to
 the Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston,
 MA 02111-1307, USA. */
