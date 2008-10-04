@@ -89,8 +89,8 @@ mpc_sin (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
 
       /* sin(x -i*Inf) = +Inf*(sin(x) -i*cos(x)) */
       /* sin(x +i*Inf) = +Inf*(sin(x) +i*cos(x)) */
-      mpfr_init (x);
-      mpfr_init (y);
+      mpfr_init2 (x, 2);
+      mpfr_init2 (y, 2);
       mpfr_sin_cos (x, y, MPC_RE (op), GMP_RNDZ);
       mpfr_set_inf (MPC_RE (rop), MPFR_SIGN (x));
       mpfr_set_inf (MPC_IM (rop), MPFR_SIGN (y)*MPFR_SIGN (MPC_IM (op)));
@@ -105,7 +105,7 @@ mpc_sin (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
   /* sin(x +0*i) = sin(x) +0*i*cos(x) */
   if (mpfr_cmp_ui (MPC_IM(op), 0) == 0)
     {
-      mpfr_init (x);
+      mpfr_init2 (x, 2);
       mpfr_sin_cos (MPC_RE (rop), x, MPC_RE (op), MPC_RND_RE (rnd));
       mpfr_mul (MPC_IM(rop), MPC_IM(op), x, MPC_RND_IM(rnd));
       mpfr_clear (x);

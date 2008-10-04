@@ -39,13 +39,6 @@ mpc_sqr (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
    mp_prec_t prec;
    int inex_re, inex_im, inexact;
 
-   /* sign of RE(op)*IM(op) */
-   int sign = 1;
-   if (mpfr_signbit (MPC_RE (op)))
-      sign = -sign;
-   if (mpfr_signbit (MPC_IM (op)))
-      sign = -sign;
-
    /* special values: NaN and infinities */
    if (!mpfr_number_p (MPC_RE (op)) || !mpfr_number_p (MPC_IM (op))) {
       if (mpfr_nan_p (MPC_RE (op)) || mpfr_nan_p (MPC_IM (op))) {
@@ -55,14 +48,16 @@ mpc_sqr (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
       else if (mpfr_inf_p (MPC_RE (op))) {
          if (mpfr_inf_p (MPC_IM (op))) {
             mpfr_set_nan (MPC_RE (rop));
-            mpfr_set_inf (MPC_IM (rop), sign);
+            mpfr_set_inf (MPC_IM (rop),
+                          MPFR_SIGN (MPC_RE (op)) * MPFR_SIGN (MPC_IM (op)));
          }
          else {
             mpfr_set_inf (MPC_RE (rop), +1);
             if (mpfr_zero_p (MPC_IM (op)))
                mpfr_set_nan (MPC_IM (rop));
             else
-               mpfr_set_inf (MPC_IM (rop), sign);
+               mpfr_set_inf (MPC_IM (rop),
+                             MPFR_SIGN (MPC_RE (op)) * MPFR_SIGN (MPC_IM (op)));
          }
       }
       else /* IM(op) is infinity, RE(op) is not */ {
@@ -70,7 +65,8 @@ mpc_sqr (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
          if (mpfr_zero_p (MPC_RE (op)))
             mpfr_set_nan (MPC_IM (rop));
          else
-            mpfr_set_inf (MPC_IM (rop), sign);
+            mpfr_set_inf (MPC_IM (rop),
+                          MPFR_SIGN (MPC_RE (op)) * MPFR_SIGN (MPC_IM (op)));
       }
       return MPC_INEX (0, 0); /* exact */
    }
@@ -82,7 +78,7 @@ mpc_sqr (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
    {
       inex_re = mpfr_sqr (MPC_RE(rop), MPC_RE(op), MPC_RND_RE(rnd));
       inex_im = mpfr_set_ui (MPC_IM(rop), 0ul, GMP_RNDN);
-      if (sign < 0)
+      if (MPFR_SIGN (MPC_RE (op)) * MPFR_SIGN (MPC_IM (op)) < 0)
          MPFR_CHANGE_SIGN (MPC_IM (rop));
       return MPC_INEX(inex_re, inex_im);
    }
@@ -91,7 +87,7 @@ mpc_sqr (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
       inex_re = -mpfr_sqr (MPC_RE(rop), MPC_IM(op), INV_RND (MPC_RND_RE(rnd)));
       mpfr_neg (MPC_RE(rop), MPC_RE(rop), GMP_RNDN);
       inex_im = mpfr_set_ui (MPC_IM(rop), 0ul, GMP_RNDN);
-      if (sign < 0)
+      if (MPFR_SIGN (MPC_RE (op)) * MPFR_SIGN (MPC_IM (op)) < 0)
          MPFR_CHANGE_SIGN (MPC_IM (rop));
       return MPC_INEX(inex_re, inex_im);
    }
