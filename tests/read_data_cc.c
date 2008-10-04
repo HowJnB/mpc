@@ -1,6 +1,6 @@
 /* Read data file and check function.
 
-Copyright (C) 2008 Philippe Th\'eveny
+Copyright (C) 2008 Andreas Enge, Philippe Th\'eveny
 
 This file is part of the MPC Library.
 
@@ -38,7 +38,7 @@ MA 02111-1307, USA. */
 
  3. #define TEST_FUNCTION as the function under test before including
  read_data_cc.c in your test file.
- 
+
  data_check ("data_file_name") checks function results against precomputed
  data in a file.*/
 
@@ -82,33 +82,26 @@ const char *rnd_mode[] =
   };
 
 static int
-same_value (mpc_ptr got, mpc_ptr ref, known_signs_t known_signs)
+same_mpfr_value (mpfr_ptr got, mpfr_ptr ref, int known_sign)
 {
-  int cmp_re, cmp_im;
+   /* The sign of zeroes and infinities is checked only when
+      known_sign is true.                                    */
+   if (mpfr_nan_p (got))
+      return mpfr_nan_p (ref);
+   if (mpfr_inf_p (got))
+      return mpfr_inf_p (ref) &&
+            (!known_sign || mpfr_signbit (got) == mpfr_signbit (ref));
+   if (mpfr_zero_p (got))
+      return mpfr_zero_p (ref) &&
+            (!known_sign || mpfr_signbit (got) == mpfr_signbit (ref));
+   return mpfr_cmp (got, ref) == 0;
+}
 
-  /* NaN cannot be compared with mpfr_cmp
-     sign of zeros is not taken into account with mpfr_cmp
-     for zeros and infinities, we just want to check absolute values when
-     known_signs.re (or known_signs.im) is false. */
-  if (mpfr_zero_p (MPC_RE (got)) && mpfr_zero_p (MPC_RE (ref)))
-    cmp_re = !known_signs.re
-      || mpfr_signbit (MPC_RE (got)) == mpfr_signbit (MPC_RE (ref));
-  else
-    cmp_re = (mpfr_nan_p (MPC_RE (got)) && mpfr_nan_p (MPC_RE (ref)))
-      || (mpfr_inf_p (MPC_RE (got)) && mpfr_inf_p (MPC_RE (ref)) 
-          && !known_signs.re)
-      || (mpfr_cmp (MPC_RE (got), MPC_RE (ref)) == 0);
-
-  if (mpfr_zero_p (MPC_IM (got)) && mpfr_zero_p (MPC_IM (ref)))
-    cmp_im = !known_signs.im
-      || mpfr_signbit (MPC_IM (got)) == mpfr_signbit (MPC_IM (ref));
-  else 
-    cmp_im = (mpfr_nan_p (MPC_IM (got)) && mpfr_nan_p (MPC_IM (ref)))
-      || (mpfr_inf_p (MPC_IM (got)) && mpfr_inf_p (MPC_IM (ref))
-          && !known_signs.im)
-      || (mpfr_cmp (MPC_IM (got), MPC_IM (ref)) == 0);
-  
-  return cmp_re && cmp_im;
+static int
+same_mpc_value (mpc_ptr got, mpc_ptr ref, known_signs_t known_signs)
+{
+   return    same_mpfr_value (MPC_RE (got), MPC_RE (ref), known_signs.re)
+          && same_mpfr_value (MPC_IM (got), MPC_IM (ref), known_signs.im);
 }
 
 /* skip white space and comments (from '#' to the end of the line) */
@@ -210,7 +203,7 @@ read_mpfr (FILE *fp, mpfr_ptr x, int *known_sign)
   /* read value */
   if (skip_whitespace (fp))
     return -1;
-  
+
   /* Is the sign specified ? */
   if ((c = getc (fp)) == EOF)
     {
@@ -218,7 +211,7 @@ read_mpfr (FILE *fp, mpfr_ptr x, int *known_sign)
       exit (1);
     }
   ungetc (c, fp);
-  
+
   if (mpfr_inp_str (x, fp, 0, GMP_RNDN) == 0)
     return -1;
 
@@ -307,7 +300,7 @@ data_check (const char *file_name)
       mpc_init3 (got, MPC_PREC_RE (expected), MPC_PREC_IM (expected));
       TEST_FUNCTION (got, op, rnd);
 
-      if (!same_value (got, expected, signs))
+      if (!same_mpc_value (got, expected, signs))
         {
           printf ("%s(op) failed (line %lu)\nwith rounding mode %s\n      ",
                   FUNCTION_NAME (TEST_FUNCTION), line_number, rnd_mode[rnd]);
