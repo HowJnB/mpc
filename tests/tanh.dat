@@ -1,4 +1,4 @@
-# Data file for mpc_sinh.
+# Data file for mpc_tanh.
 #
 # Copyright (C) 2008 Andreas Enge
 #
@@ -22,36 +22,36 @@
 # For explanations on the file format, see sin.dat.
 
 # special values (following ISO C99 standard)
-7  inf 7  NaN   7 -inf 7 -inf N N
-7 -inf 7 -inf   7 -inf 7   -1 N N
-7 -inf 7   -0   7 -inf 7   -0 N N
-7 -inf 7   +0   7 -inf 7   +0 N N
-7 -inf 7 +inf   7 -inf 7    1 N N
-7  inf 7  NaN   7 -inf 7 +inf N N
-7  inf 7  NaN   7 -inf 7  NaN N N
+7   -1 7    0   7 -inf 7 -inf N N
+7   -1 7   -0   7 -inf 7   -1 N N
+7   -1 7   -0   7 -inf 7   -0 N N
+7   -1 7   +0   7 -inf 7   +0 N N
+7   -1 7   +0   7 -inf 7    1 N N
+7   -1 7    0   7 -inf 7 +inf N N
+7   -1 7    0   7 -inf 7  NaN N N
 7  NaN 7  NaN   7   -1 7 -inf N N
 7  NaN 7  NaN   7   -1 7 +inf N N
 7  NaN 7  NaN   7   -1 7  NaN N N
-7    0 7  NaN   7   -0 7 -inf N N
+7  NaN 7  NaN   7   -0 7 -inf N N
 7   -0 7   -0   7   -0 7   -0 N N
 7   -0 7   +0   7   -0 7   +0 N N
-7    0 7  NaN   7   -0 7 +inf N N
-7    0 7  NaN   7   -0 7  NaN N N
-7    0 7  NaN   7   +0 7 -inf N N
+7  NaN 7  NaN   7   -0 7 +inf N N
+7  NaN 7  NaN   7   -0 7  NaN N N
+7  NaN 7  NaN   7   +0 7 -inf N N
 7   +0 7   -0   7   +0 7   -0 N N
 7   +0 7   +0   7   +0 7   +0 N N
-7    0 7  NaN   7   +0 7 +inf N N
-7    0 7  NaN   7   +0 7  NaN N N
+7  NaN 7  NaN   7   +0 7 +inf N N
+7  NaN 7  NaN   7   +0 7  NaN N N
 7  NaN 7  NaN   7    1 7 -inf N N
 7  NaN 7  NaN   7    1 7 +inf N N
 7  NaN 7  NaN   7    1 7  NaN N N
-7  inf 7  NaN   7 +inf 7 -inf N N
-7 +inf 7 -inf   7 +inf 7   -1 N N
-7 +inf 7   -0   7 +inf 7   -0 N N
-7 +inf 7   +0   7 +inf 7   +0 N N
-7 +inf 7 +inf   7 +inf 7    1 N N
-7  inf 7  NaN   7 +inf 7 +inf N N
-7  inf 7  NaN   7 +inf 7  NaN N N
+7    1 7    0   7 +inf 7 -inf N N
+7    1 7   -0   7 +inf 7   -1 N N
+7    1 7   -0   7 +inf 7   -0 N N
+7    1 7   +0   7 +inf 7   +0 N N
+7    1 7   +0   7 +inf 7    1 N N
+7    1 7    0   7 +inf 7 +inf N N
+7    1 7    0   7 +inf 7  NaN N N
 7  NaN 7  NaN   7  NaN 7 -inf N N
 7  NaN 7  NaN   7  NaN 7   -1 N N
 7  NaN 7   -0   7  NaN 7   -0 N N
@@ -61,22 +61,22 @@
 7  NaN 7  NaN   7  NaN 7  NaN N N
 
 # purely real argument
-50 -0x12cd9fc44eb98p-48 50 -0   7 -1 7 -0 N N
-50 -0x12cd9fc44eb98p-48 50 +0   7 -1 7 +0 N N
-50  0x12cd9fc44eb98p-48 50 -0   7  1 7 -0 N N
-50  0x12cd9fc44eb98p-48 50 +0   7  1 7 +0 N N
+50 -0xc2f7d5a8a79ccp-52 50 -0   7 -1 7 -0 N N
+50 -0xc2f7d5a8a79ccp-52 50 +0   7 -1 7 +0 N N
+50  0xc2f7d5a8a79ccp-52 50 -0   7  1 7 -0 N N
+50  0xc2f7d5a8a79ccp-52 50 +0   7  1 7 +0 N N
 
 # purely imaginary argument
-50 -0 50 -0xd76aa47848678p-52   7   -0 7 -1 N N
-50 -0 50  0xd76aa47848678p-52   7   -0 7  1 N N
-50 +0 50 -0xd76aa47848678p-52   7   +0 7 -1 N N
-50 +0 50  0xd76aa47848678p-52   7   +0 7  1 N N
+50 -0 50 -0x18eb245cbee3a8p-52   7 -0 7 -1 N N
+50 -0 50  0x18eb245cbee3a8p-52   7 -0 7  1 N N
+50 +0 50 -0x18eb245cbee3a8p-52   7 +0 7 -1 N N
+50 +0 50  0x18eb245cbee3a8p-52   7 +0 7  1 N N
 
 # values with +1 and -1
-50 -0xa28cfec023fc8p-52 50 -0x14c67b74f6cc5p-48   7 -1 7 -1 N N
-50 -0xa28cfec023fc8p-52 50  0x14c67b74f6cc5p-48   7 -1 7  1 N N
-50  0xa28cfec023fc8p-52 50 -0x14c67b74f6cc5p-48   7  1 7 -1 N N
-50  0xa28cfec023fc8p-52 50  0x14c67b74f6cc5p-48   7  1 7  1 N N
+50 -0x1157bffca4a8cp-48 50 -0x459193d28cfe2p-52   7 -1 7 -1 N N
+50 -0x1157bffca4a8cp-48 50  0x459193d28cfe2p-52   7 -1 7  1 N N
+50  0x1157bffca4a8cp-48 50 -0x459193d28cfe2p-52   7  1 7 -1 N N
+50  0x1157bffca4a8cp-48 50  0x459193d28cfe2p-52   7  1 7  1 N N
 
 # IEEE-754 double precision
-53 0xF48D4FDF29C53p-105 53 2   53 0x15124271980435p-52 53 0x3243F6A8885A3p-49 N N
+53 0x10000000000001p-53  53 0x1FFFFFFFFFFFFFp-53   53 0x1E938CBCEB16DFp-55 53 0x1B1F56FDEEF00Fp-53 N N
