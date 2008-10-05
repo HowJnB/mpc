@@ -44,12 +44,12 @@
 # The sign of the result is checked with "+inf", "-inf", "-0", or "+0".
 
 # special values (following ISO C99 standard)
-53  nan 53 -inf    53 -inf 53 -inf N N
+53  nan 53  inf    53 -inf 53 -inf N N
 53  nan 53  nan    53 -inf 53   -1 N N
-53  nan 53   +0    53 -inf 53   -0 N N
-53  nan 53   +0    53 -inf 53   +0 N N
+53  nan 53    0    53 -inf 53   -0 N N
+53  nan 53    0    53 -inf 53   +0 N N
 53  nan 53  nan    53 -inf 53   +1 N N
-53  nan 53 +inf    53 -inf 53 +inf N N
+53  nan 53  inf    53 -inf 53 +inf N N
 53  nan 53  nan    53 -inf 53  nan N N
 53 +inf 53 -inf    53   -6 53 -inf N N
 53 +inf 53 +inf    53   -6 53 +inf N N
@@ -85,19 +85,19 @@
 53 -inf 53 -inf    53   +6 53 -inf N N
 53 -inf 53 +inf    53   +6 53 +inf N N
 53  nan 53  nan    53   +6 53  nan N N
-53  nan 53 -inf    53 +inf 53 -inf N N
+53  nan 53  inf    53 +inf 53 -inf N N
 53  nan 53  nan    53 +inf 53   -1 N N
-53  nan 53   +0    53 +inf 53   -0 N N
-53  nan 53   +0    53 +inf 53   +0 N N
+53  nan 53    0    53 +inf 53   -0 N N
+53  nan 53    0    53 +inf 53   +0 N N
 53  nan 53  nan    53 +inf 53   +1 N N
-53  nan 53 +inf    53 +inf 53 +inf N N
+53  nan 53  inf    53 +inf 53 +inf N N
 53  nan 53  nan    53 +inf 53  nan N N
-53  nan 53 -inf    53  nan 53 -inf N N
+53  nan 53  inf    53  nan 53 -inf N N
 53  nan 53  nan    53  nan 53   -1 N N
-53  nan 53   +0    53  nan 53   -0 N N
-53  nan 53   +0    53  nan 53   +0 N N
+53  nan 53    0    53  nan 53   -0 N N
+53  nan 53    0    53  nan 53   +0 N N
 53  nan 53  nan    53  nan 53   +1 N N
-53  nan 53 +inf    53  nan 53 +inf N N
+53  nan 53  inf    53  nan 53 +inf N N
 53  nan 53  nan    53  nan 53  nan N N
 
 # pure real argument
