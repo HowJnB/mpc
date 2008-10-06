@@ -8,8 +8,8 @@ tmul_si tmul_ui tneg tnorm tsin tsinh tsqr tsqrt tsub tsub_fr tsub_ui ttan \
 ttanh tui_div tui_sub tui_ui_sub
 EXTRA_DIST = random.c read_data_cc.c tgeneric_fc.c tgeneric_cc.c		\
 tgeneric_ccc.c tgeneric_ccf.c tgeneric_cfc.c tgeneric_ccu.c tgeneric_cuc.c	\
-tgeneric_cuuc.c tgeneric_ccs.c conj.dat cos.dat cosh.dat log.dat neg.dat	\
-sqr.dat sqrt.dat sin.dat sinh.dat tan.dat tanh.c
+tgeneric_cuuc.c tgeneric_ccs.c conj.dat cos.dat cosh.dat exp.dat log.dat	\
+neg.dat sqr.dat sqrt.dat sin.dat sinh.dat tan.dat tanh.c
 
 TESTS = $(check_PROGRAMS)
 CLEANFILES = mpc_test

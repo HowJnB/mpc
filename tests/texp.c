@@ -28,54 +28,15 @@ MA 02111-1307, USA. */
 #include "random.c"
 #define TEST_FUNCTION mpc_exp
 #include "tgeneric_cc.c"
+#include "read_data_cc.c"
 
 int
 main (void)
 {
-  mpc_t  x, z;
-  mpfr_t f, g;
-  mp_prec_t prec;
-
   test_start ();
 
-  mpc_init (x);
-  mpc_init (z);
-  mpfr_init (f);
-  mpfr_init (g);
-
-  for (prec = 2; prec <= 1000; prec++)
-    {
-      mpc_set_prec (x, prec);
-      mpc_set_prec (z, prec);
-      mpfr_set_prec (f, prec);
-      mpfr_set_prec (g, prec);
-
-      /* check that exp(I*b) = cos(b) + I*sin(b) */
-      mpfr_set_ui (MPC_RE (x), 0, GMP_RNDN);
-      mpfr_random (MPC_IM (x));
-
-      mpc_exp (z, x, MPC_RNDNN);
-      mpfr_sin_cos (f, g, MPC_IM(x), GMP_RNDN);
-      if (mpfr_cmp (g, MPC_RE(z)) || mpfr_cmp (f, MPC_IM(z)))
-        {
-          fprintf (stderr, "Error in mpc_exp: exp(I*x) <> cos(x)+I*sin(x)\n"
-                   "got      ");
-          mpc_out_str (stderr, 10, 0, z, MPC_RNDNN);
-          fprintf (stderr, "\nexpected ");
-          mpfr_set (MPC_RE(z), g, GMP_RNDN);
-          mpfr_set (MPC_IM(z), f, GMP_RNDN);
-          mpc_out_str (stderr, 10, 0, z, MPC_RNDNN);
-          fprintf (stderr, "\n");
-          exit (1);
-        }
-    }
-
+  data_check ("exp.dat");
   tgeneric (2, 512, 7, 256);
-
-  mpc_clear (x);
-  mpc_clear (z);
-  mpfr_clear (f);
-  mpfr_clear (g);
 
   test_end ();
 
