@@ -49,21 +49,109 @@ mpc_exp (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
                          <= 4 * ulp(r) [Rule 8]
   */
   
-  /* special case when the input is real */
-  if (mpfr_cmp_ui (MPC_IM(op), 0) == 0)
+  /* special values */
+  if (mpfr_nan_p (MPC_RE (op)) || mpfr_nan_p (MPC_IM (op)))
+    /* NaNs 
+       exp(nan +i*y) = nan -i*0   if y = -0,
+                       nan +i*0   if y = +0,
+                       nan +i*nan otherwise
+       exp(x+i*nan) =   +/-0 +/-i*0 if x=-inf,
+                      +/-inf +i*nan if x=+inf,
+                         nan +i*nan otherwise */
     {
-      mpfr_exp (MPC_RE(rop), MPC_RE(op), MPC_RND_RE(rnd));
-      mpfr_set_ui (MPC_IM(rop), 0, MPC_RND_IM(rnd));
+      if (mpfr_zero_p (MPC_IM (op)))
+        {
+          mpc_set (rop, op, MPC_RNDNN);
+          return;
+        }
+
+      if (mpfr_inf_p (MPC_RE (op)))
+        {
+          if (mpfr_signbit (MPC_RE (op)))
+            mpc_set_ui_ui (rop, 0, 0, MPC_RNDNN);
+          else
+            {
+              mpfr_set_inf (MPC_RE (rop), +1);
+              mpfr_set_nan (MPC_IM (rop));
+            }
+          return;
+        }
+      mpfr_set_nan (MPC_RE (rop));
+      mpfr_set_nan (MPC_IM (rop));
       return;
     }
 
-  /* special case when the input is imaginary */
+
+  if (mpfr_zero_p (MPC_IM(op)))
+    /* special case when the input is real 
+       exp(x-i*0) = exp(x) -i*0, even if x is NaN
+       exp(x+i*0) = exp(x) +i*0, even if x is NaN */
+    {
+      mpfr_exp (MPC_RE(rop), MPC_RE(op), MPC_RND_RE(rnd));
+      mpfr_set (MPC_IM(rop), MPC_IM(op), MPC_RND_IM(rnd));
+      return;
+    }
+
   if (mpfr_zero_p (MPC_RE (op)))
+    /* special case when the input is imaginary  */
     {
       mpfr_cos (MPC_RE (rop), MPC_IM (op), MPC_RND_RE(rnd));
       mpfr_sin (MPC_IM (rop), MPC_IM (op), MPC_RND_IM(rnd));
       return;
     }
+
+
+  if (mpfr_inf_p (MPC_RE (op)))
+    /* real part is an infinity, 
+       exp(-inf +i*y) = 0*(cos y +i*sin y)
+       exp(+inf +i*y) = +/-inf +i*nan         if y = +/-inf
+                        +inf*(cos y +i*sin y) if 0 < |y| < inf */
+    {
+      mpfr_t n;
+
+      mpfr_init2 (n, 2);
+      if (mpfr_signbit (MPC_RE (op)))
+        mpfr_set_ui (n, 0, GMP_RNDN);
+      else
+        mpfr_set_inf (n, +1);
+      
+      if (mpfr_inf_p (MPC_IM (op)))
+        {
+          mpfr_set (MPC_RE (rop), n, GMP_RNDN);
+          if (mpfr_signbit (MPC_RE (op)))
+            mpfr_set (MPC_IM (rop), n, GMP_RNDN);
+          else
+            mpfr_set_nan (MPC_IM (rop));
+        }
+      else
+        {
+          mpfr_t c, s;
+          mpfr_init2 (c, 2);
+          mpfr_init2 (s, 2);
+
+          mpfr_sin_cos (s, c, MPC_IM (op), GMP_RNDN);
+          mpfr_copysign (MPC_RE (rop), n, c, GMP_RNDN);
+          mpfr_copysign (MPC_IM (rop), n, s, GMP_RNDN);
+
+          mpfr_clear (s);
+          mpfr_clear (c);
+        }
+
+      mpfr_clear (n);
+      return;      
+    }
+
+  if (mpfr_inf_p (MPC_IM (op)))
+    /* real part is finite non-zero number, imaginary part is an infinity */
+    {
+      mpfr_set_nan (MPC_RE (rop));
+      mpfr_set_nan (MPC_IM (rop));
+      return;
+    }
+
+
+  /* from now on, both parts of op are regular numbers */
+
 
   prec = MPC_MAX_PREC(rop);
 
