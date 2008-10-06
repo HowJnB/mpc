@@ -29,12 +29,14 @@ MA 02111-1307, USA. */
 #include "random.c"
 #define TEST_FUNCTION mpc_neg
 #include "tgeneric_cc.c"
+#include "read_data_cc.c"
 
 int
 main (void)
 {
   test_start ();
 
+  data_check ("neg.dat");
   tgeneric (2, 1024, 1, 0);
 
   test_end ();
