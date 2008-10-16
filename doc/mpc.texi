@@ -890,7 +890,7 @@ proven to be more likely to trigger corner-case bugs.
 Negative parts are generated when @var{max_size} is negative.
 @end deftypefun
 
-@deftypefun const char * mpc_get_version(void)
+@deftypefun {const char *} mpc_get_version(void)
 Return the MPC version, as a null-terminated string.
 @end deftypefun
 
