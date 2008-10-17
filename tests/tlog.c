@@ -19,17 +19,9 @@ along with the MPC Library; see the file COPYING.LIB.  If not, write to
 the Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston,
 MA 02111-1307, USA. */
 
-#include <stdio.h>
 #include <stdlib.h>
-#include "gmp.h"
-#include "mpfr.h"
-#include "mpc.h"
-
-#include "random.c"
-#define TEST_FUNCTION mpc_log
-#include "tgeneric_cc.c"
-
-#include "read_data_cc.c"
+#include "mpc-tests.h"
+#include "mpc-impl.h"
 
 static void
 check_exp_log (void)
@@ -103,13 +95,16 @@ check_exp_log (void)
 int
 main (void)
 {
-   test_start ();
+  DECL_V_CC_FUNC (f, mpc_log);
 
-   data_check ("log.dat");
-   check_exp_log ();
-   tgeneric (2, 512, 7, 128);
+  test_start ();
 
-   test_end ();
+  data_check (f, "log.dat");
+  tgeneric (f, 2, 512, 7, 128);
 
-   return 0;
+  check_exp_log ();
+
+  test_end ();
+
+  return 0;
 }

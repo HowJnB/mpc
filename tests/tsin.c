@@ -19,25 +19,17 @@ along with the MPC Library; see the file COPYING.LIB.  If not, write to
 the Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston,
 MA 02111-1307, USA. */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include "gmp.h"
-#include "mpfr.h"
-#include "mpc.h"
-
-#include "random.c"
-#define TEST_FUNCTION mpc_sin
-#include "tgeneric_cc.c"
-
-#include "read_data_cc.c"
+#include "mpc-tests.h"
 
 int
 main (void)
 {
+  DECL_V_CC_FUNC (f, mpc_sin);
+
   test_start ();
 
-  data_check ("sin.dat");
-  tgeneric (2, 512, 7, 7);
+  data_check (f, "sin.dat");
+  tgeneric (f, 2, 512, 7, 7);
 
   test_end ();
 

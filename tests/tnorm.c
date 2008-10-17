@@ -19,23 +19,16 @@ along with the MPC Library; see the file COPYING.LIB.  If not, write to
 the Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston,
 MA 02111-1307, USA. */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include "gmp.h"
-#include "mpfr.h"
-#include "mpc.h"
-#include "mpc-impl.h"
-
-#include "random.c"
-#define TEST_FUNCTION mpc_norm
-#include "tgeneric_fc.c"
+#include "mpc-tests.h"
 
 int
 main (void)
 {
+  DECL_FC_FUNC (f, mpc_norm);
+
   test_start ();
 
-  tgeneric (2, 1024, 1, 4096);
+  tgeneric (f, 2, 1024, 1, 4096);
 
   test_end ();
 

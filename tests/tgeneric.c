@@ -1,4 +1,4 @@
-/* file for generic tests.
+/* File for generic tests.
 
 Copyright (C) 2008 Philippe Th\'eveny.
 
@@ -19,43 +19,56 @@ along with the MPC Library; see the file COPYING.LIB.  If not, write to
 the Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston,
 MA 02111-1307, USA. */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include "mpfr.h"
-#include "mpc.h"
+/* #include <stdlib.h> */
+
+#include "mpc-tests.h"
 #include "mpc-impl.h"
 
-#define FUNCTION_NAME(F) NAME_STR(F)
-#define NAME_STR(F) #F
-
-/* tgeneric usage:                                                          */
-/*  define TEST_FUNCTION as the function under test                         */
-/*  define TWOARGS when the function under test combine two mpc_t arguments */
+/* Warning: unlike the MPFR macro (defined in mpfr-impl.h), this one returns
+   true when b is singular */
+#define MPFR_CAN_ROUND(b,err,prec,rnd)                                  \
+  (mpfr_zero_p (b) || mpfr_inf_p (b)                                    \
+   || mpfr_can_round (b, mpfr_get_prec (b) - (err),                     \
+                      (rnd == GMP_RNDN ? GMP_RNDZ : rnd), (rnd),        \
+                      (prec) + ((rnd)==GMP_RNDN)))
 
 static void
-#ifdef TWOARGS
-message_failed (mpc_srcptr op, mpc_srcptr op2, mpc_srcptr rop,
-		mpc_srcptr rop4, mpc_srcptr rop4rnd, mpc_rnd_t rnd)
-#else
-message_failed (mpc_srcptr op, mpc_srcptr rop,
-		mpc_srcptr rop4, mpc_srcptr rop4rnd, mpc_rnd_t rnd)
-#endif
+tgeneric_cc (mpc_function *function, mpc_ptr op, mpc_ptr rop,
+             mpc_ptr rop4, mpc_ptr rop4rnd, mpc_rnd_t rnd)
 {
-  printf ("Rounding in " FUNCTION_NAME(TEST_FUNCTION) " might be "
-	  "incorrect for\n");
+  known_signs_t ks = {1, 1};
+
+  /* We compute the result with four times the precision and check whether the
+     rounding is correct. Error reports in this part of the algorithm might
+     still be wrong, though, since there are two consecutive roundings (but we
+     try to avoid them).  */
+  function->pointer.CC (rop4, op, rnd);
+  function->pointer.CC (rop, op, rnd);
+
+  /* can't use mpfr_can_round when argument is singular */
+  if (MPFR_CAN_ROUND (MPC_RE (rop4), 1, MPFR_PREC (MPC_RE (rop)),
+                      MPC_RND_RE (rnd))
+      && MPFR_CAN_ROUND (MPC_IM (rop4), 1, MPFR_PREC (MPC_IM (rop)),
+                         MPC_RND_IM (rnd)))
+    mpc_set (rop4rnd, rop4, rnd);
+  else
+    /* avoid double rounding error */
+    return;
+
+  if (same_mpc_value (rop, rop4rnd, ks))
+    return;
+
+  /* rounding failed */
+  printf ("Rounding in %s might be incorrect for\n", function->name);
   OUT (op);
 
-#ifdef TWOARGS
-  OUT (op2);
-#endif
-
   printf ("with rounding mode (%s, %s)",
-	  mpfr_print_rnd_mode (MPC_RND_RE (rnd)),
-	  mpfr_print_rnd_mode (MPC_RND_IM (rnd)));
+          mpfr_print_rnd_mode (MPC_RND_RE (rnd)),
+          mpfr_print_rnd_mode (MPC_RND_IM (rnd)));
 
-  printf ("\n" FUNCTION_NAME(TEST_FUNCTION) "                     gives ");
+  printf ("\n%s                     gives ", function->name);
   OUT (rop);
-  printf (FUNCTION_NAME(TEST_FUNCTION) " quadruple precision gives ");
+  printf ("%s quadruple precision gives ", function->name);
   OUT (rop4);
   printf ("and is rounded to                  ");
   OUT (rop4rnd);
@@ -64,24 +77,619 @@ message_failed (mpc_srcptr op, mpc_srcptr rop,
 }
 
 static void
-tgeneric(mpfr_prec_t prec_min, mpfr_prec_t prec_max, mpfr_prec_t step, mp_exp_t exp_max)
+tgeneric_v_cc (mpc_function *function, mpc_ptr op, mpc_ptr rop,
+               mpc_ptr rop4, mpc_ptr rop4rnd, mpc_rnd_t rnd)
 {
-  mpc_t  x, z, t, u;
+  known_signs_t ks = {1, 1};
+
+  /* We compute the result with four times the precision and check whether the
+     rounding is correct. Error reports in this part of the algorithm might
+     still be wrong, though, since there are two consecutive roundings (but we
+     try to avoid them).  */
+  function->pointer.V_CC (rop4, op, rnd);
+  function->pointer.V_CC (rop, op, rnd);
+
+  /* can't use mpfr_can_round when argument is singular */
+  if (MPFR_CAN_ROUND (MPC_RE (rop4), 1,  MPFR_PREC (MPC_RE (rop)),
+                      MPC_RND_RE (rnd))
+      && MPFR_CAN_ROUND (MPC_IM (rop4), 1,  MPFR_PREC (MPC_IM (rop)),
+                         MPC_RND_IM (rnd)))
+    mpc_set (rop4rnd, rop4, rnd);
+  else
+    /* avoid double rounding error */
+    return;
+
+  if (same_mpc_value (rop, rop4rnd, ks))
+    return;
+
+  /* rounding failed */
+  printf ("Rounding in %s might be incorrect for\n", function->name);
+  OUT (op);
+
+  printf ("with rounding mode (%s, %s)",
+          mpfr_print_rnd_mode (MPC_RND_RE (rnd)),
+          mpfr_print_rnd_mode (MPC_RND_IM (rnd)));
+
+  printf ("\n%s                     gives ", function->name);
+  OUT (rop);
+  printf ("%s quadruple precision gives ", function->name);
+  OUT (rop4);
+  printf ("and is rounded to                  ");
+  OUT (rop4rnd);
+
+  exit (1);
+}
+
+static void
+tgeneric_fc (mpc_function *function, mpc_ptr op, mpfr_ptr rop,
+             mpfr_ptr rop4, mpfr_ptr rop4rnd, mpfr_rnd_t rnd)
+{
+  function->pointer.FC (rop4, op, rnd);
+  function->pointer.FC (rop, op, rnd);
+  if (MPFR_CAN_ROUND (rop4, 1, MPFR_PREC (rop), rnd))
+    mpfr_set (rop4rnd, rop4, rnd);
+  else
+    return;
+
+  if (same_mpfr_value (rop, rop4rnd, 1))
+    return;
+
+  printf ("Rounding in %s might be incorrect for\n", function->name);
+  OUT (op);
+  printf ("with rounding mode %s", mpfr_print_rnd_mode (rnd));
+
+  printf ("\n%s                     gives ", function->name);
+  MPFR_OUT (rop);
+  printf ("%s quadruple precision gives ", function->name);
+  MPFR_OUT (rop4);
+  printf ("and is rounded to                  ");
+  MPFR_OUT (rop4rnd);
+
+  exit (1);
+}
+
+static void
+tgeneric_cfc (mpc_function *function, mpfr_ptr op1, mpc_ptr op2,
+              mpc_ptr rop, mpc_ptr rop4, mpc_ptr rop4rnd, mpfr_rnd_t rnd)
+{
+  known_signs_t ks = {1, 1};
+
+  function->pointer.CFC (rop4, op1, op2, rnd);
+  function->pointer.CFC (rop, op1, op2, rnd);
+  if (MPFR_CAN_ROUND (MPC_RE (rop4), 1,  MPFR_PREC (MPC_RE (rop)),
+                      MPC_RND_RE (rnd))
+      && MPFR_CAN_ROUND (MPC_IM (rop4), 1,  MPFR_PREC (MPC_IM (rop)),
+                         MPC_RND_IM (rnd)))
+    mpc_set (rop4rnd, rop4, rnd);
+  else
+    return;
+
+  if (same_mpc_value (rop, rop4rnd, ks))
+    return;
+
+  printf ("Rounding in %s might be incorrect for\n", function->name);
+  MPFR_OUT (op1);
+  OUT (op2);
+  printf ("with rounding mode %s", mpfr_print_rnd_mode (rnd));
+
+  printf ("\n%s                     gives ", function->name);
+  OUT (rop);
+  printf ("%s quadruple precision gives ", function->name);
+  OUT (rop4);
+  printf ("and is rounded to                  ");
+  OUT (rop4rnd);
+
+  exit (1);
+}
+
+static void
+tgeneric_ccf (mpc_function *function, mpc_ptr op1, mpfr_ptr op2,
+              mpc_ptr rop, mpc_ptr rop4, mpc_ptr rop4rnd, mpfr_rnd_t rnd)
+{
+  known_signs_t ks = {1, 1};
+
+  function->pointer.CCF (rop4, op1, op2, rnd);
+  function->pointer.CCF (rop, op1, op2, rnd);
+  if (MPFR_CAN_ROUND (MPC_RE (rop4), 1,  MPFR_PREC (MPC_RE (rop)),
+                      MPC_RND_RE (rnd))
+      && MPFR_CAN_ROUND (MPC_IM (rop4), 1,  MPFR_PREC (MPC_IM (rop)),
+                         MPC_RND_IM (rnd)))
+    mpc_set (rop4rnd, rop4, rnd);
+  else
+    return;
+
+  if (same_mpc_value (rop, rop4rnd, ks))
+    return;
+
+  printf ("Rounding in %s might be incorrect for\n", function->name);
+  OUT (op1);
+  MPFR_OUT (op2);
+  printf ("with rounding mode %s", mpfr_print_rnd_mode (rnd));
+
+  printf ("\n%s                     gives ", function->name);
+  OUT (rop);
+  printf ("%s quadruple precision gives ", function->name);
+  OUT (rop4);
+  printf ("and is rounded to                  ");
+  OUT (rop4rnd);
+
+  exit (1);
+}
+
+static void
+tgeneric_ccc (mpc_function *function, mpc_ptr op1, mpc_ptr op2,
+              mpc_ptr rop, mpc_ptr rop4, mpc_ptr rop4rnd, mpc_rnd_t rnd)
+{
+  known_signs_t ks = {1, 1};
+
+  /* We compute the result with four times the precision and check whether the
+     rounding is correct. Error reports in this part of the algorithm might
+     still be wrong, though, since there are two consecutive roundings (but we
+     try to avoid them).  */
+  function->pointer.CCC (rop4, op1, op2, rnd);
+  function->pointer.CCC (rop, op1, op2, rnd);
+
+  /* can't use mpfr_can_round when argument is singular */
+  if (MPFR_CAN_ROUND (MPC_RE (rop4), 1, MPFR_PREC (MPC_RE (rop)),
+                      MPC_RND_RE (rnd))
+      && MPFR_CAN_ROUND (MPC_IM (rop4), 1, MPFR_PREC (MPC_IM (rop)),
+                         MPC_RND_IM (rnd)))
+    mpc_set (rop4rnd, rop4, rnd);
+  else
+    /* avoid double rounding error */
+    return;
+
+  if (same_mpc_value (rop, rop4rnd, ks))
+    return;
+
+  /* rounding failed */
+  printf ("Rounding in %s might be incorrect for\n", function->name);
+  OUT (op1);
+  OUT (op2);
+  printf ("with rounding mode (%s, %s)",
+          mpfr_print_rnd_mode (MPC_RND_RE (rnd)),
+          mpfr_print_rnd_mode (MPC_RND_IM (rnd)));
+
+  printf ("\n%s                     gives ", function->name);
+  OUT (rop);
+  printf ("%s quadruple precision gives ", function->name);
+  OUT (rop4);
+  printf ("and is rounded to                  ");
+  OUT (rop4rnd);
+
+  exit (1);
+}
+
+static void
+tgeneric_ccu (mpc_function *function, mpc_ptr op1, unsigned long int op2,
+              mpc_ptr rop, mpc_ptr rop4, mpc_ptr rop4rnd, mpfr_rnd_t rnd)
+{
+  known_signs_t ks = {1, 1};
+
+  function->pointer.CCU (rop4, op1, op2, rnd);
+  function->pointer.CCU (rop, op1, op2, rnd);
+  if (MPFR_CAN_ROUND (MPC_RE (rop4), 1,  MPFR_PREC (MPC_RE (rop)),
+                      MPC_RND_RE (rnd))
+      && MPFR_CAN_ROUND (MPC_IM (rop4), 1,  MPFR_PREC (MPC_IM (rop)),
+                         MPC_RND_IM (rnd)))
+    mpc_set (rop4rnd, rop4, rnd);
+  else
+    return;
+
+  if (same_mpc_value (rop, rop4rnd, ks))
+    return;
+
+  printf ("Rounding in %s might be incorrect for\n", function->name);
+  OUT (op1);
+  printf ("op2=%lu\n", op2);
+  printf ("with rounding mode %s", mpfr_print_rnd_mode (rnd));
+
+  printf ("\n%s                     gives ", function->name);
+  OUT (rop);
+  printf ("%s quadruple precision gives ", function->name);
+  OUT (rop4);
+  printf ("and is rounded to                  ");
+  OUT (rop4rnd);
+
+  exit (1);
+}
+
+static void
+tgeneric_cuc (mpc_function *function, unsigned long int op1, mpc_ptr op2,
+              mpc_ptr rop, mpc_ptr rop4, mpc_ptr rop4rnd, mpfr_rnd_t rnd)
+{
+  known_signs_t ks = {1, 1};
+
+  function->pointer.CUC (rop4, op1, op2, rnd);
+  function->pointer.CUC (rop, op1, op2, rnd);
+  if (MPFR_CAN_ROUND (MPC_RE (rop4), 1,  MPFR_PREC (MPC_RE (rop)),
+                      MPC_RND_RE (rnd))
+      && MPFR_CAN_ROUND (MPC_IM (rop4), 1,  MPFR_PREC (MPC_IM (rop)),
+                         MPC_RND_IM (rnd)))
+    mpc_set (rop4rnd, rop4, rnd);
+  else
+    return;
+
+  if (same_mpc_value (rop, rop4rnd, ks))
+    return;
+
+  printf ("Rounding in %s might be incorrect for\n", function->name);
+  printf ("op1=%lu\n", op1);
+  OUT (op2);
+  printf ("with rounding mode %s", mpfr_print_rnd_mode (rnd));
+
+  printf ("\n%s                     gives ", function->name);
+  OUT (rop);
+  printf ("%s quadruple precision gives ", function->name);
+  OUT (rop4);
+  printf ("and is rounded to                  ");
+  OUT (rop4rnd);
+
+  exit (1);
+}
+
+static void
+tgeneric_ccs (mpc_function *function, mpc_ptr op1, long int op2,
+              mpc_ptr rop, mpc_ptr rop4, mpc_ptr rop4rnd, mpfr_rnd_t rnd)
+{
+  known_signs_t ks = {1, 1};
+
+  function->pointer.CCS (rop4, op1, op2, rnd);
+  function->pointer.CCS (rop, op1, op2, rnd);
+  if (MPFR_CAN_ROUND (MPC_RE (rop4), 1,  MPFR_PREC (MPC_RE (rop)),
+                      MPC_RND_RE (rnd))
+      && MPFR_CAN_ROUND (MPC_IM (rop4), 1,  MPFR_PREC (MPC_IM (rop)),
+                         MPC_RND_IM (rnd)))
+    mpc_set (rop4rnd, rop4, rnd);
+  else
+    return;
+
+  if (same_mpc_value (rop, rop4rnd, ks))
+    return;
+
+  printf ("Rounding in %s might be incorrect for\n", function->name);
+  OUT (op1);
+  printf ("op2=%ld\n", op2);
+  printf ("with rounding mode %s", mpfr_print_rnd_mode (rnd));
+
+  printf ("\n%s                     gives ", function->name);
+  OUT (rop);
+  printf ("%s quadruple precision gives ", function->name);
+  OUT (rop4);
+  printf ("and is rounded to                  ");
+  OUT (rop4rnd);
+
+  exit (1);
+}
+
+static void
+tgeneric_cuuc (mpc_function *function, unsigned long int op1,
+               unsigned long int op2, mpc_ptr op3, mpc_ptr rop,
+               mpc_ptr rop4, mpc_ptr rop4rnd, mpfr_rnd_t rnd)
+{
+  known_signs_t ks = {1, 1};
+
+  function->pointer.CUUC (rop4, op1, op2, op3, rnd);
+  function->pointer.CUUC (rop, op1, op2, op3, rnd);
+  if (MPFR_CAN_ROUND (MPC_RE (rop4), 1,  MPFR_PREC (MPC_RE (rop)),
+                      MPC_RND_RE (rnd))
+      && MPFR_CAN_ROUND (MPC_IM (rop4), 1,  MPFR_PREC (MPC_IM (rop)),
+                         MPC_RND_IM (rnd)))
+    mpc_set (rop4rnd, rop4, rnd);
+  else
+    return;
+
+  if (same_mpc_value (rop, rop4rnd, ks))
+    return;
+
+  printf ("Rounding in %s might be incorrect for\n", function->name);
+  printf ("op1=%lu\n", op1);
+  printf ("op2=%lu\n", op2);
+  OUT (op3);
+  printf ("with rounding mode %s", mpfr_print_rnd_mode (rnd));
+
+  printf ("\n%s                     gives ", function->name);
+  OUT (rop);
+  printf ("%s quadruple precision gives ", function->name);
+  OUT (rop4);
+  printf ("and is rounded to                  ");
+  OUT (rop4rnd);
+
+  exit (1);
+}
+
+
+/* Test parameter reuse: the function should not use its output parameter in
+   internal computations. */
+static void
+reuse_cc (mpc_function* function, mpc_srcptr z, mpc_ptr got, mpc_ptr expected)
+{
+  known_signs_t ks = {1, 1};
+
+  mpc_set (got, z, MPC_RNDNN); /* exact */
+  function->pointer.CC (expected, z, MPC_RNDNN);
+  function->pointer.CC (got, got, MPC_RNDNN);
+  if (!same_mpc_value (got, expected, ks))
+    {
+      printf ("Error for %s(z, z) for %s", function->name, function->name);
+      OUT (z);
+      OUT (expected);
+      OUT (got);
+
+      exit (1);
+    }
+}
+
+static void
+reuse_v_cc (mpc_function* function, mpc_ptr z, mpc_ptr got, mpc_ptr expected)
+{
+  known_signs_t ks = {1, 1};
+
+  mpc_set (got, z, MPC_RNDNN); /* exact */
+  function->pointer.V_CC (expected, z, MPC_RNDNN);
+  function->pointer.V_CC (got, got, MPC_RNDNN);
+  if (!same_mpc_value (got, expected, ks))
+    {
+      printf ("Error for %s(z, z) for %s\n", function->name, function->name);
+      OUT (z);
+      OUT (expected);
+      OUT (got);
+
+      exit (1);
+    }
+}
+
+static void
+reuse_fc (mpc_function* function, mpc_ptr z, mpc_ptr x, mpfr_ptr expected)
+{
+  mpc_set (x, z, MPC_RNDNN); /* exact */
+  function->pointer.FC (expected, z, GMP_RNDN);
+  function->pointer.FC (MPC_RE (x), x, GMP_RNDN);
+  if (!same_mpfr_value (MPC_RE (x), expected, 1))
+    {
+      mpfr_t got;
+      got[0] = MPC_RE(x)[0]; /* display sensible name */
+      printf ("Error for %s(MPC_RE(z), z) for %s\n", function->name,
+              function->name);
+      OUT (z);
+      MPFR_OUT (expected);
+      MPFR_OUT (got);
+
+      exit (1);
+    }
+  mpc_set (x, z, MPC_RNDNN); /* exact */
+  function->pointer.FC (MPC_IM (x), x, GMP_RNDN);
+  if (!same_mpfr_value (MPC_IM (x), expected, 1))
+    {
+      mpfr_t got;
+      got[0] = MPC_IM(x)[0]; /* display sensible name */
+      printf ("Error for %s(MPC_IM(z), z) for %s\n", function->name,
+              function->name);
+      OUT (z);
+      MPFR_OUT (expected);
+      MPFR_OUT (got);
+
+      exit (1);
+    }
+}
+
+static void
+reuse_cfc (mpc_function* function, mpc_srcptr z, mpfr_srcptr x, mpc_ptr got,
+           mpc_ptr expected)
+{
+  known_signs_t ks = {1, 1};
+
+  mpc_set (got, z, MPC_RNDNN); /* exact */
+  function->pointer.CFC (expected, x, z, MPC_RNDNN);
+  function->pointer.CFC (got, x, got, MPC_RNDNN);
+  if (!same_mpc_value (got, expected, ks))
+    {
+      printf ("Error for %s(z, x, z) for %s\n", function->name,
+              function->name);
+      MPFR_OUT (x);
+      OUT (z);
+      OUT (expected);
+      OUT (got);
+
+      exit (1);
+    }
+}
+
+static void
+reuse_ccf (mpc_function* function, mpc_srcptr z, mpfr_srcptr x, mpc_ptr got,
+           mpc_ptr expected)
+{
+  known_signs_t ks = {1, 1};
+
+  mpc_set (got, z, MPC_RNDNN); /* exact */
+  function->pointer.CCF (expected, z, x, MPC_RNDNN);
+  function->pointer.CCF (got, got, x, MPC_RNDNN);
+  if (!same_mpc_value (got, expected, ks))
+    {
+      printf ("Error for %s(z, z, x) for %s\n", function->name,
+              function->name);
+      OUT (z);
+      MPFR_OUT (x);
+      OUT (expected);
+      OUT (got);
+
+      exit (1);
+    }
+}
+
+static void
+reuse_ccc (mpc_function* function, mpc_srcptr z, mpc_srcptr x,
+           mpc_ptr got, mpc_ptr expected)
+{
+  known_signs_t ks = {1, 1};
+
+  mpc_set (got, z, MPC_RNDNN); /* exact */
+  function->pointer.CCC (expected, z, x, MPC_RNDNN);
+  function->pointer.CCC (got, got, x, MPC_RNDNN);
+  if (!same_mpc_value (got, expected, ks))
+    {
+      printf ("Error for %s(z, z, x) for %s\n", function->name,
+              function->name);
+      OUT (z);
+      OUT (x);
+      OUT (expected);
+      OUT (got);
+
+      exit (1);
+    }
+  mpc_set (got, x, MPC_RNDNN); /* exact */
+  function->pointer.CCC (expected, z, x, MPC_RNDNN);
+  function->pointer.CCC (got, z, got, MPC_RNDNN);
+  if (!same_mpc_value (got, expected, ks))
+    {
+      printf ("Error for %s(x, z, x) for %s\n", function->name,
+              function->name);
+      OUT (z);
+      OUT (x);
+      OUT (expected);
+      OUT (got);
+
+      exit (1);
+    }
+}
+
+static void
+reuse_ccu (mpc_function* function, mpc_srcptr z, unsigned long ul,
+           mpc_ptr got, mpc_ptr expected)
+{
+  known_signs_t ks = {1, 1};
+
+  mpc_set (got, z, MPC_RNDNN); /* exact */
+  function->pointer.CCU (expected, z, ul, MPC_RNDNN);
+  function->pointer.CCU (got, got, ul, MPC_RNDNN);
+  if (!same_mpc_value (got, expected, ks))
+    {
+      printf ("Error for %s(z, z, n) for %s\n", function->name,
+              function->name);
+      OUT (z);
+      printf ("n=%lu\n", ul);
+      OUT (expected);
+      OUT (got);
+
+      exit (1);
+    }
+}
+
+static void
+reuse_cuc (mpc_function* function, unsigned long ul, mpc_srcptr z,
+           mpc_ptr got, mpc_ptr expected)
+{
+  known_signs_t ks = {1, 1};
+
+  mpc_set (got, z, MPC_RNDNN); /* exact */
+  function->pointer.CUC (expected, ul, z,MPC_RNDNN);
+  function->pointer.CUC (got, ul, got, MPC_RNDNN);
+  if (!same_mpc_value (got, expected, ks))
+    {
+      printf ("Error for %s(z, n, z) for %s\n", function->name,
+              function->name);
+      printf ("n=%lu\n", ul);
+      OUT (z);
+      OUT (expected);
+      OUT (got);
+
+      exit (1);
+    }
+}
+
+static void
+reuse_ccs (mpc_function* function, mpc_srcptr z, long lo,
+           mpc_ptr got, mpc_ptr expected)
+{
+  known_signs_t ks = {1, 1};
+
+  mpc_set (got, z, MPC_RNDNN); /* exact */
+  function->pointer.CCS (expected, z, lo, MPC_RNDNN);
+  function->pointer.CCS (got, got, lo, MPC_RNDNN);
+  if (!same_mpc_value (got, expected, ks))
+    {
+      printf ("Error for %s(z, z, n) for %s\n", function->name,
+              function->name);
+      OUT (z);
+      printf ("n=%ld\n", lo);
+      OUT (expected);
+      OUT (got);
+
+      exit (1);
+    }
+}
+
+static void
+reuse_cuuc (mpc_function* function, unsigned long ul1, unsigned long ul2, 
+            mpc_srcptr z, mpc_ptr got, mpc_ptr expected)
+{
+  known_signs_t ks = {1, 1};
+
+  mpc_set (got, z, MPC_RNDNN); /* exact */
+  function->pointer.CUUC (expected, ul1, ul2, z,MPC_RNDNN);
+  function->pointer.CUUC (got, ul1, ul2, got, MPC_RNDNN);
+  if (!same_mpc_value (got, expected, ks))
+    {
+      printf ("Error for %s(z, m, n, z) for %s\n", function->name,
+              function->name);
+      printf ("m=%lu\n", ul1);
+      printf ("n=%lu\n", ul2);
+      OUT (z);
+      OUT (expected);
+      OUT (got);
+
+      exit (1);
+    }
+}
+
+
+/* tgeneric(prec_min, prec_max, step, exp_max) checks rounding with random
+ numbers:
+ - with precision ranging from prec_min to prec_max with an increment of
+   step,
+ - with exponent between -prec_max and prec_max.
+
+ It also checks parameter reuse (it is assumed here that either two mpc_t
+ variables are equal or they are different, in the sense that the real part of
+ one of them cannot be the imaginary part of the other). */
+void
+tgeneric (mpc_function function, mpfr_prec_t prec_min,
+          mpfr_prec_t prec_max, mpfr_prec_t step, mp_exp_t exp_max)
+{
+  unsigned long ul1 = 0, ul2 = 0;
+  long lo = 0;
+  mpfr_t x1, x2, xxxx;
+  mpc_t  z1, z2, z3, z4, zzzz;
   mpc_rnd_t rnd_re;
   mpc_rnd_t rnd_im;
   mpfr_prec_t prec;
   mp_exp_t exp_min;
 
-#ifdef TWOARGS
-  mpc_t y;
-
-  mpc_init (y);
-#endif
-
-  mpc_init (x);
-  mpc_init (z);
-  mpc_init (t);
-  mpc_init (u);
+  mpc_init2 (z1, prec_max);
+  switch (function.type)
+    {
+    case CCC:
+      mpc_init2 (z2, prec_max);
+      mpc_init2 (z3, prec_max);
+      mpc_init2 (z4, prec_max);
+      mpc_init2 (zzzz, 4*prec_max);
+      break;
+    case FC:
+      mpfr_init2 (x1, prec_max);
+      mpfr_init2 (x2, prec_max);
+      mpfr_init2 (xxxx, 4*prec_max);
+      mpc_init2 (z2, prec_max);
+      break;
+    case CCF: case CFC:
+      mpfr_init2 (x1, prec_max);
+    case CCS: case CUUC:
+    case CCU: case CUC:
+    case CC: case V_CC:
+    default:
+      mpc_init2 (z2, prec_max);
+      mpc_init2 (z3, prec_max);
+      mpc_init2 (zzzz, 4*prec_max);
+    }
 
   exp_min = mpfr_get_emin ();
   if (exp_max <= 0)
@@ -91,70 +699,163 @@ tgeneric(mpfr_prec_t prec_min, mpfr_prec_t prec_max, mpfr_prec_t step, mp_exp_t 
   if (-exp_max > exp_min)
     exp_min = - exp_max;
 
+  if (step < 1)
+    step = 1;
+
   for (prec = prec_min; prec <= prec_max; prec+=step)
     {
-      mpc_set_prec (x, prec);
-      mpc_set_prec (z, prec);
-      mpc_set_prec (t, prec);
-      mpc_set_prec (u, 4*prec);
+      mpc_set_prec (z1, prec);
+      test_default_random (z1, exp_min, exp_max, 1);
 
-      test_default_random (x, exp_min, exp_max, 1);
-
-#ifdef TWOARGS
-      mpc_set_prec (y, prec);
-      test_default_random (y, exp_min, exp_max, 1);
-#endif
+      switch (function.type)
+        {
+        case CCC:
+          mpc_set_prec (z2, prec);
+          test_default_random (z2, exp_min, exp_max, 1);
+          mpc_set_prec (z3, prec);
+          mpc_set_prec (z4, prec);
+          mpc_set_prec (zzzz, 4*prec);
+          break;
+        case FC:
+          mpc_set_prec (z2, prec);
+          mpfr_set_prec (x1, prec);
+          mpfr_set_prec (x2, prec);
+          mpfr_set_prec (xxxx, 4*prec);
+          break;
+        case CCU: case CUC:
+          mpc_set_prec (z2, 128);
+          do {
+            test_default_random (z2, 0, 64, 1);
+          } while (!mpfr_fits_ulong_p (MPC_RE (z2), GMP_RNDN));
+          ul1 = mpfr_get_ui (MPC_RE(z2), GMP_RNDN);
+          mpc_set_prec (z2, prec);
+          mpc_set_prec (z3, prec);
+          mpc_set_prec (zzzz, 4*prec);
+          break;
+        case CUUC:
+          mpc_set_prec (z2, 128);
+          do {
+            test_default_random (z2, 0, 64, 1);
+          } while (!mpfr_fits_ulong_p (MPC_RE (z2), GMP_RNDN)
+                   ||!mpfr_fits_ulong_p (MPC_IM (z2), GMP_RNDN));
+          ul1 = mpfr_get_ui (MPC_RE(z2), GMP_RNDN);
+          ul2 = mpfr_get_ui (MPC_IM(z2), GMP_RNDN);
+          mpc_set_prec (z2, prec);
+          mpc_set_prec (z3, prec);
+          mpc_set_prec (zzzz, 4*prec);
+          break;
+        case CCS:
+          mpc_set_prec (z2, 128);
+          do {
+            test_default_random (z2, 0, 64, 1);
+          } while (!mpfr_fits_slong_p (MPC_RE (z2), GMP_RNDN));
+          lo = mpfr_get_si (MPC_RE(z2), GMP_RNDN);
+          mpc_set_prec (z2, prec);
+          mpc_set_prec (z3, prec);
+          mpc_set_prec (zzzz, 4*prec);
+          break;
+        case CCF: case CFC:
+          mpfr_set_prec (x1, prec);
+          mpfr_set (x1, MPC_RE (z1), GMP_RNDN);
+          test_default_random (z1, exp_min, exp_max, 1);
+        case CC: case V_CC:
+        default:
+          mpc_set_prec (z2, prec);
+          mpc_set_prec (z3, prec);
+          mpc_set_prec (zzzz, 4*prec);
+        }
 
       for (rnd_re = 0; rnd_re < 4; rnd_re ++)
-        for (rnd_im = 0; rnd_im < 4; rnd_im ++)
+        switch (function.type)
           {
-
-            /* We compute the result with four times the precision and      */
-            /* check whether the rounding is correct. Error reports in this */
-            /* part of the algorithm might still be wrong, though, since    */
-            /* there are two consecutive roundings (but we try to avoid     */
-            /* them).                                                       */
-            const mpc_rnd_t rnd = RNDC (rnd_re, rnd_im);
-
-#ifdef TWOARGS
-	    TEST_FUNCTION (u, x, y, rnd);
-	    TEST_FUNCTION (z, x, y, rnd);
-#else
-            TEST_FUNCTION (u, x, rnd);
-            TEST_FUNCTION (z, x, rnd);
-#endif
-
-            /* can't use mpfr_can_round when argument is singular */
-            if ((mpfr_zero_p (MPC_RE (u)) || mpfr_inf_p (MPC_RE (u))
-                 || mpfr_can_round (MPC_RE (u), 4 * prec - 1,
-                                    MPC_RND_RE (rnd), MPC_RND_RE (rnd), prec))
-                && (mpfr_zero_p (MPC_IM (u)) || mpfr_inf_p (MPC_IM (u))
-                    || mpfr_can_round (MPC_IM (u), 4 * prec - 1,
-                                       MPC_RND_IM (rnd), MPC_RND_IM (rnd),
-                                       prec)))
-              mpc_set (t, u, rnd);
-            else
-              /* avoid double rounding error */
-                continue;
-
-            if (mpc_cmp (z, t) == 0)
-              continue;
-
-#ifdef TWOARGS
-            message_failed (x, y, z, u, t, rnd);
-#else
-            message_failed (x, z, u, t, rnd);
-#endif
+          case CCC:
+            for (rnd_im = 0; rnd_im < 4; rnd_im ++)
+              tgeneric_ccc (&function, z1, z2, z3, zzzz, z4,
+                            RNDC (rnd_re, rnd_im));
+            reuse_ccc (&function, z1, z2, z3, z4);
+            break;
+          case FC:
+            tgeneric_fc (&function, z1, x1, xxxx, x2, rnd_re);
+            reuse_fc (&function, z1, z2, x1);
+            break;
+          case CC:
+            for (rnd_im = 0; rnd_im < 4; rnd_im ++)
+              tgeneric_cc (&function, z1, z2, zzzz, z3,
+                           RNDC (rnd_re, rnd_im));
+            reuse_cc (&function, z1, z2, z3);
+            break;
+          case V_CC:
+            for (rnd_im = 0; rnd_im < 4; rnd_im ++)
+              tgeneric_v_cc (&function, z1, z2, zzzz, z3,
+                             RNDC (rnd_re, rnd_im));
+            reuse_v_cc (&function, z1, z2, z3);
+            break;
+          case CFC:
+            for (rnd_im = 0; rnd_im < 4; rnd_im ++)
+              tgeneric_cfc (&function, x1, z1, z2, zzzz, z3,
+                            RNDC (rnd_re, rnd_im));
+            reuse_cfc (&function, z1, x1, z2, z3);
+            break;
+          case CCF:
+            for (rnd_im = 0; rnd_im < 4; rnd_im ++)
+              tgeneric_ccf (&function, z1, x1, z2, zzzz, z3,
+                            RNDC (rnd_re, rnd_im));
+            reuse_ccf (&function, z1, x1, z2, z3);
+            break;
+          case CCU:
+            for (rnd_im = 0; rnd_im < 4; rnd_im ++)
+              tgeneric_ccu (&function, z1, ul1, z2, zzzz, z3,
+                            RNDC (rnd_re, rnd_im));
+            reuse_ccu (&function, z1, ul1, z2, z3);
+            break;
+          case CUC:
+            for (rnd_im = 0; rnd_im < 4; rnd_im ++)
+              tgeneric_cuc (&function, ul1, z1, z2, zzzz, z3,
+                            RNDC (rnd_re, rnd_im));
+            reuse_cuc (&function, ul1, z1, z2, z3);
+            break;
+          case CCS:
+            for (rnd_im = 0; rnd_im < 4; rnd_im ++)
+              tgeneric_ccs (&function, z1, lo, z2, zzzz, z3,
+                            RNDC (rnd_re, rnd_im));
+            reuse_ccs (&function, z1, lo, z2, z3);
+            break;
+          case CUUC:
+            for (rnd_im = 0; rnd_im < 4; rnd_im ++)
+              tgeneric_cuuc (&function, ul1, ul2, z1, z2, zzzz, z3,
+                            RNDC (rnd_re, rnd_im));
+            reuse_cuuc (&function, ul1, ul2, z1, z2, z3);
+            break;
+          default:
+            printf ("tgeneric not yet implemented for this kind of"
+                    "function\n");
+            exit (1);
           }
     }
 
-
-#ifdef TWOARGS
-  mpc_clear (y);
-#endif
-
-  mpc_clear (x);
-  mpc_clear (z);
-  mpc_clear (t);
-  mpc_clear (u);
+  mpc_clear (z1);
+  switch (function.type)
+    {
+    case CCC:
+      mpc_clear (z2);
+      mpc_clear (z3);
+      mpc_clear (z4);
+      mpc_clear (zzzz);
+      break;
+    case FC:
+      mpc_clear (z2);
+      mpfr_clear (x1);
+      mpfr_clear (x2);
+      mpfr_clear (xxxx);
+      break;
+    case CCF: case CFC:
+      mpfr_clear (x1);
+    case CCS: case CUUC:
+    case CCU: case CUC:
+    case CC: case V_CC:
+    default:
+      mpc_clear (z2);
+      mpc_clear (z3);
+      mpc_clear (zzzz);
+    }
 }

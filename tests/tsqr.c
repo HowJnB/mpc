@@ -21,21 +21,12 @@ MA 02111-1307, USA. */
 
 #include <stdio.h>
 #include <stdlib.h>
-#include "gmp.h"
-#include "mpfr.h"
-#include "mpc.h"
+#include "mpc-tests.h"
 #include "mpc-impl.h"
-
-#include "random.c"
-#define TEST_FUNCTION mpc_sqr
-#include "tgeneric_cc.c"
-
-#include "read_data_cc.c"
 
 void cmpsqr (mpc_srcptr, mpc_rnd_t);
 void testsqr (long, long, mp_prec_t, mpc_rnd_t);
 void special (void);
-
 
 void cmpsqr (mpc_srcptr x, mpc_rnd_t rnd)
    /* computes the square of x with the specific function or by simple     */
@@ -187,6 +178,7 @@ special (void)
 int
 main (void)
 {
+  DECL_CC_FUNC (f, mpc_sqr);
   test_start ();
 
   special ();
@@ -201,8 +193,8 @@ main (void)
   testsqr (0, 1816, 8, 24);
   testsqr (145, 0, 8, 24);
 
-  data_check ("sqr.dat");
-  tgeneric (2, 1024, 1, 0);
+  data_check (f, "sqr.dat");
+  tgeneric (f, 2, 1024, 1, 0);
 
   test_end ();
 

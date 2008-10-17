@@ -19,25 +19,17 @@ along with the MPC Library; see the file COPYING.LIB.  If not, write to
 the Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston,
 MA 02111-1307, USA. */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include "gmp.h"
-#include "mpfr.h"
-#include "mpc.h"
-#include "mpc-impl.h"
-
-#include "random.c"
-#define TEST_FUNCTION mpc_conj
-#include "tgeneric_cc.c"
-#include "read_data_cc.c"
+#include "mpc-tests.h"
 
 int
 main (void)
 {
+  DECL_CC_FUNC (f, mpc_conj);
+
   test_start ();
 
-  data_check ("conj.dat");
-  tgeneric (2, 1024, 1, 0);
+  data_check (f, "conj.dat");
+  tgeneric (f, 2, 1024, 1, 0);
 
   test_end ();
 

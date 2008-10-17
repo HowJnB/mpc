@@ -26,7 +26,11 @@ MA 02111-1307, USA. */
 #include <stdio.h>
 #include <stdlib.h>
 
+#include <gmp.h>
+#include <mpfr.h>
+#include "mpc.h"
 #include "mpc-impl.h"
+
 #include "config.h"
 
 #ifdef TIME_WITH_SYS_TIME
@@ -43,7 +47,7 @@ MA 02111-1307, USA. */
 gmp_randstate_t  rands;
 char             rands_initialized;
 
-static void
+void
 test_start (void)
 {
   char *environment_seed;
@@ -88,7 +92,7 @@ test_start (void)
     }
 }
 
-static void
+void
 test_end (void)
 {
   if (rands_initialized)
@@ -103,7 +107,7 @@ test_end (void)
    or equal to 2^{emin-1} and less than 2^emax.
    If NEG_NUMBERS_P is zero then real and imaginary parts are positive, else
    they are negative half of the time. */
-static void
+void
 test_default_random (mpc_ptr z, mp_exp_t emin, mp_exp_t emax,\
                      int neg_numbers_p)
 {

@@ -19,40 +19,15 @@ along with the MPC Library; see the file COPYING.LIB.  If not, write to
 the Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston,
 MA 02111-1307, USA. */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include "gmp.h"
-#include "mpfr.h"
-#include "mpc.h"
-
-static int
-mpc_fr_div_ref (mpc_t q, mpfr_t x, mpc_t z, mpc_rnd_t rnd);
-
-#include "random.c"
-#define TEST_FUNCTION mpc_fr_div
-#define REFERENCE_FUNCTION mpc_fr_div_ref
-#include "tgeneric_cfc.c"
-
-static int
-mpc_fr_div_ref (mpc_t q, mpfr_t x, mpc_t z, mpc_rnd_t rnd)
-{
-  int inexact;
-  mpc_t y;
-  mpc_init2 (y, MPFR_PREC (x));
-  mpc_set_fr (y, x, MPC_RNDNN);
-
-  inexact = mpc_div (q, y, z, rnd);
-
-  mpc_clear (y);
-  return inexact;
-}
+#include "mpc-tests.h"
 
 int
 main (void)
 {
+  DECL_CFC_FUNC (f, mpc_fr_div);
   test_start();
 
-  tgeneric (2, 1024, 7, 65535);
+  tgeneric (f, 2, 1024, 7, 65535);
 
   test_end ();
   return 0;

@@ -19,14 +19,8 @@ along with the MPC Library; see the file COPYING.LIB.  If not, write to
 the Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston,
 MA 02111-1307, USA. */
 
-#include <stdio.h>
-#include <gmp.h>
-#include <mpfr.h>
-#include "mpc.h"
-
-#include "random.c"
-#define TEST_FUNCTION mpc_add_fr
-#include "tgeneric_ccf.c"
+#include <stdlib.h>
+#include "mpc-tests.h"
 
 static void
 check_ternary_value (mpfr_prec_t prec_max, mpfr_prec_t step)
@@ -66,10 +60,12 @@ check_ternary_value (mpfr_prec_t prec_max, mpfr_prec_t step)
 int
 main (void)
 {
+  DECL_CCF_FUNC (f, mpc_add_fr);
+
   test_start ();
 
   check_ternary_value (1024, 1);
-  tgeneric (2, 1024, 7, -1);
+  tgeneric (f, 2, 1024, 7, -1);
 
   test_end ();
 

@@ -19,19 +19,12 @@ along with the MPC Library; see the file COPYING.LIB.  If not, write to
 the Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston,
 MA 02111-1307, USA. */
 
-#include <stdio.h>
 #include <stdlib.h>
 #ifdef TIMING
 #include <sys/times.h>
 #endif
-#include "gmp.h"
-#include "mpfr.h"
-#include "mpc.h"
+#include "mpc-tests.h"
 #include "mpc-impl.h"
-
-#include "random.c"
-#define TEST_FUNCTION mpc_mul
-#include "tgeneric_ccc.c"
 
 static void
 cmpmul (mpc_srcptr x, mpc_srcptr y, mpc_rnd_t rnd)
@@ -230,6 +223,8 @@ timemul (void)
 int
 main (void)
 {
+  DECL_CCC_FUNC (f, mpc_mul);
+
   test_start ();
 
 #ifdef TIMING
@@ -238,7 +233,7 @@ main (void)
 
   check_special ();
   check_regular ();
-  tgeneric (2, 1024, 7, 0);
+  tgeneric (f, 2, 1024, 7, 0);
 
   test_end ();
   return 0;
