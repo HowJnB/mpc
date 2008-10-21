@@ -1,6 +1,6 @@
 /* mpc_sqr -- Square a complex number.
 
-Copyright (C) 2002, 2005, 2008 Andreas Enge, Paul Zimmermann
+Copyright (C) 2002, 2005, 2008 Andreas Enge, Paul Zimmermann, Philippe Th\'eveny
 
 This file is part of the MPC Library.
 
@@ -76,19 +76,21 @@ mpc_sqr (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
    /* first check for real resp. purely imaginary number */
    if (MPFR_IS_ZERO (MPC_IM(op)))
    {
+      int same_sign = mpfr_signbit (MPC_RE (op)) == mpfr_signbit (MPC_IM (op));
       inex_re = mpfr_sqr (MPC_RE(rop), MPC_RE(op), MPC_RND_RE(rnd));
       inex_im = mpfr_set_ui (MPC_IM(rop), 0ul, GMP_RNDN);
-      if (MPFR_SIGN (MPC_RE (op)) * MPFR_SIGN (MPC_IM (op)) < 0)
-         MPFR_CHANGE_SIGN (MPC_IM (rop));
+      if (!same_sign)
+        mpc_conj (rop, rop, MPC_RNDNN);
       return MPC_INEX(inex_re, inex_im);
    }
    if (MPFR_IS_ZERO (MPC_RE(op)))
    {
+      int same_sign = mpfr_signbit (MPC_RE (op)) == mpfr_signbit (MPC_IM (op));
       inex_re = -mpfr_sqr (MPC_RE(rop), MPC_IM(op), INV_RND (MPC_RND_RE(rnd)));
       mpfr_neg (MPC_RE(rop), MPC_RE(rop), GMP_RNDN);
       inex_im = mpfr_set_ui (MPC_IM(rop), 0ul, GMP_RNDN);
-      if (MPFR_SIGN (MPC_RE (op)) * MPFR_SIGN (MPC_IM (op)) < 0)
-         MPFR_CHANGE_SIGN (MPC_IM (rop));
+      if (!same_sign)
+        mpc_conj (rop, rop, MPC_RNDNN);
       return MPC_INEX(inex_re, inex_im);
    }
    /* If the real and imaginary part of the argument have rop very different */
