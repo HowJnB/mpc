@@ -96,6 +96,21 @@ check_regular (void)
       exit (1);
     }
 
+  /* pure real divisor */
+  mpc_set_prec (b, 4);
+  mpc_set_prec (c, 4);
+  mpc_set_prec (q, 4);
+  mpc_set_si_si (b, 15, 14, MPC_RNDNN);
+  mpc_set_si_si (c, 11, 0, MPC_RNDNN);
+  inex = mpc_div (q, b, c, MPC_RNDNN); /* should be 11/8 + 5/4*I */
+  mpc_set_si_si (b, 11, 10, MPC_RNDNN);
+  mpc_div_ui (b, b, 8, MPC_RNDNN);
+  if (mpc_cmp (q, b) || inex != MPC_INEX(1, -1))
+    {
+      printf ("mpc_div failed for (15+14*I)/11\n");
+      exit (1);
+    }
+
   mpc_clear (b);
   mpc_clear (c);
   mpc_clear (q);
