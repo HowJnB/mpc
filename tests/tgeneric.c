@@ -411,7 +411,7 @@ reuse_cc (mpc_function* function, mpc_srcptr z, mpc_ptr got, mpc_ptr expected)
   function->pointer.CC (got, got, MPC_RNDNN);
   if (!same_mpc_value (got, expected, ks))
     {
-      printf ("Error for %s(z, z) for %s", function->name, function->name);
+      printf ("Error for %s(z, z) for\n", function->name);
       OUT (z);
       OUT (expected);
       OUT (got);
@@ -430,7 +430,7 @@ reuse_v_cc (mpc_function* function, mpc_ptr z, mpc_ptr got, mpc_ptr expected)
   function->pointer.V_CC (got, got, MPC_RNDNN);
   if (!same_mpc_value (got, expected, ks))
     {
-      printf ("Error for %s(z, z) for %s\n", function->name, function->name);
+      printf ("Error for %s(z, z) for\n", function->name);
       OUT (z);
       OUT (expected);
       OUT (got);
@@ -449,8 +449,7 @@ reuse_fc (mpc_function* function, mpc_ptr z, mpc_ptr x, mpfr_ptr expected)
     {
       mpfr_t got;
       got[0] = MPC_RE(x)[0]; /* display sensible name */
-      printf ("Error for %s(MPC_RE(z), z) for %s\n", function->name,
-              function->name);
+      printf ("Error for %s(MPC_RE(z), z) for\n", function->name);
       OUT (z);
       MPFR_OUT (expected);
       MPFR_OUT (got);
@@ -463,8 +462,7 @@ reuse_fc (mpc_function* function, mpc_ptr z, mpc_ptr x, mpfr_ptr expected)
     {
       mpfr_t got;
       got[0] = MPC_IM(x)[0]; /* display sensible name */
-      printf ("Error for %s(MPC_IM(z), z) for %s\n", function->name,
-              function->name);
+      printf ("Error for %s(MPC_IM(z), z) for \n", function->name);
       OUT (z);
       MPFR_OUT (expected);
       MPFR_OUT (got);
@@ -484,8 +482,7 @@ reuse_cfc (mpc_function* function, mpc_srcptr z, mpfr_srcptr x, mpc_ptr got,
   function->pointer.CFC (got, x, got, MPC_RNDNN);
   if (!same_mpc_value (got, expected, ks))
     {
-      printf ("Error for %s(z, x, z) for %s\n", function->name,
-              function->name);
+      printf ("Error for %s(z, x, z) for\n", function->name);
       MPFR_OUT (x);
       OUT (z);
       OUT (expected);
@@ -506,8 +503,7 @@ reuse_ccf (mpc_function* function, mpc_srcptr z, mpfr_srcptr x, mpc_ptr got,
   function->pointer.CCF (got, got, x, MPC_RNDNN);
   if (!same_mpc_value (got, expected, ks))
     {
-      printf ("Error for %s(z, z, x) for %s\n", function->name,
-              function->name);
+      printf ("Error for %s(z, z, x) for\n", function->name);
       OUT (z);
       MPFR_OUT (x);
       OUT (expected);
@@ -528,8 +524,7 @@ reuse_ccc (mpc_function* function, mpc_srcptr z, mpc_srcptr x,
   function->pointer.CCC (got, got, x, MPC_RNDNN);
   if (!same_mpc_value (got, expected, ks))
     {
-      printf ("Error for %s(z, z, x) for %s\n", function->name,
-              function->name);
+      printf ("Error for %s(z, z, x) for\n", function->name);
       OUT (z);
       OUT (x);
       OUT (expected);
@@ -542,8 +537,7 @@ reuse_ccc (mpc_function* function, mpc_srcptr z, mpc_srcptr x,
   function->pointer.CCC (got, z, got, MPC_RNDNN);
   if (!same_mpc_value (got, expected, ks))
     {
-      printf ("Error for %s(x, z, x) for %s\n", function->name,
-              function->name);
+      printf ("Error for %s(x, z, x) for\n", function->name);
       OUT (z);
       OUT (x);
       OUT (expected);
@@ -564,8 +558,7 @@ reuse_ccu (mpc_function* function, mpc_srcptr z, unsigned long ul,
   function->pointer.CCU (got, got, ul, MPC_RNDNN);
   if (!same_mpc_value (got, expected, ks))
     {
-      printf ("Error for %s(z, z, n) for %s\n", function->name,
-              function->name);
+      printf ("Error for %s(z, z, n) for\n", function->name);
       OUT (z);
       printf ("n=%lu\n", ul);
       OUT (expected);
@@ -586,8 +579,7 @@ reuse_cuc (mpc_function* function, unsigned long ul, mpc_srcptr z,
   function->pointer.CUC (got, ul, got, MPC_RNDNN);
   if (!same_mpc_value (got, expected, ks))
     {
-      printf ("Error for %s(z, n, z) for %s\n", function->name,
-              function->name);
+      printf ("Error for %s(z, n, z) for\n", function->name);
       printf ("n=%lu\n", ul);
       OUT (z);
       OUT (expected);
@@ -608,8 +600,7 @@ reuse_ccs (mpc_function* function, mpc_srcptr z, long lo,
   function->pointer.CCS (got, got, lo, MPC_RNDNN);
   if (!same_mpc_value (got, expected, ks))
     {
-      printf ("Error for %s(z, z, n) for %s\n", function->name,
-              function->name);
+      printf ("Error for %s(z, z, n) for\n", function->name);
       OUT (z);
       printf ("n=%ld\n", lo);
       OUT (expected);
@@ -630,8 +621,7 @@ reuse_cuuc (mpc_function* function, unsigned long ul1, unsigned long ul2,
   function->pointer.CUUC (got, ul1, ul2, got, MPC_RNDNN);
   if (!same_mpc_value (got, expected, ks))
     {
-      printf ("Error for %s(z, m, n, z) for %s\n", function->name,
-              function->name);
+      printf ("Error for %s(z, m, n, z) for\n", function->name);
       printf ("m=%lu\n", ul1);
       printf ("n=%lu\n", ul2);
       OUT (z);
