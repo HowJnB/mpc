@@ -1,0 +1,34 @@
+#!/bin/bash
+# Test coverage using gcov & lcov
+# download lcov  in http://ltp.sourceforge.net/coverage/lcov.php
+#
+# An adaptation of Patrick Pellissier's script in MPFR
+
+SRC_DIR=`pwd`/..
+DEST_DIR=/tmp/ompc-gcov
+REVISION=$(cd ..; svn info|sed -n '/Revision: / p');
+
+# First Build MPC in /tmp/
+echo "Erasing previous " $DEST_DIR
+rm -rf $DEST_DIR
+mkdir $DEST_DIR
+echo "Copying MPC sources to "$DEST_DIR
+cp $SRC_DIR/* $DEST_DIR 2>/dev/null
+mkdir $DEST_DIR/doc
+cp $SRC_DIR/doc/* $DEST_DIR/doc
+mkdir $DEST_DIR/src
+cp $SRC_DIR/src/{Makefile*,*.h,*.c} $DEST_DIR/src
+mkdir $DEST_DIR/tests
+cp $SRC_DIR/tests/{Makefile*,*.h,*.c,*.dat} $DEST_DIR/tests
+cd $DEST_DIR
+echo "Building MPC"
+./configure --enable-assert --disable-shared --enable-static \
+  CFLAGS="-fprofile-arcs -ftest-coverage -g"
+make check -j -l 2
+
+mkdir html
+lcov -o html/mpc.capture -t "$REVISION" -d src -c
+lcov -o html/mpc.info -r html/mpc.capture *gmp*.h
+genhtml -o html --no-prefix -t "$REVISION" html/mpc.info
+
+echo "See results in "$DEST_DIR"/html/index.html"

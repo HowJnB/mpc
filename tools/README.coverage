@@ -1,0 +1,9 @@
+The script "coverage" compute the test suite coverage of MPC in terms of line
+of code and summarize it into web pages.
+You will need gcov and lcov (http://ltp.sourceforge.net/coverage/lcov.php).
+
+Usage:
+cd path_to_mpc_sources/tools
+./coverage
+
+After execution, the html pages lie in the directory /tmp/ompc-gcov/html.
