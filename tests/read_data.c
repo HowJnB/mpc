@@ -323,7 +323,7 @@ read_cfc (FILE *fp, mpc_ptr expected, known_signs_t *signs, mpfr_ptr op1,
               pathname, line_number);
       exit (1);
     }
-  if (read_mpfr_rounding_mode (fp, rnd))
+  if (read_rounding_mode (fp, rnd))
     {
       printf ("Error: unexpected rounding mode in file '%s' line %ld\n",
               pathname, line_number);
@@ -353,7 +353,7 @@ read_ccf (FILE *fp, mpc_ptr expected, known_signs_t *signs, mpc_ptr op1,
               pathname, line_number);
       exit (1);
     }
-  if (read_mpfr_rounding_mode (fp, rnd))
+  if (read_rounding_mode (fp, rnd))
     {
       printf ("Error: unexpected rounding mode in file '%s' line %ld\n",
               pathname, line_number);
