@@ -98,7 +98,7 @@ main (void)
                               a NaN */
       if (mpc_cmp (z, x) != 0 || mpfr_erangeflag_p())
         {
-          fprintf (stderr, "inp_str o out_str <> Id\n");
+          fprintf (stderr, "mpc_inp_str do not correctly re-read number\n");
           mpc_out_str (stderr, 10, 0, z, MPC_RNDNN);
           fprintf (stderr, "\n");
           exit (1);
@@ -110,8 +110,59 @@ main (void)
           fprintf (stderr, "Could not open file %s\n", filename);
           exit (1);
         };
-      mpc_out_str (file, 10, 0, z, MPC_RNDNN);
+      mpc_out_str (file, 10, 0, x, MPC_RNDNN);
       fclose (file);
+      if (!(file = fopen (filename, "r")))
+        {
+          fprintf (stderr, "Could not open file %s\n", filename);
+          exit (1);
+        };
+      if (mpc_inp_str (z, file, 10, MPC_RNDUZ) == 0)
+        {
+          fprintf (stderr, "mpc_inp_str cannot correctly re-read number "
+                   "in file %s\n", filename);
+          exit (1);
+        }
+      fclose (file);
+      mpfr_clear_flags (); /* mpc_cmp set erange flag when an operand is
+                              a NaN */
+      if (mpc_cmp (z, x) != 0 || mpfr_erangeflag_p())
+        {
+          fprintf (stderr, "inp_str o out_str <> Id\n");
+          mpc_out_str (stderr, 10, 0, z, MPC_RNDNN);
+          fprintf (stderr, "\n");
+          exit (1);
+        }
+
+      mpc_set_si_si (x, 1, -1, MPC_RNDNN);
+      if (!(file = fopen (filename, "w")))
+        {
+          fprintf (stderr, "Could not open file %s\n", filename);
+          exit (1);
+        };
+      mpc_out_str (file, 10, 0, x, MPC_RNDNN);
+      fclose (file);
+      if (!(file = fopen (filename, "r")))
+        {
+          fprintf (stderr, "Could not open file %s\n", filename);
+          exit (1);
+        };
+      if (mpc_inp_str (z, file, 10, MPC_RNDUZ) == 0)
+        {
+          fprintf (stderr, "mpc_inp_str cannot correctly re-read number "
+                   "in file %s\n", filename);
+          exit (1);
+        }
+      fclose (file);
+      mpfr_clear_flags (); /* mpc_cmp set erange flag when an operand is
+                              a NaN */
+      if (mpc_cmp (z, x) != 0 || mpfr_erangeflag_p())
+        {
+          fprintf (stderr, "inp_str o out_str <> Id\n");
+          mpc_out_str (stderr, 10, 0, z, MPC_RNDNN);
+          fprintf (stderr, "\n");
+          exit (1);
+        }
 
       PRINT ("Testing mpc_set\n");
       mpc_set (z, x, MPC_RNDNN);
