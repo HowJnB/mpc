@@ -61,6 +61,7 @@ main (void)
   test_start ();
 
   check_ternary_value();
+  data_check (f, "add.dat");
   tgeneric (f, 2, 1024, 7, -1);
 
   test_end ();

@@ -11,8 +11,8 @@ check_LTLIBRARIES=libmpc-tests.la
 libmpc_tests_la_SOURCES=mpc-tests.h random.c tgeneric.c read_data.c	\
 comparisons.c
 
-EXTRA_DIST = abs.dat conj.dat cos.dat cosh.dat exp.dat log.dat neg.dat sqr.dat	\
-sqrt.dat sin.dat sinh.dat tan.dat tanh.dat
+EXTRA_DIST = abs.dat add.dat conj.dat cos.dat cosh.dat exp.dat log.dat neg.dat	\
+sin.dat sinh.dat sqr.dat sqrt.dat tan.dat tanh.dat
 
 TESTS = $(check_PROGRAMS)
 CLEANFILES = mpc_test
