@@ -32,8 +32,8 @@ mpc_sqrt (mpc_ptr a, mpc_srcptr b, mpc_rnd_t rnd)
   mpfr_t    w, t;
   mp_rnd_t  rnd_w, rnd_t;
   mp_prec_t prec_w, prec_t;
-    /* the rounding mode and the precision required for w and t, which can */
-    /* be either the real or the imaginary part of a */
+  /* the rounding mode and the precision required for w and t, which can */
+  /* be either the real or the imaginary part of a */
   mp_prec_t prec;
   int inexact, loops = 0;
   /* comparison of the real/imaginary part of b with 0 */
@@ -66,14 +66,8 @@ mpc_sqrt (mpc_ptr a, mpc_srcptr b, mpc_rnd_t rnd)
             }
           else
             {
-              if (mpfr_inf_p (MPC_IM (b)))
-                /* sqrt(-Inf -i*Inf) = +Inf -i*Inf */
-                /* sqrt(-Inf +i*Inf) = +Inf +i*Inf */
-                mpfr_set_inf (MPC_RE (a), +1);
-              else
-                /* sqrt(-Inf +i*NaN) = NaN +/-i*Inf */
-                mpfr_set_nan (MPC_RE (a));
-
+              /* sqrt(-Inf +i*NaN) = NaN +/-i*Inf */
+              mpfr_set_nan (MPC_RE (a));
               mpfr_set_inf (MPC_IM (a), im_sgn);
               return 0;
             }
@@ -111,39 +105,39 @@ mpc_sqrt (mpc_ptr a, mpc_srcptr b, mpc_rnd_t rnd)
 
   /* pure real */
   if (im_cmp == 0)
-  {
-    if (re_cmp == 0)
     {
-      mpc_set_ui_ui (a, 0, 0, MPC_RNDNN);
-      if (im_sgn)
-        mpc_conj (a, a, MPC_RNDNN);
-      return 0;
-    }
-    else if (re_cmp > 0)
-    {
-      inexact = mpfr_sqrt (MPC_RE (a), MPC_RE (b), MPC_RND_RE (rnd));
-      mpfr_set_ui (MPC_IM (a), 0, GMP_RNDN);
-      if (im_sgn)
-        mpc_conj (a, a, MPC_RNDNN);
-      return inexact;
-    }
-    else
-    {
-      mpfr_init2 (w, MPFR_PREC (MPC_RE (b)));
-      mpfr_neg (w, MPC_RE (b), GMP_RNDN);
-      if (im_sgn)
+      if (re_cmp == 0)
         {
-          inexact = mpfr_sqrt (MPC_IM (a), w, INV_RND (MPC_RND_IM (rnd)));
-          mpfr_neg (MPC_IM (a), MPC_IM (a), MPC_RNDNN);
+          mpc_set_ui_ui (a, 0, 0, MPC_RNDNN);
+          if (im_sgn)
+            mpc_conj (a, a, MPC_RNDNN);
+          return 0;
+        }
+      else if (re_cmp > 0)
+        {
+          inexact = mpfr_sqrt (MPC_RE (a), MPC_RE (b), MPC_RND_RE (rnd));
+          mpfr_set_ui (MPC_IM (a), 0, GMP_RNDN);
+          if (im_sgn)
+            mpc_conj (a, a, MPC_RNDNN);
+          return inexact;
         }
       else
-        inexact = mpfr_sqrt (MPC_IM (a), w, MPC_RND_IM (rnd));
+        {
+          mpfr_init2 (w, MPFR_PREC (MPC_RE (b)));
+          mpfr_neg (w, MPC_RE (b), GMP_RNDN);
+          if (im_sgn)
+            {
+              inexact = mpfr_sqrt (MPC_IM (a), w, INV_RND (MPC_RND_IM (rnd)));
+              mpfr_neg (MPC_IM (a), MPC_IM (a), MPC_RNDNN);
+            }
+          else
+            inexact = mpfr_sqrt (MPC_IM (a), w, MPC_RND_IM (rnd));
 
-      mpfr_set_ui (MPC_RE (a), 0, GMP_RNDN);
-      mpfr_clear (w);
-      return inexact;
+          mpfr_set_ui (MPC_RE (a), 0, GMP_RNDN);
+          mpfr_clear (w);
+          return inexact;
+        }
     }
-  }
 
   /* pure imaginary */
   if (re_cmp == 0)
@@ -174,27 +168,27 @@ mpc_sqrt (mpc_ptr a, mpc_srcptr b, mpc_rnd_t rnd)
   mpfr_init (t);
 
   if (re_cmp >= 0)
-  {
-    rnd_w = MPC_RND_RE (rnd);
-    prec_w = MPFR_PREC (MPC_RE (a));
-    rnd_t = MPC_RND_IM(rnd);
-    prec_t = MPFR_PREC (MPC_IM (a));
-  }
-  else
-  {
-    rnd_w = MPC_RND_IM(rnd);
-    prec_w = MPFR_PREC (MPC_IM (a));
-    rnd_t = MPC_RND_RE(rnd);
-    prec_t = MPFR_PREC (MPC_RE (a));
-    if (im_cmp < 0)
     {
-       rnd_w = INV_RND(rnd_w);
-       rnd_t = INV_RND(rnd_t);
+      rnd_w = MPC_RND_RE (rnd);
+      prec_w = MPFR_PREC (MPC_RE (a));
+      rnd_t = MPC_RND_IM(rnd);
+      prec_t = MPFR_PREC (MPC_IM (a));
     }
-  }
+  else
+    {
+      rnd_w = MPC_RND_IM(rnd);
+      prec_w = MPFR_PREC (MPC_IM (a));
+      rnd_t = MPC_RND_RE(rnd);
+      prec_t = MPFR_PREC (MPC_RE (a));
+      if (im_cmp < 0)
+        {
+          rnd_w = INV_RND(rnd_w);
+          rnd_t = INV_RND(rnd_t);
+        }
+    }
 
   do
-  {
+    {
       loops ++;
       prec += (loops <= 2) ? mpc_ceil_log2 (prec) + 4 : prec / 2;
       mpfr_set_prec (w, prec);
@@ -212,32 +206,32 @@ mpc_sqrt (mpc_ptr a, mpc_srcptr b, mpc_rnd_t rnd)
 
       ok = mpfr_can_round (w, (mp_exp_t)prec - 2, GMP_RNDD, rnd_w, prec_w);
       if (ok)
-      {
-        /* t = y / 2w, rounded away */
-        /* total error bounded by 7 ulps */
-        const mp_rnd_t r = im_sgn ? GMP_RNDD : GMP_RNDU;
-        inexact |= mpfr_div (t, MPC_IM (b), w, r);
-        inexact |= mpfr_div_2ui (t, t, 1, r);
-        ok = mpfr_can_round (t, (mp_exp_t)prec - 3, r, rnd_t, prec_t);
-      }
-  }
+        {
+          /* t = y / 2w, rounded away */
+          /* total error bounded by 7 ulps */
+          const mp_rnd_t r = im_sgn ? GMP_RNDD : GMP_RNDU;
+          inexact |= mpfr_div (t, MPC_IM (b), w, r);
+          inexact |= mpfr_div_2ui (t, t, 1, r);
+          ok = mpfr_can_round (t, (mp_exp_t)prec - 3, r, rnd_t, prec_t);
+        }
+    }
   while (inexact != 0 && ok == 0);
 
   if (re_cmp > 0)
-  {
-     inexact |= mpfr_set (MPC_RE (a), w, MPC_RND_RE(rnd));
-     inexact |= mpfr_set (MPC_IM (a), t, MPC_RND_IM(rnd));
-  }
+    {
+      inexact |= mpfr_set (MPC_RE (a), w, MPC_RND_RE(rnd));
+      inexact |= mpfr_set (MPC_IM (a), t, MPC_RND_IM(rnd));
+    }
   else if (im_cmp > 0)
-  {
-     inexact |= mpfr_set (MPC_RE(a), t, MPC_RND_RE(rnd));
-     inexact |= mpfr_set (MPC_IM(a), w, MPC_RND_IM(rnd));
-  }
+    {
+      inexact |= mpfr_set (MPC_RE(a), t, MPC_RND_RE(rnd));
+      inexact |= mpfr_set (MPC_IM(a), w, MPC_RND_IM(rnd));
+    }
   else
-  {
-     inexact |= mpfr_neg (MPC_RE (a), t, MPC_RND_RE(rnd));
-     inexact |= mpfr_neg (MPC_IM (a), w, MPC_RND_IM(rnd));
-  }
+    {
+      inexact |= mpfr_neg (MPC_RE (a), t, MPC_RND_RE(rnd));
+      inexact |= mpfr_neg (MPC_IM (a), w, MPC_RND_IM(rnd));
+    }
 
   mpfr_clear (w);
   mpfr_clear (t);
