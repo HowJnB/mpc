@@ -48,7 +48,7 @@ const char *rnd_mode[] =
     "undefined", "undefined", "undefined", "undefined", "undefined",
     "undefined", "undefined", "undefined", "undefined", "undefined",
     "undefined", "undefined",
-    "MPC_RNDND", "MPC_RNDZD", "MPC_RNDUD", "MPC_RNDDD"
+    "MPC_RNDND", "MPC_RNDZD", "MPC_RNDUD", "MPC_RNDDD",
     "undefined", "undefined", "undefined", "undefined", "undefined",
     "undefined", "undefined", "undefined", "undefined", "undefined",
     "undefined", "undefined",
@@ -539,7 +539,7 @@ data_check (mpc_function function, const char *file_name)
               op1[0] = x1[0];
               op2[0] = z2[0];
               expected[0]= z1[0];
-              got[0] = z4[0];
+              got[0] = z3[0];
               printf ("%s(op) failed (line %lu)\nwith rounding mode %s\n",
                       function.name, line_number, rnd_mode[rnd]);
               MPFR_OUT (op1);
@@ -556,7 +556,7 @@ data_check (mpc_function function, const char *file_name)
           read_ccf (fp, z1, &signs, z2, x1, &rnd);
           mpfr_set_prec (MPC_RE(z3), MPC_PREC_RE (z1));
           mpfr_set_prec (MPC_IM(z3), MPC_PREC_IM (z1));
-          function.pointer.CCF (z3, z2, x1,rnd);
+          function.pointer.CCF (z3, z2, x1, rnd);
           if (!same_mpc_value (z3, z1, signs))
             {
               /* display sensible variable names */
@@ -565,7 +565,7 @@ data_check (mpc_function function, const char *file_name)
               op1[0] = z2[0];
               op2[0] = x1[0];
               expected[0]= z1[0];
-              got[0] = z4[0];
+              got[0] = z3[0];
               printf ("%s(op) failed (line %lu)\nwith rounding mode %s\n",
                       function.name, line_number, rnd_mode[rnd]);
               OUT (op1);
