@@ -255,24 +255,24 @@ Create an info version of the manual, in @file{mpc.info}.
 @item
 @samp{pdf}
 
-Create a PDF version of the manual, in @file{mpc.pdf}.
+Create a PDF version of the manual, in @file{doc/mpc.pdf}.
 
 @item
 @samp{dvi}
 
-Create a DVI version of the manual, in @file{mpc.dvi}.
+Create a DVI version of the manual, in @file{doc/mpc.dvi}.
 
 @item
 @samp{ps}
 
-Create a Postscript version of the manual, in @file{mpc.ps}.
+Create a Postscript version of the manual, in @file{doc/mpc.ps}.
 
 @item
 @samp{html}
 
-Create an HTML version of the manual, in several pages in the directory
-@file{mpc.html}; if you want only one output HTML file, then type
-@samp{makeinfo --html --no-split mpc.texi} instead.
+Create an HTML version of the manual, in several pages in the
+directory @file{doc/mpc.html}; if you want only one output HTML file,
+then type @samp{makeinfo --html --no-split mpc.texi} instead.
 
 @item
 @samp{clean}
