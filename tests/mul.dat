@@ -1,0 +1,110 @@
+# Data file for mpc_mul
+#
+# Copyright (C) 2008 Philippe Th\'eveny
+#
+# This file is part of the MPC Library.
+#
+# The MPC Library is free software; you can redistribute it and/or modify
+# it under the terms of the GNU Lesser General Public License as published by
+# the Free Software Foundation; either version 2.1 of the License, or (at your
+# option) any later version.
+#
+# The MPC Library is distributed in the hope that it will be useful, but
+# WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
+# or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Lesser General Public
+# License for more details.
+#
+# You should have received a copy of the GNU Lesser General Public License
+# along with the MPC Library; see the file COPYING.LIB.  If not, write to
+# the Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston,
+# MA 02111-1307, USA.
+#
+# The line format respects the parameter order in function prototype as
+# follow:
+#
+# PREC_ROP_RE  ROP_RE  PREC_ROP_IM  ROP_IM  PREC_OP1_RE  OP1_RE  PREC_OP1_IM  OP1_IM  PREC_OP2_RE  OP2_RE  PREC_OP2_IM  OP2_IM  RND_RE  RND_IM
+#
+# See add.dat for more details.
+
+# special values (following ISO C99 standard, G.5.1)
+53  nan 53 +inf    53 -inf 53 -inf 53 -inf 53 -inf N Z
+53  nan 53 +inf    53 -inf 53 +inf 53   +1 53 -inf Z U
+53 +inf 53 -inf    53 +inf 53 -inf 53 +inf 53   +0 U D
+53 +inf 53 -inf    53 +inf 53 +inf 53   -0 53   -1 D N
+53 -inf 53 +inf    53 -inf 53 -inf 53   -0 53   -1 N U
+53 -inf 53 +inf    53 -inf 53 +inf 53 +inf 53  nan Z D
+53 -inf 53 -inf    53 +inf 53 -inf 53  nan 53   -1 U N
+53  nan 53  nan    53 +inf 53 +inf 53   -0 53  nan D Z
+53  nan 53  nan    53 -inf 53 -inf 53  nan 53  nan N D
+
+53 -inf 53 -inf    53   -1 53 -inf 53 +inf 53   -1 N D
+53 -inf 53  nan    53 -inf 53   +1 53 +inf 53   -0 Z N
+53 +inf 53  nan    53   +1 53 -inf 53   -0 53   +1 U Z
+53  nan 53  nan    53 +inf 53   +1 53   -0 53   -0 D U
+53  nan 53 -inf    53   -1 53 -inf 53 +inf 53  nan N N
+53  nan 53 -inf    53 -inf 53   +1 53  nan 53   +1 Z Z
+53  nan 53  nan    53   +1 53 -inf 53   -0 53  nan U U
+53  nan 53  nan    53 +inf 53   +1 53  nan 53  nan D D
+
+53 +inf 53  nan    53   -0 53 -inf 53   +0 53 +inf D D
+53 -inf 53  nan    53 -inf 53   +0 53   +1 53   -0 N Z
+53  nan 53  nan    53   +0 53 -inf 53   -0 53   -0 Z U
+53 -inf 53  nan    53 +inf 53   +0 53 -inf 53  nan U D
+53 -inf 53  nan    53   -0 53 -inf 53  nan 53   -1 D N
+53  nan 53  nan    53 -inf 53   +0 53   +0 53  nan N U
+53  nan 53  nan    53   +0 53 -inf 53  nan 53  nan Z D
+
+53   +1 53   -0    53   +0 53   +1 53   -0 53   -1 Z D
+53   -0 53   +0    53   -1 53   -0 53   +0 53   -0 U N
+53 -inf 53  nan    53   -0 53   +1 53  nan 53 +inf D Z
+53  nan 53  nan    53   +1 53   -0 53   -1 53  nan N D
+53  nan 53  nan    53   +0 53   +1 53  nan 53   -0 Z N
+53  nan 53  nan    53   -1 53   -0 53  nan 53  nan U Z
+
+53   +0 53   +0    53   -0 53   +0 53   +0 53   -0 U Z
+53  nan 53  nan    53   +0 53   -0 53  nan 53 -inf D U
+53  nan 53  nan    53   +0 53   +0 53   -1 53  nan N N
+53  nan 53  nan    53   -0 53   -0 53  nan 53   -0 Z Z
+53  nan 53  nan    53   -0 53   +0 53  nan 53  nan U U
+
+53 +inf 53  nan    53  nan 53 -inf 53  nan 53 +inf U U
+53 -inf 53  nan    53 +inf 53  nan 53   -1 53  nan D D
+53  nan 53  nan    53  nan 53 -inf 53  nan 53   -0 N Z
+53  nan 53  nan    53 -inf 53  nan 53  nan 53  nan Z U
+
+53  nan 53  nan    53   +1 53  nan 53  nan 53   -1 Z U
+53  nan 53  nan    53  nan 53   +1 53   -0 53  nan U D
+53  nan 53  nan    53   -1 53  nan 53  nan 53  nan D N
+
+53  nan 53  nan    53  nan 53   +0 53   +0 53  nan D N
+53  nan 53  nan    53   +0 53  nan 53  nan 53  nan N U
+
+53  nan 53  nan    53  nan 53  nan 53  nan 53  nan N U
+
+# pure real arguments
+53  0x10000000000001p-52 53 -0    53 +1 53 -0 53 0x10000000000001p-52 53 -0 N N
+53  0x10000000000001p-52 53 -0    53 +1 53 -0 53 0x10000000000001p-52 53 -0 Z Z
+53  0x10000000000001p-52 53 -0    53 +1 53 -0 53 0x10000000000001p-52 53 -0 U U
+53 -0x10000000000001p-52 53 -0    53 -1 53 -0 53 0x10000000000001p-52 53 -0 D D
+
+# one pure real argument
+53  0x10000000000001p-52 53  0x10000000000001p-52   53 +1 53 +1 53 0x10000000000001p-52 53 -0 N N
+53  0x10000000000001p-52 53 -0x20000000000002p-52   53 +1 53 -2 53 0x10000000000001p-52 53 -0 Z Z
+53  0x10000000000001p-52 53  0x30000000000003p-52   53 +1 53 +3 53 0x10000000000001p-52 53 +0 U U
+53 -0x10000000000001p-52 53 -0x40000000000004p-52   53 -1 53 -4 53 0x10000000000001p-52 53 +0 D D
+53                    +0 53                    +0   53 +0 53 +0 53 0x10000000000001p-52 53 -1 N N
+53                    +0 53                    -0   53 +0 53 -0 53 0x10000000000001p-52 53 -2 Z Z
+53                    +0 53                    +0   53 +0 53 +0 53 0x10000000000001p-52 53 +3 U U
+53                    -0 53                    -0   53 -0 53 -0 53 0x10000000000001p-52 53 +4 D D
+
+# pure imaginary arguments
+53 -0x10000000000001p-52 53 -0     53 -0 53 0x10000000000001p-52 53 -0 53 +1 N N
+53 -0x10000000000001p-52 53 +0     53 +0 53 0x10000000000001p-52 53 -0 53 +1 Z Z
+53 -0x10000000000001p-52 53 +0     53 +0 53 0x10000000000001p-52 53 -0 53 +1 U U
+53 -0x10000000000001p-52 53 -0     53 -0 53 0x10000000000001p-52 53 -0 53 +1 D D
+
+# one pure imaginary argument
+53 -0x10000000000001p-52 53 -0x10000000000001p-52   53 -0 53 0x10000000000001p-52 53 -1 53 +1 N N
+53 +0x10000000000001p-52 53 -0x20000000000002p-52   53 +0 53 0x10000000000001p-52 53 -2 53 -1 Z Z
+53 -0x10000000000001p-52 53 -0x30000000000002p-52   53 +0 53 0x10000000000001p-52 53 -3 53 +1 U U
+53 +0x10000000000001p-52 53 -0x40000000000004p-52   53 -0 53 0x10000000000001p-52 53 -4 53 -1 D D

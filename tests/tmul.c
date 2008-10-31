@@ -223,7 +223,8 @@ timemul (void)
 int
 main (void)
 {
-  DECL_CCC_FUNC (f, mpc_mul);
+  DECL_FUNC (CCC, f, mpc_mul);
+  f.properties = FUNC_PROP_SYMETRIC;
 
   test_start ();
 
@@ -233,6 +234,8 @@ main (void)
 
   check_special ();
   check_regular ();
+
+  data_check (f, "mul.dat");
   tgeneric (f, 2, 1024, 7, 0);
 
   test_end ();
