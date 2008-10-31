@@ -30,14 +30,18 @@ mpc_mul_fr (mpc_ptr a, mpc_srcptr b, mpfr_srcptr c, mpc_rnd_t rnd)
   int inex_re, inex_im;
   mpfr_t real;
 
-  /* We have to use temporary variable in case c=MPC_RE (a). */
-  mpfr_init2 (real, MPFR_PREC (MPC_RE (a)));
+  if (c == MPC_RE (a))
+    /* We have to use temporary variable. */
+    mpfr_init2 (real, MPFR_PREC (MPC_RE (a)));
+  else
+    real [0] = MPC_RE (a) [0];
 
   inex_re = mpfr_mul (real, MPC_RE(b), c, MPC_RND_RE(rnd));
   inex_im = mpfr_mul (MPC_IM(a), MPC_IM(b), c, MPC_RND_IM(rnd));
   mpfr_set (MPC_RE (a), real, GMP_RNDN); /* exact */
 
-  mpfr_clear (real);
+  if (c == MPC_RE (a))
+    mpfr_clear (real);
 
   return MPC_INEX(inex_re, inex_im);
 }
