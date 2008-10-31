@@ -524,6 +524,29 @@ data_check (mpc_function function, const char *file_name)
               
               exit (1);
             }
+          if (function.properties & FUNC_PROP_SYMETRIC)
+            {
+              function.pointer.CCC (z4, z3, z2, rnd);
+              if (!same_mpc_value (z4, z1, signs))
+                {
+                  /* display sensible variable names */
+                  mpc_t op1, op2, got, expected;
+                  op1[0] = z3[0];
+                  op2[0] = z2[0];
+                  expected[0]= z1[0];
+                  got[0] = z4[0];
+                  printf ("%s(op) failed (line %lu/symetric test)\n"
+                          "with rounding mode %s\n",
+                          function.name, line_number, rnd_mode[rnd]);
+                  OUT (op1);
+                  OUT (op2);
+                  printf ("     ");
+                  OUT (got);
+                  OUT (expected);
+              
+                  exit (1);
+                }
+            }
           break;
 
         case CFC:

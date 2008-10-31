@@ -56,7 +56,8 @@ check_ternary_value (void)
 int
 main (void)
 {
-  DECL_CCC_FUNC (f, mpc_add);
+  DECL_FUNC (CCC, f, mpc_add);
+  f.properties = FUNC_PROP_SYMETRIC;
 
   test_start ();
 

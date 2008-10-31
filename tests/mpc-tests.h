@@ -117,72 +117,100 @@ typedef enum
     CUUC  /* output: mpc_t, inputs: (ulong, ulong, mpc_t) */
   } func_type;
 
+/* properties */
+#define FUNC_PROP_NONE     0
+#define FUNC_PROP_SYMETRIC 1
+
 typedef struct
 {
   func_ptr  pointer;
   func_type type;
   char *    name;
+  int       properties;
 } mpc_function;
+
+#define DECL_FUNC(_ftype, _fvar, _func)         \
+  mpc_function _fvar;                           \
+  _fvar.pointer._ftype = _func;                 \
+  _fvar.type = _ftype;                          \
+  _fvar.name = QUOTE (_func);                   \
+  _fvar.properties = FUNC_PROP_NONE;
 
 #define DECL_CC_FUNC(fvar, func)                \
   mpc_function (fvar);                          \
   (fvar).pointer.CC = (func);                   \
   (fvar).type = CC;                             \
-  (fvar).name = QUOTE (func);
+  (fvar).name = QUOTE (func);                   \
+  (fvar).properties = 0;
 
 #define DECL_V_CC_FUNC(fvar, func)              \
   mpc_function (fvar);                          \
   (fvar).pointer.V_CC = (func);                 \
   (fvar).type = V_CC;                           \
-  (fvar).name = QUOTE (func);
+  (fvar).name = QUOTE (func);                   \
+  (fvar).properties = 0;
 
 #define DECL_FC_FUNC(fvar, func)                \
   mpc_function (fvar);                          \
   (fvar).pointer.FC = (func);                   \
   (fvar).type = FC;                             \
-  (fvar).name = QUOTE (func);
+  (fvar).name = QUOTE (func);                   \
+  (fvar).properties = 0;
 
 #define DECL_CFC_FUNC(fvar, func)               \
   mpc_function (fvar);                          \
   (fvar).pointer.CFC = (func);                  \
   (fvar).type = CFC;                            \
-  (fvar).name = QUOTE (func);
+  (fvar).name = QUOTE (func);                   \
+  (fvar).properties = 0;
 
 #define DECL_CCF_FUNC(fvar, func)               \
   mpc_function (fvar);                          \
   (fvar).pointer.CCF = (func);                  \
   (fvar).type = CCF;                            \
-  (fvar).name = QUOTE (func);
+  (fvar).name = QUOTE (func);                   \
+  (fvar).properties = 0;
+
 
 #define DECL_CCC_FUNC(fvar, func)               \
   mpc_function (fvar);                          \
   (fvar).pointer.CCC = (func);                  \
   (fvar).type = CCC;                            \
-  (fvar).name = QUOTE (func);
+  (fvar).name = QUOTE (func);                   \
+  (fvar).properties = 0;
+
 
 #define DECL_CCU_FUNC(fvar, func)               \
   mpc_function (fvar);                          \
   (fvar).pointer.CCU = (func);                  \
   (fvar).type = CCU;                            \
-  (fvar).name = QUOTE (func);
+  (fvar).name = QUOTE (func);                   \
+  (fvar).properties = 0;
+
 
 #define DECL_CUC_FUNC(fvar, func)               \
   mpc_function (fvar);                          \
   (fvar).pointer.CUC = (func);                  \
   (fvar).type = CUC;                            \
-  (fvar).name = QUOTE (func);
+  (fvar).name = QUOTE (func);                   \
+  (fvar).properties = 0;
+
 
 #define DECL_CCS_FUNC(fvar, func)               \
   mpc_function (fvar);                          \
   (fvar).pointer.CCS = (func);                  \
   (fvar).type = CCS;                            \
-  (fvar).name = QUOTE (func);
+  (fvar).name = QUOTE (func);                   \
+  (fvar).properties = 0;
+
 
 #define DECL_CUUC_FUNC(fvar, func)              \
   mpc_function (fvar);                          \
   (fvar).pointer.CUUC = (func);                 \
   (fvar).type = CUUC;                           \
-  (fvar).name = QUOTE (func);
+  (fvar).name = QUOTE (func);                   \
+  (fvar).properties = 0;
+
 
 /* tgeneric(mpc_function, prec_min, prec_max, step, exp_max) checks rounding
  with random numbers:
