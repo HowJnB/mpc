@@ -2,7 +2,7 @@
 # Test coverage using gcov & lcov
 # download lcov  in http://ltp.sourceforge.net/coverage/lcov.php
 #
-# An adaptation of Patrick Pellissier's script in MPFR
+# An adaptation of Patrick Pelissier's script in MPFR
 # additional parameters to mpc configure are passed on the command line
 #
 # Copyright (C) 2008 Philippe Th\'eveny, Andreas Enge
