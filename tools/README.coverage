@@ -4,6 +4,6 @@ You will need gcov and lcov (http://ltp.sourceforge.net/coverage/lcov.php).
 
 Usage:
 cd path_to_mpc_sources/tools
-./coverage
+./coverage additional_parameters_to_configure
 
 After execution, the html pages lie in the directory /tmp/ompc-gcov/html.
