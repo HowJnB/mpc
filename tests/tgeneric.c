@@ -363,6 +363,41 @@ tgeneric_ccs (mpc_function *function, mpc_ptr op1, long int op2,
   exit (1);
 }
 
+
+static void
+tgeneric_cci (mpc_function *function, mpc_ptr op1, int op2,
+              mpc_ptr rop, mpc_ptr rop4, mpc_ptr rop4rnd, mpfr_rnd_t rnd)
+{
+  known_signs_t ks = {1, 1};
+
+  function->pointer.CCI (rop4, op1, op2, rnd);
+  function->pointer.CCI (rop, op1, op2, rnd);
+  if (MPFR_CAN_ROUND (MPC_RE (rop4), 1,  MPFR_PREC (MPC_RE (rop)),
+                      MPC_RND_RE (rnd))
+      && MPFR_CAN_ROUND (MPC_IM (rop4), 1,  MPFR_PREC (MPC_IM (rop)),
+                         MPC_RND_IM (rnd)))
+    mpc_set (rop4rnd, rop4, rnd);
+  else
+    return;
+
+  if (same_mpc_value (rop, rop4rnd, ks))
+    return;
+
+  printf ("Rounding in %s might be incorrect for\n", function->name);
+  OUT (op1);
+  printf ("op2=%d\n", op2);
+  printf ("with rounding mode %s", mpfr_print_rnd_mode (rnd));
+
+  printf ("\n%s                     gives ", function->name);
+  OUT (rop);
+  printf ("%s quadruple precision gives ", function->name);
+  OUT (rop4);
+  printf ("and is rounded to                  ");
+  OUT (rop4rnd);
+
+  exit (1);
+}
+
 static void
 tgeneric_cuuc (mpc_function *function, unsigned long int op1,
                unsigned long int op2, mpc_ptr op3, mpc_ptr rop,
@@ -612,6 +647,27 @@ reuse_ccs (mpc_function* function, mpc_srcptr z, long lo,
 }
 
 static void
+reuse_cci (mpc_function* function, mpc_srcptr z, int i,
+           mpc_ptr got, mpc_ptr expected)
+{
+  known_signs_t ks = {1, 1};
+
+  mpc_set (got, z, MPC_RNDNN); /* exact */
+  function->pointer.CCI (expected, z, i, MPC_RNDNN);
+  function->pointer.CCI (got, got, i, MPC_RNDNN);
+  if (!same_mpc_value (got, expected, ks))
+    {
+      printf ("Error for %s(z, z, n) for\n", function->name);
+      OUT (z);
+      printf ("n=%d\n", i);
+      OUT (expected);
+      OUT (got);
+
+      exit (1);
+    }
+}
+
+static void
 reuse_cuuc (mpc_function* function, unsigned long ul1, unsigned long ul2, 
             mpc_srcptr z, mpc_ptr got, mpc_ptr expected)
 {
@@ -649,6 +705,7 @@ tgeneric (mpc_function function, mpfr_prec_t prec_min,
 {
   unsigned long ul1 = 0, ul2 = 0;
   long lo = 0;
+  int i = 0;
   mpfr_t x1, x2, xxxx;
   mpc_t  z1, z2, z3, z4, zzzz;
   mpc_rnd_t rnd_re;
@@ -673,9 +730,10 @@ tgeneric (mpc_function function, mpfr_prec_t prec_min,
       break;
     case CCF: case CFC:
       mpfr_init2 (x1, prec_max);
-    case CCS: case CUUC:
+    case CUUC:
+    case CCI: case CCS:
     case CCU: case CUC:
-    case CC: case V_CC:
+    case CC:  case V_CC:
     default:
       mpc_init2 (z2, prec_max);
       mpc_init2 (z3, prec_max);
@@ -741,6 +799,16 @@ tgeneric (mpc_function function, mpfr_prec_t prec_min,
             test_default_random (z2, 0, 64, 128, 25);
           } while (!mpfr_fits_slong_p (MPC_RE (z2), GMP_RNDN));
           lo = mpfr_get_si (MPC_RE(z2), GMP_RNDN);
+          mpc_set_prec (z2, prec);
+          mpc_set_prec (z3, prec);
+          mpc_set_prec (zzzz, 4*prec);
+          break;
+        case CCI:
+          mpc_set_prec (z2, 128);
+          do {
+            test_default_random (z2, 0, 64, 128, 25);
+          } while (!mpfr_fits_slong_p (MPC_RE (z2), GMP_RNDN));
+          i = (int)mpfr_get_si (MPC_RE(z2), GMP_RNDN);
           mpc_set_prec (z2, prec);
           mpc_set_prec (z3, prec);
           mpc_set_prec (zzzz, 4*prec);
@@ -811,6 +879,12 @@ tgeneric (mpc_function function, mpfr_prec_t prec_min,
                             RNDC (rnd_re, rnd_im));
             reuse_ccs (&function, z1, lo, z2, z3);
             break;
+          case CCI:
+            for (rnd_im = 0; rnd_im < 4; rnd_im ++)
+              tgeneric_cci (&function, z1, i, z2, zzzz, z3,
+                            RNDC (rnd_re, rnd_im));
+            reuse_cci (&function, z1, i, z2, z3);
+            break;
           case CUUC:
             for (rnd_im = 0; rnd_im < 4; rnd_im ++)
               tgeneric_cuuc (&function, ul1, ul2, z1, z2, zzzz, z3,
@@ -841,9 +915,10 @@ tgeneric (mpc_function function, mpfr_prec_t prec_min,
       break;
     case CCF: case CFC:
       mpfr_clear (x1);
-    case CCS: case CUUC:
+    case CUUC:
+    case CCI: case CCS:
     case CCU: case CUC:
-    case CC: case V_CC:
+    case CC:  case V_CC:
     default:
       mpc_clear (z2);
       mpc_clear (z3);

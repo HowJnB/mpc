@@ -74,6 +74,7 @@ typedef int (*CC_func_ptr) (mpc_t, mpc_srcptr, mpc_rnd_t);
 typedef int (*CCC_func_ptr) (mpc_t, mpc_srcptr, mpc_srcptr, mpc_rnd_t);
 typedef int (*CCU_func_ptr) (mpc_t, mpc_srcptr, unsigned long, mpc_rnd_t);
 typedef int (*CCS_func_ptr) (mpc_t, mpc_srcptr, long, mpc_rnd_t);
+typedef int (*CCI_func_ptr) (mpc_t, mpc_srcptr, int, mpc_rnd_t);
 typedef int (*CCF_func_ptr) (mpc_t, mpc_srcptr, mpfr_srcptr, mpc_rnd_t);
 typedef int (*CFC_func_ptr) (mpc_t, mpfr_srcptr, mpc_srcptr, mpc_rnd_t);
 typedef int (*CUC_func_ptr) (mpc_t, unsigned long, mpc_srcptr, mpc_rnd_t);
@@ -93,6 +94,7 @@ typedef union
   CCC_func_ptr CCC; /* output: mpc_t, inputs: (mpc_t, mpc_t) */
   CCU_func_ptr CCU; /* output: mpc_t, inputs: (mpc_t, unsigned long) */
   CCS_func_ptr CCS; /* output: mpc_t, inputs: (mpc_t, long) */
+  CCI_func_ptr CCI; /* output: mpc_t, inputs: (mpc_t, int) */
   CCF_func_ptr CCF; /* output: mpc_t, inputs: (mpc_t, mpfr_t) */
   CFC_func_ptr CFC; /* output: mpc_t, inputs: (mpfr_t, mpc_t) */
   CUC_func_ptr CUC; /* output: mpc_t, inputs: (unsigned long, mpc_t) */
@@ -110,6 +112,7 @@ typedef enum
     CCC,  /* output: mpc_t, inputs: (mpc_t, mpc_t) */
     CCU,  /* output: mpc_t, inputs: (mpc_t, unsigned long) */
     CCS,  /* output: mpc_t, inputs: (mpc_t, long) */
+    CCI,  /* output: mpc_t, inputs: (mpc_t, int) */
     CCF,  /* output: mpc_t, inputs: (mpc_t, mpfr_t) */
     CFC,  /* output: mpc_t, inputs: (mpfr_t, mpc_t) */
     CUC,  /* output: mpc_t, inputs: (unsigned long, mpc_t) */
