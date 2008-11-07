@@ -1,5 +1,5 @@
-The script "coverage" compute the test suite coverage of MPC in terms of line
-of code and summarize it into web pages.
+The script "coverage" computes the test suite coverage of MPC
+in terms of lines of code and summarises it on web pages.
 You will need gcov and lcov (http://ltp.sourceforge.net/coverage/lcov.php).
 
 Usage:
@@ -7,3 +7,9 @@ cd path_to_mpc_sources/tools
 ./coverage additional_parameters_to_configure
 
 After execution, the html pages lie in the directory /tmp/ompc-gcov/html.
+
+Colour thresholds can be tuned in a configuration file $HOME/.lcovrc,
+containing, for instance:
+genhtml_hi_limit = 100
+genhtml_med_limit = 95
+genhtml_legend = yes
