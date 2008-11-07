@@ -45,7 +45,8 @@ tgeneric_cc (mpc_function *function, mpc_ptr op, mpc_ptr rop,
   function->pointer.CC (rop4, op, rnd);
   function->pointer.CC (rop, op, rnd);
 
-  /* can't use mpfr_can_round when argument is singular */
+  /* can't use the mpfr_can_round function when argument is singular,
+     use a custom macro instead. */
   if (MPFR_CAN_ROUND (MPC_RE (rop4), 1, MPFR_PREC (MPC_RE (rop)),
                       MPC_RND_RE (rnd))
       && MPFR_CAN_ROUND (MPC_IM (rop4), 1, MPFR_PREC (MPC_IM (rop)),
@@ -695,13 +696,13 @@ tgeneric (mpc_function function, mpfr_prec_t prec_min,
   for (prec = prec_min; prec <= prec_max; prec+=step)
     {
       mpc_set_prec (z1, prec);
-      test_default_random (z1, exp_min, exp_max, 1);
-
+      test_default_random (z1, exp_min, exp_max, 128, 25);
+ 
       switch (function.type)
         {
         case CCC:
           mpc_set_prec (z2, prec);
-          test_default_random (z2, exp_min, exp_max, 1);
+          test_default_random (z2, exp_min, exp_max, 128, 25);
           mpc_set_prec (z3, prec);
           mpc_set_prec (z4, prec);
           mpc_set_prec (zzzz, 4*prec);
@@ -715,7 +716,7 @@ tgeneric (mpc_function function, mpfr_prec_t prec_min,
         case CCU: case CUC:
           mpc_set_prec (z2, 128);
           do {
-            test_default_random (z2, 0, 64, 1);
+            test_default_random (z2, 0, 64, 128, 25);
           } while (!mpfr_fits_ulong_p (MPC_RE (z2), GMP_RNDN));
           ul1 = mpfr_get_ui (MPC_RE(z2), GMP_RNDN);
           mpc_set_prec (z2, prec);
@@ -725,7 +726,7 @@ tgeneric (mpc_function function, mpfr_prec_t prec_min,
         case CUUC:
           mpc_set_prec (z2, 128);
           do {
-            test_default_random (z2, 0, 64, 1);
+            test_default_random (z2, 0, 64, 128, 25);
           } while (!mpfr_fits_ulong_p (MPC_RE (z2), GMP_RNDN)
                    ||!mpfr_fits_ulong_p (MPC_IM (z2), GMP_RNDN));
           ul1 = mpfr_get_ui (MPC_RE(z2), GMP_RNDN);
@@ -737,7 +738,7 @@ tgeneric (mpc_function function, mpfr_prec_t prec_min,
         case CCS:
           mpc_set_prec (z2, 128);
           do {
-            test_default_random (z2, 0, 64, 1);
+            test_default_random (z2, 0, 64, 128, 25);
           } while (!mpfr_fits_slong_p (MPC_RE (z2), GMP_RNDN));
           lo = mpfr_get_si (MPC_RE(z2), GMP_RNDN);
           mpc_set_prec (z2, prec);
@@ -747,7 +748,7 @@ tgeneric (mpc_function function, mpfr_prec_t prec_min,
         case CCF: case CFC:
           mpfr_set_prec (x1, prec);
           mpfr_set (x1, MPC_RE (z1), GMP_RNDN);
-          test_default_random (z1, exp_min, exp_max, 1);
+          test_default_random (z1, exp_min, exp_max, 128, 25);
         case CC: case V_CC:
         default:
           mpc_set_prec (z2, prec);

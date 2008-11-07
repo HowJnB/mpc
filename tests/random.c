@@ -105,14 +105,18 @@ test_end (void)
 /* Set z to a non zero value random value with absolute values of Re(z) and
    Im(z) either zero (but not both in the same time) or otherwise greater than
    or equal to 2^{emin-1} and less than 2^emax.
-   If NEG_NUMBERS_P is zero then real and imaginary parts are positive, else
-   they are negative half of the time. */
+   Each part is negative with probability equal to NEGATIVE_PROBABILITY / 256.
+   The result has one zero part (but never the two of them) with probability
+   equal to ZERO_PROBABILITY / 256.
+*/
 void
-test_default_random (mpc_ptr z, mp_exp_t emin, mp_exp_t emax,\
-                     int neg_numbers_p)
+test_default_random (mpc_ptr z, mp_exp_t emin, mp_exp_t emax,
+                     unsigned int negative_probability,
+                     unsigned int zero_probability)
 {
   const unsigned long range = (long)emax - (long)emin + 1;
-  
+  unsigned long r;
+
   if (!rands_initialized)
     {
       fprintf (stderr,
@@ -123,8 +127,28 @@ test_default_random (mpc_ptr z, mp_exp_t emin, mp_exp_t emax,\
   do
     {
       mpc_urandom (z, rands);
-    } while (mpfr_zero_p (MPC_RE (z)) && mpfr_zero_p (MPC_IM (z)));
+    } while (mpfr_zero_p (MPC_RE (z)) || mpfr_zero_p (MPC_IM (z)));
     
+  if (zero_probability > 256)
+    zero_probability = 256;
+  r = gmp_urandomb_ui (rands, 19);
+  if ((r & 0x1FF) < zero_probability
+      || ((r >> 9) & 0x1FF) < zero_probability)
+    {
+      int zero_re_p = (r & 0x1FF) < zero_probability;
+      int zero_im_p = ((r >> 9) & 0x1FF) < zero_probability;
+
+      if (zero_re_p && zero_im_p)
+        {
+          /* we just want one zero part. */
+          zero_re_p = (r >> 18) & 1;
+          zero_im_p = !zero_re_p;
+        }
+      if (zero_re_p)
+        mpfr_set_ui (MPC_RE (z), 0, GMP_RNDN);
+      if (zero_im_p)
+        mpfr_set_ui (MPC_IM (z), 0, GMP_RNDN);
+    }
   if (!mpfr_zero_p (MPC_RE (z)))
     mpfr_set_exp (MPC_RE (z),
                   (mp_exp_t) gmp_urandomm_ui (rands, range) + emin);
@@ -133,12 +157,11 @@ test_default_random (mpc_ptr z, mp_exp_t emin, mp_exp_t emax,\
     mpfr_set_exp (MPC_IM (z),
                   (mp_exp_t) gmp_urandomm_ui (rands, range) + emin);
 
-  if (neg_numbers_p)
-    {
-      unsigned long r = gmp_urandomb_ui (rands, 2);
-      if (r & 1)
-        mpfr_neg (MPC_RE (z), MPC_RE (z), GMP_RNDN);
-      if (r & 2)
-        mpfr_neg (MPC_IM (z), MPC_IM (z), GMP_RNDN);
-    }
+  if (negative_probability > 256)
+    negative_probability = 256;
+  r = gmp_urandomb_ui (rands, 16);
+  if ((r & 0xFF) < negative_probability)
+    mpfr_neg (MPC_RE (z), MPC_RE (z), GMP_RNDN);
+  if (((r>>8) & 0xFF) < negative_probability)
+    mpfr_neg (MPC_IM (z), MPC_IM (z), GMP_RNDN);
 }

@@ -125,8 +125,8 @@ check_regular (void)
       mpc_set_prec (x, prec);
       mpc_set_prec (y, prec);
 
-      test_default_random (x, -1024, 1024, 1);
-      test_default_random (y, -1024, 1024, 1);
+      test_default_random (x, -1024, 1024, 128, 25);
+      test_default_random (y, -1024, 1024, 128, 25);
 
       for (rnd_re = 0; rnd_re < 4; rnd_re ++)
         for (rnd_im = 0; rnd_im < 4; rnd_im ++)
@@ -195,8 +195,8 @@ timemul (void)
       mpc_set_prec (x, i * BITS_PER_MP_LIMB);
       mpc_set_prec (y, i * BITS_PER_MP_LIMB);
       mpc_set_prec (z, i * BITS_PER_MP_LIMB);
-      test_default_random (x, -1, 1, 1);
-      test_default_random (y, -1, 1, 1);
+      test_default_random (x, -1, 1, 128, 25);
+      test_default_random (y, -1, 1, 128, 25);
 
       times (&time_old);
       for (j = 0; j < tests; j++)

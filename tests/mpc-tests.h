@@ -44,7 +44,7 @@ char             rands_initialized;
 void test_start (void);
 void test_end (void);
 
-void test_default_random (mpc_ptr, mp_exp_t, mp_exp_t, int);
+void test_default_random (mpc_ptr, mp_exp_t, mp_exp_t, unsigned int, unsigned int);
 
 
 /** COMPARISON FUNCTIONS **/

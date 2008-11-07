@@ -45,11 +45,7 @@ check_exp_log (void)
 
       /* Test whether exp (log (z)) = z, where z is no pure real
          and no pure imaginary. */
-      test_default_random (z, 0, 10, 1);
-      if (mpfr_zero_p (MPC_RE (z)))
-        mpfr_set (MPC_RE (z), MPC_IM (z), GMP_RNDN);
-      else if  (mpfr_zero_p (MPC_IM (z)))
-        mpfr_set (MPC_IM (z), MPC_RE (z), GMP_RNDN);
+      test_default_random (z, 0, 10, 128, 0);
 
       mpc_log (tmp, z, MPC_RNDNN);
       mpc_exp (z2, tmp, MPC_RNDNN);
