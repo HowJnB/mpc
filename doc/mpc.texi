@@ -109,26 +109,27 @@ Complex Library, version @value{VERSION}
 * MPC Basics::                  What every MPC user should know.
 * Complex Functions::           Functions for arithmetic on complex numbers.
 
-* Contributors::
-* References::
-* Concept Index::
-* Function Index::
+* Contributors::                
+* References::                  
+* Concept Index::               
+* Function Index::              
 
 @detailmenu
  --- The Detailed Node Listing ---
 
 Complex Functions
 
-* Initializing Complex Numbers::
-* Assigning Complex Numbers::
-* Simultaneous Init & Assign::
-* Complex Comparison::
-* Basic Arithmetic::
-* Power Functions and Logarithm::
-* Trigonometric Functions::
-* I/O of Complex Numbers::
-* Miscellaneous Complex Functions::
-* Internals::
+* Initializing Complex Numbers::  
+* Assigning Complex Numbers::   
+* Simultaneous Init & Assign::  
+* Complex Comparison::          
+* Decomposing::                 
+* Basic Arithmetic::            
+* Power Functions and Logarithm::  
+* Trigonometric Functions::     
+* I/O of Complex Numbers::      
+* Miscellaneous Complex Functions::  
+* Internals::                   
 
 @end detailmenu
 @end menu
@@ -465,16 +466,17 @@ different word size.
 
 
 @menu
-* Initializing Complex Numbers::
-* Assigning Complex Numbers::
-* Simultaneous Init & Assign::
-* Complex Comparison::
-* Basic Arithmetic::
-* Power Functions and Logarithm::
-* Trigonometric Functions::
-* I/O of Complex Numbers::
-* Miscellaneous Complex Functions::
-* Internals::
+* Initializing Complex Numbers::  
+* Assigning Complex Numbers::   
+* Simultaneous Init & Assign::  
+* Complex Comparison::          
+* Decomposing::                 
+* Basic Arithmetic::            
+* Power Functions and Logarithm::  
+* Trigonometric Functions::     
+* I/O of Complex Numbers::      
+* Miscellaneous Complex Functions::  
+* Internals::                   
 @end menu
 
 @node Initializing Complex Numbers, Assigning Complex Numbers, Complex Functions, Complex Functions
@@ -622,7 +624,7 @@ as set by @code{mpc_set_default_prec}.
 
 
 
-@node Complex Comparison, Basic Arithmetic, Simultaneous Init & Assign, Complex Functions
+@node Complex Comparison, Decomposing, Simultaneous Init & Assign, Complex Functions
 @comment  node-name,  next,  previous,  up
 @section Comparison Functions
 @cindex Complex comparisons functions
@@ -648,7 +650,30 @@ with @code{mpc_cmp (op1, op2) == 0}.
 @end deftypefn
 
 
-@node Basic Arithmetic, Power Functions and Logarithm, Complex Comparison, Complex Functions
+@node Decomposing, Basic Arithmetic, Complex Comparison, Complex Functions
+@comment  node-name,  next,  previous,  up
+@section Projections and Decomposing of Complex Numbers
+@cindex Projections and Decomposing of Complex Numbers
+
+@deftypefn Function int mpc_real (mpfr_t @var{rop}, mpc_t @var{op}, mpfr_rnd_t @var{rnd})
+Set @var{rop} to the value of the real part of @var{op} rounded
+in the direction @var{rnd}.
+@end deftypefn
+
+@deftypefn Function int mpc_imag (mpfr_t @var{rop}, mpc_t @var{op}, mpfr_rnd_t @var{rnd})
+Set @var{rop} to the value of the imaginary part of @var{op} rounded in the
+direction @var{rnd}.
+@end deftypefn
+
+@deftypefn Macro mpfr_t mpc_realref (mpc_t @var{op})
+@deftypefnx Macro mpfr_t mpc_realref (mpc_t @var{op})
+Return a reference to the real part and imaginary part of @var{op},
+respectively. The @code{mpfr} functions can be used on the result of these
+macros.
+@end deftypefn
+
+
+@node Basic Arithmetic, Power Functions and Logarithm, Decomposing, Complex Functions
 @comment  node-name,  next,  previous,  up
 @section Basic Arithmetic Functions
 @cindex Complex arithmetic functions

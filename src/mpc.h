@@ -150,6 +150,8 @@ __MPC_DECLSPEC int  mpc_set_fr __MPC_PROTO ((mpc_ptr, mpfr_srcptr, mpc_rnd_t));
 __MPC_DECLSPEC int  mpc_set_ui_fr __MPC_PROTO ((mpc_ptr, unsigned long int, mpfr_srcptr, mpc_rnd_t));
 __MPC_DECLSPEC int  mpc_set_ui_ui __MPC_PROTO ((mpc_ptr, unsigned long int, unsigned long int, mpc_rnd_t));
 __MPC_DECLSPEC int  mpc_set_si_si __MPC_PROTO ((mpc_ptr, long int, long int, mpc_rnd_t));
+__MPC_DECLSPEC int  mpc_real __MPC_PROTO ((mpfr_ptr, mpc_srcptr, mpfr_rnd_t));
+__MPC_DECLSPEC int  mpc_imag __MPC_PROTO ((mpfr_ptr, mpc_srcptr, mpfr_rnd_t));
 __MPC_DECLSPEC int  mpc_cmp __MPC_PROTO ((mpc_srcptr, mpc_srcptr));
 __MPC_DECLSPEC int  mpc_cmp_si_si __MPC_PROTO ((mpc_srcptr, long int, long int));
 __MPC_DECLSPEC void mpc_exp __MPC_PROTO ((mpc_ptr, mpc_srcptr, mpc_rnd_t));
@@ -182,6 +184,8 @@ __MPC_DECLSPEC size_t mpc_out_str __MPC_PROTO ((FILE *, int, size_t, mpc_srcptr,
 }
 #endif
 
+#define mpc_realref(x) (&((x)->re))
+#define mpc_imagref(x) (&((x)->im))
 #define mpc_set_d(x, y, rnd) mpc_set_d_d(x, y, 0.0, rnd)
 #define mpc_set_ui(x, y, rnd) mpc_set_ui_ui(x, y, 0ul, rnd)
 #define mpc_set_si(x, y, rnd) mpc_set_si_si(x, y, 0l, rnd)
