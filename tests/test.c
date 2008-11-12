@@ -181,6 +181,9 @@ main (void)
       PRINT ("Testing mpc_set_ui\n");
       mpc_set_ui (z, 17, MPC_RNDNN);
 
+      PRINT ("Testing mpc_set_fr_fr\n");
+      mpc_set_fr_fr (z, f, f, MPC_RNDNN);
+
       PRINT ("Testing mpc_set_ui_fr\n");
       mpc_set_ui_fr (z, 17, f, MPC_RNDNN);
 

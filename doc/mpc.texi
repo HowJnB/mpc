@@ -594,6 +594,7 @@ to a complex number.
 @deftypefun int mpc_set_d_d (mpc_t @var{rop}, double @var{op1}, double @var{op2}, mpc_rnd_t @var{rnd})
 @deftypefunx int mpc_set_ui_ui (mpc_t @var{rop}, unsigned long int @var{op1}, unsigned long int @var{op2}, mpc_rnd_t @var{rnd})
 @deftypefunx int mpc_set_si_si (mpc_t @var{rop}, long int @var{op1}, long int @var{op2}, mpc_rnd_t @var{rnd})
+@deftypefunx int mpc_set_fr_fr (mpc_t @var{rop}, mpfr_t @var{op1}, mpfr_t @var{op2}, mpc_rnd_t @var{rnd})
 @deftypefunx int mpc_set_ui_fr (mpc_t @var{rop}, unsigned long int @var{op1}, mpfr_t @var{op2}, mpc_rnd_t @var{rnd})
 Set the real part of @var{rop} from @var{op1}, and its imaginary part from
 @var{op2}, according to the rounding mode @var{rnd}.
