@@ -35,20 +35,18 @@ main (void)
 {
   mpc_t x, z;
   mp_prec_t prec, pr, pi;
-  mpfr_t f, g;
+  mpfr_t f;
   FILE *file;
   const char *filename = "mpc_test";
 
-  mpc_init (x);
+  mpc_init2 (x, 1000);
   mpc_init3 (z, 2, 2);
-  mpfr_init (f);
-  mpfr_init (g);
+  mpfr_init2 (f, 1000);
 
   for (prec = 2; prec <= 1000; prec++)
     {
       mpc_set_prec (x, prec);
       mpfr_set_prec (f, prec);
-      mpfr_set_prec (g, prec);
 
       PRINT ("Testing mpc_get_prec and mpc_get_prec2\n");
       mpfr_set_prec (MPC_RE (z), prec);
@@ -194,7 +192,6 @@ main (void)
   mpc_clear (x);
   mpc_clear (z);
   mpfr_clear (f);
-  mpfr_clear (g);
 
   return 0;
 }
