@@ -672,6 +672,14 @@ respectively. The @code{mpfr} functions can be used on the result of these
 macros.
 @end deftypefn
 
+@deftypefn Function int mpc_proj(mpc_t @var{rop}, mpc_t @var{op}, mpc_rnd_t @var{rnd})
+Compute a projection of @var{op} onto the Riemann sphere. Set @var{rop} to
+@var{op} rounded in the direction @var{rnd}, except when at least one part of
+@var{op} is infinite (even if the other part is a NaN) in which case the real
+part of @var{rop} is set to plus infinity and its imaginary part to a signed
+zero with the same sign as the imaginary part of @var{op}.
+@end deftypefn
+
 
 @node Basic Arithmetic, Power Functions and Logarithm, Projection & Decomposing, Complex Functions
 @comment  node-name,  next,  previous,  up
