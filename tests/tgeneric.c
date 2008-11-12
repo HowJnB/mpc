@@ -668,7 +668,7 @@ reuse_cci (mpc_function* function, mpc_srcptr z, int i,
 }
 
 static void
-reuse_cuuc (mpc_function* function, unsigned long ul1, unsigned long ul2, 
+reuse_cuuc (mpc_function* function, unsigned long ul1, unsigned long ul2,
             mpc_srcptr z, mpc_ptr got, mpc_ptr expected)
 {
   known_signs_t ks = {1, 1};
@@ -691,14 +691,14 @@ reuse_cuuc (mpc_function* function, unsigned long ul1, unsigned long ul2,
 
 
 /* tgeneric(prec_min, prec_max, step, exp_max) checks rounding with random
- numbers:
- - with precision ranging from prec_min to prec_max with an increment of
+   numbers:
+   - with precision ranging from prec_min to prec_max with an increment of
    step,
- - with exponent between -prec_max and prec_max.
+   - with exponent between -prec_max and prec_max.
 
- It also checks parameter reuse (it is assumed here that either two mpc_t
- variables are equal or they are different, in the sense that the real part of
- one of them cannot be the imaginary part of the other). */
+   It also checks parameter reuse (it is assumed here that either two mpc_t
+   variables are equal or they are different, in the sense that the real part
+   of one of them cannot be the imaginary part of the other). */
 void
 tgeneric (mpc_function function, mpfr_prec_t prec_min,
           mpfr_prec_t prec_max, mpfr_prec_t step, mp_exp_t exp_max)
@@ -755,7 +755,7 @@ tgeneric (mpc_function function, mpfr_prec_t prec_min,
     {
       mpc_set_prec (z1, prec);
       test_default_random (z1, exp_min, exp_max, 128, 25);
- 
+
       switch (function.type)
         {
         case CCC:
@@ -888,7 +888,7 @@ tgeneric (mpc_function function, mpfr_prec_t prec_min,
           case CUUC:
             for (rnd_im = 0; rnd_im < 4; rnd_im ++)
               tgeneric_cuuc (&function, ul1, ul2, z1, z2, zzzz, z3,
-                            RNDC (rnd_re, rnd_im));
+                             RNDC (rnd_re, rnd_im));
             reuse_cuuc (&function, ul1, ul2, z1, z2, z3);
             break;
           default:
