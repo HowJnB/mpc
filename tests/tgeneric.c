@@ -151,7 +151,7 @@ tgeneric_fc (mpc_function *function, mpc_ptr op, mpfr_ptr rop,
 
 static void
 tgeneric_cfc (mpc_function *function, mpfr_ptr op1, mpc_ptr op2,
-              mpc_ptr rop, mpc_ptr rop4, mpc_ptr rop4rnd, mpfr_rnd_t rnd)
+              mpc_ptr rop, mpc_ptr rop4, mpc_ptr rop4rnd, mpc_rnd_t rnd)
 {
   known_signs_t ks = {1, 1};
 
@@ -171,7 +171,9 @@ tgeneric_cfc (mpc_function *function, mpfr_ptr op1, mpc_ptr op2,
   printf ("Rounding in %s might be incorrect for\n", function->name);
   MPFR_OUT (op1);
   OUT (op2);
-  printf ("with rounding mode %s", mpfr_print_rnd_mode (rnd));
+  printf ("with rounding mode (%s, %s)",
+          mpfr_print_rnd_mode (MPC_RND_RE (rnd)),
+          mpfr_print_rnd_mode (MPC_RND_IM (rnd)));
 
   printf ("\n%s                     gives ", function->name);
   OUT (rop);
@@ -185,7 +187,7 @@ tgeneric_cfc (mpc_function *function, mpfr_ptr op1, mpc_ptr op2,
 
 static void
 tgeneric_ccf (mpc_function *function, mpc_ptr op1, mpfr_ptr op2,
-              mpc_ptr rop, mpc_ptr rop4, mpc_ptr rop4rnd, mpfr_rnd_t rnd)
+              mpc_ptr rop, mpc_ptr rop4, mpc_ptr rop4rnd, mpc_rnd_t rnd)
 {
   known_signs_t ks = {1, 1};
 
@@ -205,7 +207,9 @@ tgeneric_ccf (mpc_function *function, mpc_ptr op1, mpfr_ptr op2,
   printf ("Rounding in %s might be incorrect for\n", function->name);
   OUT (op1);
   MPFR_OUT (op2);
-  printf ("with rounding mode %s", mpfr_print_rnd_mode (rnd));
+  printf ("with rounding mode (%s, %s)",
+          mpfr_print_rnd_mode (MPC_RND_RE (rnd)),
+          mpfr_print_rnd_mode (MPC_RND_IM (rnd)));
 
   printf ("\n%s                     gives ", function->name);
   OUT (rop);
@@ -263,7 +267,7 @@ tgeneric_ccc (mpc_function *function, mpc_ptr op1, mpc_ptr op2,
 
 static void
 tgeneric_ccu (mpc_function *function, mpc_ptr op1, unsigned long int op2,
-              mpc_ptr rop, mpc_ptr rop4, mpc_ptr rop4rnd, mpfr_rnd_t rnd)
+              mpc_ptr rop, mpc_ptr rop4, mpc_ptr rop4rnd, mpc_rnd_t rnd)
 {
   known_signs_t ks = {1, 1};
 
@@ -283,7 +287,9 @@ tgeneric_ccu (mpc_function *function, mpc_ptr op1, unsigned long int op2,
   printf ("Rounding in %s might be incorrect for\n", function->name);
   OUT (op1);
   printf ("op2=%lu\n", op2);
-  printf ("with rounding mode %s", mpfr_print_rnd_mode (rnd));
+  printf ("with rounding mode (%s, %s)",
+          mpfr_print_rnd_mode (MPC_RND_RE (rnd)),
+          mpfr_print_rnd_mode (MPC_RND_IM (rnd)));
 
   printf ("\n%s                     gives ", function->name);
   OUT (rop);
@@ -297,7 +303,7 @@ tgeneric_ccu (mpc_function *function, mpc_ptr op1, unsigned long int op2,
 
 static void
 tgeneric_cuc (mpc_function *function, unsigned long int op1, mpc_ptr op2,
-              mpc_ptr rop, mpc_ptr rop4, mpc_ptr rop4rnd, mpfr_rnd_t rnd)
+              mpc_ptr rop, mpc_ptr rop4, mpc_ptr rop4rnd, mpc_rnd_t rnd)
 {
   known_signs_t ks = {1, 1};
 
@@ -317,7 +323,9 @@ tgeneric_cuc (mpc_function *function, unsigned long int op1, mpc_ptr op2,
   printf ("Rounding in %s might be incorrect for\n", function->name);
   printf ("op1=%lu\n", op1);
   OUT (op2);
-  printf ("with rounding mode %s", mpfr_print_rnd_mode (rnd));
+  printf ("with rounding mode (%s, %s)",
+          mpfr_print_rnd_mode (MPC_RND_RE (rnd)),
+          mpfr_print_rnd_mode (MPC_RND_IM (rnd)));
 
   printf ("\n%s                     gives ", function->name);
   OUT (rop);
@@ -331,7 +339,7 @@ tgeneric_cuc (mpc_function *function, unsigned long int op1, mpc_ptr op2,
 
 static void
 tgeneric_ccs (mpc_function *function, mpc_ptr op1, long int op2,
-              mpc_ptr rop, mpc_ptr rop4, mpc_ptr rop4rnd, mpfr_rnd_t rnd)
+              mpc_ptr rop, mpc_ptr rop4, mpc_ptr rop4rnd, mpc_rnd_t rnd)
 {
   known_signs_t ks = {1, 1};
 
@@ -351,7 +359,9 @@ tgeneric_ccs (mpc_function *function, mpc_ptr op1, long int op2,
   printf ("Rounding in %s might be incorrect for\n", function->name);
   OUT (op1);
   printf ("op2=%ld\n", op2);
-  printf ("with rounding mode %s", mpfr_print_rnd_mode (rnd));
+  printf ("with rounding mode (%s, %s)",
+          mpfr_print_rnd_mode (MPC_RND_RE (rnd)),
+          mpfr_print_rnd_mode (MPC_RND_IM (rnd)));
 
   printf ("\n%s                     gives ", function->name);
   OUT (rop);
@@ -366,7 +376,7 @@ tgeneric_ccs (mpc_function *function, mpc_ptr op1, long int op2,
 
 static void
 tgeneric_cci (mpc_function *function, mpc_ptr op1, int op2,
-              mpc_ptr rop, mpc_ptr rop4, mpc_ptr rop4rnd, mpfr_rnd_t rnd)
+              mpc_ptr rop, mpc_ptr rop4, mpc_ptr rop4rnd, mpc_rnd_t rnd)
 {
   known_signs_t ks = {1, 1};
 
@@ -386,7 +396,9 @@ tgeneric_cci (mpc_function *function, mpc_ptr op1, int op2,
   printf ("Rounding in %s might be incorrect for\n", function->name);
   OUT (op1);
   printf ("op2=%d\n", op2);
-  printf ("with rounding mode %s", mpfr_print_rnd_mode (rnd));
+  printf ("with rounding mode (%s, %s)",
+          mpfr_print_rnd_mode (MPC_RND_RE (rnd)),
+          mpfr_print_rnd_mode (MPC_RND_IM (rnd)));
 
   printf ("\n%s                     gives ", function->name);
   OUT (rop);
@@ -401,7 +413,7 @@ tgeneric_cci (mpc_function *function, mpc_ptr op1, int op2,
 static void
 tgeneric_cuuc (mpc_function *function, unsigned long int op1,
                unsigned long int op2, mpc_ptr op3, mpc_ptr rop,
-               mpc_ptr rop4, mpc_ptr rop4rnd, mpfr_rnd_t rnd)
+               mpc_ptr rop4, mpc_ptr rop4rnd, mpc_rnd_t rnd)
 {
   known_signs_t ks = {1, 1};
 
@@ -422,7 +434,9 @@ tgeneric_cuuc (mpc_function *function, unsigned long int op1,
   printf ("op1=%lu\n", op1);
   printf ("op2=%lu\n", op2);
   OUT (op3);
-  printf ("with rounding mode %s", mpfr_print_rnd_mode (rnd));
+  printf ("with rounding mode (%s, %s)",
+          mpfr_print_rnd_mode (MPC_RND_RE (rnd)),
+          mpfr_print_rnd_mode (MPC_RND_IM (rnd)));
 
   printf ("\n%s                     gives ", function->name);
   OUT (rop);
