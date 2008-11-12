@@ -123,7 +123,7 @@ Complex Functions
 * Assigning Complex Numbers::   
 * Simultaneous Init & Assign::  
 * Complex Comparison::          
-* Decomposing::                 
+* Projection & Decomposing::    
 * Basic Arithmetic::            
 * Power Functions and Logarithm::  
 * Trigonometric Functions::     
@@ -470,7 +470,7 @@ different word size.
 * Assigning Complex Numbers::   
 * Simultaneous Init & Assign::  
 * Complex Comparison::          
-* Decomposing::                 
+* Projection & Decomposing::    
 * Basic Arithmetic::            
 * Power Functions and Logarithm::  
 * Trigonometric Functions::     
@@ -624,7 +624,7 @@ as set by @code{mpc_set_default_prec}.
 
 
 
-@node Complex Comparison, Decomposing, Simultaneous Init & Assign, Complex Functions
+@node Complex Comparison, Projection & Decomposing, Simultaneous Init & Assign, Complex Functions
 @comment  node-name,  next,  previous,  up
 @section Comparison Functions
 @cindex Complex comparisons functions
@@ -650,10 +650,10 @@ with @code{mpc_cmp (op1, op2) == 0}.
 @end deftypefn
 
 
-@node Decomposing, Basic Arithmetic, Complex Comparison, Complex Functions
+@node Projection & Decomposing, Basic Arithmetic, Complex Comparison, Complex Functions
 @comment  node-name,  next,  previous,  up
-@section Projections and Decomposing of Complex Numbers
-@cindex Projections and Decomposing of Complex Numbers
+@section Projection and Decomposing Functions
+@cindex Projection and Decomposing Functions
 
 @deftypefn Function int mpc_real (mpfr_t @var{rop}, mpc_t @var{op}, mpfr_rnd_t @var{rnd})
 Set @var{rop} to the value of the real part of @var{op} rounded
@@ -666,14 +666,14 @@ direction @var{rnd}.
 @end deftypefn
 
 @deftypefn Macro mpfr_t mpc_realref (mpc_t @var{op})
-@deftypefnx Macro mpfr_t mpc_realref (mpc_t @var{op})
+@deftypefnx Macro mpfr_t mpc_imagref (mpc_t @var{op})
 Return a reference to the real part and imaginary part of @var{op},
 respectively. The @code{mpfr} functions can be used on the result of these
 macros.
 @end deftypefn
 
 
-@node Basic Arithmetic, Power Functions and Logarithm, Decomposing, Complex Functions
+@node Basic Arithmetic, Power Functions and Logarithm, Projection & Decomposing, Complex Functions
 @comment  node-name,  next,  previous,  up
 @section Basic Arithmetic Functions
 @cindex Complex arithmetic functions
