@@ -708,10 +708,12 @@ tgeneric (mpc_function function, mpfr_prec_t prec_min,
   int i = 0;
   mpfr_t x1, x2, xxxx;
   mpc_t  z1, z2, z3, z4, zzzz;
+
   mpc_rnd_t rnd_re;
   mpc_rnd_t rnd_im;
   mpfr_prec_t prec;
   mp_exp_t exp_min;
+  int special, special_cases;
 
   mpc_init2 (z1, prec_max);
   switch (function.type)
@@ -721,23 +723,36 @@ tgeneric (mpc_function function, mpfr_prec_t prec_min,
       mpc_init2 (z3, prec_max);
       mpc_init2 (z4, prec_max);
       mpc_init2 (zzzz, 4*prec_max);
+      special_cases = 4;
       break;
     case FC:
       mpfr_init2 (x1, prec_max);
       mpfr_init2 (x2, prec_max);
       mpfr_init2 (xxxx, 4*prec_max);
       mpc_init2 (z2, prec_max);
+      special_cases = 2;
       break;
-    case CCF: case CFC:
-      mpfr_init2 (x1, prec_max);
-    case CUUC:
     case CCI: case CCS:
     case CCU: case CUC:
+    case CCF: case CFC:
+      mpfr_init2 (x1, prec_max);
+      mpc_init2 (z2, prec_max);
+      mpc_init2 (z3, prec_max);
+      mpc_init2 (zzzz, 4*prec_max);
+      special_cases = 3;
+      break;
+    case CUUC:
+      mpc_init2 (z2, prec_max);
+      mpc_init2 (z3, prec_max);
+      mpc_init2 (zzzz, 4*prec_max);
+      special_cases = 2;
+      break;
     case CC:  case V_CC:
     default:
       mpc_init2 (z2, prec_max);
       mpc_init2 (z3, prec_max);
       mpc_init2 (zzzz, 4*prec_max);
+      special_cases = 2;
     }
 
   exp_min = mpfr_get_emin ();
@@ -751,40 +766,84 @@ tgeneric (mpc_function function, mpfr_prec_t prec_min,
   if (step < 1)
     step = 1;
 
-  for (prec = prec_min; prec <= prec_max; prec+=step)
+  for (prec = prec_min, special = 0;
+       prec <= prec_max && special <= special_cases;
+       prec+=step, special += (prec == prec_max ? 1 : 0))
     {
+      /* when prec == prec_max, test functions with pure real/pure imaginary
+         parameters */
+
+      /* probability of one zero part in 256th (25 is almost 10%) */
+      const int zero_probability = special != 0 ? 0 : 25;
+
       mpc_set_prec (z1, prec);
-      test_default_random (z1, exp_min, exp_max, 128, 25);
+      test_default_random (z1, exp_min, exp_max, 128, zero_probability);
 
       switch (function.type)
         {
         case CCC:
           mpc_set_prec (z2, prec);
-          test_default_random (z2, exp_min, exp_max, 128, 25);
+          test_default_random (z2, exp_min, exp_max, 128, zero_probability);
           mpc_set_prec (z3, prec);
           mpc_set_prec (z4, prec);
           mpc_set_prec (zzzz, 4*prec);
+          switch (special)
+            {
+            case 1:
+              mpfr_set_ui (MPC_RE (z1), 0, GMP_RNDN);
+              break;
+            case 2:
+              mpfr_set_ui (MPC_IM (z1), 0, GMP_RNDN);
+              break;
+            case 3:
+              mpfr_set_ui (MPC_RE (z2), 0, GMP_RNDN);
+              break;
+            case 4:
+              mpfr_set_ui (MPC_IM (z2), 0, GMP_RNDN);
+              break;
+            }
           break;
         case FC:
           mpc_set_prec (z2, prec);
           mpfr_set_prec (x1, prec);
           mpfr_set_prec (x2, prec);
           mpfr_set_prec (xxxx, 4*prec);
+          switch (special)
+            {
+            case 1:
+              mpfr_set_ui (MPC_RE (z1), 0, GMP_RNDN);
+              break;
+            case 2:
+              mpfr_set_ui (MPC_IM (z1), 0, GMP_RNDN);
+              break;
+            }
           break;
         case CCU: case CUC:
           mpc_set_prec (z2, 128);
           do {
-            test_default_random (z2, 0, 64, 128, 25);
+            test_default_random (z2, 0, 64, 128, zero_probability);
           } while (!mpfr_fits_ulong_p (MPC_RE (z2), GMP_RNDN));
           ul1 = mpfr_get_ui (MPC_RE(z2), GMP_RNDN);
           mpc_set_prec (z2, prec);
           mpc_set_prec (z3, prec);
           mpc_set_prec (zzzz, 4*prec);
+          switch (special)
+            {
+            case 1:
+              mpfr_set_ui (MPC_RE (z1), 0, GMP_RNDN);
+              break;
+            case 2:
+              mpfr_set_ui (MPC_IM (z1), 0, GMP_RNDN);
+              break;
+            case 3:
+              ul1 = 0;
+              break;
+            }
           break;
         case CUUC:
           mpc_set_prec (z2, 128);
           do {
-            test_default_random (z2, 0, 64, 128, 25);
+            test_default_random (z2, 0, 64, 128, zero_probability);
           } while (!mpfr_fits_ulong_p (MPC_RE (z2), GMP_RNDN)
                    ||!mpfr_fits_ulong_p (MPC_IM (z2), GMP_RNDN));
           ul1 = mpfr_get_ui (MPC_RE(z2), GMP_RNDN);
@@ -792,36 +851,100 @@ tgeneric (mpc_function function, mpfr_prec_t prec_min,
           mpc_set_prec (z2, prec);
           mpc_set_prec (z3, prec);
           mpc_set_prec (zzzz, 4*prec);
+          switch (special)
+            {
+            case 1:
+              mpfr_set_ui (MPC_RE (z1), 0, GMP_RNDN);
+              break;
+            case 2:
+              mpfr_set_ui (MPC_IM (z1), 0, GMP_RNDN);
+              break;
+            case 3:
+              ul1 = 0;
+              break;
+            case 4:
+              ul2 = 0;
+              break;
+            }
           break;
         case CCS:
           mpc_set_prec (z2, 128);
           do {
-            test_default_random (z2, 0, 64, 128, 25);
+            test_default_random (z2, 0, 64, 128, zero_probability);
           } while (!mpfr_fits_slong_p (MPC_RE (z2), GMP_RNDN));
           lo = mpfr_get_si (MPC_RE(z2), GMP_RNDN);
           mpc_set_prec (z2, prec);
           mpc_set_prec (z3, prec);
           mpc_set_prec (zzzz, 4*prec);
+          switch (special)
+            {
+            case 1:
+              mpfr_set_ui (MPC_RE (z1), 0, GMP_RNDN);
+              break;
+            case 2:
+              mpfr_set_ui (MPC_IM (z1), 0, GMP_RNDN);
+              break;
+            case 3:
+              lo = 0;
+              break;
+            }
           break;
         case CCI:
           mpc_set_prec (z2, 128);
           do {
-            test_default_random (z2, 0, 64, 128, 25);
+            test_default_random (z2, 0, 64, 128, zero_probability);
           } while (!mpfr_fits_slong_p (MPC_RE (z2), GMP_RNDN));
           i = (int)mpfr_get_si (MPC_RE(z2), GMP_RNDN);
           mpc_set_prec (z2, prec);
           mpc_set_prec (z3, prec);
           mpc_set_prec (zzzz, 4*prec);
+          switch (special)
+            {
+            case 1:
+              mpfr_set_ui (MPC_RE (z1), 0, GMP_RNDN);
+              break;
+            case 2:
+              mpfr_set_ui (MPC_IM (z1), 0, GMP_RNDN);
+              break;
+            case 3:
+              i = 0;
+              break;
+            }
           break;
         case CCF: case CFC:
           mpfr_set_prec (x1, prec);
           mpfr_set (x1, MPC_RE (z1), GMP_RNDN);
-          test_default_random (z1, exp_min, exp_max, 128, 25);
+          test_default_random (z1, exp_min, exp_max, 128, zero_probability);
+          mpc_set_prec (z2, prec);
+          mpc_set_prec (z3, prec);
+          mpc_set_prec (zzzz, 4*prec);
+          switch (special)
+            {
+            case 1:
+              mpfr_set_ui (MPC_RE (z1), 0, GMP_RNDN);
+              break;
+            case 2:
+              mpfr_set_ui (MPC_IM (z1), 0, GMP_RNDN);
+              break;
+            case 3:
+              mpfr_set_ui (x1, 0, GMP_RNDN);
+              break;
+            }
+          break;
         case CC: case V_CC:
         default:
           mpc_set_prec (z2, prec);
           mpc_set_prec (z3, prec);
           mpc_set_prec (zzzz, 4*prec);
+          switch (special)
+            {
+            case 1:
+              mpfr_set_ui (MPC_RE (z1), 0, GMP_RNDN);
+              break;
+            case 2:
+              mpfr_set_ui (MPC_IM (z1), 0, GMP_RNDN);
+              break;
+            }
         }
 
       for (rnd_re = 0; rnd_re < 4; rnd_re ++)
