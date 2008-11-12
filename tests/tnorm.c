@@ -1,4 +1,4 @@
-/* tconj -- test file for mpc_norm.
+/* tnorm -- test file for mpc_norm.
 
 Copyright (C) 2008 Philippe Th\'eveny
 
