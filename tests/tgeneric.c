@@ -29,7 +29,7 @@ MA 02111-1307, USA. */
 #define MPFR_CAN_ROUND(b,err,prec,rnd)                                  \
   (mpfr_zero_p (b) || mpfr_inf_p (b)                                    \
    || mpfr_can_round (b, mpfr_get_prec (b) - (err),                     \
-                      (rnd == GMP_RNDN ? GMP_RNDZ : rnd), (rnd),        \
+                      (rnd), (rnd == GMP_RNDN ? GMP_RNDZ : rnd),        \
                       (prec) + ((rnd)==GMP_RNDN)))
 
 static void
