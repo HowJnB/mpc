@@ -25,7 +25,7 @@ MA 02111-1307, USA. */
 static void
 check_ternary_value (void)
 {
-  int i;
+  unsigned int i;
   mpc_t z;
 
   mpc_init (z);

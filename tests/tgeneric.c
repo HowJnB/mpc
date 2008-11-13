@@ -28,7 +28,7 @@ MA 02111-1307, USA. */
    true when b is singular */
 #define MPFR_CAN_ROUND(b,err,prec,rnd)                                  \
   (mpfr_zero_p (b) || mpfr_inf_p (b)                                    \
-   || mpfr_can_round (b, mpfr_get_prec (b) - (err),                     \
+   || mpfr_can_round (b, (long)mpfr_get_prec (b) - (err),               \
                       (rnd), (rnd == GMP_RNDN ? GMP_RNDZ : rnd),        \
                       (prec) + ((rnd)==GMP_RNDN)))
 
@@ -788,7 +788,7 @@ tgeneric (mpc_function function, mpfr_prec_t prec_min,
          parameters */
 
       /* probability of one zero part in 256th (25 is almost 10%) */
-      const int zero_probability = special != 0 ? 0 : 25;
+      const unsigned int zero_probability = special != 0 ? 0 : 25;
 
       mpc_set_prec (z1, prec);
       test_default_random (z1, exp_min, exp_max, 128, zero_probability);

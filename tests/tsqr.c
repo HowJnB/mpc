@@ -183,7 +183,7 @@ bugs (void)
   mpc_init2 (z1, 2);
   /* RE (z1^2) overflows, IM(z^2) = -0 */
   mpfr_set_str (MPC_RE (z1), "0.11", 2, GMP_RNDN);
-  mpfr_mul_2ui (MPC_RE (z1), MPC_RE (z1), mpfr_get_emax (), GMP_RNDN);
+  mpfr_mul_2si (MPC_RE (z1), MPC_RE (z1), mpfr_get_emax (), GMP_RNDN);
   mpfr_set_ui (MPC_IM (z1), 0, GMP_RNDN);
   mpc_conj (z1, z1, MPC_RNDNN);
   mpc_sqr (z1, z1, MPC_RNDNN);
