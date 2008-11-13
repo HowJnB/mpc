@@ -28,9 +28,8 @@ MA 02111-1307, USA. */
    true when b is singular */
 #define MPFR_CAN_ROUND(b,err,prec,rnd)                                  \
   (mpfr_zero_p (b) || mpfr_inf_p (b)                                    \
-   || mpfr_can_round (b, (long)mpfr_get_prec (b) - (err),               \
-                      (rnd), (rnd == GMP_RNDN ? GMP_RNDZ : rnd),        \
-                      (prec) + ((rnd)==GMP_RNDN)))
+   || mpfr_can_round (b, (long)mpfr_get_prec (b) - (err), (rnd),        \
+                      GMP_RNDZ, (prec) + ((rnd)==GMP_RNDN)))
 
 static void
 tgeneric_cc (mpc_function *function, mpc_ptr op, mpc_ptr rop,
