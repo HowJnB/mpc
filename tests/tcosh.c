@@ -1,6 +1,6 @@
 /* test file for mpc_cosh.
 
-Copyright (C) 2008 Philippe Th\'eveny, Paul Zimmermann.
+Copyright (C) 2008 Philippe Th\'eveny, Paul Zimmermann, Andreas Enge
 
 This file is part of the MPC Library.
 
@@ -157,7 +157,7 @@ check_53 (void)
 int
 main (void)
 {
-  DECL_V_CC_FUNC(f,mpc_cosh);
+  DECL_FUNC(V_CC, f,mpc_cosh);
 
   test_start ();
 

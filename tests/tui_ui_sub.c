@@ -1,6 +1,6 @@
 /* test file for mpc_ui_ui_sub.
 
-Copyright (C) 2008 Philippe Th\'eveny
+Copyright (C) 2008 Philippe Th\'eveny, Andreas Enge
 
 This file is part of the MPC Library.
 
@@ -24,7 +24,7 @@ MA 02111-1307, USA. */
 int
 main (void)
 {
-  DECL_CUUC_FUNC (f, mpc_ui_ui_sub);
+  DECL_FUNC (CUUC, f, mpc_ui_ui_sub);
 
   test_start ();
 

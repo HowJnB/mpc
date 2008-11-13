@@ -1,6 +1,6 @@
 /* test file for mpc_add_fr.
 
-Copyright (C) 2008 Philippe Th\'eveny
+Copyright (C) 2008 Philippe Th\'eveny, Andreas Enge
 
 This file is part of the MPC Library.
 
@@ -60,7 +60,7 @@ check_ternary_value (mpfr_prec_t prec_max, mpfr_prec_t step)
 int
 main (void)
 {
-  DECL_CCF_FUNC (f, mpc_add_fr);
+  DECL_FUNC (CCF, f, mpc_add_fr);
   test_start ();
 
   check_ternary_value (1024, 1);

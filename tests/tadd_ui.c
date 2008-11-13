@@ -1,6 +1,6 @@
 /* test file for mpc_add_ui.
 
-Copyright (C) 2008 Philippe Th\'eveny
+Copyright (C) 2008 Philippe Th\'eveny, Andreas Enge
 
 This file is part of the MPC Library.
 
@@ -56,7 +56,7 @@ check_ternary_value (void)
 int
 main (void)
 {
-  DECL_CCU_FUNC (f, mpc_add_ui);
+  DECL_FUNC (CCU, f, mpc_add_ui);
 
   test_start ();
 

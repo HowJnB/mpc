@@ -34,7 +34,16 @@ mpc_div (mpc_ptr a, mpc_srcptr b, mpc_srcptr c, mpc_rnd_t rnd)
    mp_prec_t prec;
    int inexact_prod, inexact_norm, inexact_re, inexact_im, loops = 0;
 
-   /* first check for real divisor */
+  /* check for NaN anywhere */
+  if (MPFR_IS_NAN (MPC_RE (b)) || MPFR_IS_NAN (MPC_IM (b))
+      || MPFR_IS_NAN (MPC_RE (c)) || MPFR_IS_NAN (MPC_IM (c)))
+    {
+      mpfr_set_nan (MPC_RE (a));
+      mpfr_set_nan (MPC_IM (a));
+      return MPC_INEX (0, 0);
+    }
+
+   /* check for real divisor */
    if (MPFR_IS_ZERO(MPC_IM(c))) /* (re_b+i*im_b)/c = re_b/c + i * (im_b/c) */
      {
        /* warning: a may overlap with b,c so treat the imaginary part first */
@@ -42,25 +51,45 @@ mpc_div (mpc_ptr a, mpc_srcptr b, mpc_srcptr c, mpc_rnd_t rnd)
        inexact_re = mpfr_div (MPC_RE(a), MPC_RE(b), MPC_RE(c), MPC_RND_RE(rnd));
        return MPC_INEX(inexact_re, inexact_im);
      }
-   
+   /* check for purely imaginary divisor */
+   if (MPFR_IS_ZERO(MPC_RE(c))) {
+      /* (re_b+i*im_b)/(i*c) = im_b/c - i * (re_b/c) */
+      int overlap = (a == b) || (a == c);
+      mpc_t res;
+      mpfr_t cloc;
+      if (overlap)
+         mpc_init3 (res, MPFR_PREC (MPC_RE (a)), MPFR_PREC (MPC_IM (a)));
+      else
+         res [0] = *a;
+      cloc [0] = MPC_IM (c) [0];
+      inexact_re = mpfr_div (MPC_RE(res), MPC_IM(b), cloc, MPC_RND_RE(rnd));
+      mpfr_neg (cloc, cloc, GMP_RNDN);
+         /* changes the sign only in cloc, not in c; no need to correct later */
+      inexact_im = mpfr_div (MPC_IM(res), MPC_RE(b), cloc, MPC_RND_IM(rnd));
+      if (overlap)
+         mpc_clear (a);
+      a [0] = res [0];
+      return MPC_INEX(inexact_re, inexact_im);
+   }
+
    prec = MPC_MAX_PREC(a);
-   
+
    mpc_init (res);
    mpfr_init (q);
-   
+
    /* create the conjugate of c in c_conj without allocating new memory */
    MPC_RE (c_conj)[0] = MPC_RE (c)[0];
    MPC_IM (c_conj)[0] = MPC_IM (c)[0];
    MPFR_CHANGE_SIGN (MPC_IM (c_conj));
-   
+
    do
    {
       loops ++;
       prec += (loops <= 2) ? mpc_ceil_log2 (prec) + 5 : prec / 2;
-      
+
       mpc_set_prec (res, prec);
       mpfr_set_prec (q, prec);
-      
+
       /* first compute norm(c)^2 */
       inexact_norm = mpc_norm (q, c, GMP_RNDD);
 

@@ -91,46 +91,6 @@ skip_whitespace (FILE *fp)
 }
 
 static int
-read_rounding_mode (FILE *fp, mpc_rnd_t* rnd)
-{
-  int r[2];
-  int i;
-  char c;
-
-  for (i=0; i < 2; i++)
-    {
-      if (skip_whitespace (fp))
-        return -1;
-
-      if ((c = getc (fp)) == EOF)
-        {
-          perror ("data_check");
-          exit (1);
-        }
-
-      switch (c)
-        {
-        case 'n': case 'N':
-          r[i] = GMP_RNDN;
-          break;
-        case 'z': case 'Z':
-          r[i] = GMP_RNDZ;
-          break;
-        case 'u': case 'U':
-          r[i] = GMP_RNDU;
-          break;
-        case 'd': case 'D':
-          r[i] = GMP_RNDD;
-          break;
-        default:
-          return -1;
-        }
-    }
-  *rnd = RNDC (r[0], r[1]);
-  return 0;
-}
-
-static int
 read_mpfr_rounding_mode (FILE *fp, mpfr_rnd_t* rnd)
 {
   char c;
@@ -162,7 +122,21 @@ read_mpfr_rounding_mode (FILE *fp, mpfr_rnd_t* rnd)
       return -1;
     }
 
-  return 0;
+    return 0;
+}
+
+static void
+read_rounding_mode (FILE *fp, mpc_rnd_t* rnd)
+{
+   int re, im;
+   if (   read_mpfr_rounding_mode (fp, &re)
+       || read_mpfr_rounding_mode (fp, &im)) {
+      printf ("Error: unexpected rounding mode in file '%s' line %ld\n",
+              pathname, line_number);
+      exit (1);
+   }
+   else
+      *rnd = RNDC (re, im);
 }
 
 static int
@@ -221,83 +195,69 @@ read_mpc (FILE *fp, mpc_ptr z, known_signs_t *ks)
   return 0;
 }
 
+static void
+read_mpfr_result (FILE *fp, mpfr_ptr x, int *ks) {
+   if (read_mpfr (fp, x, ks)) {
+      printf ("Error: corrupted mpfr result in file '%s' line %ld\n",
+              pathname, line_number);
+      exit (1);
+   }
+}
+
+static void
+read_mpfr_argument (FILE *fp, mpfr_ptr x, int *ks) {
+   if (read_mpfr (fp, x, ks)) {
+      printf ("Error: corrupted mpfr argument in file '%s' line %ld\n",
+              pathname, line_number);
+      exit (1);
+   }
+}
+
+static void
+read_mpc_result (FILE *fp, mpc_ptr z, known_signs_t *ks) {
+   if (read_mpc (fp, z, ks)) {
+      printf ("Error: corrupted mpc result in file '%s' line %ld\n",
+              pathname, line_number);
+      exit (1);
+   }
+}
+
+static void
+read_mpc_argument (FILE *fp, mpc_ptr z, known_signs_t *ks) {
+   if (read_mpc (fp, z, ks)) {
+      printf ("Error: corrupted mpc argument in file '%s' line %ld\n",
+              pathname, line_number);
+      exit (1);
+   }
+}
+
 /* read lines of data */
 static void
 read_cc (FILE *fp, mpc_ptr expected, known_signs_t *signs, mpc_ptr op,
          mpc_rnd_t *rnd)
 {
-  if (read_mpc (fp, expected, signs))
-    {
-      printf ("Error: corrupted result in file '%s' line %ld\n",
-              pathname, line_number);
-      exit (1);
-    }
-  if (read_mpc (fp, op, NULL))
-    {
-      printf ("Error: corrupted argument in file '%s' line %ld\n",
-              pathname, line_number);
-      exit (1);
-    }
-  if (read_rounding_mode (fp, rnd))
-    {
-      printf ("Error: unexpected rounding mode in file '%s' line %ld\n",
-              pathname, line_number);
-      exit (1);
-    }
+  read_mpc_result (fp, expected, signs);
+  read_mpc_argument (fp, op, NULL);
+  read_rounding_mode (fp, rnd);
 }
 
 static void
 read_fc (FILE *fp, mpfr_ptr expected, int *sign, mpc_ptr op,
          mpfr_rnd_t *rnd)
 {
-  if (read_mpfr (fp, expected, sign))
-    {
-      printf ("Error: corrupted result in file '%s' line %ld\n",
-              pathname, line_number);
-      exit (1);
-    }
-  if (read_mpc (fp, op, NULL))
-    {
-      printf ("Error: corrupted argument in file '%s' line %ld\n",
-              pathname, line_number);
-      exit (1);
-    }
-  if (read_mpfr_rounding_mode (fp, rnd))
-    {
-      printf ("Error: unexpected rounding mode in file '%s' line %ld\n",
-              pathname, line_number);
-      exit (1);
-    }
+  read_mpfr_result (fp, expected, sign);
+  read_mpc_argument (fp, op, NULL);
+  read_mpfr_rounding_mode (fp, rnd);
 }
 
 static void
 read_ccc (FILE *fp, mpc_ptr expected, known_signs_t *signs,
           mpc_ptr op1, mpc_ptr op2, mpc_rnd_t *rnd)
 {
-  if (read_mpc (fp, expected, signs))
-    {
-      printf ("Error: corrupted result in file '%s' line %ld\n",
-              pathname, line_number);
-      exit (1);
-    }
-  if (read_mpc (fp, op1, NULL))
-    {
-      printf ("Error: corrupted argument in file '%s' line %ld\n",
-              pathname, line_number);
-      exit (1);
-    }
-  if (read_mpc (fp, op2, NULL))
-    {
-      printf ("Error: corrupted argument in file '%s' line %ld\n",
-              pathname, line_number);
-      exit (1);
-    }
-  if (read_rounding_mode (fp, rnd))
-    {
-      printf ("Error: unexpected rounding mode in file '%s' line %ld\n",
-              pathname, line_number);
-      exit (1);
-    }
+  read_mpc_result (fp, expected, signs);
+  read_mpc_argument (fp, op1, NULL);
+  read_mpc_argument (fp, op2, NULL);
+  read_rounding_mode (fp, rnd);
 }
 
 static void
@@ -305,60 +265,20 @@ read_cfc (FILE *fp, mpc_ptr expected, known_signs_t *signs, mpfr_ptr op1,
           mpc_ptr op2, mpc_rnd_t *rnd)
 {
 
-  if (read_mpc (fp, expected, signs))
-    {
-      printf ("Error: corrupted result in file '%s' line %ld\n",
-              pathname, line_number);
-      exit (1);
-    }
-  if (read_mpfr (fp, op1, NULL))
-    {
-      printf ("Error: corrupted argument in file '%s' line %ld\n",
-              pathname, line_number);
-      exit (1);
-    }
-  if (read_mpc (fp, op2, NULL))
-    {
-      printf ("5.Error: corrupted argument in file '%s' line %ld\n",
-              pathname, line_number);
-      exit (1);
-    }
-  if (read_rounding_mode (fp, rnd))
-    {
-      printf ("Error: unexpected rounding mode in file '%s' line %ld\n",
-              pathname, line_number);
-      exit (1);
-    }
+  read_mpc_result (fp, expected, signs);
+  read_mpfr_argument (fp, op1, NULL);
+  read_mpc_argument (fp, op2, NULL);
+  read_rounding_mode (fp, rnd);
 }
 
 static void
 read_ccf (FILE *fp, mpc_ptr expected, known_signs_t *signs, mpc_ptr op1,
           mpfr_ptr op2, mpc_rnd_t *rnd)
 {
-  if (read_mpc (fp, expected, signs))
-    {
-      printf ("Error: corrupted result in file '%s' line %ld\n",
-              pathname, line_number);
-      exit (1);
-    }
-  if (read_mpc (fp, op1, NULL))
-    {
-      printf ("Error: corrupted argument in file '%s' line %ld\n",
-              pathname, line_number);
-      exit (1);
-    }
-  if (read_mpfr (fp, op2, NULL))
-    {
-      printf ("Error: corrupted argument in file '%s' line %ld\n",
-              pathname, line_number);
-      exit (1);
-    }
-  if (read_rounding_mode (fp, rnd))
-    {
-      printf ("Error: unexpected rounding mode in file '%s' line %ld\n",
-              pathname, line_number);
-      exit (1);
-    }
+  read_mpc_result (fp, expected, signs);
+  read_mpc_argument (fp, op1, NULL);
+  read_mpfr_argument (fp, op2, NULL);
+  read_rounding_mode (fp, rnd);
 }
 
 /* data_check (function, data_file_name) checks function results against
@@ -399,6 +319,7 @@ data_check (mpc_function function, const char *file_name)
     case FC:
       mpfr_init (x1);
       mpfr_init (x2);
+      break;
     case CC: case V_CC:
       mpc_init (z2);
       mpc_init (z3);
@@ -452,7 +373,7 @@ data_check (mpc_function function, const char *file_name)
               printf ("     ");
               MPFR_OUT (got);
               MPFR_OUT (expected);
-              
+
               exit (1);
             }
           break;
@@ -474,7 +395,7 @@ data_check (mpc_function function, const char *file_name)
               printf ("     ");
               OUT (got);
               OUT (expected);
-              
+
               exit (1);
             }
           break;
@@ -496,7 +417,7 @@ data_check (mpc_function function, const char *file_name)
               printf ("     ");
               OUT (got);
               OUT (expected);
-              
+
               exit (1);
             }
           break;
@@ -521,7 +442,7 @@ data_check (mpc_function function, const char *file_name)
               printf ("     ");
               OUT (got);
               OUT (expected);
-              
+
               exit (1);
             }
           if (function.properties & FUNC_PROP_SYMETRIC)
@@ -543,7 +464,7 @@ data_check (mpc_function function, const char *file_name)
                   printf ("     ");
                   OUT (got);
                   OUT (expected);
-              
+
                   exit (1);
                 }
             }
@@ -570,7 +491,7 @@ data_check (mpc_function function, const char *file_name)
               printf ("     ");
               OUT (got);
               OUT (expected);
-              
+
               exit (1);
             }
           break;
@@ -596,7 +517,7 @@ data_check (mpc_function function, const char *file_name)
               printf ("     ");
               OUT (got);
               OUT (expected);
-              
+
               exit (1);
             }
           break;
@@ -613,6 +534,7 @@ data_check (mpc_function function, const char *file_name)
     case FC:
       mpfr_clear (x1);
       mpfr_clear (x2);
+      break;
     case CC: case V_CC:
       mpc_clear (z2);
       mpc_clear (z3);

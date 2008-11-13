@@ -1,6 +1,6 @@
 /* test file for mpc_div_fr.
 
-Copyright (C) 2008 Philippe Th\'eveny
+Copyright (C) 2008 Philippe Th\'eveny, Andreas Enge
 
 This file is part of the MPC Library.
 
@@ -24,10 +24,11 @@ MA 02111-1307, USA. */
 int
 main (void)
 {
-  DECL_CCF_FUNC (f, mpc_div_fr);
+  DECL_FUNC (CCF, f, mpc_div_fr);
 
   test_start ();
 
+  data_check (f, "div_fr.dat");
   tgeneric (f, 2, 1024, 7, -1);
 
   test_end ();

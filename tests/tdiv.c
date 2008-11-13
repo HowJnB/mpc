@@ -119,11 +119,13 @@ check_regular (void)
 int
 main (void)
 {
-  DECL_CCC_FUNC (f, mpc_div);
+  DECL_FUNC (CCC, f, mpc_div);
 
   test_start ();
 
   check_regular ();
+
+  data_check (f, "div.dat");
   tgeneric (f, 2, 1024, 7, 4096);
 
   test_end ();

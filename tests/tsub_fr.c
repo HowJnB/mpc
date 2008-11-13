@@ -1,6 +1,6 @@
 /* test file for mpc_sub_fr.
 
-Copyright (C) 2008 Philippe Th\'eveny
+Copyright (C) 2008 Philippe Th\'eveny, Andreas Enge
 
 This file is part of the MPC Library.
 
@@ -24,7 +24,7 @@ MA 02111-1307, USA. */
 int
 main (void)
 {
-  DECL_CCF_FUNC (f, mpc_sub_fr);
+  DECL_FUNC (CCF, f, mpc_sub_fr);
 
   test_start ();
 

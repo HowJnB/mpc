@@ -1,6 +1,6 @@
 /* tfr_div -- test file for mpc_fr_sub.
 
-Copyright (C) 2008 Philippe Th\'eveny
+Copyright (C) 2008 Philippe Th\'eveny, Andreas Enge
 
 This file is part of the MPC Library.
 
@@ -24,7 +24,7 @@ MA 02111-1307, USA. */
 int
 main (void)
 {
-  DECL_CFC_FUNC(f, mpc_fr_sub);
+  DECL_FUNC(CFC, f, mpc_fr_sub);
 
   test_start();
 

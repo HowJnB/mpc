@@ -1,6 +1,6 @@
 /* tconj -- test file for mpc_abs.
 
-Copyright (C) 2008 Philippe Th\'eveny
+Copyright (C) 2008 Philippe Th\'eveny, Andreas Enge
 
 This file is part of the MPC Library.
 
@@ -24,7 +24,7 @@ MA 02111-1307, USA. */
 int
 main (void)
 {
-  DECL_FC_FUNC (f, mpc_abs);
+  DECL_FUNC (FC, f, mpc_abs);
 
   test_start ();
 

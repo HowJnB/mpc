@@ -90,8 +90,8 @@ __mpc_struct;
 #define MPC_RE(x) ((x)->re)
 #define MPC_IM(x) ((x)->im)
 
-typedef __mpc_struct mpc_t[1]; 
-typedef __mpc_struct *mpc_ptr; 
+typedef __mpc_struct mpc_t[1];
+typedef __mpc_struct *mpc_ptr;
 typedef __gmp_const __mpc_struct *mpc_srcptr;
 
 /* Prototypes: Support of K&R compiler */
@@ -207,4 +207,4 @@ __MPC_DECLSPEC size_t mpc_out_str __MPC_PROTO ((FILE *, int, size_t, mpc_srcptr,
 #define mpc_cmp_si(x, y) \
  ( mpc_cmp_si_si ((x), (y), 0l) )
 #define mpc_ui_sub(x, y, z, r) mpc_ui_ui_sub (x, y, 0ul, z, r)
-#endif /* ifndef __MPC_H */ 
+#endif /* ifndef __MPC_H */

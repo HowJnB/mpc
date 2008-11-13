@@ -1,6 +1,6 @@
 /* tnorm -- test file for mpc_norm.
 
-Copyright (C) 2008 Philippe Th\'eveny
+Copyright (C) 2008 Philippe Th\'eveny, Andreas Enge
 
 This file is part of the MPC Library.
 
@@ -24,10 +24,11 @@ MA 02111-1307, USA. */
 int
 main (void)
 {
-  DECL_FC_FUNC (f, mpc_norm);
+  DECL_FUNC (FC, f, mpc_norm);
 
   test_start ();
 
+  data_check (f, "norm.dat");
   tgeneric (f, 2, 1024, 1, 4096);
 
   test_end ();

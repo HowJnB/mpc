@@ -24,7 +24,7 @@ MA 02111-1307, USA. */
 int
 main (void)
 {
-  DECL_CCC_FUNC (f, mpc_sub);
+  DECL_FUNC (CCC, f, mpc_sub);
 
   test_start ();
 

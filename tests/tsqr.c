@@ -178,7 +178,7 @@ void
 bugs (void)
 {
   mpc_t z1;
-  
+
   /* reuse bug found by Paul Zimmermann 20081021 */
   mpc_init2 (z1, 2);
   /* RE (z1^2) overflows, IM(z^2) = -0 */
@@ -201,7 +201,7 @@ bugs (void)
 int
 main (void)
 {
-  DECL_CC_FUNC (f, mpc_sqr);
+  DECL_FUNC (CC, f, mpc_sqr);
   test_start ();
 
   special ();

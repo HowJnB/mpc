@@ -1,6 +1,6 @@
 /* mpc_norm -- Square of the norm of a complex number.
 
-Copyright (C) 2002, 2005 Andreas Enge, Paul Zimmermann
+Copyright (C) 2002, 2005, 2008 Andreas Enge, Paul Zimmermann
 
 This file is part of the MPC Library.
 
@@ -35,6 +35,12 @@ mpc_norm (mpfr_ptr a, mpc_srcptr b, mp_rnd_t rnd)
 
   mpfr_init (u);
   mpfr_init (v);
+
+  /* handling of special values; consistent with abs in that
+     norm = abs^2; so norm (+-inf, nan) = norm (nan, +-inf) = +inf */
+  if (   (mpfr_nan_p (MPC_RE (b)) || mpfr_nan_p (MPC_IM (b)))
+      || (mpfr_inf_p (MPC_RE (b)) || mpfr_inf_p (MPC_IM (b))))
+      return mpc_abs (a, b, rnd);
 
   if (!MPFR_IS_ZERO(MPC_RE(b)) && !MPFR_IS_ZERO(MPC_IM(b)) &&
       2 * SAFE_ABS (mp_exp_t, MPFR_EXP (MPC_RE (b)) - MPFR_EXP (MPC_IM (b)))

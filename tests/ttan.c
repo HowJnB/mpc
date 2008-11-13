@@ -1,6 +1,6 @@
 /* test file for mpc_tan.
 
-Copyright (C) 2008 Philippe Th\'eveny, Paul Zimmermann.
+Copyright (C) 2008 Philippe Th\'eveny, Paul Zimmermann, Andreas Enge
 
 This file is part of the MPC Library.
 
@@ -259,7 +259,7 @@ check_53 (void)
 int
 main (void)
 {
-  DECL_V_CC_FUNC (f, mpc_tan);
+  DECL_FUNC (V_CC, f, mpc_tan);
 
   test_start ();
 
