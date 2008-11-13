@@ -1,6 +1,6 @@
 /* tproj -- test file for mpc_proj.
 
-Copyright (C) 2008 Philippe Th\'eveny
+Copyright (C) 2008 Philippe Th\'eveny, Andreas Enge
 
 This file is part of the MPC Library.
 
@@ -24,7 +24,7 @@ MA 02111-1307, USA. */
 int
 main (void)
 {
-  DECL_CC_FUNC (f, mpc_proj);
+  DECL_FUNC (CC, f, mpc_proj);
 
   test_start ();
 
