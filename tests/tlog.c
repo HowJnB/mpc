@@ -37,7 +37,7 @@ check_exp_log (void)
    mpfr_const_pi (twopi, GMP_RNDD);
    mpfr_div_2ui (twopi, twopi, 1, GMP_RNDN);
 
-   for (prec = 2; prec <= 1000; prec = prec*1.1 + 1)
+   for (prec = 4; prec <= 1000; prec = prec*1.1 + 1)
    {
       mpc_set_prec (z, prec);
       mpc_set_prec (z2, prec);
