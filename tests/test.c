@@ -76,14 +76,15 @@ main (void)
         {
           fprintf (stderr, "Could not open file %s\n", filename);
           exit (1);
-        };
+        }
       fprintf (file, "1 +I*1\n");
       fclose (file);
       if (!(file = fopen (filename, "r")))
         {
           fprintf (stderr, "Could not open file %s\n", filename);
           exit (1);
-        };
+        }
+      PRINT ("test 1");
       if (mpc_inp_str (z, file, 10, MPC_RNDUZ) == 0)
         {
           fprintf (stderr, "mpc_inp_str cannot correctly re-read number "
@@ -101,13 +102,68 @@ main (void)
           fprintf (stderr, "\n");
           exit (1);
         }
+      /* other test with invalid real part */
+      file = fopen (filename, "w"); /* should work now */
+      fprintf (file, "invalid_real_part +I*1\n");
+      fclose (file);
+      file = fopen (filename, "r");
+      if (mpc_inp_str (z, file, 10, MPC_RNDUZ) != 0)
+        {
+          fprintf (stderr, "mpc_inp_str should return 0 but does not (1)\n");
+          exit (1);
+        }
+      fclose (file);
+      /* test with valid real part but invalid imaginary part */
+      file = fopen (filename, "w");
+      fprintf (file, "17 invalid_imaginary_part\n");
+      fclose (file);
+      file = fopen (filename, "r");
+      if (mpc_inp_str (z, file, 10, MPC_RNDUZ) != 0)
+        {
+          fprintf (stderr, "mpc_inp_str should return 0 but does not (2)\n");
+          exit (1);
+        }
+      fclose (file);
+      /* test with valid real part and + but invalid rest */
+      file = fopen (filename, "w");
+      fprintf (file, "17 +unvalid_imaginary_part\n");
+      fclose (file);
+      file = fopen (filename, "r");
+      if (mpc_inp_str (z, file, 10, MPC_RNDUZ) != 0)
+        {
+          fprintf (stderr, "mpc_inp_str should return 0 but does not (3)\n");
+          exit (1);
+        }
+      fclose (file);
+      /* test with valid real part and +I but invalid rest */
+      file = fopen (filename, "w");
+      fprintf (file, "17 +Iunvalid_imaginary_part\n");
+      fclose (file);
+      file = fopen (filename, "r");
+      if (mpc_inp_str (z, file, 10, MPC_RNDUZ) != 0)
+        {
+          fprintf (stderr, "mpc_inp_str should return 0 but does not (4)\n");
+          exit (1);
+        }
+      fclose (file);
+      /* test with valid real part and +I* but invalid rest */
+      file = fopen (filename, "w");
+      fprintf (file, "17 +I*unvalid_imaginary_part\n");
+      fclose (file);
+      file = fopen (filename, "r");
+      if (mpc_inp_str (z, file, 10, MPC_RNDUZ) != 0)
+        {
+          fprintf (stderr, "mpc_inp_str should return 0 but does not (4)\n");
+          exit (1);
+        }
+      fclose (file);
 
       PRINT ("Testing mpc_out_str\n");
       if (!(file = fopen (filename, "w")))
         {
           fprintf (stderr, "Could not open file %s\n", filename);
           exit (1);
-        };
+        }
       mpc_out_str (file, 10, 0, x, MPC_RNDNN);
       fclose (file);
       if (!(file = fopen (filename, "r")))
@@ -137,14 +193,14 @@ main (void)
         {
           fprintf (stderr, "Could not open file %s\n", filename);
           exit (1);
-        };
+        }
       mpc_out_str (file, 10, 0, x, MPC_RNDNN);
       fclose (file);
       if (!(file = fopen (filename, "r")))
         {
           fprintf (stderr, "Could not open file %s\n", filename);
           exit (1);
-        };
+        }
       if (mpc_inp_str (z, file, 10, MPC_RNDUZ) == 0)
         {
           fprintf (stderr, "mpc_inp_str cannot correctly re-read number "
