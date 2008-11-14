@@ -35,8 +35,8 @@ mpc_div (mpc_ptr a, mpc_srcptr b, mpc_srcptr c, mpc_rnd_t rnd)
    int inexact_prod, inexact_norm, inexact_re, inexact_im, loops = 0;
 
   /* check for NaN anywhere */
-  if (MPFR_IS_NAN (MPC_RE (b)) || MPFR_IS_NAN (MPC_IM (b))
-      || MPFR_IS_NAN (MPC_RE (c)) || MPFR_IS_NAN (MPC_IM (c)))
+  if (mpfr_nan_p (MPC_RE (b)) || mpfr_nan_p (MPC_IM (b))
+      || mpfr_nan_p (MPC_RE (c)) || mpfr_nan_p (MPC_IM (c)))
     {
       mpfr_set_nan (MPC_RE (a));
       mpfr_set_nan (MPC_IM (a));
@@ -44,7 +44,7 @@ mpc_div (mpc_ptr a, mpc_srcptr b, mpc_srcptr c, mpc_rnd_t rnd)
     }
 
    /* check for real divisor */
-   if (MPFR_IS_ZERO(MPC_IM(c))) /* (re_b+i*im_b)/c = re_b/c + i * (im_b/c) */
+   if (mpfr_zero_p(MPC_IM(c))) /* (re_b+i*im_b)/c = re_b/c + i * (im_b/c) */
      {
        /* warning: a may overlap with b,c so treat the imaginary part first */
        inexact_im = mpfr_div (MPC_IM(a), MPC_IM(b), MPC_RE(c), MPC_RND_IM(rnd));
@@ -52,7 +52,7 @@ mpc_div (mpc_ptr a, mpc_srcptr b, mpc_srcptr c, mpc_rnd_t rnd)
        return MPC_INEX(inexact_re, inexact_im);
      }
    /* check for purely imaginary divisor */
-   if (MPFR_IS_ZERO(MPC_RE(c))) {
+   if (mpfr_zero_p(MPC_RE(c))) {
       /* (re_b+i*im_b)/(i*c) = im_b/c - i * (re_b/c) */
       int overlap = (a == b) || (a == c);
       mpc_t res;
@@ -152,8 +152,8 @@ mpc_div (mpc_ptr a, mpc_srcptr b, mpc_srcptr c, mpc_rnd_t rnd)
              /* if 1/q is inexact, the approximations of the real and
                 imaginary part below will be inexact, unless RE(res)
                 or IM(res) is zero */
-             inexact_re = inexact_re || !MPFR_IS_ZERO (MPC_RE (res));
-             inexact_im = inexact_im || !MPFR_IS_ZERO (MPC_IM (res));
+             inexact_re = inexact_re || !mpfr_zero_p (MPC_RE (res));
+             inexact_im = inexact_im || !mpfr_zero_p (MPC_IM (res));
            }
          if (MPFR_SIGN (MPC_RE (res)) > 0)
          {

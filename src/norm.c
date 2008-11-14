@@ -42,7 +42,7 @@ mpc_norm (mpfr_ptr a, mpc_srcptr b, mp_rnd_t rnd)
       || (mpfr_inf_p (MPC_RE (b)) || mpfr_inf_p (MPC_IM (b))))
       return mpc_abs (a, b, rnd);
 
-  if (!MPFR_IS_ZERO(MPC_RE(b)) && !MPFR_IS_ZERO(MPC_IM(b)) &&
+  if (!mpfr_zero_p(MPC_RE(b)) && !mpfr_zero_p(MPC_IM(b)) &&
       2 * SAFE_ABS (mp_exp_t, MPFR_EXP (MPC_RE (b)) - MPFR_EXP (MPC_IM (b)))
       > (mp_exp_t)prec)
     /* If real and imaginary part have very different magnitudes, then the */

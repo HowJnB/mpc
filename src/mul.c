@@ -48,8 +48,8 @@ mpc_mul (mpc_ptr a, mpc_srcptr b, mpc_srcptr c, mpc_rnd_t rnd)
     return mul_infinite (a, c, b);
 
   /* NaN contamination of both part in result */
-  if (MPFR_IS_NAN (MPC_RE (b)) || MPFR_IS_NAN (MPC_IM (b))
-      || MPFR_IS_NAN (MPC_RE (c)) || MPFR_IS_NAN (MPC_IM (c)))
+  if (mpfr_nan_p (MPC_RE (b)) || mpfr_nan_p (MPC_IM (b))
+      || mpfr_nan_p (MPC_RE (c)) || mpfr_nan_p (MPC_IM (c)))
     {
       mpfr_set_nan (MPC_RE (a));
       mpfr_set_nan (MPC_IM (a));
@@ -63,33 +63,33 @@ mpc_mul (mpc_ptr a, mpc_srcptr b, mpc_srcptr c, mpc_rnd_t rnd)
   cis = mpfr_signbit (MPC_IM(c)) ? -1 : 1;
 
   /* first check for real multiplication */
-  if (MPFR_IS_ZERO (MPC_IM (b))) /* b * (x+i*y) = b*x + i *(b*y) */
+  if (mpfr_zero_p (MPC_IM (b))) /* b * (x+i*y) = b*x + i *(b*y) */
     {
       int inex;
       inex = mpc_mul_fr (a, c, MPC_RE (b), rnd);
 
       /* Sign of zeros is wrong in some cases. This correction doesn't change
          inexact flag. */
-      if (MPFR_IS_ZERO (MPC_RE (a)))
+      if (mpfr_zero_p (MPC_RE (a)))
         mpfr_setsign (MPC_RE (a), MPC_RE (a), MPC_RND_RE(rnd) == GMP_RNDD
                       || (brs != crs && bis == cis), GMP_RNDN); /* exact */
-      if (MPFR_IS_ZERO (MPC_IM (a)))
+      if (mpfr_zero_p (MPC_IM (a)))
         mpfr_setsign (MPC_IM (a), MPC_IM (a), MPC_RND_IM (rnd) == GMP_RNDD
                       || (brs != cis && bis != crs), GMP_RNDN); /* exact */
 
       return inex;
     }
-  if (MPFR_IS_ZERO (MPC_IM (c)))
+  if (mpfr_zero_p (MPC_IM (c)))
     {
       int inex;
       inex = mpc_mul_fr (a, b, MPC_RE (c), rnd);
 
       /* Sign of zeros is wrong in some cases. This correction doesn't change
          inexact flag. */
-      if (MPFR_IS_ZERO (MPC_RE (a)))
+      if (mpfr_zero_p (MPC_RE (a)))
         mpfr_setsign (MPC_RE (a), MPC_RE (a), MPC_RND_RE(rnd) == GMP_RNDD
                       || (brs != crs && bis == cis), GMP_RNDN);
-      if (MPFR_IS_ZERO (MPC_IM (a)))
+      if (mpfr_zero_p (MPC_IM (a)))
         mpfr_setsign (MPC_IM (a), MPC_IM (a), MPC_RND_IM (rnd) == GMP_RNDD
                       || (brs != cis && bis != crs), GMP_RNDN);
 
@@ -97,20 +97,20 @@ mpc_mul (mpc_ptr a, mpc_srcptr b, mpc_srcptr c, mpc_rnd_t rnd)
     }
 
   /* check for purely complex multiplication */
-  if (MPFR_IS_ZERO (MPC_RE (b))) /* i*b * (x+i*y) = -b*y + i*(b*x) */
+  if (mpfr_zero_p (MPC_RE (b))) /* i*b * (x+i*y) = -b*y + i*(b*x) */
     {
       int inex;
       inex = mul_pure_imaginary (a, c, MPC_IM (b), rnd, (a == b || a == c));
 
       /* Sign of zeros is wrong in some cases (note that Re(a) cannot be a
          zero) */
-      if (MPFR_IS_ZERO (MPC_IM (a)))
+      if (mpfr_zero_p (MPC_IM (a)))
         mpfr_setsign (MPC_IM (a), MPC_IM (a), MPC_RND_IM (rnd) == GMP_RNDD
                       || (brs != cis && bis != crs), GMP_RNDN);
 
       return inex;
     }
-  if (MPFR_IS_ZERO (MPC_RE (c)))
+  if (mpfr_zero_p (MPC_RE (c)))
     /* note that a cannot be a zero */
     return mul_pure_imaginary (a, b, MPC_IM (c), rnd, (a == b || a == c));
 
@@ -144,38 +144,38 @@ mul_infinite (mpc_ptr a, mpc_srcptr u, mpc_srcptr v)
      x = urs * ur * vrs * vr - uis * ui * vis * vi
      y = urs * ur * vis * vi + uis * ui * vrs * vr
      +1 if positive, -1 if negative, 0 if zero or NaN */
-  if (MPFR_IS_NAN (MPC_RE (u)) || MPFR_IS_NAN (MPC_IM (u))
-      || MPFR_IS_NAN (MPC_RE (v)) || MPFR_IS_NAN (MPC_IM (v)))
+  if (mpfr_nan_p (MPC_RE (u)) || mpfr_nan_p (MPC_IM (u))
+      || mpfr_nan_p (MPC_RE (v)) || mpfr_nan_p (MPC_IM (v)))
     {
       x = 0;
       y = 0;
     }
-  else if (MPFR_IS_INF (MPC_RE (u)))
+  else if (mpfr_inf_p (MPC_RE (u)))
     {
       /* u = (+/-inf) +i*v */
-      x = MPFR_IS_ZERO (MPC_RE (v))
-        || (MPFR_IS_INF (MPC_IM (u)) && MPFR_IS_ZERO (MPC_IM (v)))
-        || (MPFR_IS_ZERO (MPC_IM (u)) && MPFR_IS_INF (MPC_IM (v)))
-        || ((MPFR_IS_INF (MPC_IM (u)) || MPFR_IS_INF (MPC_IM (v)))
+      x = mpfr_zero_p (MPC_RE (v))
+        || (mpfr_inf_p (MPC_IM (u)) && mpfr_zero_p (MPC_IM (v)))
+        || (mpfr_zero_p (MPC_IM (u)) && mpfr_inf_p (MPC_IM (v)))
+        || ((mpfr_inf_p (MPC_IM (u)) || mpfr_inf_p (MPC_IM (v)))
             && urs*vrs == uis*vis) ?
         0 : urs * vrs;
-      y = MPFR_IS_ZERO (MPC_IM (v))
-        || (MPFR_IS_INF (MPC_IM (u)) && MPFR_IS_ZERO (MPC_RE (v)))
-        || (MPFR_IS_ZERO (MPC_IM (u)) && MPFR_IS_INF (MPC_RE (v)))
-        || ((MPFR_IS_INF (MPC_IM (u)) || MPFR_IS_INF (MPC_IM (u)))
+      y = mpfr_zero_p (MPC_IM (v))
+        || (mpfr_inf_p (MPC_IM (u)) && mpfr_zero_p (MPC_RE (v)))
+        || (mpfr_zero_p (MPC_IM (u)) && mpfr_inf_p (MPC_RE (v)))
+        || ((mpfr_inf_p (MPC_IM (u)) || mpfr_inf_p (MPC_IM (u)))
             && urs*vis == -uis*vrs) ?
         0 : urs * vis;
     }
   else
     {
       /* u = u +i*(+/-inf) where |u| < inf */
-      x = MPFR_IS_ZERO (MPC_IM (v))
-        || (MPFR_IS_ZERO (MPC_RE (u)) && MPFR_IS_INF (MPC_RE (v)))
-        || (MPFR_IS_INF (MPC_RE (v)) && urs*vrs == uis*vis) ?
+      x = mpfr_zero_p (MPC_IM (v))
+        || (mpfr_zero_p (MPC_RE (u)) && mpfr_inf_p (MPC_RE (v)))
+        || (mpfr_inf_p (MPC_RE (v)) && urs*vrs == uis*vis) ?
         0 : -uis * vis;
-      y = MPFR_IS_ZERO (MPC_RE (v))
-        || (MPFR_IS_ZERO (MPC_RE (u)) && MPFR_IS_INF (MPC_IM (v)))
-        || (MPFR_IS_INF (MPC_IM (v)) && urs*vis == -uis*vrs) ?
+      y = mpfr_zero_p (MPC_RE (v))
+        || (mpfr_zero_p (MPC_RE (u)) && mpfr_inf_p (MPC_IM (v)))
+        || (mpfr_inf_p (MPC_IM (v)) && urs*vis == -uis*vrs) ?
         0 : uis * vrs;
     }
 
@@ -183,23 +183,23 @@ mul_infinite (mpc_ptr a, mpc_srcptr u, mpc_srcptr v)
      algorithm given in Annex G of ISO C99 standard */
   if (x == 0 && y ==0)
     {
-      int ur = MPFR_IS_ZERO (MPC_RE (u)) || MPFR_IS_NAN (MPC_RE (u)) ?
+      int ur = mpfr_zero_p (MPC_RE (u)) || mpfr_nan_p (MPC_RE (u)) ?
         0 : 1;
-      int ui = MPFR_IS_ZERO (MPC_IM (u)) || MPFR_IS_NAN (MPC_IM (u)) ?
+      int ui = mpfr_zero_p (MPC_IM (u)) || mpfr_nan_p (MPC_IM (u)) ?
         0 : 1;
-      int vr = MPFR_IS_ZERO (MPC_RE (v)) || MPFR_IS_NAN (MPC_RE (v)) ?
+      int vr = mpfr_zero_p (MPC_RE (v)) || mpfr_nan_p (MPC_RE (v)) ?
         0 : 1;
-      int vi = MPFR_IS_ZERO (MPC_IM (v)) || MPFR_IS_NAN (MPC_IM (v)) ?
+      int vi = mpfr_zero_p (MPC_IM (v)) || mpfr_nan_p (MPC_IM (v)) ?
         0 : 1;
       if (MPC_IS_INF (u))
         {
-          ur = MPFR_IS_INF (MPC_RE (u)) ? 1 : 0;
-          ui = MPFR_IS_INF (MPC_IM (u)) ? 1 : 0;
+          ur = mpfr_inf_p (MPC_RE (u)) ? 1 : 0;
+          ui = mpfr_inf_p (MPC_IM (u)) ? 1 : 0;
         }
       if (MPC_IS_INF (v))
         {
-          vr = MPFR_IS_INF (MPC_RE (v)) ? 1 : 0;
-          vi = MPFR_IS_INF (MPC_IM (v)) ? 1 : 0;
+          vr = mpfr_inf_p (MPC_RE (v)) ? 1 : 0;
+          vi = mpfr_inf_p (MPC_IM (v)) ? 1 : 0;
         }
 
       x = urs * ur * vrs * vr - uis * ui * vis * vi;
@@ -432,9 +432,9 @@ mpc_mul_karatsuba (mpc_ptr rop, mpc_srcptr op1, mpc_srcptr op2, mpc_rnd_t rnd)
 	 if (inexact == 0)
 	   {
 	     mp_prec_t prec_x;
-             if (MPFR_IS_ZERO(v))
+             if (mpfr_zero_p(v))
                prec_x = prec_w;
-             else if (MPFR_IS_ZERO(w))
+             else if (mpfr_zero_p(w))
                prec_x = prec_v;
              else
                {

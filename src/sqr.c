@@ -74,7 +74,7 @@ mpc_sqr (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
    prec = MPC_MAX_PREC(rop);
 
    /* first check for real resp. purely imaginary number */
-   if (MPFR_IS_ZERO (MPC_IM(op)))
+   if (mpfr_zero_p (MPC_IM(op)))
    {
       int same_sign = mpfr_signbit (MPC_RE (op)) == mpfr_signbit (MPC_IM (op));
       inex_re = mpfr_sqr (MPC_RE(rop), MPC_RE(op), MPC_RND_RE(rnd));
@@ -83,7 +83,7 @@ mpc_sqr (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
         mpc_conj (rop, rop, MPC_RNDNN);
       return MPC_INEX(inex_re, inex_im);
    }
-   if (MPFR_IS_ZERO (MPC_RE(op)))
+   if (mpfr_zero_p (MPC_RE(op)))
    {
       int same_sign = mpfr_signbit (MPC_RE (op)) == mpfr_signbit (MPC_IM (op));
       inex_re = -mpfr_sqr (MPC_RE(rop), MPC_IM(op), INV_RND (MPC_RND_RE(rnd)));

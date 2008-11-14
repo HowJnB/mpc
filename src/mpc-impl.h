@@ -29,17 +29,14 @@ MA 02111-1307, USA. */
 #define MPFR_PREC(x) mpfr_get_prec(x)
 #define MPFR_EXP(x)  mpfr_get_exp(x)
 #define MPFR_CHANGE_SIGN(x) mpfr_neg(x,x,GMP_RNDN)
-#define MPFR_IS_NAN(x) mpfr_nan_p(x)
-#define MPFR_IS_INF(x) mpfr_inf_p(x)
-#define MPFR_IS_ZERO(x) mpfr_zero_p(x)
 #define MPFR_IS_SINGULAR(x) (mpfr_nan_p(x) || mpfr_inf_p(x) || mpfr_zero_p(x))
 
 /* Convention in C99 (G.3): z is regarded as an infinity if at least one of
    its parts is infinite */
-#define MPC_IS_INF(z) (MPFR_IS_INF(MPC_RE(z))||MPFR_IS_INF(MPC_IM(z)))
+#define MPC_IS_INF(z) (mpfr_inf_p(MPC_RE(z))||mpfr_inf_p(MPC_IM(z)))
 /* Convention in C99 (G.3): z is regarded as a zero if each of its parts is
    a zero */
-#define MPC_IS_ZERO(z) (MPFR_IS_ZERO(MPC_RE(z))&&MPFR_IS_ZERO(MPC_IM(z)))
+#define MPC_IS_ZERO(z) (mpfr_zero_p(MPC_RE(z))&&mpfr_zero_p(MPC_IM(z)))
 
 #define MAX(h,i) ((h) > (i) ? (h) : (i))
 
