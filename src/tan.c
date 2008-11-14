@@ -1,6 +1,6 @@
 /* mpc_tan -- tangent of a complex number.
 
-Copyright (C) 2008 Philippe Th\'eveny
+Copyright (C) 2008 Philippe Th\'eveny, Andreas Enge
 
 This file is part of the MPC Library.
 
@@ -208,11 +208,14 @@ mpc_tan (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
       inex = mpc_div (x, x, y, MPC_RNDZZ);
       /* OP is no pure real nor pure imaginary, so the real and imaginary
          parts of its tangent cannot be null. */
+      /* This part of code is apparently never reached; AE */
+#if 0
       if (mpfr_zero_p (MPC_RE (x)) || mpfr_zero_p (MPC_IM (x)))
         {
           err = prec; /* double precision */
           continue;
         }
+#endif
       if (MPC_INEX_RE (inex))
         mpfr_signbit (MPC_RE (x)) ?
           mpfr_nextbelow (MPC_RE (x)) : mpfr_nextabove (MPC_RE (x));
