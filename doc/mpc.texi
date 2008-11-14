@@ -678,7 +678,7 @@ Set @var{rop} to the argument of @var{op}, with a branch cut along the
 negative real axis.
 @end deftypefn
 
-@deftypefn Function int mpc_proj(mpc_t @var{rop}, mpc_t @var{op}, mpc_rnd_t @var{rnd})
+@deftypefn Function int mpc_proj (mpc_t @var{rop}, mpc_t @var{op}, mpc_rnd_t @var{rnd})
 Compute a projection of @var{op} onto the Riemann sphere. Set @var{rop} to
 @var{op} rounded in the direction @var{rnd}, except when at least one part of
 @var{op} is infinite (even if the other part is a NaN) in which case the real
