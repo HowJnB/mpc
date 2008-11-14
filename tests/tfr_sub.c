@@ -28,6 +28,7 @@ main (void)
 
   test_start();
 
+  data_check (f, "fr_sub.dat");
   tgeneric (f, 2, 4096, 7, 0);
 
   test_end ();
