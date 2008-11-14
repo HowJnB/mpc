@@ -6,7 +6,6 @@ Recent changes:
   - New macros:
     - version number: MPC_VERSION_MAJOR, MPC_VERSION_MINOR,
       MPC_VERSION_PATCHLEVEL, MPC_VERSION_STRING
-    - MPFR_IS_NAN, MPFR_IS_INF, MPFR_IS_SINGULAR, MPC_IS_ZERO, MPC_IS_INF
     - reference to number parts: mpc_realref and mpc_imagref
   - configure checks on recent mpfr library (version >= 4.2)
   - new configure options: --with-gmp-lib, --with-gmp-include,
@@ -19,7 +18,7 @@ Recent changes:
   - Bug fixes:
     - configure looks for gmp first, then for mpfr
     - set_fr, fr_sub, mul_fr, div_fr, div, cos, sqr
-    - fix special values handling: log, sqr, exp, sqrt, mul
+    - fix special values handling: log, sqr, exp, sqrt, mul, norm
 
 Changes in version 0.5 ("Aconitum neomontanum"):
   - Support for autotools
