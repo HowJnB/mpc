@@ -117,8 +117,18 @@ check_regular (void)
   testmul (145, 1816, 0, 169, 8, 24);
   testmul (145, 1816, 848, 0, 8, 24);
 
-  mpc_init (x);
-  mpc_init (y);
+  mpc_init2 (x, 1000);
+  mpc_init2 (y, 1000);
+
+  /* Bug 20081114: mpc_mul_karatsuba returned wrong inexact value for
+     imaginary part */
+  mpc_set_prec (x, 7);
+  mpc_set_prec (y, 7);
+  mpfr_set_str (MPC_RE (x), "0xB4p+733", 16, GMP_RNDN);
+  mpfr_set_str (MPC_IM (x), "0x90p+244", 16, GMP_RNDN);
+  mpfr_set_str (MPC_RE (y), "0xACp-471", 16, GMP_RNDN);
+  mpfr_set_str (MPC_IM (y), "-0xECp-146", 16, GMP_RNDN);
+  cmpmul (x, y, MPC_RNDNN);
 
   for (prec = 2; prec < 1000; prec = prec * 1.1 + 1) 
     {
