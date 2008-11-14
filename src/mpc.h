@@ -43,6 +43,11 @@ MA 02111-1307, USA. */
 /* Transform 2 to negative, 1 to positive, leave 0 unchanged */
 #define MPC_INEX_NEG(inex) (((inex) == 2) ? -1 : ((inex) == 0) ? 0 : 1)
 
+/* the global inexact flag is made of (real flag) + 4 * (imaginary flag), where
+   each of the real and imaginary inexact flag are:
+   0 when the result is exact (no rounding error)
+   1 when the result is larger than the exact value
+   2 when the result is smaller than the exact value */
 #define MPC_INEX(inex_re, inex_im) \
         (MPC_INEX_POS(inex_re) | (MPC_INEX_POS(inex_im) << 2))
 #define MPC_INEX_RE(inex) MPC_INEX_NEG((inex) & 3)

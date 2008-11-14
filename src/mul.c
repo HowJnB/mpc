@@ -344,8 +344,7 @@ mpc_mul_karatsuba (mpc_ptr rop, mpc_srcptr op1, mpc_srcptr op2, mpc_rnd_t rnd)
       mul_c = -1; /* consider -d + i*c instead of c + i*d */
     }
 
-  /* find the precision and rounding mode for the new real part.
-   */
+  /* find the precision and rounding mode for the new real part */
   if (mul_i % 2)
     {
       prec_re = MPFR_PREC(MPC_IM(rop));
@@ -462,6 +461,11 @@ mpc_mul_karatsuba (mpc_ptr rop, mpc_srcptr op1, mpc_srcptr op2, mpc_rnd_t rnd)
       }
       while (ok == 0);
 
+      /* if inexact is zero, then u is exactly ac-bd, otherwise fix the sign
+         of the inexact flag for u, which was rounded away from ac-bd */
+      if (inexact != 0)
+        inexact = mpfr_sgn (u);
+        
       if (mul_i == 0)
       {
          inex_re = mpfr_set (MPC_RE(result), u, MPC_RND_RE(rnd));
