@@ -895,6 +895,10 @@ This function first reads the real part, then @code{+} followed by
 
 The argument @var{base} may be in the range 2 to 36.
 
+Note: since the real part is read with @code{mpfr_inp_str}, it should be
+followed by a whitespace, thus @code{17+I*42} is invalid, but
+@code{17 +I*42} is valid.
+
 Return the number of bytes read, or if an error occurred, return 0.
 @end deftypefun
 
