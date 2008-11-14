@@ -19,7 +19,10 @@ along with the MPC Library; see the file COPYING.LIB.  If not, write to
 the Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston,
 MA 02111-1307, USA. */
 
+#define  _XOPEN_SOURCE /* for fileno */
 #include <stdio.h>
+#include <unistd.h>
+
 #include <stdlib.h>
 #include "gmp.h"
 #include "mpfr.h"
@@ -36,6 +39,7 @@ main (void)
   mpc_t x, z;
   mp_prec_t prec, pr, pi;
   mpfr_t f;
+  int fd;
   FILE *file;
   const char *filename = "mpc_test";
 
@@ -246,6 +250,45 @@ main (void)
       PRINT ("Testing mpc_set_ui_ui\n");
       mpc_set_ui_ui (z, 17, 17, MPC_RNDNN);
     }
+
+
+  /* test out_str with stream=NULL */
+  PRINT ("Testing mpc_out_str\n");
+  mpc_set_si_si (x, 1, -1, MPC_RNDNN);
+  mpc_div_ui (x, x, 3, MPC_RNDDU);
+
+  fflush(stdout);
+  fd = dup(fileno(stdout));
+  freopen(filename, "w", stdout);
+  mpc_out_str (NULL, 2, 0, x, MPC_RNDNN);
+  fflush(stdout);
+  dup2(fd, fileno(stdout));
+  close(fd);
+  clearerr(stdout);
+
+  fflush(stdin);
+  fd = dup(fileno(stdin));
+  freopen(filename, "r", stdin);
+  if (mpc_inp_str (z, NULL, 2, MPC_RNDNN) == 0)
+    {
+      printf ("mpc_inp_str cannot correctly re-read number "
+              "in file %s\n", filename);
+      exit (1);
+    }
+  mpfr_clear_flags (); /* mpc_cmp set erange flag when an operand is
+                          a NaN */
+  if (mpc_cmp (z, x) != 0 || mpfr_erangeflag_p())
+    {
+      printf ("inp_str o out_str <> Id\n");
+      OUT (z);
+      OUT (x);
+      exit (1);
+    }
+  fflush(stdin);
+  dup2(fd, fileno(stdin));
+  close(fd);
+  clearerr(stdin);
+
 
 
   mpc_clear (x);
