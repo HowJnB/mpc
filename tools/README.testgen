@@ -1,0 +1,3 @@
+The subdirectory "testgen" contains some C programs for computing with
+special values that are represented as strings "+inf", "nan" and so on.
+These have been used to obtain data files for some tests.
