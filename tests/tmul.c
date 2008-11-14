@@ -251,7 +251,7 @@ main (void)
   check_regular ();
 
   data_check (f, "mul.dat");
-  tgeneric (f, 2, 1024, 7, 0);
+  tgeneric (f, 2, 4096, 41, 100);
 
   test_end ();
   return 0;
