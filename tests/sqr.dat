@@ -1,6 +1,6 @@
 # Data file for mpc_sqr.
 #
-# Copyright (C) 2008 Philippe Th\'eveny
+# Copyright (C) 2008 Philippe Th\'eveny, Andreas Enge
 #
 # This file is part of the MPC Library.
 #
@@ -126,3 +126,12 @@
 53  0x3ffffffffffffd       53 -0x7ffffffffffff8p+52    53 -0x1fffffffffffff      53  0x1ffffffffffffe      N D
 53 -0xE0B72EA626AF3p-44    53 -0x1FFFFFFE00001Dp-49    53  0x1111111000000fp-53  53 -0xf                   Z D
 53  0xfdbac097c8dc58p+2096 53 -0x7f6e5d4c3b2a2p+1036   53 -0xfedcba9876543p+1024 53  0x10000000000001p-42  U D
+
+# improve test coverage:
+# For op=x+i*y, we need a case where x+y and x-y are inexact at the
+# higher computing precision, and where x and y do not have too
+# distinct exponents so that Karatsuba gets triggered...
+# (2^44 + i*(2^29 + 1))^2 \approx (2^88-2^58) + i*2^45*(2^29+1)
+30 309485009533114692573069312 30 18889465966662952943616  30 17592186044416 30 536870913 N N
+# ...and a case where x+y or x-y are 0.
+4 0 4 2  4 1 4 1 N N
