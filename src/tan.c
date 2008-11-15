@@ -209,7 +209,7 @@ mpc_tan (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
       /* OP is no pure real nor pure imaginary, so the real and imaginary
          parts of its tangent cannot be null. */
       /* This part of code is apparently never reached; AE */
-#if 0
+#if 1 /* PZ: I agree, but until we prove it is never reached, let's keep it. */
       if (mpfr_zero_p (MPC_RE (x)) || mpfr_zero_p (MPC_IM (x)))
         {
           err = prec; /* double precision */

@@ -156,52 +156,38 @@ mpc_sqr (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
       /* compute the real part as u*v, rounded away                    */
       /* determine also the sign of inex_re                            */
       if (mpfr_sgn (u) == 0 || mpfr_sgn (v) == 0)
-      {
-         /* as we have rounded away, the result is exact */
-         mpfr_set_ui (u, 0, GMP_RNDN);
-         mpfr_set_ui (MPC_RE (rop), 0, GMP_RNDN);
-         inex_re = 0;
-         ok = 1;
-      }
+        {
+          /* as we have rounded away, the result is exact */
+          mpfr_set_ui (u, 0, GMP_RNDN);
+          mpfr_set_ui (MPC_RE (rop), 0, GMP_RNDN);
+          inex_re = 0;
+          ok = 1;
+        }
       else if (mpfr_sgn (u) * mpfr_sgn (v) > 0)
-      {
-         inexact |= mpfr_mul (u, u, v, GMP_RNDU); /* error 5 */
-         ok = !inexact | mpfr_can_round (u, prec - 3, GMP_RNDU,
-                            MPC_RND_RE (rnd), MPFR_PREC (MPC_RE (rop)));
-         if (ok)
-         {
-            inex_re = mpfr_set (MPC_RE (rop), u, MPC_RND_RE (rnd));
-            if (inex_re == 0)
-               /* remember that u was already rounded */
-               inex_re = inexact;
-            /* even if rounding did work, we might not know whether the
-               result is too large, too small or exact */
-            else if (inexact && MPC_RND_RE (rnd) == GMP_RNDN
-                && inex_re < 0
-                && !mpfr_can_round (u, prec - 3, GMP_RNDU, GMP_RNDU,
-                                    MPFR_PREC (MPC_RE (rop))))
-               ok = 0;
-         }
-      }
+        {
+          inexact |= mpfr_mul (u, u, v, GMP_RNDU); /* error 5 */
+          ok = !inexact | mpfr_can_round (u, prec - 3, GMP_RNDU, GMP_RNDZ,
+               MPFR_PREC (MPC_RE (rop)) + (MPC_RND_RE (rnd) == GMP_RNDN));
+          if (ok)
+            {
+              inex_re = mpfr_set (MPC_RE (rop), u, MPC_RND_RE (rnd));
+              if (inex_re == 0)
+                /* remember that u was already rounded */
+                inex_re = inexact;
+            }
+        }
       else
-      {
-         inexact |= mpfr_mul (u, u, v, GMP_RNDD); /* error 5 */
-         ok = !inexact | mpfr_can_round (u, prec - 3, GMP_RNDD,
-                              MPC_RND_RE (rnd), MPFR_PREC (MPC_RE (rop)));
-         if (ok)
-         {
-            inex_re = mpfr_set (MPC_RE (rop), u, MPC_RND_RE (rnd));
-            if (inex_re == 0)
-               inex_re = inexact;
-            /* even if rounding did work, we might not know whether the
-               result is too large, too small or exact */
-            else if (inexact && MPC_RND_RE (rnd) == GMP_RNDN
-                && inex_re > 0
-                && !mpfr_can_round (u, prec - 3, GMP_RNDD, GMP_RNDD,
-                                    MPFR_PREC (MPC_RE (rop))))
-               ok = 0;
-         }
-      }
+        {
+          inexact |= mpfr_mul (u, u, v, GMP_RNDD); /* error 5 */
+          ok = !inexact | mpfr_can_round (u, prec - 3, GMP_RNDD, GMP_RNDZ,
+               MPFR_PREC (MPC_RE (rop)) + (MPC_RND_RE (rnd) == GMP_RNDN));
+          if (ok)
+            {
+              inex_re = mpfr_set (MPC_RE (rop), u, MPC_RND_RE (rnd));
+              if (inex_re == 0)
+                inex_re = inexact;
+            }
+        }
    }
    while (!ok);
 
