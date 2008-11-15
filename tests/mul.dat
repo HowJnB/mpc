@@ -1,6 +1,6 @@
 # Data file for mpc_mul
 #
-# Copyright (C) 2008 Philippe Th\'eveny, Andreas Enge
+# Copyright (C) 2008 Philippe Th\'eveny, Andreas Enge, Paul Zimmermann
 #
 # This file is part of the MPC Library.
 #
@@ -117,3 +117,7 @@
 4096 0 4096 2   4096 1 4096 1  4096 1 4096 1  N N
 # trigger the line reducing prec_x to prec_u
 4096 0 4096 2   40960 1 40960 1  40960 1 40960 1  N N
+# another particular cases
+6 -0x9p-497 6 0x33p-315   6 -0x1dp-73 6 0x3p148   6 0x11p-463 6 0x3p-645  N N
+6 0x33p-315 6 0x9p-497    6 0x3p148 6 0x1dp-73    6 0x11p-463 6 0x3p-645  N N
+4 0x1p-1902 4 0x3p-1085   4 -0x1p-892 4 -0x3p-75    4 -0x1p-1010 4 0      N N

@@ -1,4 +1,4 @@
-/* mpc_mul -- Multiply two complex numbers.
+/* mpc_mul -- Multiply two complex numbers
 
 Copyright (C) 2002, 2004, 2005, 2008 Andreas Enge, Paul Zimmermann, Philippe Th\'eveny
 
@@ -397,9 +397,7 @@ mpc_mul_karatsuba (mpc_ptr rop, mpc_srcptr op1, mpc_srcptr op2, mpc_rnd_t rnd)
 
    /* now sign_x * sign_u >= 0 */
    do
-   {
-      do
-      {
+     {
          /* the following should give failures with prob. <= 1/prec */
          prec += mpc_ceil_log2 (prec) + 3;
 
@@ -444,7 +442,7 @@ mpc_mul_karatsuba (mpc_ptr rop, mpc_srcptr op1, mpc_srcptr op2, mpc_rnd_t rnd)
            /* +1 is necessary for a potential carry */
 	     /* ensure we do not use a too large precision */
 	     if (prec_x > prec_u)
-	       prec_x = prec_u;
+               prec_x = prec_u;
 	     if (prec_x > prec)
 	       mpfr_prec_round (x, prec_x, GMP_RNDN);
 	   }
@@ -457,90 +455,57 @@ mpc_mul_karatsuba (mpc_ptr rop, mpc_srcptr op1, mpc_srcptr op2, mpc_rnd_t rnd)
          inexact |= mpfr_add (u, u, x, rnd_u); /* ac - bd */
 
          ok = inexact == 0 ||
-           mpfr_can_round (u, prec_u - 3, rnd_u, rnd_re, prec_re);
-      }
-      while (ok == 0);
-
-      /* if inexact is zero, then u is exactly ac-bd, otherwise fix the sign
-         of the inexact flag for u, which was rounded away from ac-bd */
-      if (inexact != 0)
-        inexact = mpfr_sgn (u);
-        
-      if (mul_i == 0)
-      {
-         inex_re = mpfr_set (MPC_RE(result), u, MPC_RND_RE(rnd));
-         if (inex_re == 0)
-         {
-            inex_re = inexact; /* u is rounded away from 0 */
-            inex_im = mpfr_add (MPC_IM(result), v, w, MPC_RND_IM(rnd));
-         }
-         else if (MPC_RND_RE (rnd) == GMP_RNDN && inexact != 0
-            && MPC_INEX_POS (inex_re) == MPC_INEX_POS (-MPFR_SIGN (u))
-            && !(MPFR_SIGN (u) > 0
-                 ? mpfr_can_round (u, prec - 3, rnd_u, GMP_RNDU, prec_re)
-                 : mpfr_can_round (u, prec - 3, rnd_u, GMP_RNDD, prec_re)))
-            /* rounding did work, but we do not know whether we are larger
-               or smaller than the correct result */
-         {
-            inex_im = 0; /* just to avoid the gcc warning message */
-            ok = 0;
-         }
-         else
-            inex_im = mpfr_add (MPC_IM(result), v, w, MPC_RND_IM(rnd));
-      }
-      else if (mul_i == 1) /* (x+i*y)/i = y - i*x */
-      {
-         inex_im = mpfr_neg (MPC_IM(result), u, MPC_RND_IM(rnd));
-         if (inex_im == 0)
-         {
-            inex_im = -inexact; /* u is rounded away from 0 */
-            inex_re = mpfr_add (MPC_RE(result), v, w, MPC_RND_RE(rnd));
-         }
-         else if (MPC_RND_IM (rnd) == GMP_RNDN && inexact != 0
-            && MPC_INEX_POS (inex_im) == MPC_INEX_POS (MPFR_SIGN (u))
-            && !(MPFR_SIGN (u) > 0
-                 ? mpfr_can_round (u, prec - 3, rnd_u, GMP_RNDU, prec_re)
-                 : mpfr_can_round (u, prec - 3, rnd_u, GMP_RNDD, prec_re)))
-            /* rounding did work, but we do not know whether we are larger
-               or smaller than the correct result */
-         {
-            inex_re = 0; /* just to avoid the gcc warning message */
-            ok = 0;
-         }
-         else
-            inex_re = mpfr_add (MPC_RE(result), v, w, MPC_RND_RE(rnd));
-
-      }
-      else /* mul_i = 2, z/i^2 = -z */
-      {
-         inex_re = mpfr_neg (MPC_RE(result), u, MPC_RND_RE(rnd));
-         if (inex_re == 0)
-         {
-            inex_re = -inexact; /* u is rounded away from 0 */
-            inex_im = -mpfr_add (MPC_IM(result), v, w,
-                                 INV_RND(MPC_RND_IM(rnd)));
-            mpfr_neg (MPC_IM(result), MPC_IM(result), MPC_RND_IM(rnd));
-         }
-         else if (MPC_RND_RE (rnd) == GMP_RNDN && inexact != 0
-            && MPC_INEX_POS (inex_re) == MPC_INEX_POS (MPFR_SIGN (u))
-            && !(MPFR_SIGN (u) > 0
-                 ? mpfr_can_round (u, prec - 3, rnd_u, GMP_RNDU, prec_re)
-                 : mpfr_can_round (u, prec - 3, rnd_u, GMP_RNDD, prec_re)))
-            /* rounding did work, but we do not know whether we are larger
-               or smaller than the correct result */
-         {
-            inex_im = 0; /* just to avoid the gcc warning message */
-            ok = 0;
-         }
-         else
-         {
-            inex_im = -mpfr_add (MPC_IM(result), v, w,
-                                 INV_RND(MPC_RND_IM(rnd)));
-            mpfr_neg (MPC_IM(result), MPC_IM(result), MPC_RND_IM(rnd));
-         }
-      }
-   }
+           mpfr_can_round (u, prec_u - 3, rnd_u, GMP_RNDZ,
+                           prec_re + (rnd_re == GMP_RNDN));
+         /* this ensures both we can round correctly and determine the correct
+            inexact flag (for rounding to nearest) */
+     }
    while (ok == 0);
+
+   /* if inexact is zero, then u is exactly ac-bd, otherwise fix the sign
+      of the inexact flag for u, which was rounded away from ac-bd */
+   if (inexact != 0)
+     inexact = mpfr_sgn (u);
+        
+   if (mul_i == 0)
+     {
+       inex_re = mpfr_set (MPC_RE(result), u, MPC_RND_RE(rnd));
+       if (inex_re == 0)
+         {
+           inex_re = inexact; /* u is rounded away from 0 */
+           inex_im = mpfr_add (MPC_IM(result), v, w, MPC_RND_IM(rnd));
+         }
+       else
+         inex_im = mpfr_add (MPC_IM(result), v, w, MPC_RND_IM(rnd));
+     }
+   else if (mul_i == 1) /* (x+i*y)/i = y - i*x */
+     {
+       inex_im = mpfr_neg (MPC_IM(result), u, MPC_RND_IM(rnd));
+       if (inex_im == 0)
+         {
+           inex_im = -inexact; /* u is rounded away from 0 */
+           inex_re = mpfr_add (MPC_RE(result), v, w, MPC_RND_RE(rnd));
+         }
+       else
+         inex_re = mpfr_add (MPC_RE(result), v, w, MPC_RND_RE(rnd));
+     }
+   else /* mul_i = 2, z/i^2 = -z */
+     {
+       inex_re = mpfr_neg (MPC_RE(result), u, MPC_RND_RE(rnd));
+       if (inex_re == 0)
+         {
+           inex_re = -inexact; /* u is rounded away from 0 */
+           inex_im = -mpfr_add (MPC_IM(result), v, w,
+                                INV_RND(MPC_RND_IM(rnd)));
+           mpfr_neg (MPC_IM(result), MPC_IM(result), MPC_RND_IM(rnd));
+         }
+       else
+         {
+           inex_im = -mpfr_add (MPC_IM(result), v, w,
+                                INV_RND(MPC_RND_IM(rnd)));
+           mpfr_neg (MPC_IM(result), MPC_IM(result), MPC_RND_IM(rnd));
+         }
+     }
 
    mpc_set (rop, result, MPC_RNDNN);
 
