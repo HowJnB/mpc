@@ -19,6 +19,8 @@ Creating a new release
 3) Execute "autoreconf; touch doc/mpc.texi; make dist".
    This updates the date and version number in doc/version.texi and
    creates the tarball for distribution.
-4) Update the version number in configure.ac, INSTALL and mpc.h,
-   and reactivate the -Werror option in configure.ac.
-5) Commit the changes to svn.
+4) Create an svn tag from inside the svn root:
+   svn cp trunk tags/VERSION -m "Tagging release VERSION"
+5) After the release, update the version number in configure.ac, INSTALL
+   and mpc.h, and reactivate the -Werror option in configure.ac.
+6) Commit the changes to svn.
