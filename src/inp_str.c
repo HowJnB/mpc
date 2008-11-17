@@ -63,7 +63,7 @@ mpc_inp_str (mpc_ptr rop, FILE *stream, int base, mpc_rnd_t rnd_mode)
 
   c = getc (stream);
   size ++;
-  if (c != 'I')
+  if (c != 'I' && c != 'i')
     return 0; /* error */
 
   c = getc (stream);

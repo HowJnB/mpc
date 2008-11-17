@@ -890,8 +890,8 @@ if the base is 10 or less, alternatively @samp{MeN} or @samp{MEN}.
 @samp{M} is the mantissa and
 @samp{N} is the exponent.  The mantissa is always in the specified base.  The
 exponent is always read in decimal.
-This function first reads the real part, then @code{+} followed by
-@code{I*} and the imaginary part.
+This function first reads the real part, then @code{+} or @code{-} followed by
+@code{I*} or @code{i*} and the absolute value of the imaginary part.
 
 The argument @var{base} may be in the range 2 to 36.
 
