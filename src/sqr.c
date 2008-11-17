@@ -160,7 +160,7 @@ mpc_sqr (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
       else if (mpfr_sgn (u) * mpfr_sgn (v) > 0)
         {
           inexact |= mpfr_mul (u, u, v, GMP_RNDU); /* error 5 */
-          ok = !inexact | mpfr_can_round (u, prec - 5, GMP_RNDU, GMP_RNDZ,
+          ok = !inexact | mpfr_can_round (u, prec - 3, GMP_RNDU, GMP_RNDZ,
                MPFR_PREC (MPC_RE (rop)) + (MPC_RND_RE (rnd) == GMP_RNDN));
           if (ok)
             {
@@ -173,7 +173,7 @@ mpc_sqr (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
       else
         {
           inexact |= mpfr_mul (u, u, v, GMP_RNDD); /* error 5 */
-          ok = !inexact | mpfr_can_round (u, prec - 5, GMP_RNDD, GMP_RNDZ,
+          ok = !inexact | mpfr_can_round (u, prec - 3, GMP_RNDD, GMP_RNDZ,
                MPFR_PREC (MPC_RE (rop)) + (MPC_RND_RE (rnd) == GMP_RNDN));
           if (ok)
             {
