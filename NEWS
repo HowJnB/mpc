@@ -7,10 +7,10 @@ Recent changes:
     - version number: MPC_VERSION_MAJOR, MPC_VERSION_MINOR,
       MPC_VERSION_PATCHLEVEL, MPC_VERSION_STRING
     - reference to number parts: mpc_realref and mpc_imagref
-  - configure checks on recent mpfr library (version >= 4.2)
-  - new configure options: --with-gmp-lib, --with-gmp-include,
+  - Configure checks on recent mpfr library (version >= 4.2)
+  - New configure options: --with-gmp-lib, --with-gmp-include,
      --with-mpfr-lib, and --with-mpfr-include
-  - export declarations for MSWindows, makefile.vc updated (thanks to Mickael
+  - Export declarations for MSWindows, makefile.vc updated (thanks to Mickael
     Gastineau)
   - Test framework rewritten
   - Optimisations:

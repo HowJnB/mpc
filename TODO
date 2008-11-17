@@ -3,10 +3,6 @@ Efficiency:
   Once mpc_sin_cos exists, improve mpc_tan to use it
 
 New functions to implement:
-- from Philippe Théveny 25 September 2008:
-  mpc_get_real/mpc_get_imag for copying the real and
-  imaginary part, and mpc_realref/mpc_imagref for returning
-  pointers to them (MPC_RE and MPC_IM already do the job)
 - from Andreas Enge 16 September 2008:
   mpc_sin_cos; needs mpfr_sinh_cosh
 - from Mickael Gastineau <gastineau@imcce.fr> 14 Apr 2008:
@@ -23,7 +19,6 @@ New functions to implement:
 - from Andreas Enge and Philippe Théveny 9 April 2008
   work plan for completing functionality
   1) inverse trigonometric functions
-  2) cproj at any moment (relatively easy)
 - from Andreas Enge and Philippe Théveny 17 July 2008
   agm (and complex logarithm with agm ?)
 
