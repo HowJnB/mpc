@@ -22,17 +22,13 @@ MA 02111-1307, USA. */
 #define  _XOPEN_SOURCE /* for fileno */
 #include <stdio.h>
 #include <unistd.h>
-
 #include <stdlib.h>
-#include "gmp.h"
-#include "mpfr.h"
 #include "mpc.h"
 #include "mpc-impl.h"
 
 #define PRINT(x) {}
 
 /* Crude tests for some functions. */
-/* TODO: use tgeneric instead and remove this. */
 int
 main (void)
 {
@@ -273,7 +269,7 @@ main (void)
       mpc_set_ui_ui (z, 17, 17, MPC_RNDNN);
     }
 
-
+#ifndef NO_STREAM_REDIRECTION
   /* test out_str with stream=NULL */
   PRINT ("Testing mpc_out_str\n");
   mpc_set_si_si (x, 1, -1, MPC_RNDNN);
@@ -310,8 +306,7 @@ main (void)
   dup2(fd, fileno(stdin));
   close(fd);
   clearerr(stdin);
-
-
+#endif /* NO_STREAM_REDIRECTION */
 
   mpc_clear (x);
   mpc_clear (z);

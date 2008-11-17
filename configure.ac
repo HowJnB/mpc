@@ -127,7 +127,7 @@ error
 
 # Checks for header files.
 AC_HEADER_STDC
-AC_CHECK_HEADERS([limits.h sys/time.h])
+AC_CHECK_HEADERS([limits.h unistd.h sys/time.h])
 
 # Checks for typedefs, structures, and compiler characteristics.
 AC_C_CONST
@@ -136,6 +136,8 @@ AC_HEADER_TIME
 
 # Checks for library functions.
 AC_CHECK_FUNCS([gettimeofday])
+AC_CHECK_FUNCS([dup dup2 fileno],,
+        [AC_DEFINE([NO_STREAM_REDIRECTION],1,[Do not check mpc_out_str on stdout])])
 
 # Checks for CC flags.
 # Modification PT: move in the last place so as to avoid test failure in
