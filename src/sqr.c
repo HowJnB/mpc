@@ -20,13 +20,8 @@ the Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston,
 MA 02111-1307, USA. */
 
 #include <stdio.h>
-#include "gmp.h"
-#include "mpfr.h"
 #include "mpc.h"
 #include "mpc-impl.h"
-
-#define INV_RND(r) \
-   (((r) == GMP_RNDU) ? GMP_RNDD : (((r) == GMP_RNDD) ? GMP_RNDU : (r)))
 
 int
 mpc_sqr (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
@@ -158,7 +153,6 @@ mpc_sqr (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
       if (mpfr_sgn (u) == 0 || mpfr_sgn (v) == 0)
         {
           /* as we have rounded away, the result is exact */
-          mpfr_set_ui (u, 0, GMP_RNDN);
           mpfr_set_ui (MPC_RE (rop), 0, GMP_RNDN);
           inex_re = 0;
           ok = 1;
@@ -166,7 +160,7 @@ mpc_sqr (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
       else if (mpfr_sgn (u) * mpfr_sgn (v) > 0)
         {
           inexact |= mpfr_mul (u, u, v, GMP_RNDU); /* error 5 */
-          ok = !inexact | mpfr_can_round (u, prec - 3, GMP_RNDU, GMP_RNDZ,
+          ok = !inexact | mpfr_can_round (u, prec - 5, GMP_RNDU, GMP_RNDZ,
                MPFR_PREC (MPC_RE (rop)) + (MPC_RND_RE (rnd) == GMP_RNDN));
           if (ok)
             {
@@ -179,7 +173,7 @@ mpc_sqr (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
       else
         {
           inexact |= mpfr_mul (u, u, v, GMP_RNDD); /* error 5 */
-          ok = !inexact | mpfr_can_round (u, prec - 3, GMP_RNDD, GMP_RNDZ,
+          ok = !inexact | mpfr_can_round (u, prec - 5, GMP_RNDD, GMP_RNDZ,
                MPFR_PREC (MPC_RE (rop)) + (MPC_RND_RE (rnd) == GMP_RNDN));
           if (ok)
             {
@@ -192,9 +186,8 @@ mpc_sqr (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
    while (!ok);
 
    /* compute the imaginary part as 2*x*y, which is always possible */
-   inex_im = mpfr_mul (MPC_IM (rop), x, MPC_IM (op),
-                          MPC_RND_IM (rnd));
-   mpfr_set_exp (MPC_IM (rop), mpfr_get_exp (MPC_IM (rop)) + 1);
+   inex_im = mpfr_mul (MPC_IM (rop), x, MPC_IM (op), MPC_RND_IM (rnd));
+   mpfr_mul_2ui (MPC_IM (rop), MPC_IM (rop), 1, GMP_RNDN);
 
    mpfr_clear (u);
    mpfr_clear (v);
