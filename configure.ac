@@ -23,7 +23,7 @@ MA 02111-1307, USA. */
 # Process this file with autoconf to produce a configure script.
 
 AC_PREREQ(2.59)
-AC_INIT(mpc, 0.5.1, mpc-discuss@lists.gforge.inria.fr)
+AC_INIT(mpc, 0.6, mpc-discuss@lists.gforge.inria.fr)
 AC_CONFIG_SRCDIR([src/mpc-impl.h])
 AC_CONFIG_HEADER([config.h])
 

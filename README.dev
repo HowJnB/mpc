@@ -26,5 +26,5 @@ Creating a new release
       makeinfo --html --no-split mpc.texi
    and the resulting mpc.html is copied to content_html.php.
 6) After the release, update the version number in configure.ac, INSTALL
-   and mpc.h, and reactivate the -Werror option in configure.ac.
+   and src/mpc.h, and reactivate the -Werror option in configure.ac.
 7) Commit the changes to svn.
