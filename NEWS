@@ -1,4 +1,4 @@
-Recent changes:
+Changes in version 0.5.1:
   - New functions:
     - mpc_set_fr_fr
     - mpc_real, mpc_imag
@@ -6,19 +6,20 @@ Recent changes:
   - New macros:
     - version number: MPC_VERSION_MAJOR, MPC_VERSION_MINOR,
       MPC_VERSION_PATCHLEVEL, MPC_VERSION_STRING
-    - reference to number parts: mpc_realref and mpc_imagref
-  - Configure checks on recent mpfr library (version >= 4.2)
+    - references to number parts: mpc_realref and mpc_imagref
+  - Test framework rewritten
+  - Configure checks for recent gmp (>= 4.2) and mpfr (>= 2.3)
+    libraries
   - New configure options: --with-gmp-lib, --with-gmp-include,
      --with-mpfr-lib, and --with-mpfr-include
-  - Export declarations for MSWindows, makefile.vc updated (thanks to Mickael
-    Gastineau)
-  - Test framework rewritten
+  - Export declarations for MSWindows, makefile.vc updated (thanks to
+    Mickael Gastineau)
   - Optimisations:
     - mul_fr, sin, cos
   - Bug fixes:
     - configure looks for gmp first, then for mpfr
-    - set_fr, fr_sub, mul_fr, div_fr, div, cos, sqr
-    - fix special values handling: log, sqr, exp, sqrt, mul, norm
+    - cos, div, div_fr, fr_sub, mul_fr, set_fr, sqr
+    - fix handling of special values: exp, log, mul, norm, sqr, sqrt
 
 Changes in version 0.5 ("Aconitum neomontanum"):
   - Support for autotools

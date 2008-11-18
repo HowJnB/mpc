@@ -29,7 +29,7 @@ MA 02111-1307, USA. */
 #define MPC_VERSION_MAJOR 0
 #define MPC_VERSION_MINOR 5
 #define MPC_VERSION_PATCHLEVEL 1
-#define MPC_VERSION_STRING "0.5.1-dev"
+#define MPC_VERSION_STRING "0.5.1"
 
 /* Check if stdio.h is included */
 #if defined (_GMP_H_HAVE_FILE)

@@ -18,7 +18,7 @@ New functions to implement:
   base 16 together with the precision of the variable)
 - from Andreas Enge and Philippe Théveny 9 April 2008
   work plan for completing functionality
-  1) inverse trigonometric functions
+    inverse trigonometric functions
 - from Andreas Enge and Philippe Théveny 17 July 2008
   agm (and complex logarithm with agm ?)
 
