@@ -114,15 +114,15 @@ AC_COMPILE_IFELSE(
         [AC_LANG_SOURCE(
         [[
 #include "mpfr.h"
-#if (MPFR_VERSION_MAJOR*100 + MPFR_VERSION_MINOR*10 < 230)
-# error "min MPFR version is 2.3.0"
+#if (MPFR_VERSION_MAJOR*100 + MPFR_VERSION_MINOR*10 + MPFR_VERSION_PATCHLEVEL < 231)
+# error "min MPFR version is 2.3.1"
 error
 #endif
         ]])],
         [AC_MSG_RESULT(yes)],
         [
          AC_MSG_RESULT(no)
-         AC_MSG_ERROR([MPFR version >= 2.3.0 required])
+         AC_MSG_ERROR([MPFR version >= 2.3.1 required])
          ])
 
 # Checks for header files.
