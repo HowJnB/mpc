@@ -105,7 +105,7 @@ error
         [AC_MSG_RESULT(yes)],
         [
         AC_MSG_RESULT(no)
-        AC_MSG_ERROR([GMP 4.2 min required])
+        AC_MSG_ERROR([GMP version >= 4.2 required])
         ])
 
 # Check for a recent MPFR
@@ -122,7 +122,7 @@ error
         [AC_MSG_RESULT(yes)],
         [
          AC_MSG_RESULT(no)
-         AC_MSG_ERROR([MPFR 2.3.0 min required])
+         AC_MSG_ERROR([MPFR version >= 2.3.0 required])
          ])
 
 # Checks for header files.
