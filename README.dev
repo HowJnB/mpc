@@ -21,6 +21,10 @@ Creating a new release
    creates the tarball for distribution.
 4) Create an svn tag from inside the svn root:
    svn cp trunk tags/VERSION -m "Tagging release VERSION"
-5) After the release, update the version number in configure.ac, INSTALL
+5) Update the web page inside svn and on the server.
+   The html documentation is created with
+      makeinfo --html --no-split mpc.texi
+   and the resulting mpc.html is copied to content_html.php.
+6) After the release, update the version number in configure.ac, INSTALL
    and mpc.h, and reactivate the -Werror option in configure.ac.
-6) Commit the changes to svn.
+7) Commit the changes to svn.
