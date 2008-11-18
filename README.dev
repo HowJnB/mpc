@@ -11,20 +11,21 @@ Creating a new release
 ----------------------
 
 1) Check the version number in configure.ac ("AC_INIT (mpc, _version_...)"),
-   in INSTALL, and in src/mpc.h (remove suffix in MPC_VERSION_STRING), and
-   disactivate the -Werror option in configure.ac.
-2) Check that NEWS, BUGS and TODO are up to date, and that the minimal
+   in INSTALL, and in src/mpc.h (remove suffix in MPC_VERSION_STRING).
+2) Disactivate the -Werror option in configure.ac.
+3) Check that NEWS, BUGS and TODO are up to date, and that the minimal
    version numbers of gmp and mpfr in configure.ac, INSTALL and
    doc/mpc.texi are correct.
-3) Execute "autoreconf; touch doc/mpc.texi; make distcheck".
+4) Execute "autoreconf; touch doc/mpc.texi; make distcheck".
    This updates the date and version number in doc/version.texi and
    creates the tarball for distribution.
-4) Create an svn tag from inside the svn root:
+5) Create an svn tag from inside the svn root:
    svn cp trunk tags/VERSION -m "Tagging release VERSION"
-5) Update the web page inside svn and on the server.
+6) Update the web page inside svn and on the server.
    The html documentation is created with
       makeinfo --html --no-split mpc.texi
    and the resulting mpc.html is copied to content_html.php.
-6) After the release, update the version number in configure.ac, INSTALL
-   and src/mpc.h, and reactivate the -Werror option in configure.ac.
-7) Commit the changes to svn.
+7) After the release, update the version number in configure.ac, INSTALL
+   and src/mpc.h.
+8) Reactivate the -Werror option in configure.ac.
+9) Commit the changes to svn.
