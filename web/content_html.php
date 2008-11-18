@@ -1,9 +1,9 @@
 <html lang="en">
 <head>
-<title>MPC 0.5</title>
+<title>MPC 0.5.1</title>
 <meta http-equiv="Content-Type" content="text/html">
-<meta name="description" content="MPC 0.5">
-<meta name="generator" content="makeinfo 4.8">
+<meta name="description" content="MPC 0.5.1">
+<meta name="generator" content="makeinfo 4.11">
 <link title="Top" rel="top" href="#Top">
 <link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
 <!--
@@ -38,7 +38,7 @@ into another language, under the above conditions for modified versions.-->
 --></style>
 </head>
 <body>
-<h1 class="settitle">MPC 0.5</h1>
+<h1 class="settitle">MPC 0.5.1</h1>
 <div class="node">
 <p><hr>
 <a name="Top"></a>
@@ -51,7 +51,7 @@ Up:&nbsp;<a rel="up" accesskey="u" href="#dir">(dir)</a>
 <h2 class="unnumbered">MPC</h2>
 
 <p>This manual documents how to install and use the Multiple Precision
-Complex Library, version 0.5
+Complex Library, version 0.5.1
 
 <ul class="menu">
 <li><a accesskey="1" href="#Copying">Copying</a>:                      MPC Copying Conditions (LGPL). 
@@ -77,6 +77,7 @@ Complex Library, version 0.5
 <li><a href="#Assigning-Complex-Numbers">Assigning Complex Numbers</a>
 <li><a href="#Simultaneous-Init-_0026-Assign">Simultaneous Init &amp; Assign</a>
 <li><a href="#Complex-Comparison">Complex Comparison</a>
+<li><a href="#Projection-_0026-Decomposing">Projection &amp; Decomposing</a>
 <li><a href="#Basic-Arithmetic">Basic Arithmetic</a>
 <li><a href="#Power-Functions-and-Logarithm">Power Functions and Logarithm</a>
 <li><a href="#Trigonometric-Functions">Trigonometric Functions</a>
@@ -149,61 +150,57 @@ Up:&nbsp;<a rel="up" accesskey="u" href="#Top">Top</a>
 
 <p><a name="index-Installation-3"></a>
 To build MPC, you first have to install GNU MP (version 4.2.2 or higher) and
-MPFR (version 2.3.0 or higher) on your computer.  You need a C compiler,
+MPFR (version 2.3.1 or higher) on your computer.  You need a C compiler,
 preferably GCC, but any reasonable compiler should work. And you need a
-standard Unix `<samp><span class="samp">make</span></samp>' program, plus some other standard Unix utility
+standard Unix &lsquo;<samp><span class="samp">make</span></samp>&rsquo; program, plus some other standard Unix utility
 programs.
 
    <p>Here are the steps needed to install the library on Unix systems:
 
      <ol type=1 start=1>
-<li>`<samp><span class="samp">tar xzf mpc-0.5.tar.gz</span></samp>'
+<li>&lsquo;<samp><span class="samp">tar xzf mpc-0.5.1.tar.gz</span></samp>&rsquo;
 
-     <li>`<samp><span class="samp">cd mpc-0.5</span></samp>'
+     <li>&lsquo;<samp><span class="samp">cd mpc-0.5.1</span></samp>&rsquo;
 
-     <li>`<samp><span class="samp">./configure</span></samp>'
+     <li>&lsquo;<samp><span class="samp">./configure</span></samp>&rsquo;
 
      <p>if GMP and MPFR are installed into standard directories, that is, directories
 that are searched by default by the compiler and the linking tools.
 
-     <p>`<samp><span class="samp">./configure --with-gmp=&lt;gmp_install_dir&gt;</span></samp>'
+     <p>&lsquo;<samp><span class="samp">./configure --with-gmp=&lt;gmp_install_dir&gt;</span></samp>&rsquo;
 
-     <p>is used to indicate a different location where GMP is installed.
+     <p>is used to indicate a different location where GMP is
+installed. Alternatively, you can specify directly GMP include and GMP lib
+directories with &lsquo;<samp><span class="samp">./configure --with-gmp-lib=&lt;gmp_lib_dir&gt;
+--with-gmp-include=&lt;gmp_include_dir&gt;</span></samp>&rsquo;.
 
-     <p>`<samp><span class="samp">./configure --with-mpfr=&lt;mpfr_install_dir&gt;</span></samp>'
+     <p>&lsquo;<samp><span class="samp">./configure --with-mpfr=&lt;mpfr_install_dir&gt;</span></samp>&rsquo;
 
-     <p>is used to indicate a different location where MPFR is installed.
+     <p>is used to indicate a different location where MPFR is
+installed. Alternatively, you can specify directly MPFR include and MPFR lib
+directories with &lsquo;<samp><span class="samp">./configure --with-mpf-lib=&lt;mpfr_lib_dir&gt;
+--with-mpfr-include=&lt;mpfr_include_dir&gt;</span></samp>&rsquo;.
 
-     <p>`<samp><span class="samp">./configure --with-gmp=&lt;gmp_install_dir&gt; --with-mpfr=&lt;mpfr_install_dir&gt;</span></samp>'
-
-     <p>is used to indicate different locations of GMP and MPFR.
-
-     <p><em>Warning!</em> Do not use these options if you have CPPFLAGS and/or LDFLAGS
-containing a -I or -L option with a directory that contains a GMP header or
-library file, as these options just add -I and -L options to CPPFLAGS and
-LDFLAGS <em>after</em> the ones that are currently declared, so that DIR will
-have a lower precedence. Also, this may not work if DIR is a system directory.
-
-     <li>`<samp><span class="samp">make</span></samp>'
+     <li>&lsquo;<samp><span class="samp">make</span></samp>&rsquo;
 
      <p>This compiles MPC in the working directory.
 
-     <li>`<samp><span class="samp">make check</span></samp>'
+     <li>&lsquo;<samp><span class="samp">make check</span></samp>&rsquo;
 
      <p>This will make sure MPC was built correctly.
 
      <p>If you get error messages, please report them to
-`<samp><span class="samp">mpc-discuss@lists.gforge.inria.fr</span></samp>' (See <a href="#Reporting-Bugs">Reporting Bugs</a>, for
+&lsquo;<samp><span class="samp">mpc-discuss@lists.gforge.inria.fr</span></samp>&rsquo; (See <a href="#Reporting-Bugs">Reporting Bugs</a>, for
 information on what to include in useful bug reports).
 
-     <li>`<samp><span class="samp">make install</span></samp>'
+     <li>&lsquo;<samp><span class="samp">make install</span></samp>&rsquo;
 
      <p>This will copy the file <samp><span class="file">mpc.h</span></samp> to the directory
 <samp><span class="file">/usr/local/include</span></samp>, the file <samp><span class="file">libmpc.a</span></samp> to the directory
 <samp><span class="file">/usr/local/lib</span></samp>, and the file <samp><span class="file">mpc.info</span></samp> to the directory
-<samp><span class="file">/usr/local/share/info</span></samp> (or if you passed the `<samp><span class="samp">--prefix</span></samp>' option to
+<samp><span class="file">/usr/local/share/info</span></samp> (or if you passed the &lsquo;<samp><span class="samp">--prefix</span></samp>&rsquo; option to
 <samp><span class="file">configure</span></samp>, using the prefix directory given as argument to
-`<samp><span class="samp">--prefix</span></samp>' instead of <samp><span class="file">/usr/local</span></samp>). Note: you need write permissions
+&lsquo;<samp><span class="samp">--prefix</span></samp>&rsquo; instead of <samp><span class="file">/usr/local</span></samp>). Note: you need write permissions
 on these directories.
 
         </ol>
@@ -213,45 +210,45 @@ on these directories.
 <p>There are some other useful make targets:
 
      <ul>
-<li>`<samp><span class="samp">mpc.info</span></samp>' or `<samp><span class="samp">info</span></samp>'
+<li>&lsquo;<samp><span class="samp">info</span></samp>&rsquo;
 
      <p>Create an info version of the manual, in <samp><span class="file">mpc.info</span></samp>.
 
-     <li>`<samp><span class="samp">mpc.pdf</span></samp>' or `<samp><span class="samp">pdf</span></samp>'
+     <li>&lsquo;<samp><span class="samp">pdf</span></samp>&rsquo;
 
-     <p>Create a PDF version of the manual, in <samp><span class="file">mpc.pdf</span></samp>.
+     <p>Create a PDF version of the manual, in <samp><span class="file">doc/mpc.pdf</span></samp>.
 
-     <li>`<samp><span class="samp">mpc.dvi</span></samp>' or `<samp><span class="samp">dvi</span></samp>'
+     <li>&lsquo;<samp><span class="samp">dvi</span></samp>&rsquo;
 
-     <p>Create a DVI version of the manual, in <samp><span class="file">mpc.dvi</span></samp>.
+     <p>Create a DVI version of the manual, in <samp><span class="file">doc/mpc.dvi</span></samp>.
 
-     <li>`<samp><span class="samp">mpc.ps</span></samp>' or `<samp><span class="samp">ps</span></samp>'
+     <li>&lsquo;<samp><span class="samp">ps</span></samp>&rsquo;
 
-     <p>Create a Postscript version of the manual, in <samp><span class="file">mpc.ps</span></samp>.
+     <p>Create a Postscript version of the manual, in <samp><span class="file">doc/mpc.ps</span></samp>.
 
-     <li>`<samp><span class="samp">mpc.html</span></samp>' or `<samp><span class="samp">html</span></samp>'
+     <li>&lsquo;<samp><span class="samp">html</span></samp>&rsquo;
 
-     <p>Create an HTML version of the manual, in several pages in the directory
-<samp><span class="file">mpc.html</span></samp>; if you want only one output HTML file, then type
-`<samp><span class="samp">makeinfo --html --no-split mpc.texi</span></samp>' instead.
+     <p>Create an HTML version of the manual, in several pages in the
+directory <samp><span class="file">doc/mpc.html</span></samp>; if you want only one output HTML file,
+then type &lsquo;<samp><span class="samp">makeinfo --html --no-split mpc.texi</span></samp>&rsquo; instead.
 
-     <li>`<samp><span class="samp">clean</span></samp>'
+     <li>&lsquo;<samp><span class="samp">clean</span></samp>&rsquo;
 
      <p>Delete all object files and archive files, but not the configuration files.
 
-     <li>`<samp><span class="samp">distclean</span></samp>'
+     <li>&lsquo;<samp><span class="samp">distclean</span></samp>&rsquo;
 
      <p>Delete all files not included in the distribution.
 
-     <li>`<samp><span class="samp">uninstall</span></samp>'
+     <li>&lsquo;<samp><span class="samp">uninstall</span></samp>&rsquo;
 
-     <p>Delete all files copied by `<samp><span class="samp">make install</span></samp>'. 
+     <p>Delete all files copied by &lsquo;<samp><span class="samp">make install</span></samp>&rsquo;. 
 </ul>
 
 <h3 class="section">2.2 Known Build Problems</h3>
 
 <p>No build problems are known. Please report any problems you encounter to
-`<samp><span class="samp">mpc-discuss@lists.gforge.inria.fr</span></samp>'. 
+&lsquo;<samp><span class="samp">mpc-discuss@lists.gforge.inria.fr</span></samp>&rsquo;. 
 See <a href="#Reporting-Bugs">Reporting Bugs</a>.
 
 <div class="node">
@@ -282,15 +279,15 @@ bug.  Include instructions on how to run the test case.
 printed are incorrect and in that case, in what way.
 
    <p>Please include compiler version information in your bug report. 
-This can be extracted using `<samp><span class="samp">gcc -v</span></samp>',
-or `<samp><span class="samp">cc -V</span></samp>' on some machines. 
-Also, include the output from `<samp><span class="samp">uname -a</span></samp>'.
+This can be extracted using &lsquo;<samp><span class="samp">gcc -v</span></samp>&rsquo;,
+or &lsquo;<samp><span class="samp">cc -V</span></samp>&rsquo; on some machines. 
+Also, include the output from &lsquo;<samp><span class="samp">uname -a</span></samp>&rsquo;.
 
    <p>If your bug report is good, we will do our best to help you to get a corrected
 version of the library; if the bug report is poor, we will not do anything about
 it (aside of chiding you to send better bug reports).
 
-   <p>Send your bug report to: `<samp><span class="samp">mpc-discuss@lists.gforge.inria.fr</span></samp>'.
+   <p>Send your bug report to: &lsquo;<samp><span class="samp">mpc-discuss@lists.gforge.inria.fr</span></samp>&rsquo;.
 
    <p>If you think something in this manual is unclear, or downright incorrect, or if
 the language needs to be improved, please send a note to the same address.
@@ -379,7 +376,7 @@ and the second one for the imaginary part.
 For example <code>MPC_RNDZU</code> indicates to round the real part towards zero,
 and the imaginary part towards plus infinity.
 
-   <p>The `<samp><span class="samp">round to nearest</span></samp>' mode works as in the IEEE P754 standard: in case
+   <p>The &lsquo;<samp><span class="samp">round to nearest</span></samp>&rsquo; mode works as in the IEEE P754 standard: in case
 the number to be rounded lies exactly in the middle of two representable
 numbers, it is rounded to the one with the least significant bit set to zero. 
 For example, the number 5, which is represented by (101) in binary, is rounded
@@ -432,11 +429,12 @@ different word size.
 <li><a accesskey="2" href="#Assigning-Complex-Numbers">Assigning Complex Numbers</a>
 <li><a accesskey="3" href="#Simultaneous-Init-_0026-Assign">Simultaneous Init &amp; Assign</a>
 <li><a accesskey="4" href="#Complex-Comparison">Complex Comparison</a>
-<li><a accesskey="5" href="#Basic-Arithmetic">Basic Arithmetic</a>
-<li><a accesskey="6" href="#Power-Functions-and-Logarithm">Power Functions and Logarithm</a>
-<li><a accesskey="7" href="#Trigonometric-Functions">Trigonometric Functions</a>
-<li><a accesskey="8" href="#I_002fO-of-Complex-Numbers">I/O of Complex Numbers</a>
-<li><a accesskey="9" href="#Miscellaneous-Complex-Functions">Miscellaneous Complex Functions</a>
+<li><a accesskey="5" href="#Projection-_0026-Decomposing">Projection &amp; Decomposing</a>
+<li><a accesskey="6" href="#Basic-Arithmetic">Basic Arithmetic</a>
+<li><a accesskey="7" href="#Power-Functions-and-Logarithm">Power Functions and Logarithm</a>
+<li><a accesskey="8" href="#Trigonometric-Functions">Trigonometric Functions</a>
+<li><a accesskey="9" href="#I_002fO-of-Complex-Numbers">I/O of Complex Numbers</a>
+<li><a href="#Miscellaneous-Complex-Functions">Miscellaneous Complex Functions</a>
 <li><a href="#Internals">Internals</a>
 </ul>
 
@@ -578,7 +576,8 @@ to a complex number.
 &mdash; Function: int <b>mpc_set_d_d</b> (<var>mpc_t rop, double op1, double op2, mpc_rnd_t rnd</var>)<var><a name="index-mpc_005fset_005fd_005fd-29"></a></var><br>
 &mdash; Function: int <b>mpc_set_ui_ui</b> (<var>mpc_t rop, unsigned long int op1, unsigned long int op2, mpc_rnd_t rnd</var>)<var><a name="index-mpc_005fset_005fui_005fui-30"></a></var><br>
 &mdash; Function: int <b>mpc_set_si_si</b> (<var>mpc_t rop, long int op1, long int op2, mpc_rnd_t rnd</var>)<var><a name="index-mpc_005fset_005fsi_005fsi-31"></a></var><br>
-&mdash; Function: int <b>mpc_set_ui_fr</b> (<var>mpc_t rop, unsigned long int op1, mpfr_t op2, mpc_rnd_t rnd</var>)<var><a name="index-mpc_005fset_005fui_005ffr-32"></a></var><br>
+&mdash; Function: int <b>mpc_set_fr_fr</b> (<var>mpc_t rop, mpfr_t op1, mpfr_t op2, mpc_rnd_t rnd</var>)<var><a name="index-mpc_005fset_005ffr_005ffr-32"></a></var><br>
+&mdash; Function: int <b>mpc_set_ui_fr</b> (<var>mpc_t rop, unsigned long int op1, mpfr_t op2, mpc_rnd_t rnd</var>)<var><a name="index-mpc_005fset_005fui_005ffr-33"></a></var><br>
 <blockquote><p>Set the real part of <var>rop</var> from <var>op1</var>, and its imaginary part from
 <var>op2</var>, according to the rounding mode <var>rnd</var>. 
 </p></blockquote></div>
@@ -596,11 +595,11 @@ Up:&nbsp;<a rel="up" accesskey="u" href="#Complex-Functions">Complex Functions</
 <!-- node-name,  next,  previous,  up -->
 <h3 class="section">5.3 Combined Initialization and Assignment Functions</h3>
 
-<p><a name="index-Initialization-and-assignment-functions-33"></a>
+<p><a name="index-Initialization-and-assignment-functions-34"></a>
 
 <div class="defun">
-&mdash; Macro: int <b>mpc_init_set</b> (<var>mpc_t rop, mpc_t op, mpc_rnd_t rnd</var>)<var><a name="index-mpc_005finit_005fset-34"></a></var><br>
-&mdash; Macro: int <b>mpc_init_set_ui</b> (<var>mpc_t rop, unsigned long int op, mpc_rnd_t rnd</var>)<var><a name="index-mpc_005finit_005fset_005fui-35"></a></var><br>
+&mdash; Macro: int <b>mpc_init_set</b> (<var>mpc_t rop, mpc_t op, mpc_rnd_t rnd</var>)<var><a name="index-mpc_005finit_005fset-35"></a></var><br>
+&mdash; Macro: int <b>mpc_init_set_ui</b> (<var>mpc_t rop, unsigned long int op, mpc_rnd_t rnd</var>)<var><a name="index-mpc_005finit_005fset_005fui-36"></a></var><br>
 <blockquote><p>Initialize <var>rop</var> and set its value from <var>op</var>, rounded with the
 rounding mode <var>rnd</var>. 
 The precision of <var>rop</var> will be taken from the active default precision,
@@ -608,9 +607,9 @@ as set by <code>mpc_set_default_prec</code>.
 </p></blockquote></div>
 
 <div class="defun">
-&mdash; Macro: int <b>mpc_init_set_ui_ui</b> (<var>mpc_t rop, unsigned long int op1, unsigned long int op2, mpc_rnd_t rnd</var>)<var><a name="index-mpc_005finit_005fset_005fui_005fui-36"></a></var><br>
-&mdash; Macro: int <b>mpc_init_set_ui_fr</b> (<var>mpc_t rop, unsigned long int op1, mpfr_t op2, mpc_rnd_t rnd</var>)<var><a name="index-mpc_005finit_005fset_005fui_005ffr-37"></a></var><br>
-&mdash; Macro: int <b>mpc_init_set_si_si</b> (<var>mpc_t rop, long int op1, long int op2, mpc_rnd_t rnd</var>)<var><a name="index-mpc_005finit_005fset_005fsi_005fsi-38"></a></var><br>
+&mdash; Macro: int <b>mpc_init_set_ui_ui</b> (<var>mpc_t rop, unsigned long int op1, unsigned long int op2, mpc_rnd_t rnd</var>)<var><a name="index-mpc_005finit_005fset_005fui_005fui-37"></a></var><br>
+&mdash; Macro: int <b>mpc_init_set_ui_fr</b> (<var>mpc_t rop, unsigned long int op1, mpfr_t op2, mpc_rnd_t rnd</var>)<var><a name="index-mpc_005finit_005fset_005fui_005ffr-38"></a></var><br>
+&mdash; Macro: int <b>mpc_init_set_si_si</b> (<var>mpc_t rop, long int op1, long int op2, mpc_rnd_t rnd</var>)<var><a name="index-mpc_005finit_005fset_005fsi_005fsi-39"></a></var><br>
 <blockquote><p>Initialize <var>rop</var>, set its real part from <var>op1</var>, and its imaginary
 part from <var>op2</var>, rounded with the rounding mode <var>rnd</var>. 
 The precision of <var>rop</var> will be taken from the active default precision,
@@ -620,7 +619,7 @@ as set by <code>mpc_set_default_prec</code>.
 <div class="node">
 <p><hr>
 <a name="Complex-Comparison"></a>
-Next:&nbsp;<a rel="next" accesskey="n" href="#Basic-Arithmetic">Basic Arithmetic</a>,
+Next:&nbsp;<a rel="next" accesskey="n" href="#Projection-_0026-Decomposing">Projection &amp; Decomposing</a>,
 Previous:&nbsp;<a rel="previous" accesskey="p" href="#Simultaneous-Init-_0026-Assign">Simultaneous Init &amp; Assign</a>,
 Up:&nbsp;<a rel="up" accesskey="u" href="#Complex-Functions">Complex Functions</a>
 
@@ -629,14 +628,14 @@ Up:&nbsp;<a rel="up" accesskey="u" href="#Complex-Functions">Complex Functions</
 <!-- node-name,  next,  previous,  up -->
 <h3 class="section">5.4 Comparison Functions</h3>
 
-<p><a name="index-Complex-comparisons-functions-39"></a><a name="index-Comparison-functions-40"></a>
+<p><a name="index-Complex-comparisons-functions-40"></a><a name="index-Comparison-functions-41"></a>
 
 <div class="defun">
-&mdash; Function: int <b>mpc_cmp</b> (<var>mpc_t op1, mpc_t op2</var>)<var><a name="index-mpc_005fcmp-41"></a></var><br>
-&mdash; Function: int <b>mpc_cmp_si_si</b> (<var>mpc_t op1, long int op2r, long int op2i</var>)<var><a name="index-mpc_005fcmp_005fsi_005fsi-42"></a></var><br>
-&mdash; Macro: int <b>mpc_cmp_si</b> (<var>mpc_t op1, long int op2</var>)<var><a name="index-mpc_005fcmp_005fsi-43"></a></var><br>
+&mdash; Function: int <b>mpc_cmp</b> (<var>mpc_t op1, mpc_t op2</var>)<var><a name="index-mpc_005fcmp-42"></a></var><br>
+&mdash; Function: int <b>mpc_cmp_si_si</b> (<var>mpc_t op1, long int op2r, long int op2i</var>)<var><a name="index-mpc_005fcmp_005fsi_005fsi-43"></a></var><br>
+&mdash; Macro: int <b>mpc_cmp_si</b> (<var>mpc_t op1, long int op2</var>)<var><a name="index-mpc_005fcmp_005fsi-44"></a></var><br>
 <blockquote>
-<p>Compare <var>op1</var> and <var>op2</var>, where in the case of <code>mpc_cmp_si_si</code>,
+        <p>Compare <var>op1</var> and <var>op2</var>, where in the case of <code>mpc_cmp_si_si</code>,
 <var>op2</var> is taken to be <var>op2r</var> + i <var>op2i</var>. 
 The return value <var>c</var> can be decomposed into <code>x = MPC_INEX_RE(c)</code>
 and <code>y = MPC_INEX_IM(c)</code>, such that <var>x</var> is
@@ -653,66 +652,116 @@ with <code>mpc_cmp (op1, op2) == 0</code>.
 
 <div class="node">
 <p><hr>
-<a name="Basic-Arithmetic"></a>
-Next:&nbsp;<a rel="next" accesskey="n" href="#Power-Functions-and-Logarithm">Power Functions and Logarithm</a>,
+<a name="Projection-%26-Decomposing"></a>
+<a name="Projection-_0026-Decomposing"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="#Basic-Arithmetic">Basic Arithmetic</a>,
 Previous:&nbsp;<a rel="previous" accesskey="p" href="#Complex-Comparison">Complex Comparison</a>,
 Up:&nbsp;<a rel="up" accesskey="u" href="#Complex-Functions">Complex Functions</a>
 
 </div>
 
 <!-- node-name,  next,  previous,  up -->
-<h3 class="section">5.5 Basic Arithmetic Functions</h3>
+<h3 class="section">5.5 Projection and Decomposing Functions</h3>
 
-<p><a name="index-Complex-arithmetic-functions-44"></a><a name="index-Arithmetic-functions-45"></a>
+<p><a name="index-Projection-and-Decomposing-Functions-45"></a>
+
+<div class="defun">
+&mdash; Function: int <b>mpc_real</b> (<var>mpfr_t rop, mpc_t op, mpfr_rnd_t rnd</var>)<var><a name="index-mpc_005freal-46"></a></var><br>
+<blockquote><p>Set <var>rop</var> to the value of the real part of <var>op</var> rounded
+in the direction <var>rnd</var>. 
+</p></blockquote></div>
+
+<div class="defun">
+&mdash; Function: int <b>mpc_imag</b> (<var>mpfr_t rop, mpc_t op, mpfr_rnd_t rnd</var>)<var><a name="index-mpc_005fimag-47"></a></var><br>
+<blockquote><p>Set <var>rop</var> to the value of the imaginary part of <var>op</var> rounded in the
+direction <var>rnd</var>. 
+</p></blockquote></div>
+
+<div class="defun">
+&mdash; Macro: mpfr_t <b>mpc_realref</b> (<var>mpc_t op</var>)<var><a name="index-mpc_005frealref-48"></a></var><br>
+&mdash; Macro: mpfr_t <b>mpc_imagref</b> (<var>mpc_t op</var>)<var><a name="index-mpc_005fimagref-49"></a></var><br>
+<blockquote><p>Return a reference to the real part and imaginary part of <var>op</var>,
+respectively. The <code>mpfr</code> functions can be used on the result of these
+macros. 
+</p></blockquote></div>
+
+<div class="defun">
+&mdash; Function: int <b>mpc_arg</b> (<var>mpfr_t rop, mpc_t op, mpc_rnd_t rnd</var>)<var><a name="index-mpc_005farg-50"></a></var><br>
+<blockquote><p>Set <var>rop</var> to the argument of <var>op</var>, with a branch cut along the
+negative real axis. 
+</p></blockquote></div>
+
+<div class="defun">
+&mdash; Function: int <b>mpc_proj</b> (<var>mpc_t rop, mpc_t op, mpc_rnd_t rnd</var>)<var><a name="index-mpc_005fproj-51"></a></var><br>
+<blockquote><p>Compute a projection of <var>op</var> onto the Riemann sphere. Set <var>rop</var> to
+<var>op</var> rounded in the direction <var>rnd</var>, except when at least one part of
+<var>op</var> is infinite (even if the other part is a NaN) in which case the real
+part of <var>rop</var> is set to plus infinity and its imaginary part to a signed
+zero with the same sign as the imaginary part of <var>op</var>. 
+</p></blockquote></div>
+
+<div class="node">
+<p><hr>
+<a name="Basic-Arithmetic"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="#Power-Functions-and-Logarithm">Power Functions and Logarithm</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="#Projection-_0026-Decomposing">Projection &amp; Decomposing</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="#Complex-Functions">Complex Functions</a>
+
+</div>
+
+<!-- node-name,  next,  previous,  up -->
+<h3 class="section">5.6 Basic Arithmetic Functions</h3>
+
+<p><a name="index-Complex-arithmetic-functions-52"></a><a name="index-Arithmetic-functions-53"></a>
 All the following functions are designed in such a way that, when working
 with real numbers instead of complex numbers, their complexity should
 essentially be the same as with the MPFR library, with only a marginal
 overhead due to the MPC layer.
 
 <div class="defun">
-&mdash; Function: int <b>mpc_add</b> (<var>mpc_t rop, mpc_t op1, mpc_t op2, mpc_rnd_t rnd</var>)<var><a name="index-mpc_005fadd-46"></a></var><br>
-&mdash; Function: int <b>mpc_add_ui</b> (<var>mpc_t rop, mpc_t op1, unsigned long int op2, mpc_rnd_t rnd</var>)<var><a name="index-mpc_005fadd_005fui-47"></a></var><br>
-&mdash; Function: int <b>mpc_add_fr</b> (<var>mpc_t rop, mpc_t op1, mpfr_t op2, mpc_rnd_t rnd</var>)<var><a name="index-mpc_005fadd_005ffr-48"></a></var><br>
+&mdash; Function: int <b>mpc_add</b> (<var>mpc_t rop, mpc_t op1, mpc_t op2, mpc_rnd_t rnd</var>)<var><a name="index-mpc_005fadd-54"></a></var><br>
+&mdash; Function: int <b>mpc_add_ui</b> (<var>mpc_t rop, mpc_t op1, unsigned long int op2, mpc_rnd_t rnd</var>)<var><a name="index-mpc_005fadd_005fui-55"></a></var><br>
+&mdash; Function: int <b>mpc_add_fr</b> (<var>mpc_t rop, mpc_t op1, mpfr_t op2, mpc_rnd_t rnd</var>)<var><a name="index-mpc_005fadd_005ffr-56"></a></var><br>
 <blockquote><p>Set <var>rop</var> to <var>op1</var> + <var>op2</var> rounded according to <var>rnd</var>. 
 </p></blockquote></div>
 
 <div class="defun">
-&mdash; Function: int <b>mpc_sub</b> (<var>mpc_t rop, mpc_t op1, mpc_t op2, mpc_rnd_t rnd</var>)<var><a name="index-mpc_005fsub-49"></a></var><br>
-&mdash; Function: int <b>mpc_sub_fr</b> (<var>mpc_t rop, mpc_t op1, mpfr_t op2, mpc_rnd_t rnd</var>)<var><a name="index-mpc_005fsub_005ffr-50"></a></var><br>
-&mdash; Function: int <b>mpc_fr_sub</b> (<var>mpc_t rop, mpfr_t op1, mpc_t op2, mpc_rnd_t rnd</var>)<var><a name="index-mpc_005ffr_005fsub-51"></a></var><br>
-&mdash; Function: int <b>mpc_sub_ui</b> (<var>mpc_t rop, mpc_t op1, unsigned long int op2, mpc_rnd_t rnd</var>)<var><a name="index-mpc_005fsub_005fui-52"></a></var><br>
-&mdash; Macro: int <b>mpc_ui_sub</b> (<var>mpc_t rop, unsigned long int op1, mpc_t op2, mpc_rnd_t rnd</var>)<var><a name="index-mpc_005fui_005fsub-53"></a></var><br>
-&mdash; Function: int <b>mpc_ui_ui_sub</b> (<var>mpc_t rop, unsigned long int re1, unsigned long int im1, mpc_t op2, mpc_rnd_t rnd</var>)<var><a name="index-mpc_005fui_005fui_005fsub-54"></a></var><br>
+&mdash; Function: int <b>mpc_sub</b> (<var>mpc_t rop, mpc_t op1, mpc_t op2, mpc_rnd_t rnd</var>)<var><a name="index-mpc_005fsub-57"></a></var><br>
+&mdash; Function: int <b>mpc_sub_fr</b> (<var>mpc_t rop, mpc_t op1, mpfr_t op2, mpc_rnd_t rnd</var>)<var><a name="index-mpc_005fsub_005ffr-58"></a></var><br>
+&mdash; Function: int <b>mpc_fr_sub</b> (<var>mpc_t rop, mpfr_t op1, mpc_t op2, mpc_rnd_t rnd</var>)<var><a name="index-mpc_005ffr_005fsub-59"></a></var><br>
+&mdash; Function: int <b>mpc_sub_ui</b> (<var>mpc_t rop, mpc_t op1, unsigned long int op2, mpc_rnd_t rnd</var>)<var><a name="index-mpc_005fsub_005fui-60"></a></var><br>
+&mdash; Macro: int <b>mpc_ui_sub</b> (<var>mpc_t rop, unsigned long int op1, mpc_t op2, mpc_rnd_t rnd</var>)<var><a name="index-mpc_005fui_005fsub-61"></a></var><br>
+&mdash; Function: int <b>mpc_ui_ui_sub</b> (<var>mpc_t rop, unsigned long int re1, unsigned long int im1, mpc_t op2, mpc_rnd_t rnd</var>)<var><a name="index-mpc_005fui_005fui_005fsub-62"></a></var><br>
 <blockquote><p>Set <var>rop</var> to <var>op1</var> &minus; <var>op2</var> rounded according to <var>rnd</var>. 
 For <code>mpc_ui_ui_sub</code>, <var>op1</var> is <var>re1</var> + <var>im1</var>. 
 </p></blockquote></div>
 
 <div class="defun">
-&mdash; Function: int <b>mpc_mul</b> (<var>mpc_t rop, mpc_t op1, mpc_t op2, mpc_rnd_t rnd</var>)<var><a name="index-mpc_005fmul-55"></a></var><br>
-&mdash; Function: int <b>mpc_mul_ui</b> (<var>mpc_t rop, mpc_t op1, unsigned long int op2, mpc_rnd_t rnd</var>)<var><a name="index-mpc_005fmul_005fui-56"></a></var><br>
-&mdash; Function: int <b>mpc_mul_si</b> (<var>mpc_t rop, mpc_t op1, long int op2, mpc_rnd_t rnd</var>)<var><a name="index-mpc_005fmul_005fsi-57"></a></var><br>
-&mdash; Function: int <b>mpc_mul_fr</b> (<var>mpc_t rop, mpc_t op1, mpfr_t op2, mpc_rnd_t rnd</var>)<var><a name="index-mpc_005fmul_005ffr-58"></a></var><br>
+&mdash; Function: int <b>mpc_mul</b> (<var>mpc_t rop, mpc_t op1, mpc_t op2, mpc_rnd_t rnd</var>)<var><a name="index-mpc_005fmul-63"></a></var><br>
+&mdash; Function: int <b>mpc_mul_ui</b> (<var>mpc_t rop, mpc_t op1, unsigned long int op2, mpc_rnd_t rnd</var>)<var><a name="index-mpc_005fmul_005fui-64"></a></var><br>
+&mdash; Function: int <b>mpc_mul_si</b> (<var>mpc_t rop, mpc_t op1, long int op2, mpc_rnd_t rnd</var>)<var><a name="index-mpc_005fmul_005fsi-65"></a></var><br>
+&mdash; Function: int <b>mpc_mul_fr</b> (<var>mpc_t rop, mpc_t op1, mpfr_t op2, mpc_rnd_t rnd</var>)<var><a name="index-mpc_005fmul_005ffr-66"></a></var><br>
 <blockquote><p>Set <var>rop</var> to <var>op1</var> times <var>op2</var> rounded according to <var>rnd</var>. 
 </p></blockquote></div>
 
 <div class="defun">
-&mdash; Function: int <b>mpc_mul_i</b> (<var>mpc_t rop, mpc_t op, int sgn, mpc_rnd_t rnd</var>)<var><a name="index-mpc_005fmul_005fi-59"></a></var><br>
+&mdash; Function: int <b>mpc_mul_i</b> (<var>mpc_t rop, mpc_t op, int sgn, mpc_rnd_t rnd</var>)<var><a name="index-mpc_005fmul_005fi-67"></a></var><br>
 <blockquote><p>Set <var>rop</var> to <var>op</var> times the imaginary unit i if <var>sgn</var> is
 non-negative, set <var>rop</var> to <var>op</var> times -i otherwise,
 in both cases rounded according to <var>rnd</var>. 
 </p></blockquote></div>
 
 <div class="defun">
-&mdash; Function: int <b>mpc_sqr</b> (<var>mpc_t rop, mpc_t op, mpc_rnd_t rnd</var>)<var><a name="index-mpc_005fsqr-60"></a></var><br>
+&mdash; Function: int <b>mpc_sqr</b> (<var>mpc_t rop, mpc_t op, mpc_rnd_t rnd</var>)<var><a name="index-mpc_005fsqr-68"></a></var><br>
 <blockquote><p>Set <var>rop</var> to the square of <var>op</var> rounded according to <var>rnd</var>. 
 </p></blockquote></div>
 
 <div class="defun">
-&mdash; Function: int <b>mpc_div</b> (<var>mpc_t rop, mpc_t op1, mpc_t op2, mpc_rnd_t rnd</var>)<var><a name="index-mpc_005fdiv-61"></a></var><br>
-&mdash; Function: int <b>mpc_div_ui</b> (<var>mpc_t rop, mpc_t op1, unsigned long int op2, mpc_rnd_t rnd</var>)<var><a name="index-mpc_005fdiv_005fui-62"></a></var><br>
-&mdash; Function: int <b>mpc_ui_div</b> (<var>mpc_t rop, unsigned long int op1, mpc_t op2, mpc_rnd_t rnd</var>)<var><a name="index-mpc_005fui_005fdiv-63"></a></var><br>
-&mdash; Function: int <b>mpc_div_fr</b> (<var>mpc_t rop, mpc_t op1, mpfr_t op2, mpc_rnd_t rnd</var>)<var><a name="index-mpc_005fdiv_005ffr-64"></a></var><br>
-&mdash; Function: int <b>mpc_fr_div</b> (<var>mpc_t rop, mpfr_t op1, mpc_t op2, mpc_rnd_t rnd</var>)<var><a name="index-mpc_005ffr_005fdiv-65"></a></var><br>
+&mdash; Function: int <b>mpc_div</b> (<var>mpc_t rop, mpc_t op1, mpc_t op2, mpc_rnd_t rnd</var>)<var><a name="index-mpc_005fdiv-69"></a></var><br>
+&mdash; Function: int <b>mpc_div_ui</b> (<var>mpc_t rop, mpc_t op1, unsigned long int op2, mpc_rnd_t rnd</var>)<var><a name="index-mpc_005fdiv_005fui-70"></a></var><br>
+&mdash; Function: int <b>mpc_ui_div</b> (<var>mpc_t rop, unsigned long int op1, mpc_t op2, mpc_rnd_t rnd</var>)<var><a name="index-mpc_005fui_005fdiv-71"></a></var><br>
+&mdash; Function: int <b>mpc_div_fr</b> (<var>mpc_t rop, mpc_t op1, mpfr_t op2, mpc_rnd_t rnd</var>)<var><a name="index-mpc_005fdiv_005ffr-72"></a></var><br>
+&mdash; Function: int <b>mpc_fr_div</b> (<var>mpc_t rop, mpfr_t op1, mpc_t op2, mpc_rnd_t rnd</var>)<var><a name="index-mpc_005ffr_005fdiv-73"></a></var><br>
 <blockquote><p>Set <var>rop</var> to <var>op1</var>/<var>op2</var> rounded according to <var>rnd</var>. 
 For <code>mpc_div</code> and <code>mpc_ui_div</code>, the return value may fail to
 recognize some exact results. The sign of returned value is
@@ -720,20 +769,20 @@ significant only for <code>mpc_div_ui</code>.
 </p></blockquote></div>
 
 <div class="defun">
-&mdash; Function: int <b>mpc_neg</b> (<var>mpc_t rop, mpc_t op, mpc_rnd_t rnd</var>)<var><a name="index-mpc_005fneg-66"></a></var><br>
+&mdash; Function: int <b>mpc_neg</b> (<var>mpc_t rop, mpc_t op, mpc_rnd_t rnd</var>)<var><a name="index-mpc_005fneg-74"></a></var><br>
 <blockquote><p>Set <var>rop</var> to &minus;<var>op</var> rounded according to <var>rnd</var>. 
 Just changes the sign if <var>rop</var> and <var>op</var> are the same variable. 
 </p></blockquote></div>
 
 <div class="defun">
-&mdash; Function: int <b>mpc_conj</b> (<var>mpc_t rop, mpc_t op, mpc_rnd_t rnd</var>)<var><a name="index-mpc_005fconj-67"></a></var><br>
+&mdash; Function: int <b>mpc_conj</b> (<var>mpc_t rop, mpc_t op, mpc_rnd_t rnd</var>)<var><a name="index-mpc_005fconj-75"></a></var><br>
 <blockquote><p>Set <var>rop</var> to the conjugate of <var>op</var> rounded according to <var>rnd</var>. 
 Just changes the sign of the imaginary part
 if <var>rop</var> and <var>op</var> are the same variable. 
 </p></blockquote></div>
 
 <div class="defun">
-&mdash; Function: int <b>mpc_abs</b> (<var>mpfr_t rop, mpc_t op, mp_rnd_t rnd</var>)<var><a name="index-mpc_005fabs-68"></a></var><br>
+&mdash; Function: int <b>mpc_abs</b> (<var>mpfr_t rop, mpc_t op, mp_rnd_t rnd</var>)<var><a name="index-mpc_005fabs-76"></a></var><br>
 <blockquote><p>Set the floating-point number <var>rop</var> to the absolute value of <var>op</var>,
 rounded in the direction <var>rnd</var>. 
 The returned value is zero iff the result is exact. 
@@ -741,7 +790,7 @@ Note the destination is of type <code>mpfr_t</code>, not <code>mpc_t</code>.
 </p></blockquote></div>
 
 <div class="defun">
-&mdash; Function: int <b>mpc_norm</b> (<var>mpfr_t rop, mpc_t op, mp_rnd_t rnd</var>)<var><a name="index-mpc_005fnorm-69"></a></var><br>
+&mdash; Function: int <b>mpc_norm</b> (<var>mpfr_t rop, mpc_t op, mp_rnd_t rnd</var>)<var><a name="index-mpc_005fnorm-77"></a></var><br>
 <blockquote><p>Set the floating-point number <var>rop</var> to the norm of <var>op</var>
 (i.e. the square of its absolute value),
 rounded in the direction <var>rnd</var>. 
@@ -750,7 +799,7 @@ Note that the destination is of type <code>mpfr_t</code>, not <code>mpc_t</code>
 </p></blockquote></div>
 
 <div class="defun">
-&mdash; Function: int <b>mpc_mul_2exp</b> (<var>mpc_t rop, mpc_t op1, unsigned long int op2, mpc_rnd_t rnd</var>)<var><a name="index-mpc_005fmul_005f2exp-70"></a></var><br>
+&mdash; Function: int <b>mpc_mul_2exp</b> (<var>mpc_t rop, mpc_t op1, unsigned long int op2, mpc_rnd_t rnd</var>)<var><a name="index-mpc_005fmul_005f2exp-78"></a></var><br>
 <blockquote><p>Set <var>rop</var> to <var>op1</var> times 2 raised to <var>op2</var>
 rounded according to <var>rnd</var>. Just increases the exponents
 of the real and imaginary parts by <var>op2</var>
@@ -758,7 +807,7 @@ when <var>rop</var> and <var>op1</var> are identical.
 </p></blockquote></div>
 
 <div class="defun">
-&mdash; Function: int <b>mpc_div_2exp</b> (<var>mpc_t rop, mpc_t op1, unsigned long int op2, mpc_rnd_t rnd</var>)<var><a name="index-mpc_005fdiv_005f2exp-71"></a></var><br>
+&mdash; Function: int <b>mpc_div_2exp</b> (<var>mpc_t rop, mpc_t op1, unsigned long int op2, mpc_rnd_t rnd</var>)<var><a name="index-mpc_005fdiv_005f2exp-79"></a></var><br>
 <blockquote><p>Set <var>rop</var> to <var>op1</var> divided by 2 raised to <var>op2</var>
 rounded according to <var>rnd</var>. Just decreases the exponents
 of the real and imaginary parts by <var>op2</var>
@@ -775,25 +824,25 @@ Up:&nbsp;<a rel="up" accesskey="u" href="#Complex-Functions">Complex Functions</
 </div>
 
 <!-- node-name,  next,  previous,  up -->
-<h3 class="section">5.6 Power Functions and Logarithm</h3>
+<h3 class="section">5.7 Power Functions and Logarithm</h3>
 
-<p><a name="index-Power-functions-72"></a><a name="index-Logarithm-73"></a>
+<p><a name="index-Power-functions-80"></a><a name="index-Logarithm-81"></a>
 
 <div class="defun">
-&mdash; Function: int <b>mpc_sqrt</b> (<var>mpc_t rop, mpc_t op, mpc_rnd_t rnd</var>)<var><a name="index-mpc_005fsqrt-74"></a></var><br>
+&mdash; Function: int <b>mpc_sqrt</b> (<var>mpc_t rop, mpc_t op, mpc_rnd_t rnd</var>)<var><a name="index-mpc_005fsqrt-82"></a></var><br>
 <blockquote><p>Set <var>rop</var> to the square root of <var>op</var> rounded according to <var>rnd</var>. 
 Here, when the return value is 0, it means the result is exact, but the
 contrary may be false. 
 </p></blockquote></div>
 
 <div class="defun">
-&mdash; Function: void <b>mpc_exp</b> (<var>mpc_t rop, mpc_t op, mpc_rnd_t rnd</var>)<var><a name="index-mpc_005fexp-75"></a></var><br>
+&mdash; Function: void <b>mpc_exp</b> (<var>mpc_t rop, mpc_t op, mpc_rnd_t rnd</var>)<var><a name="index-mpc_005fexp-83"></a></var><br>
 <blockquote><p>Set <var>rop</var> to the exponential of <var>op</var>,
 rounded according to <var>rnd</var> with the precision of <var>rop</var>. 
 </p></blockquote></div>
 
 <div class="defun">
-&mdash; Function: void <b>mpc_log</b> (<var>mpc_t rop, mpc_t op, mpc_rnd_t rnd</var>)<var><a name="index-mpc_005flog-76"></a></var><br>
+&mdash; Function: void <b>mpc_log</b> (<var>mpc_t rop, mpc_t op, mpc_rnd_t rnd</var>)<var><a name="index-mpc_005flog-84"></a></var><br>
 <blockquote><p>Set <var>rop</var> to the logarithm of <var>op</var>,
 rounded according to <var>rnd</var> with the precision of <var>rop</var>. 
 The principal branch is chosen, with the branch cut on the negative real axis,
@@ -811,42 +860,42 @@ Up:&nbsp;<a rel="up" accesskey="u" href="#Complex-Functions">Complex Functions</
 </div>
 
 <!-- node-name,  next,  previous,  up -->
-<h3 class="section">5.7 Trigonometric Functions</h3>
+<h3 class="section">5.8 Trigonometric Functions</h3>
 
-<p><a name="index-Trigonometric-functions-77"></a>
+<p><a name="index-Trigonometric-functions-85"></a>
 
 <div class="defun">
-&mdash; Function: void <b>mpc_sin</b> (<var>mpc_t rop, mpc_t op, mpc_rnd_t rnd</var>)<var><a name="index-mpc_005fsin-78"></a></var><br>
+&mdash; Function: void <b>mpc_sin</b> (<var>mpc_t rop, mpc_t op, mpc_rnd_t rnd</var>)<var><a name="index-mpc_005fsin-86"></a></var><br>
 <blockquote><p>Set <var>rop</var> to the sine of <var>op</var>,
 rounded according to <var>rnd</var> with the precision of <var>rop</var>. 
 </p></blockquote></div>
 
 <div class="defun">
-&mdash; Function: void <b>mpc_cos</b> (<var>mpc_t rop, mpc_t op, mpc_rnd_t rnd</var>)<var><a name="index-mpc_005fcos-79"></a></var><br>
+&mdash; Function: void <b>mpc_cos</b> (<var>mpc_t rop, mpc_t op, mpc_rnd_t rnd</var>)<var><a name="index-mpc_005fcos-87"></a></var><br>
 <blockquote><p>Set <var>rop</var> to the cosine of <var>op</var>,
 rounded according to <var>rnd</var> with the precision of <var>rop</var>. 
 </p></blockquote></div>
 
 <div class="defun">
-&mdash; Function: void <b>mpc_tan</b> (<var>mpc_t rop, mpc_t op, mpc_rnd_t rnd</var>)<var><a name="index-mpc_005ftan-80"></a></var><br>
+&mdash; Function: void <b>mpc_tan</b> (<var>mpc_t rop, mpc_t op, mpc_rnd_t rnd</var>)<var><a name="index-mpc_005ftan-88"></a></var><br>
 <blockquote><p>Set <var>rop</var> to the tangent of <var>op</var>,
 rounded according to <var>rnd</var> with the precision of <var>rop</var>. 
 </p></blockquote></div>
 
 <div class="defun">
-&mdash; Function: void <b>mpc_sinh</b> (<var>mpc_t rop, mpc_t op, mpc_rnd_t rnd</var>)<var><a name="index-mpc_005fsinh-81"></a></var><br>
+&mdash; Function: void <b>mpc_sinh</b> (<var>mpc_t rop, mpc_t op, mpc_rnd_t rnd</var>)<var><a name="index-mpc_005fsinh-89"></a></var><br>
 <blockquote><p>Set <var>rop</var> to the hyperbolic sine of <var>op</var>,
 rounded according to <var>rnd</var> with the precision of <var>rop</var>. 
 </p></blockquote></div>
 
 <div class="defun">
-&mdash; Function: void <b>mpc_cosh</b> (<var>mpc_t rop, mpc_t op, mpc_rnd_t rnd</var>)<var><a name="index-mpc_005fcosh-82"></a></var><br>
+&mdash; Function: void <b>mpc_cosh</b> (<var>mpc_t rop, mpc_t op, mpc_rnd_t rnd</var>)<var><a name="index-mpc_005fcosh-90"></a></var><br>
 <blockquote><p>Set <var>rop</var> to the hyperbolic cosine of <var>op</var>,
 rounded according to <var>rnd</var> with the precision of <var>rop</var>. 
 </p></blockquote></div>
 
 <div class="defun">
-&mdash; Function: void <b>mpc_tanh</b> (<var>mpc_t rop, mpc_t op, mpc_rnd_t rnd</var>)<var><a name="index-mpc_005ftanh-83"></a></var><br>
+&mdash; Function: void <b>mpc_tanh</b> (<var>mpc_t rop, mpc_t op, mpc_rnd_t rnd</var>)<var><a name="index-mpc_005ftanh-91"></a></var><br>
 <blockquote><p>Set <var>rop</var> to the hyperbolic tangent of <var>op</var>,
 rounded according to <var>rnd</var> with the precision of <var>rop</var>. 
 </p></blockquote></div>
@@ -862,9 +911,9 @@ Up:&nbsp;<a rel="up" accesskey="u" href="#Complex-Functions">Complex Functions</
 </div>
 
 <!-- node-name,  next,  previous,  up -->
-<h3 class="section">5.8 Input and Output Functions</h3>
+<h3 class="section">5.9 Input and Output Functions</h3>
 
-<p><a name="index-Complex-input-and-output-functions-84"></a><a name="index-Input-functions-85"></a><a name="index-Output-functions-86"></a><a name="index-I_002fO-functions-87"></a>
+<p><a name="index-Complex-input-and-output-functions-92"></a><a name="index-Input-functions-93"></a><a name="index-Output-functions-94"></a><a name="index-I_002fO-functions-95"></a>
 Functions that perform input from a standard input/output
 stream, and functions that output to
 a standard input/output stream. 
@@ -876,7 +925,7 @@ these functions will make them read from <code>stdin</code> and write to
 before <samp><span class="file">mpc.h</span></samp>.
 
 <div class="defun">
-&mdash; Function: size_t <b>mpc_out_str</b> (<var>FILE *stream, int base, size_t n_digits, mpc_t op, mpc_rnd_t rnd</var>)<var><a name="index-mpc_005fout_005fstr-88"></a></var><br>
+&mdash; Function: size_t <b>mpc_out_str</b> (<var>FILE *stream, int base, size_t n_digits, mpc_t op, mpc_rnd_t rnd</var>)<var><a name="index-mpc_005fout_005fstr-96"></a></var><br>
 <blockquote><p>Output <var>op</var> on stdio stream <var>stream</var>, in
 base <var>base</var>, rounded according to <var>rnd</var>. 
 First the real part is printed, then <code>+I*</code> followed by the imaginary part. 
@@ -887,27 +936,31 @@ or if <var>n_digits</var> is 0, enough digits so that
 
         <p>In addition to the significant digits, a decimal point at the right of the
 first digit and a
-trailing exponent, in the form `<samp><span class="samp">eNNN</span></samp>', are printed.  If <var>base</var>
-is greater than 10, `<samp><span class="samp">@</span></samp>' will be used instead of `<samp><span class="samp">e</span></samp>' as
+trailing exponent, in the form &lsquo;<samp><span class="samp">eNNN</span></samp>&rsquo;, are printed.  If <var>base</var>
+is greater than 10, &lsquo;<samp><span class="samp">@</span></samp>&rsquo; will be used instead of &lsquo;<samp><span class="samp">e</span></samp>&rsquo; as
 exponent delimiter.
 
         <p>Return the number of characters written. 
 </p></blockquote></div>
 
 <div class="defun">
-&mdash; Function: size_t <b>mpc_inp_str</b> (<var>mpc_t rop, FILE *stream, int base, mpc_rnd_t rnd</var>)<var><a name="index-mpc_005finp_005fstr-89"></a></var><br>
+&mdash; Function: size_t <b>mpc_inp_str</b> (<var>mpc_t rop, FILE *stream, int base, mpc_rnd_t rnd</var>)<var><a name="index-mpc_005finp_005fstr-97"></a></var><br>
 <blockquote><p>Input a string in base <var>base</var> from stdio stream <var>stream</var>,
 rounded according to <var>rnd</var>, and put the
 read complex in <var>rop</var>. 
-Each of the real and imaginary part should be of the form `<samp><span class="samp">M@N</span></samp>' or,
-if the base is 10 or less, alternatively `<samp><span class="samp">MeN</span></samp>' or `<samp><span class="samp">MEN</span></samp>'. 
-`<samp><span class="samp">M</span></samp>' is the mantissa and
-`<samp><span class="samp">N</span></samp>' is the exponent.  The mantissa is always in the specified base.  The
+Each of the real and imaginary part should be of the form &lsquo;<samp><span class="samp">M@N</span></samp>&rsquo; or,
+if the base is 10 or less, alternatively &lsquo;<samp><span class="samp">MeN</span></samp>&rsquo; or &lsquo;<samp><span class="samp">MEN</span></samp>&rsquo;. 
+&lsquo;<samp><span class="samp">M</span></samp>&rsquo; is the mantissa and
+&lsquo;<samp><span class="samp">N</span></samp>&rsquo; is the exponent.  The mantissa is always in the specified base.  The
 exponent is always read in decimal. 
-This function first reads the real part, then <code>+</code> followed by
-<code>I*</code> and the imaginary part.
+This function first reads the real part, then <code>+</code> or <code>-</code> followed by
+<code>I*</code> or <code>i*</code> and the absolute value of the imaginary part.
 
         <p>The argument <var>base</var> may be in the range 2 to 36.
+
+        <p>Note: since the real part is read with <code>mpfr_inp_str</code>, it should be
+followed by a whitespace, thus <code>17+I*42</code> is invalid, but
+<code>17 +I*42</code> is valid.
 
         <p>Return the number of bytes read, or if an error occurred, return 0. 
 </p></blockquote></div>
@@ -922,12 +975,12 @@ Up:&nbsp;<a rel="up" accesskey="u" href="#Complex-Functions">Complex Functions</
 </div>
 
 <!-- node-name,  next,  previous,  up -->
-<h3 class="section">5.9 Miscellaneous Functions</h3>
+<h3 class="section">5.10 Miscellaneous Functions</h3>
 
-<p><a name="index-Miscellaneous-complex-functions-90"></a>
+<p><a name="index-Miscellaneous-complex-functions-98"></a>
 
 <div class="defun">
-&mdash; Function: int <b>mpc_urandom</b> (<var>mpc_t rop, gmp_randstate_t state</var>)<var><a name="index-mpc_005furandom-91"></a></var><br>
+&mdash; Function: int <b>mpc_urandom</b> (<var>mpc_t rop, gmp_randstate_t state</var>)<var><a name="index-mpc_005furandom-99"></a></var><br>
 <blockquote><p>Generate a uniformly distributed random complex in the unit square [0,
 1] * [0, 1]. Return 0, unless an exponent in the real or imaginary part
 is not in the current exponent range, in which case that part is set to NaN
@@ -937,13 +990,13 @@ the GMP manual.
 </p></blockquote></div>
 
 <div class="defun">
-&mdash; Function: void <b>mpc_random</b> (<var>mpc_t rop</var>)<var><a name="index-mpc_005frandom-92"></a></var><br>
+&mdash; Function: void <b>mpc_random</b> (<var>mpc_t rop</var>)<var><a name="index-mpc_005frandom-100"></a></var><br>
 <blockquote><p>Generate a random complex, with real and imaginary parts uniformly
 distributed in the interval -1 &lt; X &lt; 1. 
 </p></blockquote></div>
 
 <div class="defun">
-&mdash; Function: void <b>mpc_random2</b> (<var>mpc_t rop, mp_size_t max_size, mp_exp_t max_exp</var>)<var><a name="index-mpc_005frandom2-93"></a></var><br>
+&mdash; Function: void <b>mpc_random2</b> (<var>mpc_t rop, mp_size_t max_size, mp_exp_t max_exp</var>)<var><a name="index-mpc_005frandom2-101"></a></var><br>
 <blockquote><p>Generate a random complex, with real and imaginary part
 of at most <var>max_size</var> limbs, with long strings of
 zeros and ones in the binary representation. The exponent of the
@@ -956,8 +1009,28 @@ Negative parts are generated when <var>max_size</var> is negative.
 </p></blockquote></div>
 
 <div class="defun">
-&mdash; Function: const <b>char</b><var> * mpc_get_version</var>(<var>void</var>)<var><a name="index-char-94"></a></var><br>
+&mdash; Function: const char * <b>mpc_get_version</b> (<var>void</var>)<var><a name="index-mpc_005fget_005fversion-102"></a></var><br>
 <blockquote><p>Return the MPC version, as a null-terminated string. 
+</p></blockquote></div>
+
+<div class="defun">
+&mdash; Macro: <b>MPC_VERSION_MAJOR</b><var><a name="index-MPC_005fVERSION_005fMAJOR-103"></a></var><br>
+&mdash; Macro: <b>MPC_VERSION_MINOR</b><var><a name="index-MPC_005fVERSION_005fMINOR-104"></a></var><br>
+&mdash; Macro: <b>MPC_VERSION_PATCHLEVEL</b><var><a name="index-MPC_005fVERSION_005fPATCHLEVEL-105"></a></var><br>
+&mdash; Macro: <b>MPC_VERSION_STRING</b><var><a name="index-MPC_005fVERSION_005fSTRING-106"></a></var><br>
+<blockquote><p><code>MPC_VERSION_MAJOR</code>, <code>MPC_VERSION_MINOR</code> and
+<code>MPC_VERSION_PATCHLEVEL</code> are respectively the major, minor and
+patch level of MPFR version, as preprocessing constants. 
+<code>MPC_VERSION_STRING</code> is the version as a string constant, which
+can be compared to the result of <code>mpc_get_version</code> to check at
+run time the header file and library used match:
+     <pre class="example">          if (strcmp (mpc_get_version (), MPC_VERSION_STRING))
+            fprintf (stderr, "Warning: header and library do not match\n");
+</pre>
+        <p>Note: Obtaining different strings is not necessarily an error, as in
+general, a program compiled with some old MPC version can be
+dynamically linked with a newer MPC library version (if allowed by the
+library versioning system). 
 </p></blockquote></div>
 
 <div class="node">
@@ -969,7 +1042,7 @@ Up:&nbsp;<a rel="up" accesskey="u" href="#Complex-Functions">Complex Functions</
 </div>
 
 <!-- node-name,  next,  previous,  up -->
-<h3 class="section">5.10 Internals</h3>
+<h3 class="section">5.11 Internals</h3>
 
 <p>These types and
 functions were mainly designed for the implementation of MPC,
@@ -1001,7 +1074,7 @@ Up:&nbsp;<a rel="up" accesskey="u" href="#Top">Top</a>
 
 <p>The main developers of the MPC library are Andreas Enge,
 Philippe Th&eacute;veny and Paul Zimmermann. 
-Patrick Pelissier has helped cleaning up the code. 
+Patrick P&eacute;lissier has helped cleaning up the code. 
 Marc Helbling contributed the <code>mpc_ui_sub</code> and
 <code>mpc_ui_ui_sub</code> functions.
 
@@ -1024,7 +1097,7 @@ Version 4.2.2, <a href="http://gmplib.org/">http://gmplib.org/</a>.
 
      <li>Guillaume Hanrot, Vincent Lef&egrave;vre, Patrick P&eacute;lissier, Paul Zimmermann et al. 
 <code>mpfr</code> &ndash; A library for multiple-precision floating-point               computations with exact rounding. 
-Version 2.3.0, <a href="http://www.mpfr.org">http://www.mpfr.org</a>.
+Version 2.3.1, <a href="http://www.mpfr.org">http://www.mpfr.org</a>.
 
      <li>IEEE standard for binary floating-point arithmetic, Technical Report
 ANSI-IEEE Standard 754-1985, New York, 1985. 
@@ -1049,29 +1122,30 @@ Up:&nbsp;<a rel="up" accesskey="u" href="#Top">Top</a>
 <h2 class="unnumbered">Concept Index</h2>
 
 <ul class="index-cp" compact>
-<li><a href="#index-Arithmetic-functions-45">Arithmetic functions</a>: <a href="#Basic-Arithmetic">Basic Arithmetic</a></li>
-<li><a href="#index-Comparison-functions-40">Comparison functions</a>: <a href="#Complex-Comparison">Complex Comparison</a></li>
-<li><a href="#index-Complex-arithmetic-functions-44">Complex arithmetic functions</a>: <a href="#Basic-Arithmetic">Basic Arithmetic</a></li>
+<li><a href="#index-Arithmetic-functions-53">Arithmetic functions</a>: <a href="#Basic-Arithmetic">Basic Arithmetic</a></li>
+<li><a href="#index-Comparison-functions-41">Comparison functions</a>: <a href="#Complex-Comparison">Complex Comparison</a></li>
+<li><a href="#index-Complex-arithmetic-functions-52">Complex arithmetic functions</a>: <a href="#Basic-Arithmetic">Basic Arithmetic</a></li>
 <li><a href="#index-Complex-assignment-functions-23">Complex assignment functions</a>: <a href="#Assigning-Complex-Numbers">Assigning Complex Numbers</a></li>
-<li><a href="#index-Complex-comparisons-functions-39">Complex comparisons functions</a>: <a href="#Complex-Comparison">Complex Comparison</a></li>
+<li><a href="#index-Complex-comparisons-functions-40">Complex comparisons functions</a>: <a href="#Complex-Comparison">Complex Comparison</a></li>
 <li><a href="#index-Complex-functions-12">Complex functions</a>: <a href="#Complex-Functions">Complex Functions</a></li>
-<li><a href="#index-Complex-input-and-output-functions-84">Complex input and output functions</a>: <a href="#I_002fO-of-Complex-Numbers">I/O of Complex Numbers</a></li>
+<li><a href="#index-Complex-input-and-output-functions-92">Complex input and output functions</a>: <a href="#I_002fO-of-Complex-Numbers">I/O of Complex Numbers</a></li>
 <li><a href="#index-Complex-number-6">Complex number</a>: <a href="#MPC-Basics">MPC Basics</a></li>
 <li><a href="#index-Conditions-for-copying-MPC-2">Conditions for copying MPC</a>: <a href="#Copying">Copying</a></li>
 <li><a href="#index-Copying-conditions-1">Copying conditions</a>: <a href="#Copying">Copying</a></li>
-<li><a href="#index-I_002fO-functions-87">I/O functions</a>: <a href="#I_002fO-of-Complex-Numbers">I/O of Complex Numbers</a></li>
-<li><a href="#index-Initialization-and-assignment-functions-33">Initialization and assignment functions</a>: <a href="#Simultaneous-Init-_0026-Assign">Simultaneous Init &amp; Assign</a></li>
-<li><a href="#index-Input-functions-85">Input functions</a>: <a href="#I_002fO-of-Complex-Numbers">I/O of Complex Numbers</a></li>
+<li><a href="#index-I_002fO-functions-95">I/O functions</a>: <a href="#I_002fO-of-Complex-Numbers">I/O of Complex Numbers</a></li>
+<li><a href="#index-Initialization-and-assignment-functions-34">Initialization and assignment functions</a>: <a href="#Simultaneous-Init-_0026-Assign">Simultaneous Init &amp; Assign</a></li>
+<li><a href="#index-Input-functions-93">Input functions</a>: <a href="#I_002fO-of-Complex-Numbers">I/O of Complex Numbers</a></li>
 <li><a href="#index-Installation-3">Installation</a>: <a href="#Installing-MPC">Installing MPC</a></li>
-<li><a href="#index-Logarithm-73">Logarithm</a>: <a href="#Power-Functions-and-Logarithm">Power Functions and Logarithm</a></li>
-<li><a href="#index-Miscellaneous-complex-functions-90">Miscellaneous complex functions</a>: <a href="#Miscellaneous-Complex-Functions">Miscellaneous Complex Functions</a></li>
+<li><a href="#index-Logarithm-81">Logarithm</a>: <a href="#Power-Functions-and-Logarithm">Power Functions and Logarithm</a></li>
+<li><a href="#index-Miscellaneous-complex-functions-98">Miscellaneous complex functions</a>: <a href="#Miscellaneous-Complex-Functions">Miscellaneous Complex Functions</a></li>
 <li><a href="#index-g_t_0040file_007bmpc_002eh_007d-5"><samp><span class="file">mpc.h</span></samp></a>: <a href="#MPC-Basics">MPC Basics</a></li>
-<li><a href="#index-Output-functions-86">Output functions</a>: <a href="#I_002fO-of-Complex-Numbers">I/O of Complex Numbers</a></li>
-<li><a href="#index-Power-functions-72">Power functions</a>: <a href="#Power-Functions-and-Logarithm">Power Functions and Logarithm</a></li>
+<li><a href="#index-Output-functions-94">Output functions</a>: <a href="#I_002fO-of-Complex-Numbers">I/O of Complex Numbers</a></li>
+<li><a href="#index-Power-functions-80">Power functions</a>: <a href="#Power-Functions-and-Logarithm">Power Functions and Logarithm</a></li>
 <li><a href="#index-Precision-8">Precision</a>: <a href="#MPC-Basics">MPC Basics</a></li>
+<li><a href="#index-Projection-and-Decomposing-Functions-45">Projection and Decomposing Functions</a>: <a href="#Projection-_0026-Decomposing">Projection &amp; Decomposing</a></li>
 <li><a href="#index-Reporting-bugs-4">Reporting bugs</a>: <a href="#Reporting-Bugs">Reporting Bugs</a></li>
 <li><a href="#index-Rounding-Mode-10">Rounding Mode</a>: <a href="#MPC-Basics">MPC Basics</a></li>
-<li><a href="#index-Trigonometric-functions-77">Trigonometric functions</a>: <a href="#Trigonometric-Functions">Trigonometric Functions</a></li>
+<li><a href="#index-Trigonometric-functions-85">Trigonometric functions</a>: <a href="#Trigonometric-Functions">Trigonometric Functions</a></li>
 <li><a href="#index-User_002ddefined-precision-13">User-defined precision</a>: <a href="#Complex-Functions">Complex Functions</a></li>
 </ul><div class="node">
 <p><hr>
@@ -1087,75 +1161,86 @@ Up:&nbsp;<a rel="up" accesskey="u" href="#Top">Top</a>
 
 
 <ul class="index-fn" compact>
-<li><a href="#index-char-94"><code>char</code></a>: <a href="#Miscellaneous-Complex-Functions">Miscellaneous Complex Functions</a></li>
 <li><a href="#index-g_t_0040code_007bmp_005fprec_005ft_007d-9"><code>mp_prec_t</code></a>: <a href="#MPC-Basics">MPC Basics</a></li>
-<li><a href="#index-mpc_005fabs-68"><code>mpc_abs</code></a>: <a href="#Basic-Arithmetic">Basic Arithmetic</a></li>
-<li><a href="#index-mpc_005fadd-46"><code>mpc_add</code></a>: <a href="#Basic-Arithmetic">Basic Arithmetic</a></li>
-<li><a href="#index-mpc_005fadd_005ffr-48"><code>mpc_add_fr</code></a>: <a href="#Basic-Arithmetic">Basic Arithmetic</a></li>
-<li><a href="#index-mpc_005fadd_005fui-47"><code>mpc_add_ui</code></a>: <a href="#Basic-Arithmetic">Basic Arithmetic</a></li>
+<li><a href="#index-mpc_005fabs-76"><code>mpc_abs</code></a>: <a href="#Basic-Arithmetic">Basic Arithmetic</a></li>
+<li><a href="#index-mpc_005fadd-54"><code>mpc_add</code></a>: <a href="#Basic-Arithmetic">Basic Arithmetic</a></li>
+<li><a href="#index-mpc_005fadd_005ffr-56"><code>mpc_add_fr</code></a>: <a href="#Basic-Arithmetic">Basic Arithmetic</a></li>
+<li><a href="#index-mpc_005fadd_005fui-55"><code>mpc_add_ui</code></a>: <a href="#Basic-Arithmetic">Basic Arithmetic</a></li>
+<li><a href="#index-mpc_005farg-50"><code>mpc_arg</code></a>: <a href="#Projection-_0026-Decomposing">Projection &amp; Decomposing</a></li>
 <li><a href="#index-mpc_005fclear-19"><code>mpc_clear</code></a>: <a href="#Initializing-Complex-Numbers">Initializing Complex Numbers</a></li>
-<li><a href="#index-mpc_005fcmp-41"><code>mpc_cmp</code></a>: <a href="#Complex-Comparison">Complex Comparison</a></li>
-<li><a href="#index-mpc_005fcmp_005fsi-43"><code>mpc_cmp_si</code></a>: <a href="#Complex-Comparison">Complex Comparison</a></li>
-<li><a href="#index-mpc_005fcmp_005fsi_005fsi-42"><code>mpc_cmp_si_si</code></a>: <a href="#Complex-Comparison">Complex Comparison</a></li>
-<li><a href="#index-mpc_005fconj-67"><code>mpc_conj</code></a>: <a href="#Basic-Arithmetic">Basic Arithmetic</a></li>
-<li><a href="#index-mpc_005fcos-79"><code>mpc_cos</code></a>: <a href="#Trigonometric-Functions">Trigonometric Functions</a></li>
-<li><a href="#index-mpc_005fcosh-82"><code>mpc_cosh</code></a>: <a href="#Trigonometric-Functions">Trigonometric Functions</a></li>
-<li><a href="#index-mpc_005fdiv-61"><code>mpc_div</code></a>: <a href="#Basic-Arithmetic">Basic Arithmetic</a></li>
-<li><a href="#index-mpc_005fdiv_005f2exp-71"><code>mpc_div_2exp</code></a>: <a href="#Basic-Arithmetic">Basic Arithmetic</a></li>
-<li><a href="#index-mpc_005fdiv_005ffr-64"><code>mpc_div_fr</code></a>: <a href="#Basic-Arithmetic">Basic Arithmetic</a></li>
-<li><a href="#index-mpc_005fdiv_005fui-62"><code>mpc_div_ui</code></a>: <a href="#Basic-Arithmetic">Basic Arithmetic</a></li>
-<li><a href="#index-mpc_005fexp-75"><code>mpc_exp</code></a>: <a href="#Power-Functions-and-Logarithm">Power Functions and Logarithm</a></li>
-<li><a href="#index-mpc_005ffr_005fdiv-65"><code>mpc_fr_div</code></a>: <a href="#Basic-Arithmetic">Basic Arithmetic</a></li>
-<li><a href="#index-mpc_005ffr_005fsub-51"><code>mpc_fr_sub</code></a>: <a href="#Basic-Arithmetic">Basic Arithmetic</a></li>
+<li><a href="#index-mpc_005fcmp-42"><code>mpc_cmp</code></a>: <a href="#Complex-Comparison">Complex Comparison</a></li>
+<li><a href="#index-mpc_005fcmp_005fsi-44"><code>mpc_cmp_si</code></a>: <a href="#Complex-Comparison">Complex Comparison</a></li>
+<li><a href="#index-mpc_005fcmp_005fsi_005fsi-43"><code>mpc_cmp_si_si</code></a>: <a href="#Complex-Comparison">Complex Comparison</a></li>
+<li><a href="#index-mpc_005fconj-75"><code>mpc_conj</code></a>: <a href="#Basic-Arithmetic">Basic Arithmetic</a></li>
+<li><a href="#index-mpc_005fcos-87"><code>mpc_cos</code></a>: <a href="#Trigonometric-Functions">Trigonometric Functions</a></li>
+<li><a href="#index-mpc_005fcosh-90"><code>mpc_cosh</code></a>: <a href="#Trigonometric-Functions">Trigonometric Functions</a></li>
+<li><a href="#index-mpc_005fdiv-69"><code>mpc_div</code></a>: <a href="#Basic-Arithmetic">Basic Arithmetic</a></li>
+<li><a href="#index-mpc_005fdiv_005f2exp-79"><code>mpc_div_2exp</code></a>: <a href="#Basic-Arithmetic">Basic Arithmetic</a></li>
+<li><a href="#index-mpc_005fdiv_005ffr-72"><code>mpc_div_fr</code></a>: <a href="#Basic-Arithmetic">Basic Arithmetic</a></li>
+<li><a href="#index-mpc_005fdiv_005fui-70"><code>mpc_div_ui</code></a>: <a href="#Basic-Arithmetic">Basic Arithmetic</a></li>
+<li><a href="#index-mpc_005fexp-83"><code>mpc_exp</code></a>: <a href="#Power-Functions-and-Logarithm">Power Functions and Logarithm</a></li>
+<li><a href="#index-mpc_005ffr_005fdiv-73"><code>mpc_fr_div</code></a>: <a href="#Basic-Arithmetic">Basic Arithmetic</a></li>
+<li><a href="#index-mpc_005ffr_005fsub-59"><code>mpc_fr_sub</code></a>: <a href="#Basic-Arithmetic">Basic Arithmetic</a></li>
 <li><a href="#index-mpc_005fget_005fdefault_005fprec-15"><code>mpc_get_default_prec</code></a>: <a href="#Initializing-Complex-Numbers">Initializing Complex Numbers</a></li>
 <li><a href="#index-mpc_005fget_005fprec-21"><code>mpc_get_prec</code></a>: <a href="#Initializing-Complex-Numbers">Initializing Complex Numbers</a></li>
 <li><a href="#index-mpc_005fget_005fprec2-22"><code>mpc_get_prec2</code></a>: <a href="#Initializing-Complex-Numbers">Initializing Complex Numbers</a></li>
+<li><a href="#index-mpc_005fget_005fversion-102"><code>mpc_get_version</code></a>: <a href="#Miscellaneous-Complex-Functions">Miscellaneous Complex Functions</a></li>
+<li><a href="#index-mpc_005fimag-47"><code>mpc_imag</code></a>: <a href="#Projection-_0026-Decomposing">Projection &amp; Decomposing</a></li>
+<li><a href="#index-mpc_005fimagref-49"><code>mpc_imagref</code></a>: <a href="#Projection-_0026-Decomposing">Projection &amp; Decomposing</a></li>
 <li><a href="#index-mpc_005finit-16"><code>mpc_init</code></a>: <a href="#Initializing-Complex-Numbers">Initializing Complex Numbers</a></li>
 <li><a href="#index-mpc_005finit2-17"><code>mpc_init2</code></a>: <a href="#Initializing-Complex-Numbers">Initializing Complex Numbers</a></li>
 <li><a href="#index-mpc_005finit3-18"><code>mpc_init3</code></a>: <a href="#Initializing-Complex-Numbers">Initializing Complex Numbers</a></li>
-<li><a href="#index-mpc_005finit_005fset-34"><code>mpc_init_set</code></a>: <a href="#Simultaneous-Init-_0026-Assign">Simultaneous Init &amp; Assign</a></li>
-<li><a href="#index-mpc_005finit_005fset_005fsi_005fsi-38"><code>mpc_init_set_si_si</code></a>: <a href="#Simultaneous-Init-_0026-Assign">Simultaneous Init &amp; Assign</a></li>
-<li><a href="#index-mpc_005finit_005fset_005fui-35"><code>mpc_init_set_ui</code></a>: <a href="#Simultaneous-Init-_0026-Assign">Simultaneous Init &amp; Assign</a></li>
-<li><a href="#index-mpc_005finit_005fset_005fui_005ffr-37"><code>mpc_init_set_ui_fr</code></a>: <a href="#Simultaneous-Init-_0026-Assign">Simultaneous Init &amp; Assign</a></li>
-<li><a href="#index-mpc_005finit_005fset_005fui_005fui-36"><code>mpc_init_set_ui_ui</code></a>: <a href="#Simultaneous-Init-_0026-Assign">Simultaneous Init &amp; Assign</a></li>
-<li><a href="#index-mpc_005finp_005fstr-89"><code>mpc_inp_str</code></a>: <a href="#I_002fO-of-Complex-Numbers">I/O of Complex Numbers</a></li>
-<li><a href="#index-mpc_005flog-76"><code>mpc_log</code></a>: <a href="#Power-Functions-and-Logarithm">Power Functions and Logarithm</a></li>
-<li><a href="#index-mpc_005fmul-55"><code>mpc_mul</code></a>: <a href="#Basic-Arithmetic">Basic Arithmetic</a></li>
-<li><a href="#index-mpc_005fmul_005f2exp-70"><code>mpc_mul_2exp</code></a>: <a href="#Basic-Arithmetic">Basic Arithmetic</a></li>
-<li><a href="#index-mpc_005fmul_005ffr-58"><code>mpc_mul_fr</code></a>: <a href="#Basic-Arithmetic">Basic Arithmetic</a></li>
-<li><a href="#index-mpc_005fmul_005fi-59"><code>mpc_mul_i</code></a>: <a href="#Basic-Arithmetic">Basic Arithmetic</a></li>
-<li><a href="#index-mpc_005fmul_005fsi-57"><code>mpc_mul_si</code></a>: <a href="#Basic-Arithmetic">Basic Arithmetic</a></li>
-<li><a href="#index-mpc_005fmul_005fui-56"><code>mpc_mul_ui</code></a>: <a href="#Basic-Arithmetic">Basic Arithmetic</a></li>
-<li><a href="#index-mpc_005fneg-66"><code>mpc_neg</code></a>: <a href="#Basic-Arithmetic">Basic Arithmetic</a></li>
-<li><a href="#index-mpc_005fnorm-69"><code>mpc_norm</code></a>: <a href="#Basic-Arithmetic">Basic Arithmetic</a></li>
-<li><a href="#index-mpc_005fout_005fstr-88"><code>mpc_out_str</code></a>: <a href="#I_002fO-of-Complex-Numbers">I/O of Complex Numbers</a></li>
-<li><a href="#index-mpc_005frandom-92"><code>mpc_random</code></a>: <a href="#Miscellaneous-Complex-Functions">Miscellaneous Complex Functions</a></li>
-<li><a href="#index-mpc_005frandom2-93"><code>mpc_random2</code></a>: <a href="#Miscellaneous-Complex-Functions">Miscellaneous Complex Functions</a></li>
+<li><a href="#index-mpc_005finit_005fset-35"><code>mpc_init_set</code></a>: <a href="#Simultaneous-Init-_0026-Assign">Simultaneous Init &amp; Assign</a></li>
+<li><a href="#index-mpc_005finit_005fset_005fsi_005fsi-39"><code>mpc_init_set_si_si</code></a>: <a href="#Simultaneous-Init-_0026-Assign">Simultaneous Init &amp; Assign</a></li>
+<li><a href="#index-mpc_005finit_005fset_005fui-36"><code>mpc_init_set_ui</code></a>: <a href="#Simultaneous-Init-_0026-Assign">Simultaneous Init &amp; Assign</a></li>
+<li><a href="#index-mpc_005finit_005fset_005fui_005ffr-38"><code>mpc_init_set_ui_fr</code></a>: <a href="#Simultaneous-Init-_0026-Assign">Simultaneous Init &amp; Assign</a></li>
+<li><a href="#index-mpc_005finit_005fset_005fui_005fui-37"><code>mpc_init_set_ui_ui</code></a>: <a href="#Simultaneous-Init-_0026-Assign">Simultaneous Init &amp; Assign</a></li>
+<li><a href="#index-mpc_005finp_005fstr-97"><code>mpc_inp_str</code></a>: <a href="#I_002fO-of-Complex-Numbers">I/O of Complex Numbers</a></li>
+<li><a href="#index-mpc_005flog-84"><code>mpc_log</code></a>: <a href="#Power-Functions-and-Logarithm">Power Functions and Logarithm</a></li>
+<li><a href="#index-mpc_005fmul-63"><code>mpc_mul</code></a>: <a href="#Basic-Arithmetic">Basic Arithmetic</a></li>
+<li><a href="#index-mpc_005fmul_005f2exp-78"><code>mpc_mul_2exp</code></a>: <a href="#Basic-Arithmetic">Basic Arithmetic</a></li>
+<li><a href="#index-mpc_005fmul_005ffr-66"><code>mpc_mul_fr</code></a>: <a href="#Basic-Arithmetic">Basic Arithmetic</a></li>
+<li><a href="#index-mpc_005fmul_005fi-67"><code>mpc_mul_i</code></a>: <a href="#Basic-Arithmetic">Basic Arithmetic</a></li>
+<li><a href="#index-mpc_005fmul_005fsi-65"><code>mpc_mul_si</code></a>: <a href="#Basic-Arithmetic">Basic Arithmetic</a></li>
+<li><a href="#index-mpc_005fmul_005fui-64"><code>mpc_mul_ui</code></a>: <a href="#Basic-Arithmetic">Basic Arithmetic</a></li>
+<li><a href="#index-mpc_005fneg-74"><code>mpc_neg</code></a>: <a href="#Basic-Arithmetic">Basic Arithmetic</a></li>
+<li><a href="#index-mpc_005fnorm-77"><code>mpc_norm</code></a>: <a href="#Basic-Arithmetic">Basic Arithmetic</a></li>
+<li><a href="#index-mpc_005fout_005fstr-96"><code>mpc_out_str</code></a>: <a href="#I_002fO-of-Complex-Numbers">I/O of Complex Numbers</a></li>
+<li><a href="#index-mpc_005fproj-51"><code>mpc_proj</code></a>: <a href="#Projection-_0026-Decomposing">Projection &amp; Decomposing</a></li>
+<li><a href="#index-mpc_005frandom-100"><code>mpc_random</code></a>: <a href="#Miscellaneous-Complex-Functions">Miscellaneous Complex Functions</a></li>
+<li><a href="#index-mpc_005frandom2-101"><code>mpc_random2</code></a>: <a href="#Miscellaneous-Complex-Functions">Miscellaneous Complex Functions</a></li>
+<li><a href="#index-mpc_005freal-46"><code>mpc_real</code></a>: <a href="#Projection-_0026-Decomposing">Projection &amp; Decomposing</a></li>
+<li><a href="#index-mpc_005frealref-48"><code>mpc_realref</code></a>: <a href="#Projection-_0026-Decomposing">Projection &amp; Decomposing</a></li>
 <li><a href="#index-g_t_0040code_007bmpc_005frnd_005ft_007d-11"><code>mpc_rnd_t</code></a>: <a href="#MPC-Basics">MPC Basics</a></li>
 <li><a href="#index-mpc_005fset-24"><code>mpc_set</code></a>: <a href="#Assigning-Complex-Numbers">Assigning Complex Numbers</a></li>
 <li><a href="#index-mpc_005fset_005fd-27"><code>mpc_set_d</code></a>: <a href="#Assigning-Complex-Numbers">Assigning Complex Numbers</a></li>
 <li><a href="#index-mpc_005fset_005fd_005fd-29"><code>mpc_set_d_d</code></a>: <a href="#Assigning-Complex-Numbers">Assigning Complex Numbers</a></li>
 <li><a href="#index-mpc_005fset_005fdefault_005fprec-14"><code>mpc_set_default_prec</code></a>: <a href="#Initializing-Complex-Numbers">Initializing Complex Numbers</a></li>
 <li><a href="#index-mpc_005fset_005ffr-28"><code>mpc_set_fr</code></a>: <a href="#Assigning-Complex-Numbers">Assigning Complex Numbers</a></li>
+<li><a href="#index-mpc_005fset_005ffr_005ffr-32"><code>mpc_set_fr_fr</code></a>: <a href="#Assigning-Complex-Numbers">Assigning Complex Numbers</a></li>
 <li><a href="#index-mpc_005fset_005fprec-20"><code>mpc_set_prec</code></a>: <a href="#Initializing-Complex-Numbers">Initializing Complex Numbers</a></li>
 <li><a href="#index-mpc_005fset_005fsi-26"><code>mpc_set_si</code></a>: <a href="#Assigning-Complex-Numbers">Assigning Complex Numbers</a></li>
 <li><a href="#index-mpc_005fset_005fsi_005fsi-31"><code>mpc_set_si_si</code></a>: <a href="#Assigning-Complex-Numbers">Assigning Complex Numbers</a></li>
 <li><a href="#index-mpc_005fset_005fui-25"><code>mpc_set_ui</code></a>: <a href="#Assigning-Complex-Numbers">Assigning Complex Numbers</a></li>
-<li><a href="#index-mpc_005fset_005fui_005ffr-32"><code>mpc_set_ui_fr</code></a>: <a href="#Assigning-Complex-Numbers">Assigning Complex Numbers</a></li>
+<li><a href="#index-mpc_005fset_005fui_005ffr-33"><code>mpc_set_ui_fr</code></a>: <a href="#Assigning-Complex-Numbers">Assigning Complex Numbers</a></li>
 <li><a href="#index-mpc_005fset_005fui_005fui-30"><code>mpc_set_ui_ui</code></a>: <a href="#Assigning-Complex-Numbers">Assigning Complex Numbers</a></li>
-<li><a href="#index-mpc_005fsin-78"><code>mpc_sin</code></a>: <a href="#Trigonometric-Functions">Trigonometric Functions</a></li>
-<li><a href="#index-mpc_005fsinh-81"><code>mpc_sinh</code></a>: <a href="#Trigonometric-Functions">Trigonometric Functions</a></li>
-<li><a href="#index-mpc_005fsqr-60"><code>mpc_sqr</code></a>: <a href="#Basic-Arithmetic">Basic Arithmetic</a></li>
-<li><a href="#index-mpc_005fsqrt-74"><code>mpc_sqrt</code></a>: <a href="#Power-Functions-and-Logarithm">Power Functions and Logarithm</a></li>
-<li><a href="#index-mpc_005fsub-49"><code>mpc_sub</code></a>: <a href="#Basic-Arithmetic">Basic Arithmetic</a></li>
-<li><a href="#index-mpc_005fsub_005ffr-50"><code>mpc_sub_fr</code></a>: <a href="#Basic-Arithmetic">Basic Arithmetic</a></li>
-<li><a href="#index-mpc_005fsub_005fui-52"><code>mpc_sub_ui</code></a>: <a href="#Basic-Arithmetic">Basic Arithmetic</a></li>
+<li><a href="#index-mpc_005fsin-86"><code>mpc_sin</code></a>: <a href="#Trigonometric-Functions">Trigonometric Functions</a></li>
+<li><a href="#index-mpc_005fsinh-89"><code>mpc_sinh</code></a>: <a href="#Trigonometric-Functions">Trigonometric Functions</a></li>
+<li><a href="#index-mpc_005fsqr-68"><code>mpc_sqr</code></a>: <a href="#Basic-Arithmetic">Basic Arithmetic</a></li>
+<li><a href="#index-mpc_005fsqrt-82"><code>mpc_sqrt</code></a>: <a href="#Power-Functions-and-Logarithm">Power Functions and Logarithm</a></li>
+<li><a href="#index-mpc_005fsub-57"><code>mpc_sub</code></a>: <a href="#Basic-Arithmetic">Basic Arithmetic</a></li>
+<li><a href="#index-mpc_005fsub_005ffr-58"><code>mpc_sub_fr</code></a>: <a href="#Basic-Arithmetic">Basic Arithmetic</a></li>
+<li><a href="#index-mpc_005fsub_005fui-60"><code>mpc_sub_ui</code></a>: <a href="#Basic-Arithmetic">Basic Arithmetic</a></li>
 <li><a href="#index-g_t_0040code_007bmpc_005ft_007d-7"><code>mpc_t</code></a>: <a href="#MPC-Basics">MPC Basics</a></li>
-<li><a href="#index-mpc_005ftan-80"><code>mpc_tan</code></a>: <a href="#Trigonometric-Functions">Trigonometric Functions</a></li>
-<li><a href="#index-mpc_005ftanh-83"><code>mpc_tanh</code></a>: <a href="#Trigonometric-Functions">Trigonometric Functions</a></li>
-<li><a href="#index-mpc_005fui_005fdiv-63"><code>mpc_ui_div</code></a>: <a href="#Basic-Arithmetic">Basic Arithmetic</a></li>
-<li><a href="#index-mpc_005fui_005fsub-53"><code>mpc_ui_sub</code></a>: <a href="#Basic-Arithmetic">Basic Arithmetic</a></li>
-<li><a href="#index-mpc_005fui_005fui_005fsub-54"><code>mpc_ui_ui_sub</code></a>: <a href="#Basic-Arithmetic">Basic Arithmetic</a></li>
-<li><a href="#index-mpc_005furandom-91"><code>mpc_urandom</code></a>: <a href="#Miscellaneous-Complex-Functions">Miscellaneous Complex Functions</a></li>
+<li><a href="#index-mpc_005ftan-88"><code>mpc_tan</code></a>: <a href="#Trigonometric-Functions">Trigonometric Functions</a></li>
+<li><a href="#index-mpc_005ftanh-91"><code>mpc_tanh</code></a>: <a href="#Trigonometric-Functions">Trigonometric Functions</a></li>
+<li><a href="#index-mpc_005fui_005fdiv-71"><code>mpc_ui_div</code></a>: <a href="#Basic-Arithmetic">Basic Arithmetic</a></li>
+<li><a href="#index-mpc_005fui_005fsub-61"><code>mpc_ui_sub</code></a>: <a href="#Basic-Arithmetic">Basic Arithmetic</a></li>
+<li><a href="#index-mpc_005fui_005fui_005fsub-62"><code>mpc_ui_ui_sub</code></a>: <a href="#Basic-Arithmetic">Basic Arithmetic</a></li>
+<li><a href="#index-mpc_005furandom-99"><code>mpc_urandom</code></a>: <a href="#Miscellaneous-Complex-Functions">Miscellaneous Complex Functions</a></li>
+<li><a href="#index-MPC_005fVERSION_005fMAJOR-103"><code>MPC_VERSION_MAJOR</code></a>: <a href="#Miscellaneous-Complex-Functions">Miscellaneous Complex Functions</a></li>
+<li><a href="#index-MPC_005fVERSION_005fMINOR-104"><code>MPC_VERSION_MINOR</code></a>: <a href="#Miscellaneous-Complex-Functions">Miscellaneous Complex Functions</a></li>
+<li><a href="#index-MPC_005fVERSION_005fPATCHLEVEL-105"><code>MPC_VERSION_PATCHLEVEL</code></a>: <a href="#Miscellaneous-Complex-Functions">Miscellaneous Complex Functions</a></li>
+<li><a href="#index-MPC_005fVERSION_005fSTRING-106"><code>MPC_VERSION_STRING</code></a>: <a href="#Miscellaneous-Complex-Functions">Miscellaneous Complex Functions</a></li>
    </ul></body></html>
 

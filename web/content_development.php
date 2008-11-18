@@ -7,9 +7,9 @@ In particular, we offer
 <a href="http://gforge.inria.fr/scm/?group_id=131">anonymous
 subversion access</a>
 and access to the
-<a href="http://gforge.inria.fr/tracker/?atid=607&group_id=131&func=browse">bug</a>
+<a href="http://gforge.inria.fr/tracker/?atid=607&amp;group_id=131&amp;func=browse">bug</a>
 and
-<a href="http://gforge.inria.fr/tracker/?atid=610&group_id=131&func=browse">feature
+<a href="http://gforge.inria.fr/tracker/?atid=610&amp;group_id=131&amp;func=browse">feature
 request</a>
 trackers.
 

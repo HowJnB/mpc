@@ -2,7 +2,7 @@
 <?php code("Mpc"); ?> is
 a C library for the arithmetic of complex numbers with arbitrarily
 high precision and correct rounding of the result.
-It is built upon and follows the same principles as 
+It is built upon and follows the same principles as
 <a href="http://www.mpfr.org/"><?php code ("Mpfr"); ?></a>.
 The library is  written by
 <a href="http://www.lix.polytechnique.fr/Labo/Andreas.Enge">Andreas
@@ -21,37 +21,72 @@ under the number IDDN FR 001 060029 000 R P 2003 000 10000.
 
 <h2>News</h2>
 <p>
-<a href="?content=download">Version 0.5</a>,
-"Aconitum neomontanum", released in September 2008,
+<a href="?content=download">Version 0.5.1</a>,
+"Aconitum neomontanum", released in November 2008,
 comes with the following new features:
 </p>
 <ul>
 <li>
-Support for <code>autotools</code>
-</li>
-<li>
 New functions
 <ul>
 <li>
-<code>log</code>
+<code>set_fr_fr</code>
 </li>
 <li>
-trigonometric functions: <code>cos</code>, <code>tan</code>
-(<code>sin</code> was already there)
+<code>real</code>, <code>imag</code>
 </li>
 <li>
-hyperbolic functions: <code>cosh</code>, <code>sinh</code>,
-<code>tanh</code>
+<code>arg</code>, <code>proj</code>
 </li>
 </ul>
 </li>
 <li>
-Bug fixes:
+New macros
 <ul>
 <li>
-<code>sqrt</code> with directed rounding
+Version number: <code>MPC_VERSION_MAJOR</code>,
+<code>MPC_VERSION_MINOR</code>, <code>MPC_VERSION_PATCHLEVEL</code>,
+<code>MPC_VERSION_STRING</code>
+</li>
+<li>
+References to number parts:
+<code>realref</code>, <code>imagref</code>
 </li>
 </ul>
+</li>
+<li>
+Rewritten test framework, leading to many...
+</li>
+<li>
+Bug fixes
+<ul>
+<li>
+<code>configure</code> looks for <code>gmp</code> (>= 4.2) first,
+then for <code>mpfr</code> (>= 2.3.1)
+</li>
+<li>
+<code>cos</code>, <code>div</code>, <code>div_fr</code>, <code>fr_sub</code>,
+<code>mul_fr</code>, <code>set_fr</code>, <code>sqr</code>
+</li>
+<li>
+fixed handling of special values:
+<code>exp</code>, <code>log</code>, <code>mul</code>, <code>norm</code>,
+<code>sqr</code>, <code>sqrt</code>
+</li>
+</ul>
+</li>
+<li>
+Optimisations:
+<code>mul_fr</code>, <code>sin</code>, <code>cos</code>
+</li>
+<li>
+New <code>configure</code> options:
+<code>--with-gmp-lib</code>, <code>--with-gmp-include</code>,
+<code>--with-mpfr-lib</code>, <code>--with-mpfr-include</code>
+</li>
+<li>
+Export declarations for MSWindows, <code>makefile.vc</code> updated
+(contributed by Mickaël Gastineau)
 </li>
 </ul>
 
@@ -63,9 +98,9 @@ Bug fixes:
    title        = {mpc --- A library for multiprecision complex
                    arithmetic with exact rounding},
    organization = {INRIA},
-   edition      = {0.5},
+   edition      = {0.5.1},
    year         = {2008},
-   month        = {sep},
+   month        = nov,
    note         = {\url{http://www.multiprecision.org/mpc/}}
 }
 </pre>

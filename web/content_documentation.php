@@ -1,10 +1,10 @@
-<h2>Manual for version 0.5</h2>
+<h2>Manual for version 0.5.1</h2>
 <ul>
 <li>
 <a href="?content=html">html</a>
 </li>
 <li>
-<a href="download/mpc-0.5.pdf">pdf</a>
+<a href="download/mpc-0.5.1.pdf">pdf</a>
 </li>
 </ul>
 
