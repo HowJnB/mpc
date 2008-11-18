@@ -8,7 +8,7 @@ Changes in version 0.5.1:
       MPC_VERSION_PATCHLEVEL, MPC_VERSION_STRING
     - references to number parts: mpc_realref and mpc_imagref
   - Test framework rewritten
-  - Configure checks for recent gmp (>= 4.2) and mpfr (>= 2.3.1)
+  - Configure checks for recent gmp (>= 4.2.2) and mpfr (>= 2.3.1)
     libraries
   - New configure options: --with-gmp-lib, --with-gmp-include,
      --with-mpfr-lib, and --with-mpfr-include

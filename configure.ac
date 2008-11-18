@@ -97,15 +97,15 @@ AC_COMPILE_IFELSE(
         [AC_LANG_SOURCE(
         [[
 #include "gmp.h"
-#if (__GNU_MP_VERSION*100 + __GNU_MP_VERSION_MINOR*10 < 420)
-# error "min GMP version is 4.2"
+#if (__GNU_MP_VERSION*100 + __GNU_MP_VERSION_MINOR*10 < 422)
+# error "min GMP version is 4.2.2"
 error
 #endif
         ]])],
         [AC_MSG_RESULT(yes)],
         [
         AC_MSG_RESULT(no)
-        AC_MSG_ERROR([GMP version >= 4.2 required])
+        AC_MSG_ERROR([GMP version >= 4.2.2 required])
         ])
 
 # Check for a recent MPFR

@@ -11,12 +11,12 @@ Creating a new release
 ----------------------
 
 1) Check the version number in configure.ac ("AC_INIT (mpc, _version_...)"),
-   in INSTALL, and in mpc.h (remove suffix in MPC_VERSION_STRING), and
+   in INSTALL, and in src/mpc.h (remove suffix in MPC_VERSION_STRING), and
    disactivate the -Werror option in configure.ac.
 2) Check that NEWS, BUGS and TODO are up to date, and that the minimal
-   version numbers of gmp and mpfr in INSTALL and doc/mpc.texi are
-   correct.
-3) Execute "autoreconf; touch doc/mpc.texi; make dist".
+   version numbers of gmp and mpfr in configure.ac, INSTALL and
+   doc/mpc.texi are correct.
+3) Execute "autoreconf; touch doc/mpc.texi; make distcheck".
    This updates the date and version number in doc/version.texi and
    creates the tarball for distribution.
 4) Create an svn tag from inside the svn root:
