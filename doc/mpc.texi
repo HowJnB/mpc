@@ -109,27 +109,27 @@ Complex Library, version @value{VERSION}
 * MPC Basics::                  What every MPC user should know.
 * Complex Functions::           Functions for arithmetic on complex numbers.
 
-* Contributors::                
-* References::                  
-* Concept Index::               
-* Function Index::              
+* Contributors::
+* References::
+* Concept Index::
+* Function Index::
 
 @detailmenu
  --- The Detailed Node Listing ---
 
 Complex Functions
 
-* Initializing Complex Numbers::  
-* Assigning Complex Numbers::   
-* Simultaneous Init & Assign::  
-* Complex Comparison::          
-* Projection & Decomposing::    
-* Basic Arithmetic::            
-* Power Functions and Logarithm::  
-* Trigonometric Functions::     
-* I/O of Complex Numbers::      
-* Miscellaneous Complex Functions::  
-* Internals::                   
+* Initializing Complex Numbers::
+* Assigning Complex Numbers::
+* Simultaneous Init & Assign::
+* Complex Comparison::
+* Projection & Decomposing::
+* Basic Arithmetic::
+* Power Functions and Logarithm::
+* Trigonometric Functions::
+* I/O of Complex Numbers::
+* Miscellaneous Complex Functions::
+* Internals::
 
 @end detailmenu
 @end menu
@@ -181,7 +181,7 @@ probably a good idea to skim through it.
 @cindex Installation
 
 To build MPC, you first have to install GNU MP (version 4.2.2 or higher) and
-MPFR (version 2.3.0 or higher) on your computer.  You need a C compiler,
+MPFR (version 2.3.1 or higher) on your computer.  You need a C compiler,
 preferably GCC, but any reasonable compiler should work. And you need a
 standard Unix @samp{make} program, plus some other standard Unix utility
 programs.
@@ -466,17 +466,17 @@ different word size.
 
 
 @menu
-* Initializing Complex Numbers::  
-* Assigning Complex Numbers::   
-* Simultaneous Init & Assign::  
-* Complex Comparison::          
-* Projection & Decomposing::    
-* Basic Arithmetic::            
-* Power Functions and Logarithm::  
-* Trigonometric Functions::     
-* I/O of Complex Numbers::      
-* Miscellaneous Complex Functions::  
-* Internals::                   
+* Initializing Complex Numbers::
+* Assigning Complex Numbers::
+* Simultaneous Init & Assign::
+* Complex Comparison::
+* Projection & Decomposing::
+* Basic Arithmetic::
+* Power Functions and Logarithm::
+* Trigonometric Functions::
+* I/O of Complex Numbers::
+* Miscellaneous Complex Functions::
+* Internals::
 @end menu
 
 @node Initializing Complex Numbers, Assigning Complex Numbers, Complex Functions, Complex Functions
@@ -1001,7 +1001,7 @@ Version 4.2.2, @url{http://gmplib.org/}.
 @item
 Guillaume Hanrot, Vincent Lef@`evre, Patrick P@'elissier, Paul Zimmermann et al.
 @code{mpfr} -- A library for multiple-precision floating-point               computations with exact rounding.
-Version 2.3.0, @url{http://www.mpfr.org}.
+Version 2.3.1, @url{http://www.mpfr.org}.
 
 @item
 IEEE standard for binary floating-point arithmetic, Technical Report

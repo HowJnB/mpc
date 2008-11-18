@@ -140,8 +140,6 @@ AC_CHECK_FUNCS([dup dup2 fileno],,
         [AC_DEFINE([NO_STREAM_REDIRECTION],1,[Do not check mpc_out_str on stdout])])
 
 # Checks for CC flags.
-# Modification PT: move in the last place so as to avoid test failure in
-# AC_C_CONST due to additional flags "-Wall -Werror"
 
 # Variadic macros (used by logging macros) were introduced in C99
 AX_C_CHECK_FLAG(-ansi,,,CFLAGS="$CFLAGS -ansi",)
@@ -150,7 +148,7 @@ AX_C_CHECK_FLAG(-ansi,,,CFLAGS="$CFLAGS -ansi",)
 AX_C_CHECK_FLAG(-pedantic,,,CFLAGS="$CFLAGS -pedantic",)
 AX_C_CHECK_FLAG(-Wall,,,CFLAGS="$CFLAGS -Wall",)
 AX_C_CHECK_FLAG(-Wextra,,,CFLAGS="$CFLAGS -Wextra",)
-AX_C_CHECK_FLAG(-Werror,,,CFLAGS="$CFLAGS -Werror",)
+#AX_C_CHECK_FLAG(-Werror,,,CFLAGS="$CFLAGS -Werror",)
 
 
 AC_CONFIG_FILES([Makefile src/Makefile tests/Makefile doc/Makefile])
