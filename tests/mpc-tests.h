@@ -38,8 +38,8 @@ MA 02111-1307, USA. */
    - use test_default_random (or use your random functions with
    gmp_randstate_t rands) in your tests
    - add test_end at the end the test function */
-gmp_randstate_t  rands;
-char             rands_initialized;
+extern gmp_randstate_t  rands;
+extern char             rands_initialized;
 
 void test_start (void);
 void test_end (void);
