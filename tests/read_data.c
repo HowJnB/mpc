@@ -123,7 +123,7 @@ read_mpfr_rounding_mode (FILE *fp, mpfr_rnd_t* rnd)
     }
 
     nextchar = getc (fp);
-    if (!isspace (nextchar)) {
+    if (nextchar != EOF && !isspace (nextchar)) {
       printf ("Error: Rounding mode not followed by white space in file "
               "'%s' line %ld\n",
               pathname, line_number);
