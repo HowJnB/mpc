@@ -87,7 +87,7 @@ fi
 AC_CHECK_LIB([gmp], [__gmpz_init],
              [LIBS="-lgmp $LIBS"],
              [AC_MSG_ERROR([libgmp not found or uses a different ABI.])])
-AC_CHECK_LIB([mpfr], [mpfr_clear],
+AC_CHECK_LIB([mpfr], [mpfr_init],
              [LIBS="-lmpfr $LIBS"],
              [AC_MSG_ERROR([libmpfr not found or uses a different ABI.])])
 
