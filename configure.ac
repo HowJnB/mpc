@@ -77,6 +77,7 @@ AC_ARG_ENABLE([logging],
 # Checks for programs.
 AC_PROG_CC
 AC_PROG_LIBTOOL
+AC_PROG_SED
 
 AC_PATH_PROG([SED], [sed], no)
 if test "x$SED" = "xno"; then
@@ -87,9 +88,17 @@ fi
 AC_CHECK_LIB([gmp], [__gmpz_init],
              [LIBS="-lgmp $LIBS"],
              [AC_MSG_ERROR([libgmp not found or uses a different ABI.])])
-AC_CHECK_LIB([mpfr], [mpfr_init],
-             [LIBS="-lmpfr $LIBS"],
-             [AC_MSG_ERROR([libmpfr not found or uses a different ABI.])])
+#AC_CHECK_LIB([mpfr], [mpfr_init],
+#             [LIBS="-lmpfr $LIBS"],
+#             [AC_MSG_ERROR([libmpfr not found or uses a different ABI.])])
+LIBS="-lmpfr $LIBS"
+AC_LINK_IFELSE(
+        [AC_LANG_PROGRAM(
+                [[#include "mpfr.h"]],
+                [[mpfr_t x;  mpfr_init(x) ; mpfr_clear(x);]]
+        )],
+        [],
+        [AC_MSG_ERROR([libmpfr not found or uses a different ABI.])])
 
 # Check for a recent GMP
 AC_MSG_CHECKING(for recent GMP)
