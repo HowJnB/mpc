@@ -22,8 +22,8 @@ MA 02111-1307, USA. */
 #                                               -*- Autoconf -*-
 # Process this file with autoconf to produce a configure script.
 
-AC_PREREQ(2.59)
-AC_INIT(mpc, 0.6, mpc-discuss@lists.gforge.inria.fr)
+AC_PREREQ(2.61)
+AC_INIT(mpc, 0.5.2, mpc-discuss@lists.gforge.inria.fr)
 AC_CONFIG_SRCDIR([src/mpc-impl.h])
 AC_CONFIG_HEADER([config.h])
 
@@ -78,11 +78,6 @@ AC_ARG_ENABLE([logging],
 AC_PROG_CC
 AC_PROG_LIBTOOL
 AC_PROG_SED
-
-AC_PATH_PROG([SED], [sed], no)
-if test "x$SED" = "xno"; then
-   AC_MSG_ERROR([program sed needed])
-fi
 
 # Checks for libraries.
 AC_CHECK_LIB([gmp], [__gmpz_init],
