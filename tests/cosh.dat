@@ -127,5 +127,3 @@
 # cosh(nan + i*nan) = nan + i*nan
 2 nan 2 nan   2 nan 2 nan   N N
 
-
-
