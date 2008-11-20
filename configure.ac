@@ -86,14 +86,18 @@ AC_CHECK_LIB([gmp], [__gmpz_init],
 #AC_CHECK_LIB([mpfr], [mpfr_init],
 #             [LIBS="-lmpfr $LIBS"],
 #             [AC_MSG_ERROR([libmpfr not found or uses a different ABI.])])
+AC_MSG_CHECKING(for MPFR)
 LIBS="-lmpfr $LIBS"
 AC_LINK_IFELSE(
         [AC_LANG_PROGRAM(
                 [[#include "mpfr.h"]],
                 [[mpfr_t x;  mpfr_init(x) ; mpfr_clear(x);]]
         )],
-        [],
-        [AC_MSG_ERROR([libmpfr not found or uses a different ABI.])])
+        [AC_MSG_RESULT(yes)],
+        [
+        AC_MSG_RESULT(no)
+        AC_MSG_ERROR([libmpfr not found or uses a different ABI.])
+        ])
 
 # Check for a recent GMP
 AC_MSG_CHECKING(for recent GMP)
