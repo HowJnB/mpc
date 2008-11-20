@@ -29,8 +29,12 @@ MA 02111-1307, USA. */
 #define __SRCDIR .
 #endif
 
-unsigned long line_number;
-char *pathname;
+static char *pathname;
+static unsigned long line_number;
+   /* file name with complete path and currently read line;
+      kept globally to simplify parameter passing */
+static int nextchar;
+   /* character appearing next in the file, may be EOF */
 
 const char *mpfr_rnd_mode [] =
   { "GMP_RNDN", "GMP_RNDZ", "GMP_RNDU", "GMP_RNDD" };
@@ -55,56 +59,50 @@ const char *rnd_mode[] =
   };
 
 /* read primitives */
-/* skip white space and comments (from '#' to the end of the line) */
-static int
-skip_whitespace (FILE *fp)
+static void
+skip_line (FILE *fp)
+   /* skips characters until reaching '\n' or EOF; */
+   /* '\n' is skipped as well                      */
 {
-  char c;
-
-  while ((c = getc (fp)) != EOF)
-    {
-      if (c == '\n')
-        ++line_number;
-
-      if (isspace (c))
-        continue;
-      if (c == '#')
-        {
-          /* skip line of comment */
-          while ((c = getc (fp)) != EOF && c != '\n')
-            {}
-          if (c == EOF)
-            break;
-
-          if (c == '\n')
-            ++line_number;
-        }
-      else
-        break;
-    }
-
-  if (c == EOF)
-    return EOF;
-
-  ungetc (c, fp);
-  return 0;
+   while (nextchar != EOF && nextchar != '\n')
+      nextchar = getc (fp);
+   if (nextchar != EOF) {
+      line_number++;
+      nextchar = getc (fp);
+   }
 }
 
-static int
+static void
+skip_whitespace (FILE *fp)
+   /* skips over whitespace if any until reaching EOF */
+   /* or non-whitespace                               */
+{
+   while (isspace (nextchar)) {
+      if (nextchar == '\n')
+         line_number++;
+      nextchar = getc (fp);
+   }
+}
+
+static void
+skip_whitespace_comments (FILE *fp)
+   /* skips over all whitespace and comments, if any */
+{
+   skip_whitespace (fp);
+   while (nextchar == '#') {
+      skip_line (fp);
+      if (nextchar != EOF)
+         skip_whitespace (fp);
+   }
+}
+
+/* All following read routines skip over whitespace and comments; */
+/* so after calling them, nextchar is either EOF or the beginning */
+/* of a non-comment token.                                        */
+static void
 read_mpfr_rounding_mode (FILE *fp, mpfr_rnd_t* rnd)
 {
-  char c;
-
-  if (skip_whitespace (fp))
-    return -1;
-
-  if ((c = getc (fp)) == EOF)
-    {
-      perror ("data_check");
-      exit (1);
-    }
-
-  switch (c)
+  switch (nextchar)
     {
     case 'n': case 'N':
       *rnd = GMP_RNDN;
@@ -119,116 +117,96 @@ read_mpfr_rounding_mode (FILE *fp, mpfr_rnd_t* rnd)
       *rnd = GMP_RNDD;
       break;
     default:
-      return -1;
+      printf ("Error: Unexpected rounding mode '%c' in file '%s' line %ld\n",
+              nextchar, pathname, line_number);
+      exit (1);
     }
 
-    return 0;
+    nextchar = getc (fp);
+    if (!isspace (nextchar)) {
+      printf ("Error: Rounding mode not followed by white space in file "
+              "'%s' line %ld\n",
+              pathname, line_number);
+      exit (1);
+    }
+    skip_whitespace_comments (fp);
 }
 
 static void
-read_rounding_mode (FILE *fp, mpc_rnd_t* rnd)
+read_mpc_rounding_mode (FILE *fp, mpc_rnd_t* rnd)
 {
    int re, im;
-   if (   read_mpfr_rounding_mode (fp, &re)
-       || read_mpfr_rounding_mode (fp, &im)) {
-      printf ("Error: unexpected rounding mode in file '%s' line %ld\n",
+   read_mpfr_rounding_mode (fp, &re);
+   read_mpfr_rounding_mode (fp, &im);
+   *rnd = RNDC (re, im);
+}
+
+static mpfr_prec_t
+read_mpfr_prec (FILE *fp)
+{
+   unsigned long prec;
+   int n;
+
+   if (nextchar == EOF) {
+      printf ("Error: Unexpected EOF when reading mpfr precision "
+              "in file '%s' line %ld\n",
               pathname, line_number);
       exit (1);
    }
-   else
-      *rnd = RNDC (re, im);
+   ungetc (nextchar, fp);
+   n = fscanf (fp, "%lu", &prec);
+   if (ferror (fp)) /* then also n == EOF */
+      perror ("Error when reading mpfr precision");
+   if (n == 0 || n == EOF || prec < MPFR_PREC_MIN || prec > MPFR_PREC_MAX) {
+      printf ("Error: Impossible mpfr precision in file '%s' line %ld\n",
+              pathname, line_number);
+      exit (1);
+   }
+   nextchar = getc (fp);
+   skip_whitespace_comments (fp);
+   return (mpfr_prec_t) prec;
 }
 
-static int
+static void
+read_mpfr_mantissa (FILE *fp, mpfr_ptr x)
+{
+   if (nextchar == EOF) {
+      printf ("Error: Unexpected EOF when reading mpfr mantissa "
+              "in file '%s' line %ld\n",
+              pathname, line_number);
+      exit (1);
+   }
+   ungetc (nextchar, fp);
+   if (mpfr_inp_str (x, fp, 0, GMP_RNDN) == 0) {
+      printf ("Error: Impossible to read mpfr mantissa "
+              "in file '%s' line %ld\n",
+              pathname, line_number);
+      exit (1);
+   }
+   nextchar = getc (fp);
+   skip_whitespace_comments (fp);
+}
+
+static void
 read_mpfr (FILE *fp, mpfr_ptr x, int *known_sign)
 {
-  int n;
-  char c;
-  mpfr_prec_t prec;
+   mpfr_set_prec (x, read_mpfr_prec (fp));
+   read_mpfr_mantissa (fp, x);
 
-  /* read prec */
-  if (skip_whitespace (fp))
-    return -1;
-  n = fscanf (fp, "%lu", (unsigned long *)&prec);
-  if (n == EOF && ferror (fp))
-    {
-      perror ("data_check");
-      exit (1);
-    }
-  if (n == 0 || prec < MPFR_PREC_MIN || prec > MPFR_PREC_MAX)
-    return -1;
-
-  mpfr_set_prec (x, prec);
-
-  /* read value */
-  if (skip_whitespace (fp))
-    return -1;
-
-  /* Is the sign specified ? */
-  if ((c = getc (fp)) == EOF)
-    {
-      perror ("data_check");
-      exit (1);
-    }
-  ungetc (c, fp);
-
-  if (mpfr_inp_str (x, fp, 0, GMP_RNDN) == 0)
-    return -1;
-
-  /* the sign always matters for regular values ('+' is implicit),
-     but when no sign appears before 0 or Inf in the data file, it means
-     that only absolute value must be checked. */
-  if (known_sign != NULL)
-    *known_sign =
-      (!mpfr_zero_p (x) && !mpfr_inf_p (x)) || c == '+' || c == '-';
-
-  return 0;
+   /* the sign always matters for regular values ('+' is implicit),
+      but when no sign appears before 0 or Inf in the data file, it means
+      that only absolute value must be checked. */
+   if (known_sign != NULL)
+      *known_sign =
+         (!mpfr_zero_p (x) && !mpfr_inf_p (x))
+          || nextchar == '+' || nextchar == '-';
 }
 
-static int
+static void
 read_mpc (FILE *fp, mpc_ptr z, known_signs_t *ks)
 {
-  if (read_mpfr (fp, MPC_RE (z), ks == NULL ? NULL : &ks->re))
-    return -1;
-  if (read_mpfr (fp, MPC_IM (z), ks == NULL ? NULL : &ks->im))
-    return -1;
-  return 0;
-}
-
-static void
-read_mpfr_result (FILE *fp, mpfr_ptr x, int *ks) {
-   if (read_mpfr (fp, x, ks)) {
-      printf ("Error: corrupted mpfr result in file '%s' line %ld\n",
-              pathname, line_number);
-      exit (1);
-   }
-}
-
-static void
-read_mpfr_argument (FILE *fp, mpfr_ptr x, int *ks) {
-   if (read_mpfr (fp, x, ks)) {
-      printf ("Error: corrupted mpfr argument in file '%s' line %ld\n",
-              pathname, line_number);
-      exit (1);
-   }
-}
-
-static void
-read_mpc_result (FILE *fp, mpc_ptr z, known_signs_t *ks) {
-   if (read_mpc (fp, z, ks)) {
-      printf ("Error: corrupted mpc result in file '%s' line %ld\n",
-              pathname, line_number);
-      exit (1);
-   }
-}
-
-static void
-read_mpc_argument (FILE *fp, mpc_ptr z, known_signs_t *ks) {
-   if (read_mpc (fp, z, ks)) {
-      printf ("Error: corrupted mpc argument in file '%s' line %ld\n",
-              pathname, line_number);
-      exit (1);
-   }
+  read_mpfr (fp, MPC_RE (z), ks == NULL ? NULL : &ks->re);
+  read_mpfr (fp, MPC_IM (z), ks == NULL ? NULL : &ks->im);
 }
 
 /* read lines of data */
@@ -236,17 +214,17 @@ static void
 read_cc (FILE *fp, mpc_ptr expected, known_signs_t *signs, mpc_ptr op,
          mpc_rnd_t *rnd)
 {
-  read_mpc_result (fp, expected, signs);
-  read_mpc_argument (fp, op, NULL);
-  read_rounding_mode (fp, rnd);
+  read_mpc (fp, expected, signs);
+  read_mpc (fp, op, NULL);
+  read_mpc_rounding_mode (fp, rnd);
 }
 
 static void
 read_fc (FILE *fp, mpfr_ptr expected, int *sign, mpc_ptr op,
          mpfr_rnd_t *rnd)
 {
-  read_mpfr_result (fp, expected, sign);
-  read_mpc_argument (fp, op, NULL);
+  read_mpfr (fp, expected, sign);
+  read_mpc (fp, op, NULL);
   read_mpfr_rounding_mode (fp, rnd);
 }
 
@@ -254,10 +232,10 @@ static void
 read_ccc (FILE *fp, mpc_ptr expected, known_signs_t *signs,
           mpc_ptr op1, mpc_ptr op2, mpc_rnd_t *rnd)
 {
-  read_mpc_result (fp, expected, signs);
-  read_mpc_argument (fp, op1, NULL);
-  read_mpc_argument (fp, op2, NULL);
-  read_rounding_mode (fp, rnd);
+  read_mpc (fp, expected, signs);
+  read_mpc (fp, op1, NULL);
+  read_mpc (fp, op2, NULL);
+  read_mpc_rounding_mode (fp, rnd);
 }
 
 static void
@@ -265,20 +243,20 @@ read_cfc (FILE *fp, mpc_ptr expected, known_signs_t *signs, mpfr_ptr op1,
           mpc_ptr op2, mpc_rnd_t *rnd)
 {
 
-  read_mpc_result (fp, expected, signs);
-  read_mpfr_argument (fp, op1, NULL);
-  read_mpc_argument (fp, op2, NULL);
-  read_rounding_mode (fp, rnd);
+  read_mpc (fp, expected, signs);
+  read_mpfr (fp, op1, NULL);
+  read_mpc (fp, op2, NULL);
+  read_mpc_rounding_mode (fp, rnd);
 }
 
 static void
 read_ccf (FILE *fp, mpc_ptr expected, known_signs_t *signs, mpc_ptr op1,
           mpfr_ptr op2, mpc_rnd_t *rnd)
 {
-  read_mpc_result (fp, expected, signs);
-  read_mpc_argument (fp, op1, NULL);
-  read_mpfr_argument (fp, op2, NULL);
-  read_rounding_mode (fp, rnd);
+  read_mpc (fp, expected, signs);
+  read_mpc (fp, op1, NULL);
+  read_mpfr (fp, op2, NULL);
+  read_mpc_rounding_mode (fp, rnd);
 }
 
 /* data_check (function, data_file_name) checks function results against
@@ -287,7 +265,6 @@ void
 data_check (mpc_function function, const char *file_name)
 {
   FILE *fp;
-  char c;
 
   mpfr_t x1, x2;
   mpfr_rnd_t mpfr_rnd = GMP_RNDN;
@@ -340,18 +317,9 @@ data_check (mpc_function function, const char *file_name)
 
   /* 3. read data file */
   line_number = 1;
-  while (1)
-    {
-      c = skip_whitespace (fp);
-      if (c)
-        {
-          if (c == EOF)
-            break;
-          printf ("Error: corrupted argument in file '%s' line %ld\n",
-                  pathname, line_number);
-          exit (1);
-        }
-
+  nextchar = getc (fp);
+  skip_whitespace_comments (fp);
+  while (nextchar != EOF) {
       /* for each kind of function prototype: */
       /* 3.1 read a line of data: expected result, parameters, rounding mode */
       /* 3.2 compute function at the same precision as the expected result */
