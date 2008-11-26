@@ -128,7 +128,7 @@ mpc_sqrt (mpc_ptr a, mpc_srcptr b, mpc_rnd_t rnd)
           if (im_sgn)
             {
               inexact = mpfr_sqrt (MPC_IM (a), w, INV_RND (MPC_RND_IM (rnd)));
-              mpfr_neg (MPC_IM (a), MPC_IM (a), MPC_RNDNN);
+              mpfr_neg (MPC_IM (a), MPC_IM (a), GMP_RNDN);
             }
           else
             inexact = mpfr_sqrt (MPC_IM (a), w, MPC_RND_IM (rnd));

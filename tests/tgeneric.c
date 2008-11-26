@@ -722,8 +722,8 @@ tgeneric (mpc_function function, mpfr_prec_t prec_min,
   mpfr_t x1, x2, xxxx;
   mpc_t  z1, z2, z3, z4, zzzz;
 
-  mpc_rnd_t rnd_re;
-  mpc_rnd_t rnd_im;
+  mpfr_rnd_t rnd_re;
+  mpfr_rnd_t rnd_im;
   mpfr_prec_t prec;
   mp_exp_t exp_min;
   int special, special_cases;
