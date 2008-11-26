@@ -334,6 +334,9 @@ data_check (mpc_function function, const char *file_name)
             {
               mpfr_t got, expected;
               mpc_t op;
+              op[0] = z1[0];
+              got[0] = x2[0];
+              expected[0] = x1[0];
               printf ("%s(op) failed (%s:%lu)\nwith rounding mode %s\n",
                       function.name, file_name, line_number,
                       mpfr_rnd_mode[mpfr_rnd]);
