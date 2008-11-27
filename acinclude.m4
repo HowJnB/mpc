@@ -54,13 +54,9 @@ AX_C_CHECK_FLAG(FLAG-TO-CHECK,[PROLOGUE],[BODY],[ACTION-IF-SUCCESS],[ACTION-IF-F
 #   modified version as well.
 
 AC_DEFUN([AX_C_CHECK_FLAG],[
-# modification AE: require only 2.59; then we do not have AC_PROG_SED
-#  AC_PREREQ([2.61])
-  AC_PREREQ([2.59])
+  AC_PREREQ([2.61])
   AC_REQUIRE([AC_PROG_CC])
-# modification AE
-#  AC_REQUIRE([AC_PROG_SED])
-
+  AC_REQUIRE([AC_PROG_SED])
 
   flag=`echo "$1" | $SED 'y% .=/+-(){}<>:*,%_______________%'`
 
