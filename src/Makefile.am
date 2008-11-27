@@ -1,4 +1,5 @@
 ## src/Makefile.am -- Process this file with automake to produce Makefile.in
+AM_CFLAGS=@WARNINGCFLAGS@
 
 lib_LTLIBRARIES = libmpc.la
 libmpc_la_SOURCES = mpc-impl.h abs.c add.c add_fr.c add_ui.c arg.c clear.c	\
