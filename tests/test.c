@@ -210,7 +210,7 @@ main (void)
           exit (1);
         }
 
-      mpc_set_si_si (x, 1, -1, MPC_RNDNN);
+      mpc_set_si_si (x, -1, +1, MPC_RNDNN);
       if (!(file = fopen (filename, "w")))
         {
           fprintf (stderr, "Could not open file %s\n", filename);
