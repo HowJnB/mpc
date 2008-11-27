@@ -148,17 +148,12 @@ AC_CHECK_FUNCS([dup dup2 fileno],,
         [AC_DEFINE([NO_STREAM_REDIRECTION],1,[Do not check mpc_out_str on stdout])])
 
 # Checks if compiler accepts warning flags.
-
-# Variadic macros (used by logging macros) were introduced in C99
 AX_C_CHECK_FLAG(-ansi,,,WARNINGCFLAGS="$WARNINGCFLAGS -ansi",)
-#AX_C_CHECK_FLAG(-std=c99,,,WARNINGCFLAGS="$WARNINGCFLAGS -std=c99",)
-
 AX_C_CHECK_FLAG(-pedantic,,,WARNINGCFLAGS="$WARNINGCFLAGS -pedantic",)
 AX_C_CHECK_FLAG(-Wall,,,WARNINGCFLAGS="$WARNINGCFLAGS -Wall",)
 AX_C_CHECK_FLAG(-Wextra,,,WARNINGCFLAGS="$WARNINGCFLAGS -Wextra",)
-
 AX_C_CHECK_FLAG(-Werror,,,WARNINGCFLAGS="$WARNINGCFLAGS -Werror",)
-
 AC_SUBST(WARNINGCFLAGS)
+
 AC_CONFIG_FILES([Makefile src/Makefile tests/Makefile doc/Makefile])
 AC_OUTPUT
