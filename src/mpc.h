@@ -1,6 +1,6 @@
 /* mpc.h -- Include file for mpc.
 
-Copyright (C) 2002, 2003, 2004, 2005, 2007, 2008 Andreas Enge, Paul Zimmermann
+Copyright (C) 2002, 2003, 2004, 2005, 2007, 2008 Andreas Enge, Paul Zimmermann, Philippe Th\'eveny
 
 This file is part of the MPC Library.
 
@@ -30,6 +30,11 @@ MA 02111-1307, USA. */
 #define MPC_VERSION_MINOR 5
 #define MPC_VERSION_PATCHLEVEL 2
 #define MPC_VERSION_STRING "0.5.2-dev"
+
+/* Macros dealing with MPC VERSION */
+#define MPC_VERSION_NUM(a,b,c) (((a) << 16L) | ((b) << 8) | (c))
+#define MPC_VERSION                                                     \
+  MPC_VERSION_NUM(MPC_VERSION_MAJOR,MPC_VERSION_MINOR,MPC_VERSION_PATCHLEVEL)
 
 /* Check if stdio.h is included */
 #if defined (_GMP_H_HAVE_FILE)
