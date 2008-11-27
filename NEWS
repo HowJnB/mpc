@@ -1,5 +1,6 @@
 Recent changes:
-
+  - New macros:
+   - version number: MPC_VERSION_NUM, MPC_VERSION
 
 Changes in version 0.5.1:
   - New functions:

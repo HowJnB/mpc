@@ -937,13 +937,15 @@ Negative parts are generated when @var{max_size} is negative.
 Return the MPC version, as a null-terminated string.
 @end deftypefun
 
-@defmac MPC_VERSION_MAJOR
+@defmac MPC_VERSION
+@defmacx MPC_VERSION_MAJOR
 @defmacx MPC_VERSION_MINOR
 @defmacx MPC_VERSION_PATCHLEVEL
 @defmacx MPC_VERSION_STRING
+@code{MPC_VERSION} is the version of MPC as a preprocessing constant.
 @code{MPC_VERSION_MAJOR}, @code{MPC_VERSION_MINOR} and
 @code{MPC_VERSION_PATCHLEVEL} are respectively the major, minor and
-patch level of MPFR version, as preprocessing constants.
+patch level of MPC version, as preprocessing constants.
 @code{MPC_VERSION_STRING} is the version as a string constant, which
 can be compared to the result of @code{mpc_get_version} to check at
 run time the header file and library used match:
@@ -956,6 +958,17 @@ general, a program compiled with some old MPC version can be
 dynamically linked with a newer MPC library version (if allowed by the
 library versioning system).
 @end defmac
+
+@deftypefn Macro long MPC_VERSION_NUM (@var{major}, @var{minor}, @var{patchlevel})
+Create an integer in the same format as used by @code{MPC_VERSION} from the
+given @var{major}, @var{minor} and @var{patchlevel}.
+Here is an example of how to check the MPC version at compile time:
+@example
+#if (!defined(MPC_VERSION) || (MPC_VERSION<MPC_VERSION_NUM(2,1,0)))
+# error "Wrong MPC version."
+#endif
+@end example
+@end deftypefn
 
 @node Internals,  , Miscellaneous Complex Functions, Complex Functions
 @comment  node-name,  next,  previous,  up
