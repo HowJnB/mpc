@@ -122,7 +122,7 @@ AC_COMPILE_IFELSE(
         [AC_LANG_SOURCE(
         [[
 #include "mpfr.h"
-#if (MPFR_VERSION_MAJOR*100 + MPFR_VERSION_MINOR*10 + MPFR_VERSION_PATCHLEVEL < 231)
+#if (MPFR_VERSION < MPFR_VERSION_NUM (2,3,1))
 # error "min MPFR version is 2.3.1"
 error
 #endif
