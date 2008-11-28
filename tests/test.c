@@ -21,10 +21,12 @@ MA 02111-1307, USA. */
 
 #define  _XOPEN_SOURCE /* for fileno */
 #include <stdio.h>
-#include <unistd.h>
 #include <stdlib.h>
 #include "mpc.h"
 #include "mpc-impl.h"
+#ifdef HAVE_UNISTD_H
+#include <unistd.h>
+#endif
 
 #define PRINT(x) {}
 
@@ -123,7 +125,7 @@ main (void)
           fprintf (stderr, "\n");
           exit (1);
         }
-      
+
       /* other test with invalid real part */
       file = fopen (filename, "w"); /* should work now */
       fprintf (file, "invalid_real_part +I*1\n");

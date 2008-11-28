@@ -31,7 +31,7 @@
 #      install MPC to installdirectory
 #
 #  nmake /f Makefile.vc  check GMPDIR=gmpdirectory MPFRDIR=mpfrdirectory
-#      perform tests on MPC 
+#      perform tests on MPC
 #
 
 
@@ -43,14 +43,14 @@ VERSION=0.5.1
 
 ######################## do not edit below this line ##########################
 
-DIRMPC=.\src\ 
-DIRMPCTESTS=$(DIRMPC)\..\tests\ 
+DIRMPC=.\src\
+DIRMPCTESTS=$(DIRMPC)\..\tests\
 
-INCLUDES = /I$(DIRMPC) /I$(GMPDIR)\include  /I$(MPFR)\include 
+INCLUDES = /I$(DIRMPC) /I$(GMPDIR)\include  /I$(MPFR)\include
 CKERNELFLAGS = $(CDEFAULTFLAGS) /D__GMP_LIBGMP_DLL   $(INCLUDES)
-CFLAGS = $(CKERNELFLAGS)  /D__MPC_WITHIN_MPC /D_GMP_IEEE_FLOATS /DHAVE_CONFIG_H 
+CFLAGS = $(CKERNELFLAGS)  /D__MPC_WITHIN_MPC /D_GMP_IEEE_FLOATS /DHAVE_CONFIG_H
 
-TESTCOMPILE=$(CC) $(CKERNELFLAGS) $(DIRMPC)\..\tests\tgeneric.c $(DIRMPC)\..\tests\comparisons.c $(DIRMPC)\..\tests\read_data.c $(DIRMPC)\..\tests\random.c $(DIRMPC)\..\tests\ 
+TESTCOMPILE=$(CC) $(CKERNELFLAGS) $(DIRMPC)\..\tests\tgeneric.c $(DIRMPC)\..\tests\comparisons.c $(DIRMPC)\..\tests\read_data.c $(DIRMPC)\..\tests\random.c $(DIRMPC)\..\tests\
 MIDTESTCOMPILE=/link  /out:$(DIRMPCTESTS)
 ENDTESTCOMPILE=/LIBPATH:"$(GMPDIR)\lib" libmpc.lib libmpfr.lib libgmp.lib
 
@@ -127,7 +127,7 @@ $(DIRMPC)\ui_div.obj \
 $(DIRMPC)\ui_ui_sub.obj \
 $(DIRMPC)\urandom.obj \
 $(DIRMPC)\version.obj
- 
+
 
 
 CPPLINKOBJECTS = abs.obj \
@@ -198,17 +198,17 @@ version.obj
 # executing its link command.
 #
 
-$(LIBRARY): $(DIRMPC)config.h $(CPPOBJECTS) 
+$(LIBRARY): $(DIRMPC)config.h $(CPPOBJECTS)
 	link.exe /DLL /out:$@ $(CPPLINKOBJECTS) /LIBPATH:"$(GMPDIR)\lib" libmpfr.lib libgmp.lib
 
-$(DIRMPC)config.h : 
+$(DIRMPC)config.h :
 	echo #define PACKAGE_STRING "mpc"           >$(DIRMPC)config.h
 	echo #define PACKAGE_VERSION "$(VERSION)"   >>$(DIRMPC)config.h
 	echo #define STDC_HEADERS 1                 >>$(DIRMPC)config.h
 
 
 #
-# Clean target: "nmake /f Makefile.vc clean" to remove unwanted 
+# Clean target: "nmake /f Makefile.vc clean" to remove unwanted
 #               objects and executables.
 #
 
@@ -221,7 +221,7 @@ clean:
 # install target: "nmake /f Makefile.vc install DESTDIR=xxx" to perform the installation.
 #
 
-install: 
+install:
 	-mkdir $(DESTDIR)
 	-mkdir $(DESTDIR)\include
 	copy $(DIRMPC)mpc.h $(DESTDIR)\include
@@ -233,7 +233,7 @@ install:
 # install target: "nmake /f Makefile.vc check GMPDIR=xxx MPFRDIR=xxx" to perform the installation.
 #
 check : test
-test : 
+test :
 	copy $(GMPDIR)\lib\*gmp*.dll $(DIRMPCTESTS)
 	copy $(MPFRDIR)\lib\*mpfr*.dll $(DIRMPCTESTS)
 	copy $(LIBRARY)  $(DIRMPCTESTS)
@@ -261,8 +261,8 @@ test :
         cd $(DIRMPCTESTS) && tdiv_fr.exe && cd ..
         $(TESTCOMPILE)tdiv_ui.c  $(MIDTESTCOMPILE)tdiv_ui.exe $(ENDTESTCOMPILE)
         cd $(DIRMPCTESTS) && tdiv_ui.exe && cd ..
-#        $(TESTCOMPILE)test.c  $(MIDTESTCOMPILE)test.exe $(ENDTESTCOMPILE)
-#        cd $(DIRMPCTESTS) && test.exe && cd ..
+        $(TESTCOMPILE)test.c  $(MIDTESTCOMPILE)test.exe $(ENDTESTCOMPILE)
+        cd $(DIRMPCTESTS) && test.exe && cd ..
         $(TESTCOMPILE)texp.c  $(MIDTESTCOMPILE)texp.exe $(ENDTESTCOMPILE)
         cd $(DIRMPCTESTS) && texp.exe && cd ..
         $(TESTCOMPILE)tfr_div.c  $(MIDTESTCOMPILE)tfr_div.exe $(ENDTESTCOMPILE)
@@ -273,8 +273,8 @@ test :
         cd $(DIRMPCTESTS) && timag.exe && cd ..
         $(TESTCOMPILE)tlog.c  $(MIDTESTCOMPILE)tlog.exe $(ENDTESTCOMPILE)
         cd $(DIRMPCTESTS) && tlog.exe && cd ..
-#        $(TESTCOMPILE)tmul.c  $(MIDTESTCOMPILE)tmul.exe $(ENDTESTCOMPILE)
-#        cd $(DIRMPCTESTS) && tmul.exe && cd ..
+        $(TESTCOMPILE)tmul.c  $(MIDTESTCOMPILE)tmul.exe $(ENDTESTCOMPILE)
+        cd $(DIRMPCTESTS) && tmul.exe && cd ..
         $(TESTCOMPILE)tmul_2exp.c  $(MIDTESTCOMPILE)tmul_2exp.exe $(ENDTESTCOMPILE)
         cd $(DIRMPCTESTS) && tmul_2exp.exe && cd ..
         $(TESTCOMPILE)tmul_fr.c  $(MIDTESTCOMPILE)tmul_fr.exe $(ENDTESTCOMPILE)
@@ -318,4 +318,4 @@ test :
         @echo --------------------------------------------------
         @echo All tests passed
         @echo --------------------------------------------------
-        
+

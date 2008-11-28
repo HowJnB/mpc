@@ -60,11 +60,11 @@ MA 02111-1307, USA. */
 #define SAFE_ABS(type,x) ((x) >= 0 ? (type)(x) : -(type)(x))
 
 #define OUT(x)                                                  \
-  do {                                                          \
+{                                                               \
   printf (#x "[%ld,%ld]=", MPC_PREC_RE (x), MPC_PREC_IM (x));   \
   mpc_out_str (stdout, 2, 0, x, MPC_RNDNN);                     \
   printf ("\n");                                                \
-} while (0)
+}
 
 
 /* Logging macros */
@@ -104,16 +104,16 @@ MA 02111-1307, USA. */
 
 #endif /* MPC_USE_LOGGING */
 
-
+ 
 /* Define internal functions */
 
 #if defined (__cplusplus)
 extern "C" {
 #endif
 
-  int  mpc_mul_naive     __MPC_PROTO ((mpc_ptr, mpc_srcptr, mpc_srcptr, mpc_rnd_t));
-  int  mpc_mul_karatsuba __MPC_PROTO ((mpc_ptr, mpc_srcptr, mpc_srcptr, mpc_rnd_t));
-  unsigned long  mpc_ceil_log2 __MPC_PROTO ((unsigned long));
+__MPC_DECLSPEC int  mpc_mul_naive     __MPC_PROTO ((mpc_ptr, mpc_srcptr, mpc_srcptr, mpc_rnd_t));
+__MPC_DECLSPEC int  mpc_mul_karatsuba __MPC_PROTO ((mpc_ptr, mpc_srcptr, mpc_srcptr, mpc_rnd_t));
+__MPC_DECLSPEC unsigned long  mpc_ceil_log2 __MPC_PROTO ((unsigned long));
 
 #if defined (__cplusplus)
 }
