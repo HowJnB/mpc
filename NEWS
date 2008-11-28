@@ -1,6 +1,7 @@
 Recent changes:
   - New macros:
-   - version number: MPC_VERSION_NUM, MPC_VERSION
+    - version number: MPC_VERSION_NUM, MPC_VERSION
+  - Makefile.vc updated (thanks to Mickael Gastineau)
 
 Changes in version 0.5.1:
   - New functions:
