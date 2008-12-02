@@ -38,7 +38,7 @@ AC_ARG_WITH([mpfr_include],
 AC_ARG_WITH([mpfr_lib],
             [AC_HELP_STRING([--with-mpfr-lib=DIR],
                             [MPFR lib directory])],
-            [LDFLAGS="-I$withval $LDFLAGS"])
+            [LDFLAGS="-L$withval $LDFLAGS"])
 AC_ARG_WITH([mpfr],
             [AC_HELP_STRING([--with-mpfr=DIR],
                            [MPFR install directory])],
@@ -53,7 +53,7 @@ AC_ARG_WITH([gmp_include],
 AC_ARG_WITH([gmp_lib],
             [AC_HELP_STRING([--with-gmp-lib=DIR],
                             [GMP lib directory])],
-            [LDFLAGS="-I$withval $LDFLAGS"])
+            [LDFLAGS="-L$withval $LDFLAGS"])
 AC_ARG_WITH([gmp],
             [AC_HELP_STRING([--with-gmp=DIR],
                            [GMP install directory])],
