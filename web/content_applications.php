@@ -1,5 +1,11 @@
 <ul>
 <li>
+<a href="http://www.sagemath.org/">SAGE</a>, a free
+computer algebra system, contains <?php code ("Mpc"); ?> as an
+<a href="http://www.sagemath.org/packages/optional/">optional package</a>
+since <?php code ("Mpc"); ?> version 0.5.
+</li>
+<li>
 <a href="http://search.cpan.org/~sisyphus/Math-MPC/">Math::MPC</a>,
 a perl wrapper
 </li>
@@ -13,9 +19,6 @@ and M. Gastineau at
 <a href="http://www.imcce.fr/imcce_en.html">Institut
 de Mécanique Céleste et de Calcul des Éphémérides</a>,
 uses <?php code ("Mpc"); ?> since version 0.98.66.
-Quadruple precision arithmetic implemented in <?php code ("Trip"); ?> provides
-only 33 decimal digits of precision. The <?php code ("Mpc"); ?> library
-increases the number of digits of precision available to the users.
 </li>
 <li>
 <a href="http://magma.maths.usyd.edu.au/magma/">Magma</a>

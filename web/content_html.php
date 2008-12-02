@@ -1,8 +1,8 @@
 <html lang="en">
 <head>
-<title>MPC 0.5.1</title>
+<title>MPC 0.5.2</title>
 <meta http-equiv="Content-Type" content="text/html">
-<meta name="description" content="MPC 0.5.1">
+<meta name="description" content="MPC 0.5.2">
 <meta name="generator" content="makeinfo 4.11">
 <link title="Top" rel="top" href="#Top">
 <link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
@@ -38,7 +38,7 @@ into another language, under the above conditions for modified versions.-->
 --></style>
 </head>
 <body>
-<h1 class="settitle">MPC 0.5.1</h1>
+<h1 class="settitle">MPC 0.5.2</h1>
 <div class="node">
 <p><hr>
 <a name="Top"></a>
@@ -51,7 +51,7 @@ Up:&nbsp;<a rel="up" accesskey="u" href="#dir">(dir)</a>
 <h2 class="unnumbered">MPC</h2>
 
 <p>This manual documents how to install and use the Multiple Precision
-Complex Library, version 0.5.1
+Complex Library, version 0.5.2
 
 <ul class="menu">
 <li><a accesskey="1" href="#Copying">Copying</a>:                      MPC Copying Conditions (LGPL). 
@@ -158,9 +158,9 @@ programs.
    <p>Here are the steps needed to install the library on Unix systems:
 
      <ol type=1 start=1>
-<li>&lsquo;<samp><span class="samp">tar xzf mpc-0.5.1.tar.gz</span></samp>&rsquo;
+<li>&lsquo;<samp><span class="samp">tar xzf mpc-0.5.2.tar.gz</span></samp>&rsquo;
 
-     <li>&lsquo;<samp><span class="samp">cd mpc-0.5.1</span></samp>&rsquo;
+     <li>&lsquo;<samp><span class="samp">cd mpc-0.5.2</span></samp>&rsquo;
 
      <li>&lsquo;<samp><span class="samp">./configure</span></samp>&rsquo;
 
@@ -1014,13 +1014,15 @@ Negative parts are generated when <var>max_size</var> is negative.
 </p></blockquote></div>
 
 <div class="defun">
-&mdash; Macro: <b>MPC_VERSION_MAJOR</b><var><a name="index-MPC_005fVERSION_005fMAJOR-103"></a></var><br>
-&mdash; Macro: <b>MPC_VERSION_MINOR</b><var><a name="index-MPC_005fVERSION_005fMINOR-104"></a></var><br>
-&mdash; Macro: <b>MPC_VERSION_PATCHLEVEL</b><var><a name="index-MPC_005fVERSION_005fPATCHLEVEL-105"></a></var><br>
-&mdash; Macro: <b>MPC_VERSION_STRING</b><var><a name="index-MPC_005fVERSION_005fSTRING-106"></a></var><br>
-<blockquote><p><code>MPC_VERSION_MAJOR</code>, <code>MPC_VERSION_MINOR</code> and
+&mdash; Macro: <b>MPC_VERSION</b><var><a name="index-MPC_005fVERSION-103"></a></var><br>
+&mdash; Macro: <b>MPC_VERSION_MAJOR</b><var><a name="index-MPC_005fVERSION_005fMAJOR-104"></a></var><br>
+&mdash; Macro: <b>MPC_VERSION_MINOR</b><var><a name="index-MPC_005fVERSION_005fMINOR-105"></a></var><br>
+&mdash; Macro: <b>MPC_VERSION_PATCHLEVEL</b><var><a name="index-MPC_005fVERSION_005fPATCHLEVEL-106"></a></var><br>
+&mdash; Macro: <b>MPC_VERSION_STRING</b><var><a name="index-MPC_005fVERSION_005fSTRING-107"></a></var><br>
+<blockquote><p><code>MPC_VERSION</code> is the version of MPC as a preprocessing constant. 
+<code>MPC_VERSION_MAJOR</code>, <code>MPC_VERSION_MINOR</code> and
 <code>MPC_VERSION_PATCHLEVEL</code> are respectively the major, minor and
-patch level of MPFR version, as preprocessing constants. 
+patch level of MPC version, as preprocessing constants. 
 <code>MPC_VERSION_STRING</code> is the version as a string constant, which
 can be compared to the result of <code>mpc_get_version</code> to check at
 run time the header file and library used match:
@@ -1032,6 +1034,17 @@ general, a program compiled with some old MPC version can be
 dynamically linked with a newer MPC library version (if allowed by the
 library versioning system). 
 </p></blockquote></div>
+
+<div class="defun">
+&mdash; Macro: long <b>MPC_VERSION_NUM</b> (<var>major, minor, patchlevel</var>)<var><a name="index-MPC_005fVERSION_005fNUM-108"></a></var><br>
+<blockquote><p>Create an integer in the same format as used by <code>MPC_VERSION</code> from the
+given <var>major</var>, <var>minor</var> and <var>patchlevel</var>. 
+Here is an example of how to check the MPC version at compile time:
+     <pre class="example">          #if (!defined(MPC_VERSION) || (MPC_VERSION&lt;MPC_VERSION_NUM(2,1,0)))
+          # error "Wrong MPC version."
+          #endif
+</pre>
+        </blockquote></div>
 
 <div class="node">
 <p><hr>
@@ -1238,9 +1251,11 @@ Up:&nbsp;<a rel="up" accesskey="u" href="#Top">Top</a>
 <li><a href="#index-mpc_005fui_005fsub-61"><code>mpc_ui_sub</code></a>: <a href="#Basic-Arithmetic">Basic Arithmetic</a></li>
 <li><a href="#index-mpc_005fui_005fui_005fsub-62"><code>mpc_ui_ui_sub</code></a>: <a href="#Basic-Arithmetic">Basic Arithmetic</a></li>
 <li><a href="#index-mpc_005furandom-99"><code>mpc_urandom</code></a>: <a href="#Miscellaneous-Complex-Functions">Miscellaneous Complex Functions</a></li>
-<li><a href="#index-MPC_005fVERSION_005fMAJOR-103"><code>MPC_VERSION_MAJOR</code></a>: <a href="#Miscellaneous-Complex-Functions">Miscellaneous Complex Functions</a></li>
-<li><a href="#index-MPC_005fVERSION_005fMINOR-104"><code>MPC_VERSION_MINOR</code></a>: <a href="#Miscellaneous-Complex-Functions">Miscellaneous Complex Functions</a></li>
-<li><a href="#index-MPC_005fVERSION_005fPATCHLEVEL-105"><code>MPC_VERSION_PATCHLEVEL</code></a>: <a href="#Miscellaneous-Complex-Functions">Miscellaneous Complex Functions</a></li>
-<li><a href="#index-MPC_005fVERSION_005fSTRING-106"><code>MPC_VERSION_STRING</code></a>: <a href="#Miscellaneous-Complex-Functions">Miscellaneous Complex Functions</a></li>
+<li><a href="#index-MPC_005fVERSION-103"><code>MPC_VERSION</code></a>: <a href="#Miscellaneous-Complex-Functions">Miscellaneous Complex Functions</a></li>
+<li><a href="#index-MPC_005fVERSION_005fMAJOR-104"><code>MPC_VERSION_MAJOR</code></a>: <a href="#Miscellaneous-Complex-Functions">Miscellaneous Complex Functions</a></li>
+<li><a href="#index-MPC_005fVERSION_005fMINOR-105"><code>MPC_VERSION_MINOR</code></a>: <a href="#Miscellaneous-Complex-Functions">Miscellaneous Complex Functions</a></li>
+<li><a href="#index-MPC_005fVERSION_005fNUM-108"><code>MPC_VERSION_NUM</code></a>: <a href="#Miscellaneous-Complex-Functions">Miscellaneous Complex Functions</a></li>
+<li><a href="#index-MPC_005fVERSION_005fPATCHLEVEL-106"><code>MPC_VERSION_PATCHLEVEL</code></a>: <a href="#Miscellaneous-Complex-Functions">Miscellaneous Complex Functions</a></li>
+<li><a href="#index-MPC_005fVERSION_005fSTRING-107"><code>MPC_VERSION_STRING</code></a>: <a href="#Miscellaneous-Complex-Functions">Miscellaneous Complex Functions</a></li>
    </ul></body></html>
 
