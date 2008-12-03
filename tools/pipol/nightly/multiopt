@@ -16,8 +16,11 @@ function random_opt()
 CONFIGURE_OPTIONS=(\
     --enable-assert=full \
     --enable-thread-safe \
-    --disable-shared \
-    --disable-alloca)
+    --disable-shared)
+# some options are not available everywhere
+if [[ $PIPOL_IMAGE == *i386-linux* || $PIPOL_IMAGE == *amd64* ]]; then
+    CONFIGURE_OPTIONS[${#CONFIGURE_OPTIONS[*]}]=--disable-alloca
+fi
 
 # we did already compile with --enable-assert=full, so don't use zero value
 local number=${RANDOM:-3}
@@ -25,7 +28,7 @@ local number=${RANDOM:-3}
 unset RANDOM_OPT
 for ((i=0; i < ${#CONFIGURE_OPTIONS[*]}; i++)); do
     if [ $(($((2**i)) & number)) -ne 0 ]; then
-        RANDOM_OPT+=" "${CONFIGURE_OPTIONS[$i]};
+        RANDOM_OPT+=" "${CONFIGURE_OPTIONS[$i]}
     fi
 done
 
@@ -39,27 +42,33 @@ CFLAGS_OPTIONS=(\
 for ((i=0; i < ${#CFLAGS_OPTIONS[*]}; i++)); do
     j=$i+${#CONFIGURE_OPTIONS[*]}
     if [ $(($((2**j)) & number)) -ne 0 ]; then
-    	CFLAGS_OPT+=${CFLAGS_OPTIONS[$i]}" "
+        CFLAGS_OPT+=${CFLAGS_OPTIONS[$i]}" "
     fi
 done
 if [ -n "$CFLAGS_OPT" ]; then
-   RANDOM_OPT+=" CFLAGS=\"$CFLAGS_OPT\""
+    RANDOM_OPT+=" CFLAGS=\"$CFLAGS_OPT\""
 fi
 }
 
 #
 # Write script result in LOG_FILE
-# [first parameter: command to execute logging results]
+# [first parameter: command to be executed while logging results]
 # [optional other parameters: command parameters]
 #
 LOG_FILE=$PIPOL_HOMEDIR/.pipol/log/`date +%y%m%d`-`basename $0`
 
 function log()
 {
-if ($*);
-	then RESULT="OK:    "
-	else RESULT="FAILED:"; RET=1
+# execute and log in a temp file
+if $* >$PIPOL_WDIR/execution.tmp; then
+    RESULT="OK:    "
+else
+    # something wrong happened: record execution log
+    cat $PIPOL_WDIR/execution.tmp
+    RESULT="FAILED:"
+    RET=1
 fi;
+# write result in images global file
 SCRIPT_NAME=`basename $1`
 shift
 echo $RESULT $REVISION $PIPOL_IMAGE $PIPOL_JOB_ID $SCRIPT_NAME $* >>$LOG_FILE
@@ -71,16 +80,23 @@ echo $RESULT $REVISION $PIPOL_IMAGE $PIPOL_JOB_ID $SCRIPT_NAME $* >>$LOG_FILE
 #
 function get_revision()
 {
-REVISION=$(cd $1; svn info|sed -n 's/Revision: // p');
+REVISION=$(cd $1; svn info|sed -n 's/Revision: // p')
 } 
 
 #
 # Make clean in compile directory without changing current working dir
-# [parameter: source directory]
+# [parameter: build directory]
 #
 function clean_compile_dir()
 {
-(cd $1; make -s clean)
+(
+    cd $1; 
+    make clean >$PIPOL_WDIR/clean.tmp
+    if [ $? != 0 ]; then
+        # something wrong happened: save log file
+	cat $PIPOL_WDIR/clean.tmp
+    fi
+)
 }
 
 
@@ -92,25 +108,46 @@ function clean_compile_dir()
 #PIPOL esn amd64-linux-fedora-core8.dd.gz none 02:00 --silent --user
 #PIPOL esn i386-linux-fedora-core8.dd.gz  none 02:00 --silent --user
 
-#PIPOL esn amd64-linux-redhatEL-5.0.dd.gz none 02:00 --silent --user
-#PIPOL esn i386-linux-redhatEL-5.0.dd.gz  none 02:00 --silent --user
+### #PIPOL esn amd64-linux-redhatEL-5.0.dd.gz none 02:00 --silent --user
+### #PIPOL esn i386-linux-redhatEL-5.0.dd.gz  none 02:00 --silent --user
 #PIPOL esn ia64-linux-redhatEL-5.0.dd     none 02:00 --silent --user
+### #PIPOL esn ia64-linux-fedora-core9.dd none 02:00 --silent --user
+
+#PIPOL esn i386_mac-mac-osx-server-leopard.dd.gz none 02:00 --silent --user
 
 ###
 ### Following commands are executed on each and all deployed images
 ###
 
-# this understood by mpc and mpfr compilation processes
-export GMP_CHECK_RANDOMIZE=1
+#
+# image-dependant configurations
+#
+# architecture-dependant
+case $PIPOL_IMAGE in
+    *i386-linux*) # set path to SUN studio compiler
+        export PATH=/net/i386/sunstudio/sunstudio12/bin:$PATH
+	;;
+    *amd64-linux*) # set path to Intel compiler (bin, lib, and so on)
+        . /net/amd64/icc/11.0.074/bin/intel64/iccvars_intel64.sh
+	;;
+esac
 
-#
-# Get mpc trunk and compile it
-#
-unset REVISION
-log $SCRIPTS_DIR/get-svn.sh mpc/trunk mpc-trunk
-get_revision $PIPOL_WDIR/mpc-trunk
-REVISION="mpc(r$REVISION)"
-log $SCRIPTS_DIR/compile-svn.sh mpc-trunk
+# system-dependant
+case $PIPOL_IMAGE in
+    *mac*)  # new packages are installed in /opt subdirectories
+        export C_INCLUDE_PATH=/opt/local/include:$C_INCLUDE_PATH
+        export LD_LIBRARY_PATH=/opt/local/lib:$LD_LIBRARY_PATH
+        export LIBRARY_PATH=/opt/local/lib:$LIBRARY_PATH
+	;;
+    *redhatEL*) # path to recent mpfr lib
+        export C_INCLUDE_PATH=$PIPOL_WDIR/include:$C_INCLUDE_PATH
+        export LD_LIBRARY_PATH=$PIPOL_WDIR/lib:$LD_LIBRARY_PATH
+        export LIBRARY_PATH=$PIPOL_WDIR/lib:$LIBRARY_PATH
+        ;;
+esac
+
+# this is understood by both mpc and mpfr compilation processes
+export GMP_CHECK_RANDOMIZE=1
 
 #
 # Get mpfr trunk and compile it with various options
@@ -129,6 +166,49 @@ log $SCRIPTS_DIR/compile-svn.sh mpfr-trunk --enable-assert=full
 clean_compile_dir $PIPOL_WDIR/mpfr-trunk
 random_opt
 log $SCRIPTS_DIR/compile-svn.sh mpfr-trunk $RANDOM_OPT
+
+# Compile mpfr with non-GNU compilers
+case $PIPOL_IMAGE in
+    *i386-linux*)
+        # SUN Studio compiler
+        clean_compile_dir $PIPOL_WDIR/mpfr-trunk
+	log $SCRIPTS_DIR/compile-svn.sh mpfr-trunk CC="cc"
+	;;
+    *amd64-linux*)
+        # Intel compiler
+        clean_compile_dir $PIPOL_WDIR/mpfr-trunk
+	log $SCRIPTS_DIR/compile-svn.sh mpfr-trunk CC="icc"
+	;;
+esac
+
+#
+# Get mpc trunk and compile it
+#
+unset REVISION
+log $SCRIPTS_DIR/get-svn.sh mpc/trunk mpc-trunk
+get_revision $PIPOL_WDIR/mpc-trunk
+REVISION="mpc(r$REVISION)"
+log $SCRIPTS_DIR/compile-svn.sh mpc-trunk
+
+clean_compile_dir $PIPOL_WDIR/mpc-trunk
+log $SCRIPTS_DIR/compile-svn.sh mpc-trunk --disable-shared
+
+clean_compile_dir $PIPOL_WDIR/mpc-trunk
+log $SCRIPTS_DIR/compile-svn.sh mpc-trunk --disable-static
+
+# Compile mpc with non-GNU compilers
+case $PIPOL_IMAGE in
+    *i386-linux*)
+        # SUN Studio compiler
+	clean_compile_dir $PIPOL_WDIR/mpc-trunk
+        log $SCRIPTS_DIR/compile-svn.sh mpc-trunk CC="cc"
+	;;
+    *amd64-linux*)
+        # Intel compiler
+	clean_compile_dir $PIPOL_WDIR/mpc-trunk
+        log $SCRIPTS_DIR/compile-svn.sh mpc-trunk CC=icc CFLAGS=\"-Wno-error\"
+	;;
+esac
 
 #
 # Return value is 0 if no script failed

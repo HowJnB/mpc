@@ -1,0 +1,15 @@
+#!/bin/sh
+# use fedora repositories
+cp $PIPOL_HOMEDIR/.pipol/yum.repos.d/* /etc/yum.repos.d
+
+#yum -y update yum
+
+# update tools
+yum --nogpgcheck -y  update automake
+
+# get recent mpfr library
+yum --noplugins -y install gmp-devel
+#yum --disableplugin=rhnplugin -y install mpfr-devel
+cd /
+tar xjf $PIPOL_HOMEDIR/src/mpfr-2.3.2-ia64.tar.bz2
+

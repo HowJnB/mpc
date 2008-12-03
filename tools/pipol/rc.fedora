@@ -1,0 +1,9 @@
+#!/bin/sh
+yum -y remove ccache
+
+yum --enablerepo=development -y install compat-libstdc++-33.i386
+yum --enablerepo=development -y upgrade automake
+yum --enablerepo=development -y install libtool
+yum --enablerepo=development -y install texinfo
+yum --enablerepo=development -y install gmp-devel
+yum --enablerepo=development -y install mpfr-devel
