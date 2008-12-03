@@ -26,12 +26,13 @@ MA 02111-1307, USA. */
 #include "mpc.h"
 #include "mpc-impl.h"
 
-void
+int
 mpc_exp (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
 {
   mpfr_t x, y, z;
   mp_prec_t prec;
   int ok = 0;
+  int inex_re, inex_im;
 
   /* let op = a + i*b, then exp(op) = exp(a)*[cos(b) + i*sin(b)]
                                     = exp(a)*cos(b) + i*exp(a)*sin(b).
@@ -60,25 +61,22 @@ mpc_exp (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
                          nan +i*nan otherwise */
     {
       if (mpfr_zero_p (MPC_IM (op)))
-        {
-          mpc_set (rop, op, MPC_RNDNN);
-          return;
-        }
+        return mpc_set (rop, op, MPC_RNDNN);
 
       if (mpfr_inf_p (MPC_RE (op)))
         {
           if (mpfr_signbit (MPC_RE (op)))
-            mpc_set_ui_ui (rop, 0, 0, MPC_RNDNN);
+            return mpc_set_ui_ui (rop, 0, 0, MPC_RNDNN);
           else
             {
               mpfr_set_inf (MPC_RE (rop), +1);
               mpfr_set_nan (MPC_IM (rop));
+              return MPC_INEX(0, 0); /* Inf/NaN are exact */
             }
-          return;
         }
       mpfr_set_nan (MPC_RE (rop));
       mpfr_set_nan (MPC_IM (rop));
-      return;
+      return MPC_INEX(0, 0); /* NaN is exact */
     }
 
 
@@ -87,17 +85,17 @@ mpc_exp (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
        exp(x-i*0) = exp(x) -i*0, even if x is NaN
        exp(x+i*0) = exp(x) +i*0, even if x is NaN */
     {
-      mpfr_exp (MPC_RE(rop), MPC_RE(op), MPC_RND_RE(rnd));
-      mpfr_set (MPC_IM(rop), MPC_IM(op), MPC_RND_IM(rnd));
-      return;
+      inex_re = mpfr_exp (MPC_RE(rop), MPC_RE(op), MPC_RND_RE(rnd));
+      inex_im = mpfr_set (MPC_IM(rop), MPC_IM(op), MPC_RND_IM(rnd));
+      return MPC_INEX(inex_re, inex_im);
     }
 
   if (mpfr_zero_p (MPC_RE (op)))
     /* special case when the input is imaginary  */
     {
-      mpfr_cos (MPC_RE (rop), MPC_IM (op), MPC_RND_RE(rnd));
-      mpfr_sin (MPC_IM (rop), MPC_IM (op), MPC_RND_IM(rnd));
-      return;
+      inex_re = mpfr_cos (MPC_RE (rop), MPC_IM (op), MPC_RND_RE(rnd));
+      inex_im = mpfr_sin (MPC_IM (rop), MPC_IM (op), MPC_RND_IM(rnd));
+      return MPC_INEX(inex_re, inex_im);
     }
 
 
@@ -117,11 +115,14 @@ mpc_exp (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
       
       if (mpfr_inf_p (MPC_IM (op)))
         {
-          mpfr_set (MPC_RE (rop), n, GMP_RNDN);
+          inex_re = mpfr_set (MPC_RE (rop), n, GMP_RNDN);
           if (mpfr_signbit (MPC_RE (op)))
-            mpfr_set (MPC_IM (rop), n, GMP_RNDN);
+            inex_im = mpfr_set (MPC_IM (rop), n, GMP_RNDN);
           else
-            mpfr_set_nan (MPC_IM (rop));
+            {
+              mpfr_set_nan (MPC_IM (rop));
+              inex_im = 0; /* NaN is exact */
+            }
         }
       else
         {
@@ -130,15 +131,15 @@ mpc_exp (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
           mpfr_init2 (s, 2);
 
           mpfr_sin_cos (s, c, MPC_IM (op), GMP_RNDN);
-          mpfr_copysign (MPC_RE (rop), n, c, GMP_RNDN);
-          mpfr_copysign (MPC_IM (rop), n, s, GMP_RNDN);
+          inex_re = mpfr_copysign (MPC_RE (rop), n, c, GMP_RNDN);
+          inex_im = mpfr_copysign (MPC_IM (rop), n, s, GMP_RNDN);
 
           mpfr_clear (s);
           mpfr_clear (c);
         }
 
       mpfr_clear (n);
-      return;      
+      return MPC_INEX(inex_re, inex_im);
     }
 
   if (mpfr_inf_p (MPC_IM (op)))
@@ -146,12 +147,11 @@ mpc_exp (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
     {
       mpfr_set_nan (MPC_RE (rop));
       mpfr_set_nan (MPC_IM (rop));
-      return;
+      return MPC_INEX(0, 0); /* NaN is exact */
     }
 
 
   /* from now on, both parts of op are regular numbers */
-
 
   prec = MPC_MAX_PREC(rop);
 
@@ -174,24 +174,24 @@ mpc_exp (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
       mpfr_mul (y, y, x, GMP_RNDN);
 
       ok = mpfr_inf_p (y) || mpfr_zero_p (x)
-        || mpfr_can_round (y, prec - 2, GMP_RNDN, MPC_RND_RE(rnd),
-                           MPFR_PREC(MPC_RE(rop)));
+        || mpfr_can_round (y, prec - 2, GMP_RNDN, GMP_RNDZ,
+                       MPFR_PREC(MPC_RE(rop)) + (MPC_RND_RE(rnd) == GMP_RNDN));
       if (ok) /* compute imaginary part */
         {
           mpfr_mul (z, z, x, GMP_RNDN);
           ok = mpfr_inf_p (z) || mpfr_zero_p (x)
-            || mpfr_can_round (z, prec - 2, GMP_RNDN, MPC_RND_IM(rnd),
-                               MPFR_PREC(MPC_IM(rop)));
+            || mpfr_can_round (z, prec - 2, GMP_RNDN, GMP_RNDZ,
+                       MPFR_PREC(MPC_IM(rop)) + (MPC_RND_IM(rnd) == GMP_RNDN));
         }
     }
   while (ok == 0);
 
-  mpfr_set (MPC_RE(rop), y, MPC_RND_RE(rnd));
-  mpfr_set (MPC_IM(rop), z, MPC_RND_IM(rnd));
+  inex_re = mpfr_set (MPC_RE(rop), y, MPC_RND_RE(rnd));
+  inex_im = mpfr_set (MPC_IM(rop), z, MPC_RND_IM(rnd));
 
   mpfr_clear (x);
   mpfr_clear (y);
   mpfr_clear (z);
   
-
+  return MPC_INEX(inex_re, inex_im);
 }

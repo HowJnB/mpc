@@ -795,7 +795,7 @@ Here, when the return value is 0, it means the result is exact, but the
 contrary may be false.
 @end deftypefun
 
-@deftypefun void mpc_exp (mpc_t @var{rop}, mpc_t @var{op}, mpc_rnd_t @var{rnd})
+@deftypefun int mpc_exp (mpc_t @var{rop}, mpc_t @var{op}, mpc_rnd_t @var{rnd})
 Set @var{rop} to the exponential of @var{op},
 rounded according to @var{rnd} with the precision of @var{rop}.
 @end deftypefun
