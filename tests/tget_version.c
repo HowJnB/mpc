@@ -1,6 +1,6 @@
-/* mpc_get_version -- MPC version
+/* tget_version.c -- Test file for mpc_get_version
 
-Copyright (C) 2008 Philippe Th\'eveny
+Copyright (C) 2002, 2003, 2004, 2005, 2007, 2008 Andreas Enge, Paul Zimmermann, Philippe Th\'eveny
 
 This file is part of the MPC Library.
 
@@ -19,10 +19,21 @@ along with the MPC Library; see the file COPYING.LIB.  If not, write to
 the Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston,
 MA 02111-1307, USA. */
 
+#include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
 #include "mpc.h"
 
-const char *
-mpc_get_version (void)
+int
+main (void)
 {
-  return MPC_VERSION_STRING;
+  if (strcmp (mpc_get_version (), MPC_VERSION_STRING) != 0)
+    {
+      printf ("Error: header and library do not match\n"
+              "mpc_get_version: \"%s\"\nMPC_VERSION_STRING: \"%s\"\n",
+              mpc_get_version(), MPC_VERSION_STRING);
+      exit (1);
+    }
+
+  return 0;
 }

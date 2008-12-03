@@ -1,3 +1,7 @@
+Recent changes:
+  - Bug fixes:
+    - mpc_get_version and MPC_VERSION_STRING agrees
+
 Changes in version 0.5.2:
   - New macros:
     - version number: MPC_VERSION_NUM, MPC_VERSION
