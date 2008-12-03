@@ -60,8 +60,9 @@ MA 02111-1307, USA. */
 #define SAFE_ABS(type,x) ((x) >= 0 ? (type)(x) : -(type)(x))
 
 #define OUT(x)                                                  \
-do {                                                               \
-  printf (#x "[%ld,%ld]=", MPC_PREC_RE (x), MPC_PREC_IM (x));   \
+do {                                                            \
+  printf (#x "[%lu,%lu]=", (unsigned long int) MPC_PREC_RE (x), \
+      (unsigned long int) MPC_PREC_IM (x));                     \
   mpc_out_str (stdout, 2, 0, x, MPC_RNDNN);                     \
   printf ("\n");                                                \
 } while (0)

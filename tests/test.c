@@ -55,21 +55,22 @@ main (void)
       mpfr_set_prec (MPC_IM (z), prec + 1);
       if (mpc_get_prec (z) != 0)
         {
-          fprintf (stderr, "Error in mpc_get_prec for prec (re) = %li, prec (im) = %li\n",
-                   prec, prec + 1);
+          fprintf (stderr, "Error in mpc_get_prec for prec (re) = %lu, prec (im) = %lu\n",
+                   (unsigned long int) prec, (unsigned long int) prec + 1ul);
           exit (1);
         }
       mpc_get_prec2 (&pr, &pi, z);
       if (pr != prec || pi != prec + 1)
         {
-          fprintf (stderr, "Error in mpc_get_prec2 for prec (re) = %li, prec (im) = %li\n",
-                   prec, prec + 1);
+          fprintf (stderr, "Error in mpc_get_prec2 for prec (re) = %lu, prec (im) = %lu\n",
+                   (unsigned long int) prec, (unsigned long int) prec + 1ul);
           exit (1);
         }
       mpc_set_prec (z, prec);
       if (mpc_get_prec (z) != prec)
         {
-          fprintf (stderr, "Error in mpc_get_prec for prec = %li\n", prec);
+          fprintf (stderr, "Error in mpc_get_prec for prec = %lu\n",
+             (unsigned long int) prec);
           exit (1);
         }
 
