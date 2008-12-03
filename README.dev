@@ -20,7 +20,7 @@ Creating a new release
    This updates the date and version number in doc/version.texi and
    creates the tarball for distribution.
 5) Create an svn tag from inside the svn root:
-   svn cp trunk tags/VERSION -m "Tagging release VERSION"
+   svn cp trunk tags/VERSION
 6) Update the web page inside svn and on the server.
    The html documentation is created with
       makeinfo --html --no-split mpc.texi

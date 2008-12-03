@@ -21,8 +21,31 @@ under the number IDDN FR 001 060029 000 R P 2003 000 10000.
 
 <h2>News</h2>
 <p>
-<a href="?content=download">Version 0.5.1</a>,
-"Aconitum neomontanum", released in November 2008,
+<a href="?content=download">Version 0.5.2</a>,
+"Aconitum neomontanum", released in December 2008,
+comes with the following new features:
+</p>
+<ul>
+<li>
+New macros
+<ul>
+<li>
+Version number: <code>MPC_VERSION</code>,
+<code>MPC_VERSION_NUM</code>
+</li>
+</ul>
+</li>
+<li>
+Updated Makefile.vc (thanks to Mickaël Gastineau)
+</li>
+<li>
+Compilation fixes for Debian-Gnu-Linux-PowerPC and
+MacOsX (thanks to Laurent Fousse and Mickaël Gastineau)
+</li>
+</ul>
+
+<p>
+Version 0.5.1, released in November 2008,
 comes with the following new features:
 </p>
 <ul>
@@ -98,9 +121,9 @@ Export declarations for MSWindows, <code>makefile.vc</code> updated
    title        = {mpc --- A library for multiprecision complex
                    arithmetic with exact rounding},
    organization = {INRIA},
-   edition      = {0.5.1},
+   edition      = {0.5.2},
    year         = {2008},
-   month        = nov,
+   month        = dec,
    note         = {\url{http://www.multiprecision.org/mpc/}}
 }
 </pre>

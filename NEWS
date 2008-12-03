@@ -1,7 +1,9 @@
-Recent changes:
+Changes in version 0.5.2:
   - New macros:
     - version number: MPC_VERSION_NUM, MPC_VERSION
   - Makefile.vc updated (thanks to Mickael Gastineau)
+  - Compilation on Debian-Gnu-Linux-PowerPC and MacOsX
+    fixed (thanks to Laurent Fousse and Mickael Gastineau)
 
 Changes in version 0.5.1:
   - New functions:

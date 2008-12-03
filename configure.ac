@@ -23,7 +23,7 @@ MA 02111-1307, USA. */
 # Process this file with autoconf to produce a configure script.
 
 AC_PREREQ(2.61)
-AC_INIT(mpc, 0.5.2-dev, mpc-discuss@lists.gforge.inria.fr)
+AC_INIT(mpc, 0.5.2, mpc-discuss@lists.gforge.inria.fr)
 AC_CONFIG_SRCDIR([src/mpc-impl.h])
 AC_CONFIG_HEADER([config.h])
 
@@ -38,7 +38,7 @@ AC_ARG_WITH([mpfr_include],
 AC_ARG_WITH([mpfr_lib],
             [AC_HELP_STRING([--with-mpfr-lib=DIR],
                             [MPFR lib directory])],
-            [LDFLAGS="-I$withval $LDFLAGS"])
+            [LDFLAGS="-L$withval $LDFLAGS"])
 AC_ARG_WITH([mpfr],
             [AC_HELP_STRING([--with-mpfr=DIR],
                            [MPFR install directory])],
@@ -53,7 +53,7 @@ AC_ARG_WITH([gmp_include],
 AC_ARG_WITH([gmp_lib],
             [AC_HELP_STRING([--with-gmp-lib=DIR],
                             [GMP lib directory])],
-            [LDFLAGS="-I$withval $LDFLAGS"])
+            [LDFLAGS="-L$withval $LDFLAGS"])
 AC_ARG_WITH([gmp],
             [AC_HELP_STRING([--with-gmp=DIR],
                            [GMP install directory])],
@@ -83,9 +83,6 @@ AC_PROG_SED
 AC_CHECK_LIB([gmp], [__gmpz_init],
              [LIBS="-lgmp $LIBS"],
              [AC_MSG_ERROR([libgmp not found or uses a different ABI.])])
-#AC_CHECK_LIB([mpfr], [mpfr_init],
-#             [LIBS="-lmpfr $LIBS"],
-#             [AC_MSG_ERROR([libmpfr not found or uses a different ABI.])])
 AC_MSG_CHECKING(for MPFR)
 LIBS="-lmpfr $LIBS"
 AC_LINK_IFELSE(
@@ -152,7 +149,7 @@ AX_C_CHECK_FLAG(-ansi,,,WARNINGCFLAGS="$WARNINGCFLAGS -ansi",)
 AX_C_CHECK_FLAG(-pedantic,,,WARNINGCFLAGS="$WARNINGCFLAGS -pedantic",)
 AX_C_CHECK_FLAG(-Wall,,,WARNINGCFLAGS="$WARNINGCFLAGS -Wall",)
 AX_C_CHECK_FLAG(-Wextra,,,WARNINGCFLAGS="$WARNINGCFLAGS -Wextra",)
-AX_C_CHECK_FLAG(-Werror,,,WARNINGCFLAGS="$WARNINGCFLAGS -Werror",)
+#AX_C_CHECK_FLAG(-Werror,,,WARNINGCFLAGS="$WARNINGCFLAGS -Werror",)
 AC_SUBST(WARNINGCFLAGS)
 
 AC_CONFIG_FILES([Makefile src/Makefile tests/Makefile doc/Makefile])

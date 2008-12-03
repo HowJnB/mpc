@@ -2,4 +2,4 @@
 SUBDIRS = src tests doc
 
 include_HEADERS = src/mpc.h
-EXTRA_DIST = tests/tgeneric.c
+EXTRA_DIST = Makefile.vc tests/tgeneric.c
