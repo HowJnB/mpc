@@ -11,7 +11,8 @@ Creating a new release
 ----------------------
 
  1) Check the version number in configure.ac ("AC_INIT (mpc, _version_...)"),
-    in INSTALL, and in src/mpc.h (remove suffix in MPC_VERSION_STRING).
+    in INSTALL, in src/get_version.c and in src/mpc.h (remove suffix in
+    MPC_VERSION_STRING).
  2) Disactivate the -Werror option in configure.ac.
  3) Verify that the API version in src/Makefile.am is correct.
  4) Check that NEWS, BUGS and TODO are up to date, and that the minimal
