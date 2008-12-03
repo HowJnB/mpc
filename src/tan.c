@@ -24,13 +24,14 @@ MA 02111-1307, USA. */
 #include "mpc.h"
 #include "mpc-impl.h"
 
-void
+int
 mpc_tan (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
 {
   mpc_t x, y;
   mp_prec_t prec;
   mp_exp_t err;
   int ok = 0;
+  int inex;
 
   /* special values */
   if (!mpfr_number_p (MPC_RE (op)) || !mpfr_number_p (MPC_IM (op)))
@@ -41,8 +42,10 @@ mpc_tan (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
             /* tan(NaN -i*Inf) = +/-0 -i */
             /* tan(NaN +i*Inf) = +/-0 +i */
             {
-              mpc_set_si_si (rop, 0,
-                             (MPFR_SIGN (MPC_IM (op)) < 0) ? -1 : +1, rnd);
+              /* exact unless 1 is not in exponent range */
+              inex = mpc_set_si_si (rop, 0,
+                                    (MPFR_SIGN (MPC_IM (op)) < 0) ? -1 : +1,
+                                    rnd);
             }
           else
             /* tan(NaN +i*y) = NaN +i*NaN, when y is finite */
@@ -50,30 +53,27 @@ mpc_tan (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
             {
               mpfr_set_nan (MPC_RE (rop));
               mpfr_set_nan (MPC_IM (rop));
+              inex = MPC_INEX (0, 0); /* always exact */
             }
-
-          return;
         }
-
-      if (mpfr_nan_p (MPC_IM (op)))
+      else if (mpfr_nan_p (MPC_IM (op)))
         {
           if (mpfr_cmp_ui (MPC_RE (op), 0) == 0)
             /* tan(-0 +i*NaN) = -0 +i*NaN */
             /* tan(+0 +i*NaN) = +0 +i*NaN */
             {
               mpc_set (rop, op, rnd);
+              inex = MPC_INEX (0, 0); /* always exact */
             }
           else
             /* tan(x +i*NaN) = NaN +i*NaN, when x != 0 */
             {
               mpfr_set_nan (MPC_RE (rop));
               mpfr_set_nan (MPC_IM (rop));
+              inex = MPC_INEX (0, 0); /* always exact */
             }
-
-          return;
         }
-
-      if (mpfr_inf_p (MPC_RE (op)))
+      else if (mpfr_inf_p (MPC_RE (op)))
         {
           if (mpfr_inf_p (MPC_IM (op)))
             /* tan(-Inf -i*Inf) = -/+0 -i */
@@ -82,11 +82,16 @@ mpc_tan (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
             /* tan(+Inf +i*Inf) = +/-0 +i */
             {
               const int sign_re = mpfr_signbit (MPC_RE (op));
+              int inex_im;
 
               mpfr_set_ui (MPC_RE (rop), 0, MPC_RND_RE (rnd));
               mpfr_setsign (MPC_RE (rop), MPC_RE (rop), sign_re, GMP_RNDN);
-              mpfr_set_si (MPC_IM (rop), mpfr_signbit (MPC_IM (op)) ? -1 : +1,
-                           MPC_RND_IM (rnd));
+
+              /* exact, unless 1 is not in exponent range */
+              inex_im = mpfr_set_si (MPC_IM (rop),
+                                     mpfr_signbit (MPC_IM (op)) ? -1 : +1,
+                                     MPC_RND_IM (rnd));
+              inex = MPC_INEX (0, inex_im);
             }
           else
             /* tan(-Inf +i*y) = tan(+Inf +i*y) = NaN +i*NaN, when y is
@@ -94,52 +99,59 @@ mpc_tan (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
             {
               mpfr_set_nan (MPC_RE (rop));
               mpfr_set_nan (MPC_IM (rop));
+              inex = MPC_INEX (0, 0); /* always exact */
             }
-
-          return;
         }
-
-      {
+      else
         /* tan(x -i*Inf) = +0*sin(x)*cos(x) -i, when x is finite */
         /* tan(x +i*Inf) = +0*sin(x)*cos(x) +i, when x is finite */
-        mpfr_t c;
-        mpfr_t s;
+        {
+          mpfr_t c;
+          mpfr_t s;
+          int inex_im;
 
-        mpfr_init (c);
-        mpfr_init (s);
+          mpfr_init (c);
+          mpfr_init (s);
 
-        mpfr_sin_cos (s, c, MPC_RE (op), GMP_RNDN);
-        mpfr_set_ui (MPC_RE (rop), 0, MPC_RND_RE (rnd));
-        mpfr_setsign (MPC_RE (rop), MPC_RE (rop),
-                      mpfr_signbit (c) != mpfr_signbit (s), GMP_RNDN);
-        mpfr_set_si (MPC_IM (rop), (mpfr_signbit (MPC_IM (op)) ? -1 : +1),
-                     MPC_RND_IM (rnd));
+          mpfr_sin_cos (s, c, MPC_RE (op), GMP_RNDN);
+          mpfr_set_ui (MPC_RE (rop), 0, MPC_RND_RE (rnd));
+          mpfr_setsign (MPC_RE (rop), MPC_RE (rop),
+                        mpfr_signbit (c) != mpfr_signbit (s), GMP_RNDN);
+          /* exact, unless 1 is not in exponent range */
+          inex_im = mpfr_set_si (MPC_IM (rop),
+                                 (mpfr_signbit (MPC_IM (op)) ? -1 : +1),
+                                 MPC_RND_IM (rnd));
+          inex = MPC_INEX (0, inex_im);
 
-        mpfr_clear (s);
-        mpfr_clear (c);
-      }
+          mpfr_clear (s);
+          mpfr_clear (c);
+        }
 
-      return;
+      return inex;
     }
 
   if (mpfr_zero_p (MPC_RE (op)))
+    /* tan(-0 -i*y) = -0 +i*tanh(y), when y is finite. */
+    /* tan(+0 +i*y) = +0 +i*tanh(y), when y is finite. */
     {
-      /* tan(-0 -i*y) = -0 +i*tanh(y), when y is finite. */
-      /* tan(+0 +i*y) = +0 +i*tanh(y), when y is finite. */
-      mpfr_set (MPC_RE (rop), MPC_RE (op), MPC_RND_RE (rnd));
-      mpfr_tanh (MPC_IM (rop), MPC_IM (op), MPC_RND_IM (rnd));
+      int inex_im;
 
-      return;
+      mpfr_set (MPC_RE (rop), MPC_RE (op), MPC_RND_RE (rnd));
+      inex_im = mpfr_tanh (MPC_IM (rop), MPC_IM (op), MPC_RND_IM (rnd));
+
+      return MPC_INEX (0, inex_im);
     }
 
   if (mpfr_zero_p (MPC_IM (op)))
+    /* tan(x -i*0) = tan(x) -i*0, when x is finite. */
+    /* tan(x +i*0) = tan(x) +i*0, when x is finite. */
     {
-      /* tan(x -i*0) = tan(x) -i*0, when x is finite. */
-      /* tan(x +i*0) = tan(x) +i*0, when x is finite. */
-      mpfr_tan (MPC_RE (rop), MPC_RE (op), MPC_RND_RE (rnd));
+      int inex_re;
+
+      inex_re = mpfr_tan (MPC_RE (rop), MPC_RE (op), MPC_RND_RE (rnd));
       mpfr_set (MPC_IM (rop), MPC_IM (op), MPC_RND_IM (rnd));
 
-      return;
+      return MPC_INEX (inex_re, 0);
     }
 
   /* ordinary (non-zero) numbers */
@@ -176,7 +188,6 @@ mpc_tan (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
     {
       mp_exp_t k;
       mp_exp_t exr, eyr, eyi, ezr;
-      int inex;
 
       ok = 0;
 
@@ -233,25 +244,27 @@ mpc_tan (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
 
       /* Can the real part be rounded ? */
       ok = mpfr_inf_p (MPC_RE (x))
-        || mpfr_can_round (MPC_RE(x), prec - err, GMP_RNDN,
-                           MPC_RND_RE(rnd), MPFR_PREC(MPC_RE(rop)));
+        || mpfr_can_round (MPC_RE(x), prec - err, GMP_RNDN, GMP_RNDZ,
+                      MPFR_PREC(MPC_RE(rop)) + (MPC_RND_RE(rnd) == GMP_RNDN));
 
       if (ok)
         {
           /* Can the imaginary part be rounded ? */
           ok = mpfr_inf_p (MPC_IM (x))
-            || mpfr_can_round (MPC_IM(x), prec - 6, GMP_RNDN, MPC_RND_IM(rnd),
-                               MPFR_PREC(MPC_IM(rop)));
+            || mpfr_can_round (MPC_IM(x), prec - 6, GMP_RNDN, GMP_RNDZ,
+                      MPFR_PREC(MPC_IM(rop)) + (MPC_RND_IM(rnd) == GMP_RNDN));
         }
       MPC_LOG_MSG (("err: %ld", err));
       MPC_LOG_VAR (x);
     }
   while (ok == 0);
 
-  mpc_set (rop, x, rnd);
+  inex = mpc_set (rop, x, rnd);
 
   MPC_LOG_VAR (rop);
 
   mpc_clear (x);
   mpc_clear (y);
+
+  return inex;
 }

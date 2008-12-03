@@ -23,12 +23,13 @@ MA 02111-1307, USA. */
 #include "mpc.h"
 #include "mpc-impl.h"
 
-void
+int
 mpc_cos (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
 {
   mpfr_t x, y, z;
   mp_prec_t prec;
   int ok = 0;
+  int inex_re, inex_im;
 
   /* special values */
   if (!mpfr_number_p (MPC_RE (op)) || !mpfr_number_p (MPC_IM (op)))
@@ -50,11 +51,8 @@ mpc_cos (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
             mpfr_set (MPC_IM (rop), MPC_IM (op), MPC_RND_IM (rnd));
           else
             mpfr_set_nan (MPC_IM (rop));
-
-          return;
         }
-
-      if (mpfr_nan_p (MPC_IM (op)))
+      else if (mpfr_nan_p (MPC_IM (op)))
         {
           /* cos(-Inf + i * NaN) = NaN + i * NaN */
           /* cos(+Inf + i * NaN) = NaN + i * NaN */
@@ -67,11 +65,8 @@ mpc_cos (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
             mpfr_set_nan (MPC_IM (rop));
 
           mpfr_set_nan (MPC_RE (rop));
-
-          return;
         }
-
-      if (mpfr_inf_p (MPC_RE (op)))
+      else if (mpfr_inf_p (MPC_RE (op)))
         {
           /* cos(-Inf -i*Inf) = cos(+Inf +i*Inf) = -Inf +i*NaN */
           /* cos(-Inf +i*Inf) = cos(+Inf -i*Inf) = +Inf +i*NaN */
@@ -94,11 +89,8 @@ mpc_cos (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
                           MPC_RND_IM(rnd));
           else
             mpfr_set_nan (MPC_IM (rop));
-
-          return;
         }
-
-      if (mpfr_zero_p (MPC_RE (op)))
+      else if (mpfr_zero_p (MPC_RE (op)))
         {
           /* cos(-0 -i*Inf) = cos(+0 +i*Inf) = +Inf -i*0 */
           /* cos(-0 +i*Inf) = cos(+0 -i*Inf) = +Inf +i*0 */
@@ -128,7 +120,7 @@ mpc_cos (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
           mpfr_clear (c);
         }
 
-      return;
+      return MPC_INEX (0, 0); /* always exact */
     }
 
   if (mpfr_zero_p (MPC_RE (op)))
@@ -142,14 +134,14 @@ mpc_cos (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
         mpfr_signbit (MPC_RE (op)) ==  mpfr_signbit (MPC_IM (op));
 
       if (mpfr_zero_p (MPC_IM (op)))
-        mpfr_set_ui (MPC_RE (rop), 1, MPC_RND_RE (rnd));
+        inex_re = mpfr_set_ui (MPC_RE (rop), 1, MPC_RND_RE (rnd));
       else
-        mpfr_cosh (MPC_RE (rop), MPC_IM (op), MPC_RND_RE (rnd));
+        inex_re = mpfr_cosh (MPC_RE (rop), MPC_IM (op), MPC_RND_RE (rnd));
 
       mpfr_set_ui (MPC_IM (rop), 0, MPC_RND_IM (rnd));
       mpfr_setsign (MPC_IM (rop), MPC_IM (rop), imag_sign, MPC_RND_IM (rnd));
 
-      return;
+      return MPC_INEX (inex_re, 0);
     }
 
   if (mpfr_zero_p (MPC_IM (op)))
@@ -162,14 +154,15 @@ mpc_cos (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
       if (!mpfr_signbit (MPC_IM (op)))
          MPFR_CHANGE_SIGN (sign);
 
-      mpfr_cos (MPC_RE (rop), MPC_RE (op), MPC_RND_RE (rnd));
+      inex_re = mpfr_cos (MPC_RE (rop), MPC_RE (op), MPC_RND_RE (rnd));
 
       mpfr_set_ui (MPC_IM (rop), 0ul, GMP_RNDN);
       if (mpfr_signbit (sign))
          MPFR_CHANGE_SIGN (MPC_IM (rop));
 
       mpfr_clear (sign);
-      return;
+
+      return MPC_INEX (inex_re, 0);
     }
 
   /* ordinary (non-zero) numbers */
@@ -205,23 +198,25 @@ mpc_cos (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
       mpfr_sin_cos (y, x, MPC_RE(op), GMP_RNDN);
       mpfr_cosh (z, MPC_IM(op), GMP_RNDN);
       mpfr_mul (x, x, z, GMP_RNDN);
-      ok = mpfr_can_round (x, prec - 2, GMP_RNDN, MPC_RND_RE(rnd),
-                           MPFR_PREC(MPC_RE(rop)));
+      ok = mpfr_can_round (x, prec - 2, GMP_RNDN, GMP_RNDZ,
+                      MPFR_PREC(MPC_RE(rop)) + (MPC_RND_RE(rnd) == GMP_RNDN));
       if (ok) /* compute imaginary part */
         {
           mpfr_sinh (z, MPC_IM(op), GMP_RNDN);
           mpfr_mul (y, y, z, GMP_RNDN);
           mpfr_neg (y, y, GMP_RNDN);
           ok = mpfr_can_round (y, prec - 2, GMP_RNDN, MPC_RND_IM(rnd),
-                               MPFR_PREC(MPC_IM(rop)));
+                      MPFR_PREC(MPC_IM(rop)) + (MPC_RND_IM(rnd) == GMP_RNDN));
         }
     }
   while (ok == 0);
 
-  mpfr_set (MPC_RE(rop), x, MPC_RND_RE(rnd));
-  mpfr_set (MPC_IM(rop), y, MPC_RND_IM(rnd));
+  inex_re = mpfr_set (MPC_RE(rop), x, MPC_RND_RE(rnd));
+  inex_im = mpfr_set (MPC_IM(rop), y, MPC_RND_IM(rnd));
 
   mpfr_clear (x);
   mpfr_clear (y);
   mpfr_clear (z);
+
+  return MPC_INEX (inex_re, inex_im);
 }

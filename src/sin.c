@@ -24,12 +24,13 @@ MA 02111-1307, USA. */
 #include "mpc.h"
 #include "mpc-impl.h"
 
-void
+int
 mpc_sin (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
 {
   mpfr_t x, y, z;
   mp_prec_t prec;
   int ok = 0;
+  int inex_re, inex_im;
 
   /* special values */
   if (!mpfr_number_p (MPC_RE (op)) || !mpfr_number_p (MPC_IM (op)))
@@ -39,65 +40,58 @@ mpc_sin (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
           mpc_set (rop, op, rnd);
 
           if (mpfr_nan_p (MPC_IM (op)))
-            /* sin(x +i*NaN) = NaN +i*NaN, except for x=0 */
-            /* sin(-0 +i*NaN) = -0 +i*NaN */
-            /* sin(+0 +i*NaN) = +0 +i*NaN */
             {
+              /* sin(x +i*NaN) = NaN +i*NaN, except for x=0 */
+              /* sin(-0 +i*NaN) = -0 +i*NaN */
+              /* sin(+0 +i*NaN) = +0 +i*NaN */
               if (!mpfr_zero_p (MPC_RE (op)))
                 mpfr_set_nan (MPC_RE (rop));
-              return;
+              else if (!mpfr_inf_p (MPC_IM (op)) 
+                       && !mpfr_zero_p (MPC_IM (op)))
+                /* sin(NaN -i*Inf) = NaN -i*Inf */
+                /* sin(NaN -i*0) = NaN -i*0 */
+                /* sin(NaN +i*0) = NaN +i*0 */
+                /* sin(NaN +i*Inf) = NaN +i*Inf */
+                /* sin(NaN +i*y) = NaN +i*NaN, when 0<|y|<Inf */
+                mpfr_set_nan (MPC_IM (rop));
             }
-
-          /* sin(NaN -i*Inf) = NaN -i*Inf */
-          /* sin(NaN -i*0) = NaN -i*0 */
-          /* sin(NaN +i*0) = NaN +i*0 */
-          /* sin(NaN +i*Inf) = NaN +i*Inf */
-          /* sin(NaN +i*y) = NaN +i*NaN, when 0<|y|<Inf */
-          if (!mpfr_inf_p (MPC_IM (op)) && !mpfr_zero_p (MPC_IM (op)))
-            mpfr_set_nan (MPC_IM (rop));
-
-          return;
         }
-
-      if (mpfr_inf_p (MPC_RE (op)))
-        /* sin(+/-Inf -i*Inf) = NaN -i*Inf */
-        /* sin(+/-Inf -i*0) = NaN -i*0 */
-        /* sin(+/-Inf +i*0) = NaN +i*0 */
-        /* sin(+/-Inf +i*Inf) = NaN +i*Inf */
-        /* sin(+/-Inf +i*y) = NaN +i*NaN, when 0<|y|<Inf */
+      else if (mpfr_inf_p (MPC_RE (op)))
         {
           mpfr_set_nan (MPC_RE (rop));
 
           if (!mpfr_inf_p (MPC_IM (op)) && !mpfr_zero_p (MPC_IM (op)))
+            /* sin(+/-Inf -i*Inf) = NaN -i*Inf */
+            /* sin(+/-Inf +i*Inf) = NaN +i*Inf */
+            /* sin(+/-Inf +i*y) = NaN +i*NaN, when 0<|y|<Inf */
             mpfr_set_nan (MPC_IM (rop));
           else
+            /* sin(+/-Inf -i*0) = NaN -i*0 */
+            /* sin(+/-Inf +i*0) = NaN +i*0 */
             mpfr_set (MPC_IM (rop), MPC_IM (op), MPC_RND_IM (rnd));
-
-          return;
         }
-
-      if (mpfr_zero_p (MPC_RE (op)))
+      else if (mpfr_zero_p (MPC_RE (op)))
         /* sin(-0 -i*Inf) = -0 -i*Inf */
         /* sin(+0 -i*Inf) = +0 -i*Inf */
         /* sin(-0 +i*Inf) = -0 +i*Inf */
         /* sin(+0 +i*Inf) = +0 +i*Inf */
         {
           mpc_set (rop, op, rnd);
-
-          return;
+        }
+      else
+        /* sin(x -i*Inf) = +Inf*(sin(x) -i*cos(x)) */
+        /* sin(x +i*Inf) = +Inf*(sin(x) +i*cos(x)) */
+        {
+          mpfr_init2 (x, 2);
+          mpfr_init2 (y, 2);
+          mpfr_sin_cos (x, y, MPC_RE (op), GMP_RNDZ);
+          mpfr_set_inf (MPC_RE (rop), MPFR_SIGN (x));
+          mpfr_set_inf (MPC_IM (rop), MPFR_SIGN (y)*MPFR_SIGN (MPC_IM (op)));
+          mpfr_clear (y);
+          mpfr_clear(x);
         }
 
-      /* sin(x -i*Inf) = +Inf*(sin(x) -i*cos(x)) */
-      /* sin(x +i*Inf) = +Inf*(sin(x) +i*cos(x)) */
-      mpfr_init2 (x, 2);
-      mpfr_init2 (y, 2);
-      mpfr_sin_cos (x, y, MPC_RE (op), GMP_RNDZ);
-      mpfr_set_inf (MPC_RE (rop), MPFR_SIGN (x));
-      mpfr_set_inf (MPC_IM (rop), MPFR_SIGN (y)*MPFR_SIGN (MPC_IM (op)));
-      mpfr_clear (y);
-      mpfr_clear(x);
-
-      return;
+      return MPC_INEX (0, 0); /* exact in all cases*/
     }
 
   /* special case when the input is real: */
@@ -106,10 +100,11 @@ mpc_sin (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
   if (mpfr_cmp_ui (MPC_IM(op), 0) == 0)
     {
       mpfr_init2 (x, 2);
-      mpfr_sin_cos (MPC_RE (rop), x, MPC_RE (op), MPC_RND_RE (rnd));
+      inex_re = mpfr_sin_cos (MPC_RE (rop), x, MPC_RE (op), MPC_RND_RE (rnd));
       mpfr_mul (MPC_IM(rop), MPC_IM(op), x, MPC_RND_IM(rnd));
       mpfr_clear (x);
-      return;
+
+      return MPC_INEX (inex_re, 0);
     }
 
   /* special case when the input is imaginary:
@@ -117,8 +112,9 @@ mpc_sin (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
   if (mpfr_cmp_ui (MPC_RE(op), 0) == 0)
     {
       mpfr_set (MPC_RE(rop), MPC_RE(op), MPC_RND_RE(rnd));
-      mpfr_sinh (MPC_IM(rop), MPC_IM(op), MPC_RND_IM(rnd));
-      return;
+      inex_im = mpfr_sinh (MPC_IM(rop), MPC_IM(op), MPC_RND_IM(rnd));
+
+      return MPC_INEX (0, inex_im);
     }
 
   /* let op = a + i*b, then sin(op) = sin(a)*cosh(b) + i*cos(a)*sinh(b).
@@ -152,22 +148,24 @@ mpc_sin (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
       mpfr_sin_cos (x, y, MPC_RE(op), GMP_RNDN);
       mpfr_cosh (z, MPC_IM(op), GMP_RNDN);
       mpfr_mul (x, x, z, GMP_RNDN);
-      ok = mpfr_can_round (x, prec - 2, GMP_RNDN, MPC_RND_RE(rnd),
-                           MPFR_PREC(MPC_RE(rop)));
+      ok = mpfr_can_round (x, prec - 2, GMP_RNDN, GMP_RNDZ,
+                      MPFR_PREC(MPC_RE(rop)) + (MPC_RND_RE(rnd) == GMP_RNDN));
       if (ok) /* compute imaginary part */
         {
           mpfr_sinh (z, MPC_IM(op), GMP_RNDN);
           mpfr_mul (y, y, z, GMP_RNDN);
-          ok = mpfr_can_round (y, prec - 2, GMP_RNDN, MPC_RND_IM(rnd),
-                               MPFR_PREC(MPC_IM(rop)));
+          ok = mpfr_can_round (y, prec - 2, GMP_RNDN, GMP_RNDZ,
+                      MPFR_PREC(MPC_IM(rop)) + (MPC_RND_IM(rnd) == GMP_RNDN));
         }
     }
   while (ok == 0);
 
-  mpfr_set (MPC_RE(rop), x, MPC_RND_RE(rnd));
-  mpfr_set (MPC_IM(rop), y, MPC_RND_IM(rnd));
+  inex_re = mpfr_set (MPC_RE(rop), x, MPC_RND_RE(rnd));
+  inex_im = mpfr_set (MPC_IM(rop), y, MPC_RND_IM(rnd));
 
   mpfr_clear (x);
   mpfr_clear (y);
   mpfr_clear (z);
+
+  return MPC_INEX (inex_re, inex_im);
 }

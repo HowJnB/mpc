@@ -259,7 +259,7 @@ check_53 (void)
 int
 main (void)
 {
-  DECL_FUNC (V_CC, f, mpc_tan);
+  DECL_FUNC (CC, f, mpc_tan);
 
   test_start ();
 

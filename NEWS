@@ -1,4 +1,5 @@
 Recent changes:
+  - mpc_exp, mpc_cos, mpc_sin, and mpc_tan now return inexact value
   - Bug fixes:
     - mpc_get_version and MPC_VERSION_STRING agrees
 
