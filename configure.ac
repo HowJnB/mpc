@@ -23,7 +23,7 @@ MA 02111-1307, USA. */
 # Process this file with autoconf to produce a configure script.
 
 AC_PREREQ(2.61)
-AC_INIT(mpc, 0.5.2, mpc-discuss@lists.gforge.inria.fr)
+AC_INIT(mpc, 0.6-dev, mpc-discuss@lists.gforge.inria.fr)
 AC_CONFIG_SRCDIR([src/mpc-impl.h])
 AC_CONFIG_HEADER([config.h])
 
@@ -149,7 +149,7 @@ AX_C_CHECK_FLAG(-ansi,,,WARNINGCFLAGS="$WARNINGCFLAGS -ansi",)
 AX_C_CHECK_FLAG(-pedantic,,,WARNINGCFLAGS="$WARNINGCFLAGS -pedantic",)
 AX_C_CHECK_FLAG(-Wall,,,WARNINGCFLAGS="$WARNINGCFLAGS -Wall",)
 AX_C_CHECK_FLAG(-Wextra,,,WARNINGCFLAGS="$WARNINGCFLAGS -Wextra",)
-#AX_C_CHECK_FLAG(-Werror,,,WARNINGCFLAGS="$WARNINGCFLAGS -Werror",)
+AX_C_CHECK_FLAG(-Werror,,,WARNINGCFLAGS="$WARNINGCFLAGS -Werror",)
 AC_SUBST(WARNINGCFLAGS)
 
 AC_CONFIG_FILES([Makefile src/Makefile tests/Makefile doc/Makefile])
