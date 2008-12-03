@@ -10,22 +10,24 @@ $ autoreconf -i
 Creating a new release
 ----------------------
 
-1) Check the version number in configure.ac ("AC_INIT (mpc, _version_...)"),
-   in INSTALL, and in src/mpc.h (remove suffix in MPC_VERSION_STRING).
-2) Disactivate the -Werror option in configure.ac.
-3) Check that NEWS, BUGS and TODO are up to date, and that the minimal
-   version numbers of gmp and mpfr in configure.ac, INSTALL and
-   doc/mpc.texi are correct.
-4) Execute "autoreconf; touch doc/mpc.texi; make distcheck".
-   This updates the date and version number in doc/version.texi and
-   creates the tarball for distribution.
-5) Create an svn tag from inside the svn root:
-   svn cp trunk tags/VERSION
-6) Update the web page inside svn and on the server.
-   The html documentation is created with
-      makeinfo --html --no-split mpc.texi
-   and the resulting mpc.html is copied to content_html.php.
-7) After the release, update the version number in configure.ac, INSTALL
-   and src/mpc.h.
-8) Reactivate the -Werror option in configure.ac.
-9) Commit the changes to svn.
+ 1) Check the version number in configure.ac ("AC_INIT (mpc, _version_...)"),
+    in INSTALL, and in src/mpc.h (remove suffix in MPC_VERSION_STRING).
+ 2) Disactivate the -Werror option in configure.ac.
+ 3) Verify that the API version in src/Makefile.am is correct.
+ 4) Check that NEWS, BUGS and TODO are up to date, and that the minimal
+    version numbers of gmp and mpfr in configure.ac, INSTALL and
+    doc/mpc.texi are correct.
+ 5) Execute "autoreconf; touch doc/mpc.texi; make distcheck".
+    This updates the date and version number in doc/version.texi and
+    creates the tarball for distribution.
+ 6) Create an svn tag from inside the svn root:
+    svn cp trunk tags/VERSION
+ 7) Update the web page inside svn and on the server.
+    The html documentation is created with
+       makeinfo --html --no-split mpc.texi
+    and the resulting mpc.html is copied to content_html.php.
+ 8) After the release, update the version number in configure.ac, INSTALL
+    and src/mpc.h.
+ 9) Reactivate the -Werror option in configure.ac.
+10) Potentially increase the API version in src/Makefile.am.
+11) Commit the changes to svn.
