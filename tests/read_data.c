@@ -135,7 +135,7 @@ read_mpfr_rounding_mode (FILE *fp, mpfr_rnd_t* rnd)
 static void
 read_mpc_rounding_mode (FILE *fp, mpc_rnd_t* rnd)
 {
-   int re, im;
+   mpfr_rnd_t re, im;
    read_mpfr_rounding_mode (fp, &re);
    read_mpfr_rounding_mode (fp, &im);
    *rnd = RNDC (re, im);
