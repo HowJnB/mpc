@@ -22,7 +22,7 @@
 # The line format respects the parameter order in function prototype as
 # follow:
 #
-# PREC_ROP  ROP  PREC_ROP_IM  ROP_IM  PREC_OP_RE  OP_RE  PREC_OP_IM  OP_IM  RND
+# INEX PREC_ROP  ROP  PREC_ROP_IM  ROP_IM  PREC_OP_RE  OP_RE  PREC_OP_IM  OP_IM  RND
 #
 # where op = op_re + i * op_im,
 # rop is ROP rounded to nearest to the precision of PREC_ROP
@@ -30,6 +30,11 @@
 # op_im is OP_IM rounded to nearest to the precision of PREC_OP_IM
 # ROP is checked against abs(op) rounded to the precision PREC_ROP
 # in the direction RND
+# INEX is the ternary value with the following notation:
+# "?" ternary value not checked
+# "+" if ROP is greater than the exact mathematical result
+# "0" if ROP is exactly the mathematical result
+# "-" if ROP is less than the exact mathematical result
 # rounding modes notation:
 # "N" is rounding to nearest
 # "Z" is rounding towards zero
@@ -41,41 +46,41 @@
 # The sign of the result is checked with "+inf", "-inf", "-0", or "+0".
 
 # special values (following ISO C99 standard)
-53 +inf     53 -inf 53 -inf N
-53 +inf     53 -inf 53   -1 N
-53 +inf     53 -inf 53   -0 N
-53 +inf     53 -inf 53   +0 N
-53 +inf     53 -inf 53   +1 N
-53 +inf     53 -inf 53 +inf N
-53 +inf     53 -inf 53  nan N
-53 +inf     53   -1 53 -inf N
-53 +inf     53   -1 53 +inf N
-53  nan     53   -1 53  nan N
-53 +inf     53   -0 53 -inf N
-53   +0     53   -0 53   -0 N
-53   +0     53   -0 53   +0 N
-53 +inf     53   -0 53 +inf N
-53  nan     53   -0 53  nan N
-53 +inf     53   +0 53 -inf N
-53   +0     53   +0 53   -0 N
-53   +0     53   +0 53   +0 N
-53 +inf     53   +0 53 +inf N
-53  nan     53   +0 53  nan N
-53 +inf     53   +1 53 -inf N
-53 +inf     53   +1 53 +inf N
-53  nan     53   +1 53  nan N
-53 +inf     53 +inf 53 -inf N
-53 +inf     53 +inf 53   -1 N
-53 +inf     53 +inf 53   -0 N
-53 +inf     53 +inf 53   +0 N
-53 +inf     53 +inf 53   +1 N
-53 +inf     53 +inf 53 +inf N
-53 +inf     53 +inf 53  nan N
-53 +inf     53  nan 53 -inf N
-53  nan     53  nan 53   -1 N
-53  nan     53  nan 53   -0 N
-53  nan     53  nan 53   +0 N
-53  nan     53  nan 53   +1 N
-53 +inf     53  nan 53 +inf N
-53  nan     53  nan 53  nan N
+0 53 +inf     53 -inf 53 -inf N
+0 53 +inf     53 -inf 53   -1 N
+0 53 +inf     53 -inf 53   -0 N
+0 53 +inf     53 -inf 53   +0 N
+0 53 +inf     53 -inf 53   +1 N
+0 53 +inf     53 -inf 53 +inf N
+0 53 +inf     53 -inf 53  nan N
+0 53 +inf     53   -1 53 -inf N
+0 53 +inf     53   -1 53 +inf N
+0 53  nan     53   -1 53  nan N
+0 53 +inf     53   -0 53 -inf N
+0 53   +0     53   -0 53   -0 N
+0 53   +0     53   -0 53   +0 N
+0 53 +inf     53   -0 53 +inf N
+0 53  nan     53   -0 53  nan N
+0 53 +inf     53   +0 53 -inf N
+0 53   +0     53   +0 53   -0 N
+0 53   +0     53   +0 53   +0 N
+0 53 +inf     53   +0 53 +inf N
+0 53  nan     53   +0 53  nan N
+0 53 +inf     53   +1 53 -inf N
+0 53 +inf     53   +1 53 +inf N
+0 53  nan     53   +1 53  nan N
+0 53 +inf     53 +inf 53 -inf N
+0 53 +inf     53 +inf 53   -1 N
+0 53 +inf     53 +inf 53   -0 N
+0 53 +inf     53 +inf 53   +0 N
+0 53 +inf     53 +inf 53   +1 N
+0 53 +inf     53 +inf 53 +inf N
+0 53 +inf     53 +inf 53  nan N
+0 53 +inf     53  nan 53 -inf N
+0 53  nan     53  nan 53   -1 N
+0 53  nan     53  nan 53   -0 N
+0 53  nan     53  nan 53   +0 N
+0 53  nan     53  nan 53   +1 N
+0 53 +inf     53  nan 53 +inf N
+0 53  nan     53  nan 53  nan N
 

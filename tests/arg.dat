@@ -22,55 +22,55 @@
 # The line format respects the parameter order in function prototype as
 # follow:
 #
-# PREC_ROP  ROP  PREC_ROP_IM  ROP_IM  PREC_OP_RE  OP_RE  PREC_OP_IM  OP_IM  RND
+# INEX  PREC_ROP  ROP  PREC_ROP_IM  ROP_IM  PREC_OP_RE  OP_RE  PREC_OP_IM  OP_IM  RND
 #
 # where op = op_re + i * op_im.
 # See abs.dat for other details.
 
 # special values (following ISO C99 standard)
-53 -0x96CBE3F9990E9p-50    53 -inf 53 -inf N
-53 -0x3243F6A8885A3p-48    53 -inf 53   -1 N
-53 -0x3243F6A8885A3p-48    53 -inf 53   -0 N
-53 +0x3243F6A8885A3p-48    53 -inf 53   +0 N
-53 +0x3243F6A8885A3p-48    53 -inf 53   +1 N
-53 +0x96CBE3F9990E9p-50    53 -inf 53 +inf N
-53                  nan    53 -inf 53  nan N
-53 -0x3243F6A8885A3p-49    53   -1 53 -inf N
-53 -0x3243F6A8885A3p-48    53   -1 53   -0 N
-53 +0x3243F6A8885A3p-48    53   -1 53   +0 N
-53 +0x3243F6A8885A3p-49    53   -1 53 +inf N
-53                  nan    53   -1 53  nan N
-53 -0x3243F6A8885A3p-49    53   -0 53 -inf N
-53 -0x3243F6A8885A3p-49    53   -0 53   -1 N
-53 -0x3243F6A8885A3p-48    53   -0 53   -0 N
-53 +0x3243F6A8885A3p-48    53   -0 53   +0 N
-53 +0x3243F6A8885A3p-49    53   -0 53   +1 N
-53 +0x3243F6A8885A3p-49    53   -0 53 +inf N
-53                  nan    53   -0 53  nan N
-53 -0x3243F6A8885A3p-49    53   +0 53 -inf N
-53 -0x3243F6A8885A3p-49    53   +0 53   -1 N
-53                   -0    53   +0 53   -0 N
-53                   +0    53   +0 53   +0 N
-53 +0x3243F6A8885A3p-49    53   +0 53   +1 N
-53 +0x3243F6A8885A3p-49    53   +0 53 +inf N
-53                  nan    53   +0 53  nan N
-53 -0x3243F6A8885A3p-49    53   +1 53 -inf N
-53                   -0    53   +1 53   -0 N
-53                   +0    53   +1 53   +0 N
-53 +0x3243F6A8885A3p-49    53   +1 53 +inf N
-53                  nan    53   +1 53  nan N
-53 -0x3243F6A8885A3p-50    53 +inf 53 -inf N
-53                   -0    53 +inf 53   -1 N
-53                   -0    53 +inf 53   -0 N
-53                   +0    53 +inf 53   +0 N
-53                   +0    53 +inf 53   +1 N
-53 +0x3243F6A8885A3p-50    53 +inf 53 +inf N
-53                  nan    53 +inf 53  nan N
-53                  nan    53  nan 53 -inf N
-53                  nan    53  nan 53   -1 N
-53                  nan    53  nan 53   -0 N
-53                  nan    53  nan 53   +0 N
-53                  nan    53  nan 53   +1 N
-53                  nan    53  nan 53 +inf N
-53                  nan    53  nan 53  nan N
+? 53 -0x96CBE3F9990E9p-50    53 -inf 53 -inf N
+? 53 -0x3243F6A8885A3p-48    53 -inf 53   -1 N
+? 53 -0x3243F6A8885A3p-48    53 -inf 53   -0 N
+? 53 +0x3243F6A8885A3p-48    53 -inf 53   +0 N
+? 53 +0x3243F6A8885A3p-48    53 -inf 53   +1 N
+? 53 +0x96CBE3F9990E9p-50    53 -inf 53 +inf N
+0 53                  nan    53 -inf 53  nan N
+? 53 -0x3243F6A8885A3p-49    53   -1 53 -inf N
+? 53 -0x3243F6A8885A3p-48    53   -1 53   -0 N
+? 53 +0x3243F6A8885A3p-48    53   -1 53   +0 N
+? 53 +0x3243F6A8885A3p-49    53   -1 53 +inf N
+0 53                  nan    53   -1 53  nan N
+? 53 -0x3243F6A8885A3p-49    53   -0 53 -inf N
+? 53 -0x3243F6A8885A3p-49    53   -0 53   -1 N
+? 53 -0x3243F6A8885A3p-48    53   -0 53   -0 N
+? 53 +0x3243F6A8885A3p-48    53   -0 53   +0 N
+? 53 +0x3243F6A8885A3p-49    53   -0 53   +1 N
+? 53 +0x3243F6A8885A3p-49    53   -0 53 +inf N
+0 53                  nan    53   -0 53  nan N
+? 53 -0x3243F6A8885A3p-49    53   +0 53 -inf N
+? 53 -0x3243F6A8885A3p-49    53   +0 53   -1 N
+0 53                   -0    53   +0 53   -0 N
+0 53                   +0    53   +0 53   +0 N
+? 53 +0x3243F6A8885A3p-49    53   +0 53   +1 N
+? 53 +0x3243F6A8885A3p-49    53   +0 53 +inf N
+0 53                  nan    53   +0 53  nan N
+? 53 -0x3243F6A8885A3p-49    53   +1 53 -inf N
+0 53                   -0    53   +1 53   -0 N
+0 53                   +0    53   +1 53   +0 N
+? 53 +0x3243F6A8885A3p-49    53   +1 53 +inf N
+0 53                  nan    53   +1 53  nan N
+? 53 -0x3243F6A8885A3p-50    53 +inf 53 -inf N
+0 53                   -0    53 +inf 53   -1 N
+0 53                   -0    53 +inf 53   -0 N
+0 53                   +0    53 +inf 53   +0 N
+0 53                   +0    53 +inf 53   +1 N
+? 53 +0x3243F6A8885A3p-50    53 +inf 53 +inf N
+0 53                  nan    53 +inf 53  nan N
+0 53                  nan    53  nan 53 -inf N
+0 53                  nan    53  nan 53   -1 N
+0 53                  nan    53  nan 53   -0 N
+0 53                  nan    53  nan 53   +0 N
+0 53                  nan    53  nan 53   +1 N
+0 53                  nan    53  nan 53 +inf N
+0 53                  nan    53  nan 53  nan N
 

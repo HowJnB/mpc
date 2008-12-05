@@ -22,54 +22,54 @@
 # The line format respects the parameter order in function prototype as
 # follow:
 #
-# PREC_ROP_RE  ROP_RE  PREC_ROP_IM  ROP_IM  PREC_OP_RE  OP_RE  PREC_OP_IM  OP_IM  RND_RE  RND_IM
+# INEX_RE  INEX_RE  PREC_ROP_RE  ROP_RE  PREC_ROP_IM  ROP_IM  PREC_OP_RE  OP_RE  PREC_OP_IM  OP_IM  RND_RE  RND_IM
 #
 # see sin.dat for precisions
 
 # special values (following ISO C99 standard)
-53 +inf 53   -0    53 -inf 53 -inf  N N
-53 +inf 53   -0    53 -inf 53   -1  N N
-53 +inf 53   -0    53 -inf 53   -0  N N
-53 +inf 53   +0    53 -inf 53   +0  N N
-53 +inf 53   +0    53 -inf 53   +1  N N
-53 +inf 53   +0    53 -inf 53 +inf  N N
-53 +inf 53    0    53 -inf 53  nan  N N
-53 +inf 53   -0    53   -1 53 -inf  N N
-53   -1 53   -0    53   -1 53   -0  N N
-53   -1 53   +0    53   -1 53   +0  N N
-53 +inf 53   +0    53   -1 53 +inf  N N
-53   -1 53  nan    53   -1 53  nan  N N
-53 +inf 53   -0    53   -0 53 -inf  N N
-53   -0 53   -1    53   -0 53   -1  N N
-53   -0 53   -0    53   -0 53   -0  N N
-53   -0 53   +0    53   -0 53   +0  N N
-53   -0 53   +1    53   -0 53   +1  N N
-53 +inf 53   +0    53   -0 53 +inf  N N
-53   -0 53  nan    53   -0 53  nan  N N
-53 +inf 53   -0    53   +0 53 -inf  N N
-53   +0 53   -1    53   +0 53   -1  N N
-53   +0 53   -0    53   +0 53   -0  N N
-53   +0 53   +0    53   +0 53   +0  N N
-53   +0 53   +1    53   +0 53   +1  N N
-53 +inf 53   +0    53   +0 53 +inf  N N
-53   +0 53  nan    53   +0 53  nan  N N
-53 +inf 53   -0    53   +1 53 -inf  N N
-53   +1 53   -0    53   +1 53   -0  N N
-53   +1 53   +0    53   +1 53   +0  N N
-53 +inf 53   +0    53   +1 53 +inf  N N
-53   +1 53  nan    53   +1 53  nan  N N
-53 +inf 53   -0    53 +inf 53 -inf  N N
-53 +inf 53   -0    53 +inf 53   -1  N N
-53 +inf 53   -0    53 +inf 53   -0  N N
-53 +inf 53   +0    53 +inf 53   +0  N N
-53 +inf 53   +0    53 +inf 53   +1  N N
-53 +inf 53   +0    53 +inf 53 +inf  N N
-53 +inf 53    0    53 +inf 53  nan  N N
-53 +inf 53   -0    53  nan 53 -inf  N N
-53  nan 53   -1    53  nan 53   -1  N N
-53  nan 53   -0    53  nan 53   -0  N N
-53  nan 53   +0    53  nan 53   +0  N N
-53  nan 53   +1    53  nan 53   +1  N N
-53 +inf 53   +0    53  nan 53 +inf  N N
-53  nan 53  nan    53  nan 53  nan  N N
+0 0 53 +inf 53   -0    53 -inf 53 -inf  N N
+0 0 53 +inf 53   -0    53 -inf 53   -1  N N
+0 0 53 +inf 53   -0    53 -inf 53   -0  N N
+0 0 53 +inf 53   +0    53 -inf 53   +0  N N
+0 0 53 +inf 53   +0    53 -inf 53   +1  N N
+0 0 53 +inf 53   +0    53 -inf 53 +inf  N N
+0 0 53 +inf 53    0    53 -inf 53  nan  N N
+0 0 53 +inf 53   -0    53   -1 53 -inf  N N
+0 0 53   -1 53   -0    53   -1 53   -0  N N
+0 0 53   -1 53   +0    53   -1 53   +0  N N
+0 0 53 +inf 53   +0    53   -1 53 +inf  N N
+0 0 53   -1 53  nan    53   -1 53  nan  N N
+0 0 53 +inf 53   -0    53   -0 53 -inf  N N
+0 0 53   -0 53   -1    53   -0 53   -1  N N
+0 0 53   -0 53   -0    53   -0 53   -0  N N
+0 0 53   -0 53   +0    53   -0 53   +0  N N
+0 0 53   -0 53   +1    53   -0 53   +1  N N
+0 0 53 +inf 53   +0    53   -0 53 +inf  N N
+0 0 53   -0 53  nan    53   -0 53  nan  N N
+0 0 53 +inf 53   -0    53   +0 53 -inf  N N
+0 0 53   +0 53   -1    53   +0 53   -1  N N
+0 0 53   +0 53   -0    53   +0 53   -0  N N
+0 0 53   +0 53   +0    53   +0 53   +0  N N
+0 0 53   +0 53   +1    53   +0 53   +1  N N
+0 0 53 +inf 53   +0    53   +0 53 +inf  N N
+0 0 53   +0 53  nan    53   +0 53  nan  N N
+0 0 53 +inf 53   -0    53   +1 53 -inf  N N
+0 0 53   +1 53   -0    53   +1 53   -0  N N
+0 0 53   +1 53   +0    53   +1 53   +0  N N
+0 0 53 +inf 53   +0    53   +1 53 +inf  N N
+0 0 53   +1 53  nan    53   +1 53  nan  N N
+0 0 53 +inf 53   -0    53 +inf 53 -inf  N N
+0 0 53 +inf 53   -0    53 +inf 53   -1  N N
+0 0 53 +inf 53   -0    53 +inf 53   -0  N N
+0 0 53 +inf 53   +0    53 +inf 53   +0  N N
+0 0 53 +inf 53   +0    53 +inf 53   +1  N N
+0 0 53 +inf 53   +0    53 +inf 53 +inf  N N
+0 0 53 +inf 53    0    53 +inf 53  nan  N N
+0 0 53 +inf 53   -0    53  nan 53 -inf  N N
+0 0 53  nan 53   -1    53  nan 53   -1  N N
+0 0 53  nan 53   -0    53  nan 53   -0  N N
+0 0 53  nan 53   +0    53  nan 53   +0  N N
+0 0 53  nan 53   +1    53  nan 53   +1  N N
+0 0 53 +inf 53   +0    53  nan 53 +inf  N N
+0 0 53  nan 53  nan    53  nan 53  nan  N N
 

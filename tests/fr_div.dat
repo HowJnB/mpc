@@ -23,349 +23,349 @@
 # account the necessary modifications for one real argument.
 
 # special values
-7  nan 7  nan   7 -inf  7 -inf 7 -inf N N
-7  nan 7  nan   7 -inf  7 -inf 7   -1 N N
-7  nan 7   -0   7 -inf  7 -inf 7   -0 N N
-7  nan 7   -0   7 -inf  7 -inf 7   +0 N N
-7  nan 7  nan   7 -inf  7 -inf 7    1 N N
-7  nan 7  nan   7 -inf  7 -inf 7 +inf N N
-7  nan 7  nan   7 -inf  7 -inf 7  nan N N
-7  nan 7  nan   7 -inf  7   -1 7 -inf N N
-7 +inf 7 -inf   7 -inf  7   -1 7   -1 N N
-7 +inf 7   -0   7 -inf  7   -1 7   -0 N N
-7 +inf 7   -0   7 -inf  7   -1 7   +0 N N
-7 +inf 7 +inf   7 -inf  7   -1 7    1 N N
-7  nan 7  nan   7 -inf  7   -1 7 +inf N N
-7  nan 7  nan   7 -inf  7   -1 7  nan N N
-7   -0 7  nan   7 -inf  7   -0 7 -inf N N
-7   -0 7 -inf   7 -inf  7   -0 7   -1 N N
-7 +inf 7  nan   7 -inf  7   -0 7   -0 N N
-7 +inf 7  nan   7 -inf  7   -0 7   +0 N N
-7   +0 7 +inf   7 -inf  7   -0 7    1 N N
-7   +0 7  nan   7 -inf  7   -0 7 +inf N N
-7  nan 7  nan   7 -inf  7   -0 7  nan N N
-7   -0 7  nan   7 -inf  7   +0 7 -inf N N
-7   -0 7 -inf   7 -inf  7   +0 7   -1 N N
-7 -inf 7  nan   7 -inf  7   +0 7   -0 N N
-7 -inf 7  nan   7 -inf  7   +0 7   +0 N N
-7   +0 7 +inf   7 -inf  7   +0 7    1 N N
-7   +0 7  nan   7 -inf  7   +0 7 +inf N N
-7  nan 7  nan   7 -inf  7   +0 7  nan N N
-7  nan 7  nan   7 -inf  7    1 7 -inf N N
-7 -inf 7 -inf   7 -inf  7    1 7   -1 N N
-7 -inf 7   +0   7 -inf  7    1 7   -0 N N
-7 -inf 7   +0   7 -inf  7    1 7   +0 N N
-7 -inf 7 +inf   7 -inf  7    1 7    1 N N
-7  nan 7  nan   7 -inf  7    1 7 +inf N N
-7  nan 7  nan   7 -inf  7    1 7  nan N N
-7  nan 7  nan   7 -inf  7 +inf 7 -inf N N
-7  nan 7  nan   7 -inf  7 +inf 7   -1 N N
-7  nan 7   +0   7 -inf  7 +inf 7   -0 N N
-7  nan 7   +0   7 -inf  7 +inf 7   +0 N N
-7  nan 7  nan   7 -inf  7 +inf 7    1 N N
-7  nan 7  nan   7 -inf  7 +inf 7 +inf N N
-7  nan 7  nan   7 -inf  7 +inf 7  nan N N
-7  nan 7  nan   7 -inf  7  nan 7 -inf N N
-7  nan 7  nan   7 -inf  7  nan 7   -1 N N
-7  nan 7  nan   7 -inf  7  nan 7   -0 N N
-7  nan 7  nan   7 -inf  7  nan 7   +0 N N
-7  nan 7  nan   7 -inf  7  nan 7    1 N N
-7  nan 7  nan   7 -inf  7  nan 7 +inf N N
-7  nan 7  nan   7 -inf  7  nan 7  nan N N
-7  nan 7  nan   7   -1  7 -inf 7 -inf N N
-7  nan 7  nan   7   -1  7 -inf 7   -1 N N
-7   +0 7   -0   7   -1  7 -inf 7   -0 N N
-7   +0 7   -0   7   -1  7 -inf 7   +0 N N
-7  nan 7  nan   7   -1  7 -inf 7    1 N N
-7  nan 7  nan   7   -1  7 -inf 7 +inf N N
-7  nan 7  nan   7   -1  7 -inf 7  nan N N
-7  nan 7  nan   7   -1  7   -1 7 -inf N N
-7  nan 7  nan   7   -1  7   -1 7 +inf N N
-7  nan 7  nan   7   -1  7   -1 7  nan N N
-7   -0 7   -0   7   -1  7   -0 7 -inf N N
-7   +0 7   +0   7   -1  7   -0 7 +inf N N
-7  nan 7  nan   7   -1  7   -0 7  nan N N
-7   -0 7   -0   7   -1  7   +0 7 -inf N N
-7   +0 7   +0   7   -1  7   +0 7 +inf N N
-7  nan 7  nan   7   -1  7   +0 7  nan N N
-7  nan 7  nan   7   -1  7    1 7 -inf N N
-7  nan 7  nan   7   -1  7    1 7 +inf N N
-7  nan 7  nan   7   -1  7    1 7  nan N N
-7  nan 7  nan   7   -1  7 +inf 7 -inf N N
-7  nan 7  nan   7   -1  7 +inf 7   -1 N N
-7   -0 7   +0   7   -1  7 +inf 7   -0 N N
-7   -0 7   +0   7   -1  7 +inf 7   +0 N N
-7  nan 7  nan   7   -1  7 +inf 7    1 N N
-7  nan 7  nan   7   -1  7 +inf 7 +inf N N
-7  nan 7  nan   7   -1  7 +inf 7  nan N N
-7  nan 7  nan   7   -1  7  nan 7 -inf N N
-7  nan 7  nan   7   -1  7  nan 7   -1 N N
-7  nan 7  nan   7   -1  7  nan 7   -0 N N
-7  nan 7  nan   7   -1  7  nan 7   +0 N N
-7  nan 7  nan   7   -1  7  nan 7    1 N N
-7  nan 7  nan   7   -1  7  nan 7 +inf N N
-7  nan 7  nan   7   -1  7  nan 7  nan N N
-7  nan 7  nan   7   -0  7 -inf 7 -inf N N
-7  nan 7  nan   7   -0  7 -inf 7   -1 N N
-7   +0 7   -0   7   -0  7 -inf 7   -0 N N
-7   +0 7   -0   7   -0  7 -inf 7   +0 N N
-7  nan 7  nan   7   -0  7 -inf 7    1 N N
-7  nan 7  nan   7   -0  7 -inf 7 +inf N N
-7  nan 7  nan   7   -0  7 -inf 7  nan N N
-7  nan 7  nan   7   -0  7   -1 7 -inf N N
-7  nan 7  nan   7   -0  7   -1 7 +inf N N
-7  nan 7  nan   7   -0  7   -1 7  nan N N
-7   -0 7   -0   7   -0  7   -0 7 -inf N N
-7   +0 7   +0   7   -0  7   -0 7 +inf N N
-7  nan 7  nan   7   -0  7   -0 7  nan N N
-7   -0 7   -0   7   -0  7   +0 7 -inf N N
-7   +0 7   +0   7   -0  7   +0 7 +inf N N
-7  nan 7  nan   7   -0  7   +0 7  nan N N
-7  nan 7  nan   7   -0  7    1 7 -inf N N
-7  nan 7  nan   7   -0  7    1 7 +inf N N
-7  nan 7  nan   7   -0  7    1 7  nan N N
-7  nan 7  nan   7   -0  7 +inf 7 -inf N N
-7  nan 7  nan   7   -0  7 +inf 7   -1 N N
-7   -0 7   +0   7   -0  7 +inf 7   -0 N N
-7   -0 7   +0   7   -0  7 +inf 7   +0 N N
-7  nan 7  nan   7   -0  7 +inf 7    1 N N
-7  nan 7  nan   7   -0  7 +inf 7 +inf N N
-7  nan 7  nan   7   -0  7 +inf 7  nan N N
-7  nan 7  nan   7   -0  7  nan 7 -inf N N
-7  nan 7  nan   7   -0  7  nan 7   -1 N N
-7  nan 7  nan   7   -0  7  nan 7   -0 N N
-7  nan 7  nan   7   -0  7  nan 7   +0 N N
-7  nan 7  nan   7   -0  7  nan 7    1 N N
-7  nan 7  nan   7   -0  7  nan 7 +inf N N
-7  nan 7  nan   7   -0  7  nan 7  nan N N
-7  nan 7  nan   7   +0  7 -inf 7 -inf N N
-7  nan 7  nan   7   +0  7 -inf 7   -1 N N
-7   -0 7   -0   7   +0  7 -inf 7   -0 N N
-7   -0 7   -0   7   +0  7 -inf 7   +0 N N
-7  nan 7  nan   7   +0  7 -inf 7    1 N N
-7  nan 7  nan   7   +0  7 -inf 7 +inf N N
-7  nan 7  nan   7   +0  7 -inf 7  nan N N
-7  nan 7  nan   7   +0  7   -1 7 -inf N N
-7  nan 7  nan   7   +0  7   -1 7 +inf N N
-7  nan 7  nan   7   +0  7   -1 7  nan N N
-7   -0 7   +0   7   +0  7   -0 7 -inf N N
-7   +0 7   -0   7   +0  7   -0 7 +inf N N
-7  nan 7  nan   7   +0  7   -0 7  nan N N
-7   -0 7   +0   7   +0  7   +0 7 -inf N N
-7   +0 7   -0   7   +0  7   +0 7 +inf N N
-7  nan 7  nan   7   +0  7   +0 7  nan N N
-7  nan 7  nan   7   +0  7    1 7 -inf N N
-7  nan 7  nan   7   +0  7    1 7 +inf N N
-7  nan 7  nan   7   +0  7    1 7  nan N N
-7  nan 7  nan   7   +0  7 +inf 7 -inf N N
-7  nan 7  nan   7   +0  7 +inf 7   -1 N N
-7   +0 7   +0   7   +0  7 +inf 7   -0 N N
-7   +0 7   +0   7   +0  7 +inf 7   +0 N N
-7  nan 7  nan   7   +0  7 +inf 7    1 N N
-7  nan 7  nan   7   +0  7 +inf 7 +inf N N
-7  nan 7  nan   7   +0  7 +inf 7  nan N N
-7  nan 7  nan   7   +0  7  nan 7 -inf N N
-7  nan 7  nan   7   +0  7  nan 7   -1 N N
-7  nan 7  nan   7   +0  7  nan 7   -0 N N
-7  nan 7  nan   7   +0  7  nan 7   +0 N N
-7  nan 7  nan   7   +0  7  nan 7    1 N N
-7  nan 7  nan   7   +0  7  nan 7 +inf N N
-7  nan 7  nan   7   +0  7  nan 7  nan N N
-7  nan 7  nan   7    1  7 -inf 7 -inf N N
-7  nan 7  nan   7    1  7 -inf 7   -1 N N
-7   -0 7   -0   7    1  7 -inf 7   -0 N N
-7   -0 7   -0   7    1  7 -inf 7   +0 N N
-7  nan 7  nan   7    1  7 -inf 7    1 N N
-7  nan 7  nan   7    1  7 -inf 7 +inf N N
-7  nan 7  nan   7    1  7 -inf 7  nan N N
-7  nan 7  nan   7    1  7   -1 7 -inf N N
-7  nan 7  nan   7    1  7   -1 7 +inf N N
-7  nan 7  nan   7    1  7   -1 7  nan N N
-7   -0 7   +0   7    1  7   -0 7 -inf N N
-7   +0 7   -0   7    1  7   -0 7 +inf N N
-7  nan 7  nan   7    1  7   -0 7  nan N N
-7   -0 7   +0   7    1  7   +0 7 -inf N N
-7   +0 7   -0   7    1  7   +0 7 +inf N N
-7  nan 7  nan   7    1  7   +0 7  nan N N
-7  nan 7  nan   7    1  7    1 7 -inf N N
-7  nan 7  nan   7    1  7    1 7 +inf N N
-7  nan 7  nan   7    1  7    1 7  nan N N
-7  nan 7  nan   7    1  7 +inf 7 -inf N N
-7  nan 7  nan   7    1  7 +inf 7   -1 N N
-7   +0 7   +0   7    1  7 +inf 7   -0 N N
-7   +0 7   +0   7    1  7 +inf 7   +0 N N
-7  nan 7  nan   7    1  7 +inf 7    1 N N
-7  nan 7  nan   7    1  7 +inf 7 +inf N N
-7  nan 7  nan   7    1  7 +inf 7  nan N N
-7  nan 7  nan   7    1  7  nan 7 -inf N N
-7  nan 7  nan   7    1  7  nan 7   -1 N N
-7  nan 7  nan   7    1  7  nan 7   -0 N N
-7  nan 7  nan   7    1  7  nan 7   +0 N N
-7  nan 7  nan   7    1  7  nan 7    1 N N
-7  nan 7  nan   7    1  7  nan 7 +inf N N
-7  nan 7  nan   7    1  7  nan 7  nan N N
-7  nan 7  nan   7 +inf  7 -inf 7 -inf N N
-7  nan 7  nan   7 +inf  7 -inf 7   -1 N N
-7  nan 7   -0   7 +inf  7 -inf 7   -0 N N
-7  nan 7   -0   7 +inf  7 -inf 7   +0 N N
-7  nan 7  nan   7 +inf  7 -inf 7    1 N N
-7  nan 7  nan   7 +inf  7 -inf 7 +inf N N
-7  nan 7  nan   7 +inf  7 -inf 7  nan N N
-7  nan 7  nan   7 +inf  7   -1 7 -inf N N
-7 -inf 7 +inf   7 +inf  7   -1 7   -1 N N
-7 -inf 7   -0   7 +inf  7   -1 7   -0 N N
-7 -inf 7   -0   7 +inf  7   -1 7   +0 N N
-7 -inf 7 -inf   7 +inf  7   -1 7    1 N N
-7  nan 7  nan   7 +inf  7   -1 7 +inf N N
-7  nan 7  nan   7 +inf  7   -1 7  nan N N
-7   -0 7  nan   7 +inf  7   -0 7 -inf N N
-7   -0 7 +inf   7 +inf  7   -0 7   -1 N N
-7 -inf 7  nan   7 +inf  7   -0 7   -0 N N
-7 -inf 7  nan   7 +inf  7   -0 7   +0 N N
-7   +0 7 -inf   7 +inf  7   -0 7    1 N N
-7   +0 7  nan   7 +inf  7   -0 7 +inf N N
-7  nan 7  nan   7 +inf  7   -0 7  nan N N
-7   -0 7  nan   7 +inf  7   +0 7 -inf N N
-7   -0 7 +inf   7 +inf  7   +0 7   -1 N N
-7 +inf 7  nan   7 +inf  7   +0 7   -0 N N
-7 +inf 7  nan   7 +inf  7   +0 7   +0 N N
-7   +0 7 -inf   7 +inf  7   +0 7    1 N N
-7   +0 7  nan   7 +inf  7   +0 7 +inf N N
-7  nan 7  nan   7 +inf  7   +0 7  nan N N
-7  nan 7  nan   7 +inf  7    1 7 -inf N N
-7 +inf 7 +inf   7 +inf  7    1 7   -1 N N
-7 +inf 7   +0   7 +inf  7    1 7   -0 N N
-7 +inf 7   +0   7 +inf  7    1 7   +0 N N
-7 +inf 7 -inf   7 +inf  7    1 7    1 N N
-7  nan 7  nan   7 +inf  7    1 7 +inf N N
-7  nan 7  nan   7 +inf  7    1 7  nan N N
-7  nan 7  nan   7 +inf  7 +inf 7 -inf N N
-7  nan 7  nan   7 +inf  7 +inf 7   -1 N N
-7  nan 7   +0   7 +inf  7 +inf 7   -0 N N
-7  nan 7   +0   7 +inf  7 +inf 7   +0 N N
-7  nan 7  nan   7 +inf  7 +inf 7    1 N N
-7  nan 7  nan   7 +inf  7 +inf 7 +inf N N
-7  nan 7  nan   7 +inf  7 +inf 7  nan N N
-7  nan 7  nan   7 +inf  7  nan 7 -inf N N
-7  nan 7  nan   7 +inf  7  nan 7   -1 N N
-7  nan 7  nan   7 +inf  7  nan 7   -0 N N
-7  nan 7  nan   7 +inf  7  nan 7   +0 N N
-7  nan 7  nan   7 +inf  7  nan 7    1 N N
-7  nan 7  nan   7 +inf  7  nan 7 +inf N N
-7  nan 7  nan   7 +inf  7  nan 7  nan N N
-7  nan 7  nan   7  nan  7 -inf 7 -inf N N
-7  nan 7  nan   7  nan  7 -inf 7   -1 N N
-7  nan 7  nan   7  nan  7 -inf 7   -0 N N
-7  nan 7  nan   7  nan  7 -inf 7   +0 N N
-7  nan 7  nan   7  nan  7 -inf 7    1 N N
-7  nan 7  nan   7  nan  7 -inf 7 +inf N N
-7  nan 7  nan   7  nan  7 -inf 7  nan N N
-7  nan 7  nan   7  nan  7   -1 7 -inf N N
-7  nan 7  nan   7  nan  7   -1 7   -1 N N
-7  nan 7  nan   7  nan  7   -1 7   -0 N N
-7  nan 7  nan   7  nan  7   -1 7   +0 N N
-7  nan 7  nan   7  nan  7   -1 7    1 N N
-7  nan 7  nan   7  nan  7   -1 7 +inf N N
-7  nan 7  nan   7  nan  7   -1 7  nan N N
-7  nan 7  nan   7  nan  7   -0 7 -inf N N
-7  nan 7  nan   7  nan  7   -0 7   -1 N N
-7  nan 7  nan   7  nan  7   -0 7   -0 N N
-7  nan 7  nan   7  nan  7   -0 7   +0 N N
-7  nan 7  nan   7  nan  7   -0 7    1 N N
-7  nan 7  nan   7  nan  7   -0 7 +inf N N
-7  nan 7  nan   7  nan  7   -0 7  nan N N
-7  nan 7  nan   7  nan  7   +0 7 -inf N N
-7  nan 7  nan   7  nan  7   +0 7   -1 N N
-7  nan 7  nan   7  nan  7   +0 7   -0 N N
-7  nan 7  nan   7  nan  7   +0 7   +0 N N
-7  nan 7  nan   7  nan  7   +0 7    1 N N
-7  nan 7  nan   7  nan  7   +0 7 +inf N N
-7  nan 7  nan   7  nan  7   +0 7  nan N N
-7  nan 7  nan   7  nan  7    1 7 -inf N N
-7  nan 7  nan   7  nan  7    1 7   -1 N N
-7  nan 7  nan   7  nan  7    1 7   -0 N N
-7  nan 7  nan   7  nan  7    1 7   +0 N N
-7  nan 7  nan   7  nan  7    1 7    1 N N
-7  nan 7  nan   7  nan  7    1 7 +inf N N
-7  nan 7  nan   7  nan  7    1 7  nan N N
-7  nan 7  nan   7  nan  7 +inf 7 -inf N N
-7  nan 7  nan   7  nan  7 +inf 7   -1 N N
-7  nan 7  nan   7  nan  7 +inf 7   -0 N N
-7  nan 7  nan   7  nan  7 +inf 7   +0 N N
-7  nan 7  nan   7  nan  7 +inf 7    1 N N
-7  nan 7  nan   7  nan  7 +inf 7 +inf N N
-7  nan 7  nan   7  nan  7 +inf 7  nan N N
-7  nan 7  nan   7  nan  7  nan 7 -inf N N
-7  nan 7  nan   7  nan  7  nan 7   -1 N N
-7  nan 7  nan   7  nan  7  nan 7   -0 N N
-7  nan 7  nan   7  nan  7  nan 7   +0 N N
-7  nan 7  nan   7  nan  7  nan 7    1 N N
-7  nan 7  nan   7  nan  7  nan 7 +inf N N
-7  nan 7  nan   7  nan  7  nan 7  nan N N
+0 0 7  nan 7  nan   7 -inf  7 -inf 7 -inf N N
+0 0 7  nan 7  nan   7 -inf  7 -inf 7   -1 N N
+0 0 7  nan 7   -0   7 -inf  7 -inf 7   -0 N N
+0 0 7  nan 7   -0   7 -inf  7 -inf 7   +0 N N
+0 0 7  nan 7  nan   7 -inf  7 -inf 7    1 N N
+0 0 7  nan 7  nan   7 -inf  7 -inf 7 +inf N N
+0 0 7  nan 7  nan   7 -inf  7 -inf 7  nan N N
+0 0 7  nan 7  nan   7 -inf  7   -1 7 -inf N N
+0 0 7 +inf 7 -inf   7 -inf  7   -1 7   -1 N N
+0 0 7 +inf 7   -0   7 -inf  7   -1 7   -0 N N
+0 0 7 +inf 7   -0   7 -inf  7   -1 7   +0 N N
+0 0 7 +inf 7 +inf   7 -inf  7   -1 7    1 N N
+0 0 7  nan 7  nan   7 -inf  7   -1 7 +inf N N
+0 0 7  nan 7  nan   7 -inf  7   -1 7  nan N N
+0 0 7   -0 7  nan   7 -inf  7   -0 7 -inf N N
+0 0 7   -0 7 -inf   7 -inf  7   -0 7   -1 N N
+0 0 7 +inf 7  nan   7 -inf  7   -0 7   -0 N N
+0 0 7 +inf 7  nan   7 -inf  7   -0 7   +0 N N
+0 0 7   +0 7 +inf   7 -inf  7   -0 7    1 N N
+0 0 7   +0 7  nan   7 -inf  7   -0 7 +inf N N
+0 0 7  nan 7  nan   7 -inf  7   -0 7  nan N N
+0 0 7   -0 7  nan   7 -inf  7   +0 7 -inf N N
+0 0 7   -0 7 -inf   7 -inf  7   +0 7   -1 N N
+0 0 7 -inf 7  nan   7 -inf  7   +0 7   -0 N N
+0 0 7 -inf 7  nan   7 -inf  7   +0 7   +0 N N
+0 0 7   +0 7 +inf   7 -inf  7   +0 7    1 N N
+0 0 7   +0 7  nan   7 -inf  7   +0 7 +inf N N
+0 0 7  nan 7  nan   7 -inf  7   +0 7  nan N N
+0 0 7  nan 7  nan   7 -inf  7    1 7 -inf N N
+0 0 7 -inf 7 -inf   7 -inf  7    1 7   -1 N N
+0 0 7 -inf 7   +0   7 -inf  7    1 7   -0 N N
+0 0 7 -inf 7   +0   7 -inf  7    1 7   +0 N N
+0 0 7 -inf 7 +inf   7 -inf  7    1 7    1 N N
+0 0 7  nan 7  nan   7 -inf  7    1 7 +inf N N
+0 0 7  nan 7  nan   7 -inf  7    1 7  nan N N
+0 0 7  nan 7  nan   7 -inf  7 +inf 7 -inf N N
+0 0 7  nan 7  nan   7 -inf  7 +inf 7   -1 N N
+0 0 7  nan 7   +0   7 -inf  7 +inf 7   -0 N N
+0 0 7  nan 7   +0   7 -inf  7 +inf 7   +0 N N
+0 0 7  nan 7  nan   7 -inf  7 +inf 7    1 N N
+0 0 7  nan 7  nan   7 -inf  7 +inf 7 +inf N N
+0 0 7  nan 7  nan   7 -inf  7 +inf 7  nan N N
+0 0 7  nan 7  nan   7 -inf  7  nan 7 -inf N N
+0 0 7  nan 7  nan   7 -inf  7  nan 7   -1 N N
+0 0 7  nan 7  nan   7 -inf  7  nan 7   -0 N N
+0 0 7  nan 7  nan   7 -inf  7  nan 7   +0 N N
+0 0 7  nan 7  nan   7 -inf  7  nan 7    1 N N
+0 0 7  nan 7  nan   7 -inf  7  nan 7 +inf N N
+0 0 7  nan 7  nan   7 -inf  7  nan 7  nan N N
+0 0 7  nan 7  nan   7   -1  7 -inf 7 -inf N N
+0 0 7  nan 7  nan   7   -1  7 -inf 7   -1 N N
+0 0 7   +0 7   -0   7   -1  7 -inf 7   -0 N N
+0 0 7   +0 7   -0   7   -1  7 -inf 7   +0 N N
+0 0 7  nan 7  nan   7   -1  7 -inf 7    1 N N
+0 0 7  nan 7  nan   7   -1  7 -inf 7 +inf N N
+0 0 7  nan 7  nan   7   -1  7 -inf 7  nan N N
+0 0 7  nan 7  nan   7   -1  7   -1 7 -inf N N
+0 0 7  nan 7  nan   7   -1  7   -1 7 +inf N N
+0 0 7  nan 7  nan   7   -1  7   -1 7  nan N N
+0 0 7   -0 7   -0   7   -1  7   -0 7 -inf N N
+0 0 7   +0 7   +0   7   -1  7   -0 7 +inf N N
+0 0 7  nan 7  nan   7   -1  7   -0 7  nan N N
+0 0 7   -0 7   -0   7   -1  7   +0 7 -inf N N
+0 0 7   +0 7   +0   7   -1  7   +0 7 +inf N N
+0 0 7  nan 7  nan   7   -1  7   +0 7  nan N N
+0 0 7  nan 7  nan   7   -1  7    1 7 -inf N N
+0 0 7  nan 7  nan   7   -1  7    1 7 +inf N N
+0 0 7  nan 7  nan   7   -1  7    1 7  nan N N
+0 0 7  nan 7  nan   7   -1  7 +inf 7 -inf N N
+0 0 7  nan 7  nan   7   -1  7 +inf 7   -1 N N
+0 0 7   -0 7   +0   7   -1  7 +inf 7   -0 N N
+0 0 7   -0 7   +0   7   -1  7 +inf 7   +0 N N
+0 0 7  nan 7  nan   7   -1  7 +inf 7    1 N N
+0 0 7  nan 7  nan   7   -1  7 +inf 7 +inf N N
+0 0 7  nan 7  nan   7   -1  7 +inf 7  nan N N
+0 0 7  nan 7  nan   7   -1  7  nan 7 -inf N N
+0 0 7  nan 7  nan   7   -1  7  nan 7   -1 N N
+0 0 7  nan 7  nan   7   -1  7  nan 7   -0 N N
+0 0 7  nan 7  nan   7   -1  7  nan 7   +0 N N
+0 0 7  nan 7  nan   7   -1  7  nan 7    1 N N
+0 0 7  nan 7  nan   7   -1  7  nan 7 +inf N N
+0 0 7  nan 7  nan   7   -1  7  nan 7  nan N N
+0 0 7  nan 7  nan   7   -0  7 -inf 7 -inf N N
+0 0 7  nan 7  nan   7   -0  7 -inf 7   -1 N N
+0 0 7   +0 7   -0   7   -0  7 -inf 7   -0 N N
+0 0 7   +0 7   -0   7   -0  7 -inf 7   +0 N N
+0 0 7  nan 7  nan   7   -0  7 -inf 7    1 N N
+0 0 7  nan 7  nan   7   -0  7 -inf 7 +inf N N
+0 0 7  nan 7  nan   7   -0  7 -inf 7  nan N N
+0 0 7  nan 7  nan   7   -0  7   -1 7 -inf N N
+0 0 7  nan 7  nan   7   -0  7   -1 7 +inf N N
+0 0 7  nan 7  nan   7   -0  7   -1 7  nan N N
+0 0 7   -0 7   -0   7   -0  7   -0 7 -inf N N
+0 0 7   +0 7   +0   7   -0  7   -0 7 +inf N N
+0 0 7  nan 7  nan   7   -0  7   -0 7  nan N N
+0 0 7   -0 7   -0   7   -0  7   +0 7 -inf N N
+0 0 7   +0 7   +0   7   -0  7   +0 7 +inf N N
+0 0 7  nan 7  nan   7   -0  7   +0 7  nan N N
+0 0 7  nan 7  nan   7   -0  7    1 7 -inf N N
+0 0 7  nan 7  nan   7   -0  7    1 7 +inf N N
+0 0 7  nan 7  nan   7   -0  7    1 7  nan N N
+0 0 7  nan 7  nan   7   -0  7 +inf 7 -inf N N
+0 0 7  nan 7  nan   7   -0  7 +inf 7   -1 N N
+0 0 7   -0 7   +0   7   -0  7 +inf 7   -0 N N
+0 0 7   -0 7   +0   7   -0  7 +inf 7   +0 N N
+0 0 7  nan 7  nan   7   -0  7 +inf 7    1 N N
+0 0 7  nan 7  nan   7   -0  7 +inf 7 +inf N N
+0 0 7  nan 7  nan   7   -0  7 +inf 7  nan N N
+0 0 7  nan 7  nan   7   -0  7  nan 7 -inf N N
+0 0 7  nan 7  nan   7   -0  7  nan 7   -1 N N
+0 0 7  nan 7  nan   7   -0  7  nan 7   -0 N N
+0 0 7  nan 7  nan   7   -0  7  nan 7   +0 N N
+0 0 7  nan 7  nan   7   -0  7  nan 7    1 N N
+0 0 7  nan 7  nan   7   -0  7  nan 7 +inf N N
+0 0 7  nan 7  nan   7   -0  7  nan 7  nan N N
+0 0 7  nan 7  nan   7   +0  7 -inf 7 -inf N N
+0 0 7  nan 7  nan   7   +0  7 -inf 7   -1 N N
+0 0 7   -0 7   -0   7   +0  7 -inf 7   -0 N N
+0 0 7   -0 7   -0   7   +0  7 -inf 7   +0 N N
+0 0 7  nan 7  nan   7   +0  7 -inf 7    1 N N
+0 0 7  nan 7  nan   7   +0  7 -inf 7 +inf N N
+0 0 7  nan 7  nan   7   +0  7 -inf 7  nan N N
+0 0 7  nan 7  nan   7   +0  7   -1 7 -inf N N
+0 0 7  nan 7  nan   7   +0  7   -1 7 +inf N N
+0 0 7  nan 7  nan   7   +0  7   -1 7  nan N N
+0 0 7   -0 7   +0   7   +0  7   -0 7 -inf N N
+0 0 7   +0 7   -0   7   +0  7   -0 7 +inf N N
+0 0 7  nan 7  nan   7   +0  7   -0 7  nan N N
+0 0 7   -0 7   +0   7   +0  7   +0 7 -inf N N
+0 0 7   +0 7   -0   7   +0  7   +0 7 +inf N N
+0 0 7  nan 7  nan   7   +0  7   +0 7  nan N N
+0 0 7  nan 7  nan   7   +0  7    1 7 -inf N N
+0 0 7  nan 7  nan   7   +0  7    1 7 +inf N N
+0 0 7  nan 7  nan   7   +0  7    1 7  nan N N
+0 0 7  nan 7  nan   7   +0  7 +inf 7 -inf N N
+0 0 7  nan 7  nan   7   +0  7 +inf 7   -1 N N
+0 0 7   +0 7   +0   7   +0  7 +inf 7   -0 N N
+0 0 7   +0 7   +0   7   +0  7 +inf 7   +0 N N
+0 0 7  nan 7  nan   7   +0  7 +inf 7    1 N N
+0 0 7  nan 7  nan   7   +0  7 +inf 7 +inf N N
+0 0 7  nan 7  nan   7   +0  7 +inf 7  nan N N
+0 0 7  nan 7  nan   7   +0  7  nan 7 -inf N N
+0 0 7  nan 7  nan   7   +0  7  nan 7   -1 N N
+0 0 7  nan 7  nan   7   +0  7  nan 7   -0 N N
+0 0 7  nan 7  nan   7   +0  7  nan 7   +0 N N
+0 0 7  nan 7  nan   7   +0  7  nan 7    1 N N
+0 0 7  nan 7  nan   7   +0  7  nan 7 +inf N N
+0 0 7  nan 7  nan   7   +0  7  nan 7  nan N N
+0 0 7  nan 7  nan   7    1  7 -inf 7 -inf N N
+0 0 7  nan 7  nan   7    1  7 -inf 7   -1 N N
+0 0 7   -0 7   -0   7    1  7 -inf 7   -0 N N
+0 0 7   -0 7   -0   7    1  7 -inf 7   +0 N N
+0 0 7  nan 7  nan   7    1  7 -inf 7    1 N N
+0 0 7  nan 7  nan   7    1  7 -inf 7 +inf N N
+0 0 7  nan 7  nan   7    1  7 -inf 7  nan N N
+0 0 7  nan 7  nan   7    1  7   -1 7 -inf N N
+0 0 7  nan 7  nan   7    1  7   -1 7 +inf N N
+0 0 7  nan 7  nan   7    1  7   -1 7  nan N N
+0 0 7   -0 7   +0   7    1  7   -0 7 -inf N N
+0 0 7   +0 7   -0   7    1  7   -0 7 +inf N N
+0 0 7  nan 7  nan   7    1  7   -0 7  nan N N
+0 0 7   -0 7   +0   7    1  7   +0 7 -inf N N
+0 0 7   +0 7   -0   7    1  7   +0 7 +inf N N
+0 0 7  nan 7  nan   7    1  7   +0 7  nan N N
+0 0 7  nan 7  nan   7    1  7    1 7 -inf N N
+0 0 7  nan 7  nan   7    1  7    1 7 +inf N N
+0 0 7  nan 7  nan   7    1  7    1 7  nan N N
+0 0 7  nan 7  nan   7    1  7 +inf 7 -inf N N
+0 0 7  nan 7  nan   7    1  7 +inf 7   -1 N N
+0 0 7   +0 7   +0   7    1  7 +inf 7   -0 N N
+0 0 7   +0 7   +0   7    1  7 +inf 7   +0 N N
+0 0 7  nan 7  nan   7    1  7 +inf 7    1 N N
+0 0 7  nan 7  nan   7    1  7 +inf 7 +inf N N
+0 0 7  nan 7  nan   7    1  7 +inf 7  nan N N
+0 0 7  nan 7  nan   7    1  7  nan 7 -inf N N
+0 0 7  nan 7  nan   7    1  7  nan 7   -1 N N
+0 0 7  nan 7  nan   7    1  7  nan 7   -0 N N
+0 0 7  nan 7  nan   7    1  7  nan 7   +0 N N
+0 0 7  nan 7  nan   7    1  7  nan 7    1 N N
+0 0 7  nan 7  nan   7    1  7  nan 7 +inf N N
+0 0 7  nan 7  nan   7    1  7  nan 7  nan N N
+0 0 7  nan 7  nan   7 +inf  7 -inf 7 -inf N N
+0 0 7  nan 7  nan   7 +inf  7 -inf 7   -1 N N
+0 0 7  nan 7   -0   7 +inf  7 -inf 7   -0 N N
+0 0 7  nan 7   -0   7 +inf  7 -inf 7   +0 N N
+0 0 7  nan 7  nan   7 +inf  7 -inf 7    1 N N
+0 0 7  nan 7  nan   7 +inf  7 -inf 7 +inf N N
+0 0 7  nan 7  nan   7 +inf  7 -inf 7  nan N N
+0 0 7  nan 7  nan   7 +inf  7   -1 7 -inf N N
+0 0 7 -inf 7 +inf   7 +inf  7   -1 7   -1 N N
+0 0 7 -inf 7   -0   7 +inf  7   -1 7   -0 N N
+0 0 7 -inf 7   -0   7 +inf  7   -1 7   +0 N N
+0 0 7 -inf 7 -inf   7 +inf  7   -1 7    1 N N
+0 0 7  nan 7  nan   7 +inf  7   -1 7 +inf N N
+0 0 7  nan 7  nan   7 +inf  7   -1 7  nan N N
+0 0 7   -0 7  nan   7 +inf  7   -0 7 -inf N N
+0 0 7   -0 7 +inf   7 +inf  7   -0 7   -1 N N
+0 0 7 -inf 7  nan   7 +inf  7   -0 7   -0 N N
+0 0 7 -inf 7  nan   7 +inf  7   -0 7   +0 N N
+0 0 7   +0 7 -inf   7 +inf  7   -0 7    1 N N
+0 0 7   +0 7  nan   7 +inf  7   -0 7 +inf N N
+0 0 7  nan 7  nan   7 +inf  7   -0 7  nan N N
+0 0 7   -0 7  nan   7 +inf  7   +0 7 -inf N N
+0 0 7   -0 7 +inf   7 +inf  7   +0 7   -1 N N
+0 0 7 +inf 7  nan   7 +inf  7   +0 7   -0 N N
+0 0 7 +inf 7  nan   7 +inf  7   +0 7   +0 N N
+0 0 7   +0 7 -inf   7 +inf  7   +0 7    1 N N
+0 0 7   +0 7  nan   7 +inf  7   +0 7 +inf N N
+0 0 7  nan 7  nan   7 +inf  7   +0 7  nan N N
+0 0 7  nan 7  nan   7 +inf  7    1 7 -inf N N
+0 0 7 +inf 7 +inf   7 +inf  7    1 7   -1 N N
+0 0 7 +inf 7   +0   7 +inf  7    1 7   -0 N N
+0 0 7 +inf 7   +0   7 +inf  7    1 7   +0 N N
+0 0 7 +inf 7 -inf   7 +inf  7    1 7    1 N N
+0 0 7  nan 7  nan   7 +inf  7    1 7 +inf N N
+0 0 7  nan 7  nan   7 +inf  7    1 7  nan N N
+0 0 7  nan 7  nan   7 +inf  7 +inf 7 -inf N N
+0 0 7  nan 7  nan   7 +inf  7 +inf 7   -1 N N
+0 0 7  nan 7   +0   7 +inf  7 +inf 7   -0 N N
+0 0 7  nan 7   +0   7 +inf  7 +inf 7   +0 N N
+0 0 7  nan 7  nan   7 +inf  7 +inf 7    1 N N
+0 0 7  nan 7  nan   7 +inf  7 +inf 7 +inf N N
+0 0 7  nan 7  nan   7 +inf  7 +inf 7  nan N N
+0 0 7  nan 7  nan   7 +inf  7  nan 7 -inf N N
+0 0 7  nan 7  nan   7 +inf  7  nan 7   -1 N N
+0 0 7  nan 7  nan   7 +inf  7  nan 7   -0 N N
+0 0 7  nan 7  nan   7 +inf  7  nan 7   +0 N N
+0 0 7  nan 7  nan   7 +inf  7  nan 7    1 N N
+0 0 7  nan 7  nan   7 +inf  7  nan 7 +inf N N
+0 0 7  nan 7  nan   7 +inf  7  nan 7  nan N N
+0 0 7  nan 7  nan   7  nan  7 -inf 7 -inf N N
+0 0 7  nan 7  nan   7  nan  7 -inf 7   -1 N N
+0 0 7  nan 7  nan   7  nan  7 -inf 7   -0 N N
+0 0 7  nan 7  nan   7  nan  7 -inf 7   +0 N N
+0 0 7  nan 7  nan   7  nan  7 -inf 7    1 N N
+0 0 7  nan 7  nan   7  nan  7 -inf 7 +inf N N
+0 0 7  nan 7  nan   7  nan  7 -inf 7  nan N N
+0 0 7  nan 7  nan   7  nan  7   -1 7 -inf N N
+0 0 7  nan 7  nan   7  nan  7   -1 7   -1 N N
+0 0 7  nan 7  nan   7  nan  7   -1 7   -0 N N
+0 0 7  nan 7  nan   7  nan  7   -1 7   +0 N N
+0 0 7  nan 7  nan   7  nan  7   -1 7    1 N N
+0 0 7  nan 7  nan   7  nan  7   -1 7 +inf N N
+0 0 7  nan 7  nan   7  nan  7   -1 7  nan N N
+0 0 7  nan 7  nan   7  nan  7   -0 7 -inf N N
+0 0 7  nan 7  nan   7  nan  7   -0 7   -1 N N
+0 0 7  nan 7  nan   7  nan  7   -0 7   -0 N N
+0 0 7  nan 7  nan   7  nan  7   -0 7   +0 N N
+0 0 7  nan 7  nan   7  nan  7   -0 7    1 N N
+0 0 7  nan 7  nan   7  nan  7   -0 7 +inf N N
+0 0 7  nan 7  nan   7  nan  7   -0 7  nan N N
+0 0 7  nan 7  nan   7  nan  7   +0 7 -inf N N
+0 0 7  nan 7  nan   7  nan  7   +0 7   -1 N N
+0 0 7  nan 7  nan   7  nan  7   +0 7   -0 N N
+0 0 7  nan 7  nan   7  nan  7   +0 7   +0 N N
+0 0 7  nan 7  nan   7  nan  7   +0 7    1 N N
+0 0 7  nan 7  nan   7  nan  7   +0 7 +inf N N
+0 0 7  nan 7  nan   7  nan  7   +0 7  nan N N
+0 0 7  nan 7  nan   7  nan  7    1 7 -inf N N
+0 0 7  nan 7  nan   7  nan  7    1 7   -1 N N
+0 0 7  nan 7  nan   7  nan  7    1 7   -0 N N
+0 0 7  nan 7  nan   7  nan  7    1 7   +0 N N
+0 0 7  nan 7  nan   7  nan  7    1 7    1 N N
+0 0 7  nan 7  nan   7  nan  7    1 7 +inf N N
+0 0 7  nan 7  nan   7  nan  7    1 7  nan N N
+0 0 7  nan 7  nan   7  nan  7 +inf 7 -inf N N
+0 0 7  nan 7  nan   7  nan  7 +inf 7   -1 N N
+0 0 7  nan 7  nan   7  nan  7 +inf 7   -0 N N
+0 0 7  nan 7  nan   7  nan  7 +inf 7   +0 N N
+0 0 7  nan 7  nan   7  nan  7 +inf 7    1 N N
+0 0 7  nan 7  nan   7  nan  7 +inf 7 +inf N N
+0 0 7  nan 7  nan   7  nan  7 +inf 7  nan N N
+0 0 7  nan 7  nan   7  nan  7  nan 7 -inf N N
+0 0 7  nan 7  nan   7  nan  7  nan 7   -1 N N
+0 0 7  nan 7  nan   7  nan  7  nan 7   -0 N N
+0 0 7  nan 7  nan   7  nan  7  nan 7   +0 N N
+0 0 7  nan 7  nan   7  nan  7  nan 7    1 N N
+0 0 7  nan 7  nan   7  nan  7  nan 7 +inf N N
+0 0 7  nan 7  nan   7  nan  7  nan 7  nan N N
 
 # finite values
-7  0.5 7 -0.5   7   -1  7   -1 7   -1 N N
-7    1 7   -0   7   -1  7   -1 7   -0 N N
-7    1 7   -0   7   -1  7   -1 7   +0 N N
-7  0.5 7  0.5   7   -1  7   -1 7    1 N N
-7   -0 7   -1   7   -1  7   -0 7   -1 N N
-7 +inf 7  nan   7   -1  7   -0 7   -0 N N
-7 +inf 7  nan   7   -1  7   -0 7   +0 N N
-7   +0 7    1   7   -1  7   -0 7    1 N N
-7   -0 7   -1   7   -1  7   +0 7   -1 N N
-7 -inf 7  nan   7   -1  7   +0 7   -0 N N
-7 -inf 7  nan   7   -1  7   +0 7   +0 N N
-7   +0 7    1   7   -1  7   +0 7    1 N N
-7 -0.5 7 -0.5   7   -1  7    1 7   -1 N N
-7   -1 7   +0   7   -1  7    1 7   -0 N N
-7   -1 7   +0   7   -1  7    1 7   +0 N N
-7 -0.5 7  0.5   7   -1  7    1 7    1 N N
-7    0 7   -0   7   -0  7   -1 7   -1 N N
-7   +0 7   -0   7   -0  7   -1 7   -0 N N
-7   +0 7   -0   7   -0  7   -1 7   +0 N N
-7   +0 7    0   7   -0  7   -1 7    1 N N
-7   -0 7   -0   7   -0  7   -0 7   -1 N N
-7  nan 7  nan   7   -0  7   -0 7   -0 N N
-7  nan 7  nan   7   -0  7   -0 7   +0 N N
-7   +0 7   +0   7   -0  7   -0 7    1 N N
-7   -0 7   -0   7   -0  7   +0 7   -1 N N
-7  nan 7  nan   7   -0  7   +0 7   -0 N N
-7  nan 7  nan   7   -0  7   +0 7   +0 N N
-7   +0 7   +0   7   -0  7   +0 7    1 N N
-7   -0 7    0   7   -0  7    1 7   -1 N N
-7   -0 7   +0   7   -0  7    1 7   -0 N N
-7   -0 7   +0   7   -0  7    1 7   +0 N N
-7    0 7   +0   7   -0  7    1 7    1 N N
-7   -0 7    0   7   +0  7   -1 7   -1 N N
-7   -0 7   -0   7   +0  7   -1 7   -0 N N
-7   -0 7   -0   7   +0  7   -1 7   +0 N N
-7    0 7   -0   7   +0  7   -1 7    1 N N
-7   -0 7   +0   7   +0  7   -0 7   -1 N N
-7  nan 7  nan   7   +0  7   -0 7   -0 N N
-7  nan 7  nan   7   +0  7   -0 7   +0 N N
-7   +0 7   -0   7   +0  7   -0 7    1 N N
-7   -0 7   +0   7   +0  7   +0 7   -1 N N
-7  nan 7  nan   7   +0  7   +0 7   -0 N N
-7  nan 7  nan   7   +0  7   +0 7   +0 N N
-7   +0 7   -0   7   +0  7   +0 7    1 N N
-7    0 7   +0   7   +0  7    1 7   -1 N N
-7   +0 7   +0   7   +0  7    1 7   -0 N N
-7   +0 7   +0   7   +0  7    1 7   +0 N N
-7   +0 7    0   7   +0  7    1 7    1 N N
-7 -0.5 7  0.5   7    1  7   -1 7   -1 N N
-7   -1 7   -0   7    1  7   -1 7   -0 N N
-7   -1 7   -0   7    1  7   -1 7   +0 N N
-7 -0.5 7 -0.5   7    1  7   -1 7    1 N N
-7   -0 7    1   7    1  7   -0 7   -1 N N
-7 -inf 7  nan   7    1  7   -0 7   -0 N N
-7 -inf 7  nan   7    1  7   -0 7   +0 N N
-7   +0 7   -1   7    1  7   -0 7    1 N N
-7   -0 7    1   7    1  7   +0 7   -1 N N
-7 +inf 7  nan   7    1  7   +0 7   -0 N N
-7 +inf 7  nan   7    1  7   +0 7   +0 N N
-7   +0 7   -1   7    1  7   +0 7    1 N N
-7  0.5 7  0.5   7    1  7    1 7   -1 N N
-7    1 7   +0   7    1  7    1 7   -0 N N
-7    1 7   +0   7    1  7    1 7   +0 N N
-7  0.5 7 -0.5   7    1  7    1 7    1 N N
+0 0 7  0.5 7 -0.5   7   -1  7   -1 7   -1 N N
+0 0 7    1 7   -0   7   -1  7   -1 7   -0 N N
+0 0 7    1 7   -0   7   -1  7   -1 7   +0 N N
+0 0 7  0.5 7  0.5   7   -1  7   -1 7    1 N N
+0 0 7   -0 7   -1   7   -1  7   -0 7   -1 N N
+0 0 7 +inf 7  nan   7   -1  7   -0 7   -0 N N
+0 0 7 +inf 7  nan   7   -1  7   -0 7   +0 N N
+0 0 7   +0 7    1   7   -1  7   -0 7    1 N N
+0 0 7   -0 7   -1   7   -1  7   +0 7   -1 N N
+0 0 7 -inf 7  nan   7   -1  7   +0 7   -0 N N
+0 0 7 -inf 7  nan   7   -1  7   +0 7   +0 N N
+0 0 7   +0 7    1   7   -1  7   +0 7    1 N N
+0 0 7 -0.5 7 -0.5   7   -1  7    1 7   -1 N N
+0 0 7   -1 7   +0   7   -1  7    1 7   -0 N N
+0 0 7   -1 7   +0   7   -1  7    1 7   +0 N N
+0 0 7 -0.5 7  0.5   7   -1  7    1 7    1 N N
+0 0 7    0 7   -0   7   -0  7   -1 7   -1 N N
+0 0 7   +0 7   -0   7   -0  7   -1 7   -0 N N
+0 0 7   +0 7   -0   7   -0  7   -1 7   +0 N N
+0 0 7   +0 7    0   7   -0  7   -1 7    1 N N
+0 0 7   -0 7   -0   7   -0  7   -0 7   -1 N N
+0 0 7  nan 7  nan   7   -0  7   -0 7   -0 N N
+0 0 7  nan 7  nan   7   -0  7   -0 7   +0 N N
+0 0 7   +0 7   +0   7   -0  7   -0 7    1 N N
+0 0 7   -0 7   -0   7   -0  7   +0 7   -1 N N
+0 0 7  nan 7  nan   7   -0  7   +0 7   -0 N N
+0 0 7  nan 7  nan   7   -0  7   +0 7   +0 N N
+0 0 7   +0 7   +0   7   -0  7   +0 7    1 N N
+0 0 7   -0 7    0   7   -0  7    1 7   -1 N N
+0 0 7   -0 7   +0   7   -0  7    1 7   -0 N N
+0 0 7   -0 7   +0   7   -0  7    1 7   +0 N N
+0 0 7    0 7   +0   7   -0  7    1 7    1 N N
+0 0 7   -0 7    0   7   +0  7   -1 7   -1 N N
+0 0 7   -0 7   -0   7   +0  7   -1 7   -0 N N
+0 0 7   -0 7   -0   7   +0  7   -1 7   +0 N N
+0 0 7    0 7   -0   7   +0  7   -1 7    1 N N
+0 0 7   -0 7   +0   7   +0  7   -0 7   -1 N N
+0 0 7  nan 7  nan   7   +0  7   -0 7   -0 N N
+0 0 7  nan 7  nan   7   +0  7   -0 7   +0 N N
+0 0 7   +0 7   -0   7   +0  7   -0 7    1 N N
+0 0 7   -0 7   +0   7   +0  7   +0 7   -1 N N
+0 0 7  nan 7  nan   7   +0  7   +0 7   -0 N N
+0 0 7  nan 7  nan   7   +0  7   +0 7   +0 N N
+0 0 7   +0 7   -0   7   +0  7   +0 7    1 N N
+0 0 7    0 7   +0   7   +0  7    1 7   -1 N N
+0 0 7   +0 7   +0   7   +0  7    1 7   -0 N N
+0 0 7   +0 7   +0   7   +0  7    1 7   +0 N N
+0 0 7   +0 7    0   7   +0  7    1 7    1 N N
+0 0 7 -0.5 7  0.5   7    1  7   -1 7   -1 N N
+0 0 7   -1 7   -0   7    1  7   -1 7   -0 N N
+0 0 7   -1 7   -0   7    1  7   -1 7   +0 N N
+0 0 7 -0.5 7 -0.5   7    1  7   -1 7    1 N N
+0 0 7   -0 7    1   7    1  7   -0 7   -1 N N
+0 0 7 -inf 7  nan   7    1  7   -0 7   -0 N N
+0 0 7 -inf 7  nan   7    1  7   -0 7   +0 N N
+0 0 7   +0 7   -1   7    1  7   -0 7    1 N N
+0 0 7   -0 7    1   7    1  7   +0 7   -1 N N
+0 0 7 +inf 7  nan   7    1  7   +0 7   -0 N N
+0 0 7 +inf 7  nan   7    1  7   +0 7   +0 N N
+0 0 7   +0 7   -1   7    1  7   +0 7    1 N N
+0 0 7  0.5 7  0.5   7    1  7    1 7   -1 N N
+0 0 7    1 7   +0   7    1  7    1 7   -0 N N
+0 0 7    1 7   +0   7    1  7    1 7   +0 N N
+0 0 7  0.5 7 -0.5   7    1  7    1 7    1 N N
 
