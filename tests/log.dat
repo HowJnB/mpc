@@ -27,25 +27,25 @@
 # Rule [conj]: log(conj(z)) = conj(log(z))
 
 # log(-0 + i*0) = -inf + i*pi
-? ? 2 -inf 53  0x3243F6A8885A3p-48   2 -0 2 +0     N N
-? ? 2 -inf 53 -0x3243F6A8885A3p-48   2 -0 2 -0     N N
-? ? 2 -inf 53  0x3243F6A8885A3p-48   2 -0 2 +0     N D
-? ? 2 -inf 53 -0x3243F6A8885A32p-52  2 -0 2 -0     N D
+0 - 2 -inf 53  0x3243F6A8885A3p-48   2 -0 2 +0     N N
+0 + 2 -inf 53 -0x3243F6A8885A3p-48   2 -0 2 -0     N N
+0 - 2 -inf 53  0x3243F6A8885A3p-48   2 -0 2 +0     N D
+0 + 2 -inf 53 -0x3243F6A8885A32p-52  2 -0 2 -0     N D
 
 # log(+0 + i*0) = -inf + i*0
 0 0 2 -inf 2 +0                     2 +0 2 +0    N N
 0 0 2 -inf 2 -0                     2 +0 2 -0    N N
 
 # log(x + i*inf) = +inf + i*pi/2 for finite x
-? ? 2 +inf 53 0x3243F6A8885A3p-49  2  1 2 +inf   N N
-? ? 2 +inf 53 0x3243F6A8885A3p-49  2 +0 2 +inf   N N
-? ? 2 +inf 53 0x3243F6A8885A3p-49  2 -0 2 +inf   N N
-? ? 2 +inf 53 0x3243F6A8885A3p-49  2 -1 2 +inf   N N
+0 - 2 +inf 53 0x3243F6A8885A3p-49  2  1 2 +inf   N N
+0 - 2 +inf 53 0x3243F6A8885A3p-49  2 +0 2 +inf   N N
+0 - 2 +inf 53 0x3243F6A8885A3p-49  2 -0 2 +inf   N N
+0 - 2 +inf 53 0x3243F6A8885A3p-49  2 -1 2 +inf   N N
 # by [conj]: log(x - i*inf) = +inf - i*pi/2 for finite x
-? ? 2 +inf 53 -0x3243F6A8885A3p-49  2  1 2 -inf  N N
-? ? 2 +inf 53 -0x3243F6A8885A3p-49  2 +0 2 -inf  N N
-? ? 2 +inf 53 -0x3243F6A8885A3p-49  2 -0 2 -inf  N N
-? ? 2 +inf 53 -0x3243F6A8885A3p-49  2 -1 2 -inf  N N
+0 + 2 +inf 53 -0x3243F6A8885A3p-49  2  1 2 -inf  N N
+0 + 2 +inf 53 -0x3243F6A8885A3p-49  2 +0 2 -inf  N N
+0 + 2 +inf 53 -0x3243F6A8885A3p-49  2 -0 2 -inf  N N
+0 + 2 +inf 53 -0x3243F6A8885A3p-49  2 -1 2 -inf  N N
 
 # log(x + i*nan) = nan+i*nan for finite x
 0 0 2 nan 2 nan                    2  1 2 nan    N N
@@ -54,11 +54,11 @@
 0 0 2 nan 2 nan                    2 -1 2 nan    N N
 
 # log(-inf + i*y) = +inf + i*pi for finite positive-signed y
-0 ? 2 +inf 53 0x3243F6A8885A3p-48  2 -inf 2  1   N N
-0 ? 2 +inf 53 0x3243F6A8885A3p-48  2 -inf 2 +0   N N
+0 - 2 +inf 53 0x3243F6A8885A3p-48  2 -inf 2  1   N N
+0 - 2 +inf 53 0x3243F6A8885A3p-48  2 -inf 2 +0   N N
 # by [conj]: log(-inf + i*y) = +inf - i*pi for finite negative-signed y
-0 ? 2 +inf 53 -0x3243F6A8885A3p-48  2 -inf 2 -1  N N
-0 ? 2 +inf 53 -0x3243F6A8885A3p-48  2 -inf 2 -0  N N
+0 + 2 +inf 53 -0x3243F6A8885A3p-48  2 -inf 2 -1  N N
+0 + 2 +inf 53 -0x3243F6A8885A3p-48  2 -inf 2 -0  N N
 
 # log(+inf + i*y) = +inf + i*0 for finite positive-signed y
 0 0 2 +inf 2 +0                    2 +inf 2  1   N N
@@ -68,14 +68,14 @@
 0 0 2 +inf 2 -0                    2 +inf 2 -0   N N
 
 # log(-inf + i*inf) = +inf + i*(3*pi/4)
-0 ? 2 +inf 53 0x96CBE3F9990E9p-50  2 -inf 2 +inf N N
+0 - 2 +inf 53 0x96CBE3F9990E9p-50  2 -inf 2 +inf N N
 # by [conj]: log(-inf - i*inf) = +inf - i*(3*pi/4)
-0 ? 2 +inf 53 -0x96CBE3F9990E9p-50 2 -inf 2 -inf N N
+0 + 2 +inf 53 -0x96CBE3F9990E9p-50 2 -inf 2 -inf N N
 
 # log(+inf + i*inf) = +inf + i*(pi/4)
-0 ? 2 +inf 53 0x3243F6A8885A3p-50  2 +inf 2 +inf N N
+0 - 2 +inf 53 0x3243F6A8885A3p-50  2 +inf 2 +inf N N
 # by [conj]: log(+inf - i*inf) = +inf - i*(pi/4)
-0 ? 2 +inf 53 -0x3243F6A8885A3p-50 2 +inf 2 -inf N N
+0 + 2 +inf 53 -0x3243F6A8885A3p-50 2 +inf 2 -inf N N
 
 # log(+/-inf + i*nan) = +inf + i*nan
 0 0 2 +inf 2 nan                   2 +inf 2 nan  N N
@@ -94,8 +94,8 @@
 0 0 2 nan 2 nan                    2 nan 2 nan   N N
 
 # log(x + i*y) with either x or y zero and the other non-zero
-? ? 53 0xB5535E0FD3FBDp-50  2                    0     5  0x11 2     0 N N
-? ? 53 0xB5535E0FD3FBDp-50 53  0x3243F6A8885A3p-49     2     0 5  0x11 N N
-? ? 53 0x5E38D81812CCBp-49 53  0x3243F6A8885A3p-48     5 -0x13 2     0 N N
-? ? 53 0x5E38D81812CCBp-49 53 -0x3243F6A8885A3p-49     2     0 5 -0x13 N N
++ 0 53 0xB5535E0FD3FBDp-50  2                    0     5  0x11 2     0 N N
++ - 53 0xB5535E0FD3FBDp-50 53  0x3243F6A8885A3p-49     2     0 5  0x11 N N
+- - 53 0x5E38D81812CCBp-49 53  0x3243F6A8885A3p-48     5 -0x13 2     0 N N
+- + 53 0x5E38D81812CCBp-49 53 -0x3243F6A8885A3p-49     2     0 5 -0x13 N N
 

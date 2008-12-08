@@ -91,7 +91,7 @@ check_exp_log (void)
 int
 main (void)
 {
-  DECL_FUNC (V_CC, f, mpc_log);
+  DECL_FUNC (CC, f, mpc_log);
 
   test_start ();
 
