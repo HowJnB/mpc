@@ -46,7 +46,7 @@ mpc_sin (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
               /* sin(+0 +i*NaN) = +0 +i*NaN */
               if (!mpfr_zero_p (MPC_RE (op)))
                 mpfr_set_nan (MPC_RE (rop));
-              else if (!mpfr_inf_p (MPC_IM (op)) 
+              else if (!mpfr_inf_p (MPC_IM (op))
                        && !mpfr_zero_p (MPC_IM (op)))
                 /* sin(NaN -i*Inf) = NaN -i*Inf */
                 /* sin(NaN -i*0) = NaN -i*0 */
@@ -100,7 +100,8 @@ mpc_sin (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
   if (mpfr_cmp_ui (MPC_IM(op), 0) == 0)
     {
       mpfr_init2 (x, 2);
-      inex_re = mpfr_sin_cos (MPC_RE (rop), x, MPC_RE (op), MPC_RND_RE (rnd));
+      mpfr_cos (x, MPC_RE (op), MPC_RND_RE (rnd));
+      inex_re = mpfr_sin (MPC_RE (rop), MPC_RE (op), MPC_RND_RE (rnd));
       mpfr_mul (MPC_IM(rop), MPC_IM(op), x, MPC_RND_IM(rnd));
       mpfr_clear (x);
 
