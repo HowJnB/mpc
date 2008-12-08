@@ -23,24 +23,28 @@ MA 02111-1307, USA. */
 #include "mpc.h"
 #include "mpc-impl.h"
 
-void
+int
 mpc_sinh (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
 {
   /* sinh(op) = -i*sin(i*op) = conj(-i*sin(conj(-i*op))) */
   mpc_t z;
   mpc_t sin_z;
+  int inex;
 
   /* z := conj(-i * op) and rop = conj(-i * sin(z)), in other words, we have
-     to switch real and imaginary parts. Let us set them without copying 
+     to switch real and imaginary parts. Let us set them without copying
      significands. */
   MPC_RE (z)[0] = MPC_IM (op)[0];
   MPC_IM (z)[0] = MPC_RE (op)[0];
   MPC_RE (sin_z)[0] = MPC_IM (rop)[0];
   MPC_IM (sin_z)[0] = MPC_RE (rop)[0];
 
-  mpc_sin (sin_z, z, RNDC (MPC_RND_IM (rnd), MPC_RND_RE (rnd)));
+  inex = mpc_sin (sin_z, z, RNDC (MPC_RND_IM (rnd), MPC_RND_RE (rnd)));
 
   /* sin_z and rop parts share the same significands, copy the rest now. */
   MPC_RE (rop)[0] = MPC_IM (sin_z)[0];
   MPC_IM (rop)[0] = MPC_RE (sin_z)[0];
+
+  /* swap inexact flags for real and imaginary parts */
+  return MPC_INEX (MPC_INEX_IM (inex), MPC_INEX_RE (inex));
 }
