@@ -1,5 +1,5 @@
 Recent changes:
-  - mpc_exp, mpc_cos, mpc_sin, mpc_tan, mpc_cosh, mpc_sinh now return inexact value
+  - exp, log, cos, sin, tan, cosh, sinh and tanh return inexact value
   - Bug fixes:
     - mpc_get_version and MPC_VERSION_STRING agree
 
