@@ -1,6 +1,6 @@
 /* mpc_cosh -- hyperbolic cosine of a complex number.
 
-Copyright (C) 2008 Philippe Th\'eveny
+Copyright (C) 2008 Philippe Th\'eveny, Andreas Enge
 
 This file is part of the MPC Library.
 
@@ -23,7 +23,7 @@ MA 02111-1307, USA. */
 #include "mpc.h"
 #include "mpc-impl.h"
 
-void
+int
 mpc_cosh (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
 {
   /* cosh(op) = cos(i*op) */
@@ -34,5 +34,5 @@ mpc_cosh (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
   MPC_IM (z)[0] = MPC_RE (op)[0];
   MPFR_CHANGE_SIGN (MPC_RE (z));
 
-  mpc_cos (rop, z, rnd);
+  return mpc_cos (rop, z, rnd);
 }

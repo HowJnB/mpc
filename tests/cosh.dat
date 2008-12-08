@@ -127,3 +127,4 @@
 # cosh(nan + i*nan) = nan + i*nan
 0 0 2 nan 2 nan   2 nan 2 nan   N N
 
++ + 53 0x10000000000001p-53 53 0x10000000000001p-52   53 0x1DA2E1BD2C9EBCp-53 53 0x138AADEA15829Fp-52 N N

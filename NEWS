@@ -1,7 +1,7 @@
 Recent changes:
-  - mpc_exp, mpc_cos, mpc_sin, and mpc_tan now return inexact value
+  - mpc_exp, mpc_cos, mpc_sin, mpc_tan, mpc_cosh, mpc_sinh now return inexact value
   - Bug fixes:
-    - mpc_get_version and MPC_VERSION_STRING agrees
+    - mpc_get_version and MPC_VERSION_STRING agree
 
 Changes in version 0.5.2:
   - New macros:

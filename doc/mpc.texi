@@ -829,12 +829,12 @@ Set @var{rop} to the tangent of @var{op},
 rounded according to @var{rnd} with the precision of @var{rop}.
 @end deftypefun
 
-@deftypefun void mpc_sinh (mpc_t @var{rop}, mpc_t @var{op}, mpc_rnd_t @var{rnd})
+@deftypefun int mpc_sinh (mpc_t @var{rop}, mpc_t @var{op}, mpc_rnd_t @var{rnd})
 Set @var{rop} to the hyperbolic sine of @var{op},
 rounded according to @var{rnd} with the precision of @var{rop}.
 @end deftypefun
 
-@deftypefun void mpc_cosh (mpc_t @var{rop}, mpc_t @var{op}, mpc_rnd_t @var{rnd})
+@deftypefun int mpc_cosh (mpc_t @var{rop}, mpc_t @var{op}, mpc_rnd_t @var{rnd})
 Set @var{rop} to the hyperbolic cosine of @var{op},
 rounded according to @var{rnd} with the precision of @var{rop}.
 @end deftypefun

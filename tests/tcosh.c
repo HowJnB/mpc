@@ -129,35 +129,10 @@ pure_imaginary_argument (void)
   mpc_clear (u);
 }
 
-static void
-check_53 (void)
-{
-  mpc_t z;
-  mpc_t cosh_z;
-  mpc_t c;
-
-  mpc_init2 (z, 53);
-  mpc_init2 (cosh_z, 53);
-  mpc_init2 (c, 53);
-
-  /* cosh(z) is near (1+2^(-53)) *(0.5+i) */
-  mpfr_set_str (MPC_RE (z), "1DA2E1BD2C9EBCp-53", 16, GMP_RNDN);
-  mpfr_set_str (MPC_IM (z), "138AADEA15829Fp-52", 16, GMP_RNDN);
-  mpfr_set_str (MPC_RE (c), "10000000000001p-53", 16, GMP_RNDN);
-  mpfr_set_str (MPC_IM (c), "10000000000001p-52", 16, GMP_RNDN);
-  mpc_cosh (cosh_z, z, MPC_RNDNN);
-  if (mpc_cmp (cosh_z, c) != 0)
-    test_failed (z, cosh_z, c);
-
-  mpc_clear (c);
-  mpc_clear (cosh_z);
-  mpc_clear (z);
-}
-
 int
 main (void)
 {
-  DECL_FUNC(V_CC, f,mpc_cosh);
+  DECL_FUNC(CC, f,mpc_cosh);
 
   test_start ();
 
@@ -166,7 +141,6 @@ main (void)
 
   pure_real_argument ();
   pure_imaginary_argument ();
-  check_53 ();
 
   test_end ();
 
