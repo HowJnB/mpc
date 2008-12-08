@@ -1,6 +1,6 @@
 /* File for generic tests.
 
-Copyright (C) 2008 Philippe Th\'eveny.
+Copyright (C) 2008 Philippe Th\'eveny, Andreas Enge
 
 This file is part of the MPC Library.
 
@@ -49,50 +49,6 @@ tgeneric_cc (mpc_function *function, mpc_ptr op, mpc_ptr rop,
   if (MPFR_CAN_ROUND (MPC_RE (rop4), 1, MPFR_PREC (MPC_RE (rop)),
                       MPC_RND_RE (rnd))
       && MPFR_CAN_ROUND (MPC_IM (rop4), 1, MPFR_PREC (MPC_IM (rop)),
-                         MPC_RND_IM (rnd)))
-    mpc_set (rop4rnd, rop4, rnd);
-  else
-    /* avoid double rounding error */
-    return;
-
-  if (same_mpc_value (rop, rop4rnd, ks))
-    return;
-
-  /* rounding failed */
-  printf ("Rounding in %s might be incorrect for\n", function->name);
-  OUT (op);
-
-  printf ("with rounding mode (%s, %s)",
-          mpfr_print_rnd_mode (MPC_RND_RE (rnd)),
-          mpfr_print_rnd_mode (MPC_RND_IM (rnd)));
-
-  printf ("\n%s                     gives ", function->name);
-  OUT (rop);
-  printf ("%s quadruple precision gives ", function->name);
-  OUT (rop4);
-  printf ("and is rounded to                  ");
-  OUT (rop4rnd);
-
-  exit (1);
-}
-
-static void
-tgeneric_v_cc (mpc_function *function, mpc_ptr op, mpc_ptr rop,
-               mpc_ptr rop4, mpc_ptr rop4rnd, mpc_rnd_t rnd)
-{
-  known_signs_t ks = {1, 1};
-
-  /* We compute the result with four times the precision and check whether the
-     rounding is correct. Error reports in this part of the algorithm might
-     still be wrong, though, since there are two consecutive roundings (but we
-     try to avoid them).  */
-  function->pointer.V_CC (rop4, op, rnd);
-  function->pointer.V_CC (rop, op, rnd);
-
-  /* can't use mpfr_can_round when argument is singular */
-  if (MPFR_CAN_ROUND (MPC_RE (rop4), 1,  MPFR_PREC (MPC_RE (rop)),
-                      MPC_RND_RE (rnd))
-      && MPFR_CAN_ROUND (MPC_IM (rop4), 1,  MPFR_PREC (MPC_IM (rop)),
                          MPC_RND_IM (rnd)))
     mpc_set (rop4rnd, rop4, rnd);
   else
@@ -470,25 +426,6 @@ reuse_cc (mpc_function* function, mpc_srcptr z, mpc_ptr got, mpc_ptr expected)
 }
 
 static void
-reuse_v_cc (mpc_function* function, mpc_ptr z, mpc_ptr got, mpc_ptr expected)
-{
-  known_signs_t ks = {1, 1};
-
-  mpc_set (got, z, MPC_RNDNN); /* exact */
-  function->pointer.V_CC (expected, z, MPC_RNDNN);
-  function->pointer.V_CC (got, got, MPC_RNDNN);
-  if (!same_mpc_value (got, expected, ks))
-    {
-      printf ("Error for %s(z, z) for\n", function->name);
-      OUT (z);
-      OUT (expected);
-      OUT (got);
-
-      exit (1);
-    }
-}
-
-static void
 reuse_fc (mpc_function* function, mpc_ptr z, mpc_ptr x, mpfr_ptr expected)
 {
   mpc_set (x, z, MPC_RNDNN); /* exact */
@@ -760,7 +697,7 @@ tgeneric (mpc_function function, mpfr_prec_t prec_min,
       mpc_init2 (zzzz, 4*prec_max);
       special_cases = 2;
       break;
-    case CC:  case V_CC:
+    case CC:
     default:
       mpc_init2 (z2, prec_max);
       mpc_init2 (z3, prec_max);
@@ -944,7 +881,7 @@ tgeneric (mpc_function function, mpfr_prec_t prec_min,
               break;
             }
           break;
-        case CC: case V_CC:
+        case CC:
         default:
           mpc_set_prec (z2, prec);
           mpc_set_prec (z3, prec);
@@ -978,12 +915,6 @@ tgeneric (mpc_function function, mpfr_prec_t prec_min,
               tgeneric_cc (&function, z1, z2, zzzz, z3,
                            RNDC (rnd_re, rnd_im));
             reuse_cc (&function, z1, z2, z3);
-            break;
-          case V_CC:
-            for (rnd_im = 0; rnd_im < 4; rnd_im ++)
-              tgeneric_v_cc (&function, z1, z2, zzzz, z3,
-                             RNDC (rnd_re, rnd_im));
-            reuse_v_cc (&function, z1, z2, z3);
             break;
           case CFC:
             for (rnd_im = 0; rnd_im < 4; rnd_im ++)
@@ -1054,7 +985,7 @@ tgeneric (mpc_function function, mpfr_prec_t prec_min,
     case CUUC:
     case CCI: case CCS:
     case CCU: case CUC:
-    case CC:  case V_CC:
+    case CC:
     default:
       mpc_clear (z2);
       mpc_clear (z3);

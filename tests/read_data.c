@@ -358,7 +358,7 @@ data_check (mpc_function function, const char *file_name)
       mpfr_init (x1);
       mpfr_init (x2);
       break;
-    case CC: case V_CC:
+    case CC:
       mpc_init (z2);
       mpc_init (z3);
       break;
@@ -432,28 +432,6 @@ data_check (mpc_function function, const char *file_name)
                 printf("ternary value: got %s, expected (%s, %s)\n",
                        MPC_INEX_STR (inex),
                        MPFR_INEX_STR (inex_re), MPFR_INEX_STR (inex_im));
-              OUT (op);
-              printf ("     ");
-              OUT (got);
-              OUT (expected);
-
-              exit (1);
-            }
-          break;
-
-        case V_CC:
-          read_cc (fp, &inex_re, &inex_im, z1, &signs, z2, &rnd);
-          mpfr_set_prec (MPC_RE (z3), MPC_PREC_RE (z1));
-          mpfr_set_prec (MPC_IM (z3), MPC_PREC_IM (z1));
-          function.pointer.V_CC (z3, z2, rnd);
-          if (!same_mpc_value (z3, z1, signs))
-            {
-              mpc_t op, got, expected; /* display sensible variable names */
-              op[0] = z2[0];
-              expected[0]= z1[0];
-              got[0] = z3[0];
-              printf ("%s(op) failed (line %lu)\nwith rounding mode %s\n      ",
-                      function.name, line_number-1, rnd_mode[rnd]);
               OUT (op);
               printf ("     ");
               OUT (got);
@@ -596,7 +574,7 @@ data_check (mpc_function function, const char *file_name)
       mpfr_clear (x1);
       mpfr_clear (x2);
       break;
-    case CC: case V_CC:
+    case CC:
       mpc_clear (z2);
       mpc_clear (z3);
       break;
