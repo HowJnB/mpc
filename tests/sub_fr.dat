@@ -1,6 +1,6 @@
 # Data file for mpc_sub_fr.
 #
-# Copyright (C) 2008 Paul Zimmermann, Andreas Enge
+# Copyright (C) 2008 Paul Zimmermann, Andreas Enge, Philippe Th\'eveny
 #
 # This file is part of the MPC Library.
 #
@@ -369,12 +369,12 @@
 0 0 7    0 7    1   7    1 7    1  7    1  N N
 
 # also check the imaginary part is correctly rounded
-0 ? 2 nan 2 16     2 nan 5 17     2 nan   N N
-0 ? 2 nan 2 24     2 nan 5 17     2 nan   N U
-0 ? 2 nan 2 16     2 nan 5 17     2 nan   N D
-0 ? 2 nan 2 16     2 nan 5 17     2 nan   N Z
-0 ? 2 nan 2 -16    2 nan 5 -17    2 nan   N N
-0 ? 2 nan 2 -16    2 nan 5 -17    2 nan   N U
-0 ? 2 nan 2 -24    2 nan 5 -17    2 nan   N D
-0 ? 2 nan 2 -16    2 nan 5 -17    2 nan   N Z
+0 - 2 nan 2 16     2 nan 5 17     2 nan   N N
+0 + 2 nan 2 24     2 nan 5 17     2 nan   N U
+0 - 2 nan 2 16     2 nan 5 17     2 nan   N D
+0 - 2 nan 2 16     2 nan 5 17     2 nan   N Z
+0 + 2 nan 2 -16    2 nan 5 -17    2 nan   N N
+0 + 2 nan 2 -16    2 nan 5 -17    2 nan   N U
+0 - 2 nan 2 -24    2 nan 5 -17    2 nan   N D
+0 + 2 nan 2 -16    2 nan 5 -17    2 nan   N Z
 
