@@ -42,7 +42,7 @@ static int nextchar;
   (((r) == __NOT_CHECKED || (r) == MPC_INEX_RE(c))      \
    && ((i) == __NOT_CHECKED || (i) == MPC_INEX_IM (c)))
 #define MPFR_INEX_STR(inex)                     \
-  (inex) == __NOT_CHECKED ? "x"                 \
+  (inex) == __NOT_CHECKED ? "?"                 \
     : (inex) == +1 ? "+1"                       \
     : (inex) == -1 ? "-1" : "0"
 #define MPC_INEX_STR(inex)                      \

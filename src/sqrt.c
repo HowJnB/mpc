@@ -35,7 +35,7 @@ mpc_sqrt (mpc_ptr a, mpc_srcptr b, mpc_rnd_t rnd)
   /* the rounding mode and the precision required for w and t, which can */
   /* be either the real or the imaginary part of a */
   mp_prec_t prec;
-  int inexact, loops = 0;
+  int inexact, inex_re, inex_im, loops = 0;
   /* comparison of the real/imaginary part of b with 0 */
   const int re_cmp = mpfr_cmp_ui (MPC_RE (b), 0);
   const int im_cmp = mpfr_cmp_ui (MPC_IM (b), 0);
@@ -49,7 +49,7 @@ mpc_sqrt (mpc_ptr a, mpc_srcptr b, mpc_rnd_t rnd)
     {
       mpfr_set_inf (MPC_RE (a), +1);
       mpfr_set_inf (MPC_IM (a), im_sgn);
-      return 0;
+      return MPC_INEX (0, 0);
     }
 
   if (mpfr_inf_p (MPC_RE (b)))
@@ -62,14 +62,14 @@ mpc_sqrt (mpc_ptr a, mpc_srcptr b, mpc_rnd_t rnd)
               /* sqrt(-Inf +i*y) = +0 -i*Inf, when y positive */
               mpfr_set_ui (MPC_RE (a), 0, GMP_RNDN);
               mpfr_set_inf (MPC_IM (a), im_sgn);
-              return 0;
+              return MPC_INEX (0, 0);
             }
           else
             {
               /* sqrt(-Inf +i*NaN) = NaN +/-i*Inf */
               mpfr_set_nan (MPC_RE (a));
               mpfr_set_inf (MPC_IM (a), im_sgn);
-              return 0;
+              return MPC_INEX (0, 0);
             }
         }
       else
@@ -82,7 +82,7 @@ mpc_sqrt (mpc_ptr a, mpc_srcptr b, mpc_rnd_t rnd)
               mpfr_set_ui (MPC_IM (a), 0, GMP_RNDN);
               if (im_sgn)
                 mpc_conj (a, a, MPC_RNDNN);
-              return 0;
+              return MPC_INEX (0, 0);
             }
           else
             {
@@ -100,10 +100,10 @@ mpc_sqrt (mpc_ptr a, mpc_srcptr b, mpc_rnd_t rnd)
     {
       mpfr_set_nan (MPC_RE (a));
       mpfr_set_nan (MPC_IM (a));
-      return 0;
+      return MPC_INEX (0, 0);
     }
 
-  /* pure real */
+  /* purely real */
   if (im_cmp == 0)
     {
       if (re_cmp == 0)
@@ -111,7 +111,7 @@ mpc_sqrt (mpc_ptr a, mpc_srcptr b, mpc_rnd_t rnd)
           mpc_set_ui_ui (a, 0, 0, MPC_RNDNN);
           if (im_sgn)
             mpc_conj (a, a, MPC_RNDNN);
-          return 0;
+          return MPC_INEX (0, 0);
         }
       else if (re_cmp > 0)
         {
@@ -119,7 +119,7 @@ mpc_sqrt (mpc_ptr a, mpc_srcptr b, mpc_rnd_t rnd)
           mpfr_set_ui (MPC_IM (a), 0, GMP_RNDN);
           if (im_sgn)
             mpc_conj (a, a, MPC_RNDNN);
-          return inexact;
+          return MPC_INEX (inexact, 0);
         }
       else
         {
@@ -127,7 +127,7 @@ mpc_sqrt (mpc_ptr a, mpc_srcptr b, mpc_rnd_t rnd)
           mpfr_neg (w, MPC_RE (b), GMP_RNDN);
           if (im_sgn)
             {
-              inexact = mpfr_sqrt (MPC_IM (a), w, INV_RND (MPC_RND_IM (rnd)));
+              inexact = -mpfr_sqrt (MPC_IM (a), w, INV_RND (MPC_RND_IM (rnd)));
               mpfr_neg (MPC_IM (a), MPC_IM (a), GMP_RNDN);
             }
           else
@@ -135,11 +135,11 @@ mpc_sqrt (mpc_ptr a, mpc_srcptr b, mpc_rnd_t rnd)
 
           mpfr_set_ui (MPC_RE (a), 0, GMP_RNDN);
           mpfr_clear (w);
-          return inexact;
+          return MPC_INEX (0, inexact);
         }
     }
 
-  /* pure imaginary */
+  /* purely imaginary */
   if (re_cmp == 0)
     {
       mpfr_t y;
@@ -149,17 +149,17 @@ mpc_sqrt (mpc_ptr a, mpc_srcptr b, mpc_rnd_t rnd)
       mpfr_div_2ui (y, y, 1, GMP_RNDN);
       if (im_cmp > 0)
         {
-          inexact = mpfr_sqrt (MPC_RE (a), y, MPC_RND_RE (rnd));
-          inexact |= mpfr_sqrt (MPC_IM (a), y, MPC_RND_IM (rnd));
+          inex_re = mpfr_sqrt (MPC_RE (a), y, MPC_RND_RE (rnd));
+          inex_im = mpfr_sqrt (MPC_IM (a), y, MPC_RND_IM (rnd));
         }
       else
         {
           mpfr_neg (y, y, GMP_RNDN);
-          inexact = mpfr_sqrt (MPC_RE (a), y, MPC_RND_RE (rnd));
-          inexact |= mpfr_sqrt (MPC_IM (a), y, INV_RND (MPC_RND_IM (rnd)));
+          inex_re = mpfr_sqrt (MPC_RE (a), y, MPC_RND_RE (rnd));
+          inex_im = -mpfr_sqrt (MPC_IM (a), y, INV_RND (MPC_RND_IM (rnd)));
           mpfr_neg (MPC_IM (a), MPC_IM (a), GMP_RNDN);
         }
-      return inexact;
+      return MPC_INEX (inex_re, inex_im);
     }
 
   prec = MPC_MAX_PREC(a);
