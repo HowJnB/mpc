@@ -53,8 +53,8 @@ static int nextchar;
     : (inex) == 5 ? "(+1, +1)"                  \
     : (inex) == 6 ? "(-1, +1)"                  \
     : (inex) == 8 ? "(0, -1)"                   \
-    : (inex) == 9 ? "(-1, -1)"                  \
-    : (inex) == 10 ? "(+1, -1)" : "unknown"
+    : (inex) == 9 ? "(+1, -1)"                  \
+    : (inex) == 10 ? "(-1, -1)" : "unknown"
 
 
 const char *mpfr_rnd_mode [] =
