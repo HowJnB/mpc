@@ -391,7 +391,7 @@ data_check (mpc_function function, const char *file_name)
           read_fc (fp, &inex_re, x1, &sign_real, z1, &mpfr_rnd);
           mpfr_set_prec (x2, MPFR_PREC (x1));
           inex = function.pointer.FC (x2, z1, mpfr_rnd);
-          if (!MPC_INEX_CMP (inex_re, __NOT_CHECKED, inex)
+          if ((inex_re != __NOT_CHECKED && inex_re != inex)
               || !same_mpfr_value (x1, x2, sign_real))
             {
               mpfr_t got, expected;
@@ -402,7 +402,7 @@ data_check (mpc_function function, const char *file_name)
               printf ("%s(op) failed (%s:%lu)\nwith rounding mode %s\n",
                       function.name, file_name, line_number-1,
                       mpfr_rnd_mode[mpfr_rnd]);
-              if (!MPC_INEX_CMP (inex_re, __NOT_CHECKED, inex))
+              if (inex_re != __NOT_CHECKED && inex_re != inex)
                 printf("ternary value: got %s, expected %s\n",
                        MPFR_INEX_STR (inex), MPFR_INEX_STR (inex_re));
               OUT (op);
