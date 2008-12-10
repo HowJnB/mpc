@@ -28,14 +28,14 @@ MA 02111-1307, USA. */
 int
 mpc_sqrt (mpc_ptr a, mpc_srcptr b, mpc_rnd_t rnd)
 {
-  int ok=0;
+  int ok_w, ok_t = 0;
   mpfr_t    w, t;
   mp_rnd_t  rnd_w, rnd_t;
   mp_prec_t prec_w, prec_t;
   /* the rounding mode and the precision required for w and t, which can */
   /* be either the real or the imaginary part of a */
   mp_prec_t prec;
-  int inexact, inex_re, inex_im, loops = 0;
+  int inex_w, inex_t = 1, inex, loops = 0;
   /* comparison of the real/imaginary part of b with 0 */
   const int re_cmp = mpfr_cmp_ui (MPC_RE (b), 0);
   const int im_cmp = mpfr_cmp_ui (MPC_IM (b), 0);
@@ -115,11 +115,11 @@ mpc_sqrt (mpc_ptr a, mpc_srcptr b, mpc_rnd_t rnd)
         }
       else if (re_cmp > 0)
         {
-          inexact = mpfr_sqrt (MPC_RE (a), MPC_RE (b), MPC_RND_RE (rnd));
+          inex_w = mpfr_sqrt (MPC_RE (a), MPC_RE (b), MPC_RND_RE (rnd));
           mpfr_set_ui (MPC_IM (a), 0, GMP_RNDN);
           if (im_sgn)
             mpc_conj (a, a, MPC_RNDNN);
-          return MPC_INEX (inexact, 0);
+          return MPC_INEX (inex_w, 0);
         }
       else
         {
@@ -127,15 +127,15 @@ mpc_sqrt (mpc_ptr a, mpc_srcptr b, mpc_rnd_t rnd)
           mpfr_neg (w, MPC_RE (b), GMP_RNDN);
           if (im_sgn)
             {
-              inexact = -mpfr_sqrt (MPC_IM (a), w, INV_RND (MPC_RND_IM (rnd)));
+              inex_w = -mpfr_sqrt (MPC_IM (a), w, INV_RND (MPC_RND_IM (rnd)));
               mpfr_neg (MPC_IM (a), MPC_IM (a), GMP_RNDN);
             }
           else
-            inexact = mpfr_sqrt (MPC_IM (a), w, MPC_RND_IM (rnd));
+            inex_w = mpfr_sqrt (MPC_IM (a), w, MPC_RND_IM (rnd));
 
           mpfr_set_ui (MPC_RE (a), 0, GMP_RNDN);
           mpfr_clear (w);
-          return MPC_INEX (0, inexact);
+          return MPC_INEX (0, inex_w);
         }
     }
 
@@ -149,17 +149,17 @@ mpc_sqrt (mpc_ptr a, mpc_srcptr b, mpc_rnd_t rnd)
       mpfr_div_2ui (y, y, 1, GMP_RNDN);
       if (im_cmp > 0)
         {
-          inex_re = mpfr_sqrt (MPC_RE (a), y, MPC_RND_RE (rnd));
-          inex_im = mpfr_sqrt (MPC_IM (a), y, MPC_RND_IM (rnd));
+          inex_w = mpfr_sqrt (MPC_RE (a), y, MPC_RND_RE (rnd));
+          inex_t = mpfr_sqrt (MPC_IM (a), y, MPC_RND_IM (rnd));
         }
       else
         {
           mpfr_neg (y, y, GMP_RNDN);
-          inex_re = mpfr_sqrt (MPC_RE (a), y, MPC_RND_RE (rnd));
-          inex_im = -mpfr_sqrt (MPC_IM (a), y, INV_RND (MPC_RND_IM (rnd)));
+          inex_w = mpfr_sqrt (MPC_RE (a), y, MPC_RND_RE (rnd));
+          inex_t = -mpfr_sqrt (MPC_IM (a), y, INV_RND (MPC_RND_IM (rnd)));
           mpfr_neg (MPC_IM (a), MPC_IM (a), GMP_RNDN);
         }
-      return MPC_INEX (inex_re, inex_im);
+      return MPC_INEX (inex_w, inex_t);
     }
 
   prec = MPC_MAX_PREC(a);
@@ -196,45 +196,46 @@ mpc_sqrt (mpc_ptr a, mpc_srcptr b, mpc_rnd_t rnd)
       /* let b = x + iy */
       /* w = sqrt ((|x| + sqrt (x^2 + y^2)) / 2), rounded down */
       /* total error bounded by 3 ulps */
-      inexact = mpc_abs (w, b, GMP_RNDD);
+      inex_w = mpc_abs (w, b, GMP_RNDD);
       if (re_cmp < 0)
-        inexact |= mpfr_sub (w, w, MPC_RE (b), GMP_RNDD);
+        inex_w |= mpfr_sub (w, w, MPC_RE (b), GMP_RNDD);
       else
-        inexact |= mpfr_add (w, w, MPC_RE (b), GMP_RNDD);
-      inexact |= mpfr_div_2ui (w, w, 1, GMP_RNDD);
-      inexact |= mpfr_sqrt (w, w, GMP_RNDD);
+        inex_w |= mpfr_add (w, w, MPC_RE (b), GMP_RNDD);
+      inex_w |= mpfr_div_2ui (w, w, 1, GMP_RNDD);
+      inex_w |= mpfr_sqrt (w, w, GMP_RNDD);
 
-      ok = mpfr_can_round (w, (mp_exp_t)prec - 2, GMP_RNDD, rnd_w, prec_w);
-      if (ok)
+      ok_w = mpfr_can_round (w, (mp_exp_t)prec - 2, GMP_RNDD, rnd_w, prec_w + 1);
+      /* If rounding up of the previously rounded down w is successful, then the
+         interval [w, w+err) that contains the exact value w_exact does not contain
+         any number representable at precision prec_w + 1. If we knew that the final
+         rounding of the part to which w is assigned were directed, then prec_w would be
+         sufficient. However, w can turn out as the real or imaginary part. */
+      if (!inex_w || ok_w)
         {
           /* t = y / 2w, rounded away */
           /* total error bounded by 7 ulps */
           const mp_rnd_t r = im_sgn ? GMP_RNDD : GMP_RNDU;
-          inexact |= mpfr_div (t, MPC_IM (b), w, r);
-          inexact |= mpfr_div_2ui (t, t, 1, r);
-          ok = mpfr_can_round (t, (mp_exp_t)prec - 3, r, rnd_t, prec_t);
+          inex_t  = mpfr_div (t, MPC_IM (b), w, r);
+          inex_t |= mpfr_div_2ui (t, t, 1, r);
+          ok_t = mpfr_can_round (t, (mp_exp_t)prec - 3, r, GMP_RNDZ, prec_t + 1);
+          /* As for w; since t was rounded away, we check whether rounding to 0
+             is possible. */
         }
     }
-  while (inexact != 0 && ok == 0);
+    while ((inex_w && !ok_w) || (inex_t && !ok_t));
 
   if (re_cmp > 0)
-    {
-      inexact |= mpfr_set (MPC_RE (a), w, MPC_RND_RE(rnd));
-      inexact |= mpfr_set (MPC_IM (a), t, MPC_RND_IM(rnd));
-    }
+      inex = MPC_INEX (mpfr_set (MPC_RE (a), w, MPC_RND_RE(rnd)),
+                       mpfr_set (MPC_IM (a), t, MPC_RND_IM(rnd)));
   else if (im_cmp > 0)
-    {
-      inexact |= mpfr_set (MPC_RE(a), t, MPC_RND_RE(rnd));
-      inexact |= mpfr_set (MPC_IM(a), w, MPC_RND_IM(rnd));
-    }
+      inex = MPC_INEX (mpfr_set (MPC_RE(a), t, MPC_RND_RE(rnd)),
+                       mpfr_set (MPC_IM(a), w, MPC_RND_IM(rnd)));
   else
-    {
-      inexact |= mpfr_neg (MPC_RE (a), t, MPC_RND_RE(rnd));
-      inexact |= mpfr_neg (MPC_IM (a), w, MPC_RND_IM(rnd));
-    }
+      inex = MPC_INEX (mpfr_neg (MPC_RE (a), t, MPC_RND_RE(rnd)),
+                       mpfr_neg (MPC_IM (a), w, MPC_RND_IM(rnd)));
 
   mpfr_clear (w);
   mpfr_clear (t);
 
-  return inexact;
+  return inex;
 }
