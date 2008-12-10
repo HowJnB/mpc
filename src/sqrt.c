@@ -204,12 +204,8 @@ mpc_sqrt (mpc_ptr a, mpc_srcptr b, mpc_rnd_t rnd)
       inex_w |= mpfr_div_2ui (w, w, 1, GMP_RNDD);
       inex_w |= mpfr_sqrt (w, w, GMP_RNDD);
 
-      ok_w = mpfr_can_round (w, (mp_exp_t)prec - 2, GMP_RNDD, rnd_w, prec_w + 1);
-      /* If rounding up of the previously rounded down w is successful, then the
-         interval [w, w+err) that contains the exact value w_exact does not contain
-         any number representable at precision prec_w + 1. If we knew that the final
-         rounding of the part to which w is assigned were directed, then prec_w would be
-         sufficient. However, w can turn out as the real or imaginary part. */
+      ok_w = mpfr_can_round (w, (mp_exp_t) prec - 2, GMP_RNDN, GMP_RNDZ,
+                             prec_w + (rnd_w == GMP_RNDN));
       if (!inex_w || ok_w)
         {
           /* t = y / 2w, rounded away */
@@ -217,7 +213,8 @@ mpc_sqrt (mpc_ptr a, mpc_srcptr b, mpc_rnd_t rnd)
           const mp_rnd_t r = im_sgn ? GMP_RNDD : GMP_RNDU;
           inex_t  = mpfr_div (t, MPC_IM (b), w, r);
           inex_t |= mpfr_div_2ui (t, t, 1, r);
-          ok_t = mpfr_can_round (t, (mp_exp_t)prec - 3, r, GMP_RNDZ, prec_t + 1);
+          ok_t = mpfr_can_round (t, (mp_exp_t) prec - 3, GMP_RNDN, GMP_RNDZ,
+                                 prec_t + (rnd_t == GMP_RNDN));
           /* As for w; since t was rounded away, we check whether rounding to 0
              is possible. */
         }
