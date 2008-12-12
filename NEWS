@@ -1,5 +1,6 @@
 Recent changes:
-  - exp, log, cos, sin, tan, cosh, sinh and tanh return inexact value
+  - exp, log, cos, sin, tan, cosh, sinh, tanh and sqrt return
+    inexact value
   - Bug fixes:
     - mpc_get_version and MPC_VERSION_STRING agree
 
