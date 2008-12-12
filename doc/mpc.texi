@@ -430,17 +430,16 @@ For example, the number 5, which is represented by (101) in binary, is rounded
 to (100)=4 with a precision of two bits, and not to (110)=6.
 
 Most MPC functions have a return value of type @code{int}, which is used
-to indicate the position of the rounded real or imaginary parts with respect
+to indicate the position of the rounded real and imaginary parts with respect
 to the exact (infinite precision) values.
 If this integer is @code{i}, the macros @code{MPC_INEX_RE(i)} and
 @code{MPC_INEX_IM(i)} give 0 if the corresponding rounded value is exact,
 a negative value if the rounded value is less than the exact one,
 and a positive value if it is greater than the exact one.
-However, some functions do not completely fulfill this:
-in some cases the sign is not guaranteed, and in some cases a non-zero value
-is returned although the result is exact; in these cases the
-function documentation explains the exact meaning of the return value.
-However, the return value never wrongly indicates an exact computation.
+Similarly, functions computing a result of type @code{mpfr_t}
+return an integer that is 0, positive or negative depending on
+whether the rounded value is the same, larger or smaller then
+the exact result.
 
 @node Complex Functions, Contributors, MPC Basics, Top
 @comment  node-name,  next,  previous,  up
@@ -757,7 +756,6 @@ if @var{rop} and @var{op} are the same variable.
 Set the floating-point number @var{rop} to the absolute value of @var{op},
 rounded in the direction @var{rnd}.
 The returned value is zero iff the result is exact.
-Note the destination is of type @code{mpfr_t}, not @code{mpc_t}.
 @end deftypefun
 
 @deftypefun int mpc_norm (mpfr_t @var{rop}, mpc_t @var{op}, mp_rnd_t @var{rnd})
@@ -791,8 +789,6 @@ when @var{rop} and @var{op1} are identical.
 
 @deftypefun int mpc_sqrt (mpc_t @var{rop}, mpc_t @var{op}, mpc_rnd_t @var{rnd})
 Set @var{rop} to the square root of @var{op} rounded according to @var{rnd}.
-Here, when the return value is 0, it means the result is exact, but the
-contrary may be false.
 @end deftypefun
 
 @deftypefun int mpc_exp (mpc_t @var{rop}, mpc_t @var{op}, mpc_rnd_t @var{rnd})
