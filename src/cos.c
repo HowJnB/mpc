@@ -1,6 +1,6 @@
 /* mpc_cos -- cosine of a complex number.
 
-Copyright (C) 2008 Philippe Th\'eveny, Andreas Enge
+Copyright (C) 2008 2009 Philippe Th\'eveny, Andreas Enge
 
 This file is part of the MPC Library.
 
@@ -205,7 +205,7 @@ mpc_cos (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
           mpfr_sinh (z, MPC_IM(op), GMP_RNDN);
           mpfr_mul (y, y, z, GMP_RNDN);
           mpfr_neg (y, y, GMP_RNDN);
-          ok = mpfr_can_round (y, prec - 2, GMP_RNDN, MPC_RND_IM(rnd),
+          ok = mpfr_can_round (y, prec - 2, GMP_RNDN, GMP_RNDZ,
                       MPFR_PREC(MPC_IM(rop)) + (MPC_RND_IM(rnd) == GMP_RNDN));
         }
     }
