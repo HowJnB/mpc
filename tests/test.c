@@ -252,13 +252,6 @@ main (void)
       PRINT ("Testing mpc_set_d_d\n");
       mpc_set_d_d (z, 1.23456789, 1.23456789, MPC_RNDNN);
 
-      PRINT ("Testing mpc_set_default_prec\n");
-      mpc_set_default_prec (prec);
-
-      PRINT ("Testing mpc_get_default_prec\n");
-      if (mpc_get_default_prec () != prec)
-        abort ();
-
       PRINT ("Testing mpc_set_ui\n");
       mpc_set_ui (z, 17, MPC_RNDNN);
 

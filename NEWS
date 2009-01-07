@@ -1,4 +1,6 @@
 Recent changes:
+  - default precision removed, as well as init and all init_set
+    combinations; use init2 and init3, followed by set, instead
   - exp, log, cos, sin, tan, cosh, sinh, tanh and sqrt return
     inexact value
   - Bug fixes:

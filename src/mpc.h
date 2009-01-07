@@ -126,8 +126,6 @@ typedef __gmp_const __mpc_struct *mpc_srcptr;
 extern "C" {
 #endif
 
-extern mp_prec_t __mpc_default_fp_bit_precision;
-
 __MPC_DECLSPEC int  mpc_add    __MPC_PROTO ((mpc_ptr, mpc_srcptr, mpc_srcptr, mpc_rnd_t));
 __MPC_DECLSPEC int  mpc_add_fr __MPC_PROTO ((mpc_ptr, mpc_srcptr, mpfr_srcptr, mpc_rnd_t));
 __MPC_DECLSPEC int  mpc_add_ui __MPC_PROTO ((mpc_ptr, mpc_srcptr, unsigned long int, mpc_rnd_t));
@@ -202,16 +200,6 @@ __MPC_DECLSPEC size_t mpc_out_str __MPC_PROTO ((FILE *, int, size_t, mpc_srcptr,
 #define mpc_set_d(x, y, rnd) mpc_set_d_d(x, y, 0.0, rnd)
 #define mpc_set_ui(x, y, rnd) mpc_set_ui_ui(x, y, 0ul, rnd)
 #define mpc_set_si(x, y, rnd) mpc_set_si_si(x, y, 0l, rnd)
-#define mpc_init_set(x, y, rnd) \
- ( mpc_init(x), mpc_set((x), (y), (rnd)) )
-#define mpc_init_set_ui_fr(x, y, z, rnd) \
- ( mpc_init(x), mpc_set_ui_fr((x), (y), (z), (rnd)) )
-#define mpc_init_set_ui(x, y, rnd) \
- ( mpc_init(x), mpc_set_ui((x), (y), (rnd)) )
-#define mpc_init_set_ui_ui(x, y, z, rnd) \
- ( mpc_init(x), mpc_set_ui_ui((x), (y), (z), (rnd)) )
-#define mpc_init_set_si_si(x, y, z, rnd) \
- ( mpc_init(x), mpc_set_si_si((x), (y), (z), (rnd)) )
 #define mpc_add_si(x, y, z, rnd) \
  ( (z) >= 0 ? mpc_add_ui ((x), (y), (unsigned long int) (z), (rnd)) : mpc_sub_ui ((x), (y), (unsigned long int) (-(z)), (rnd)) )
 #define mpc_cmp_si(x, y) \

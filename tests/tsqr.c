@@ -151,11 +151,9 @@ special (void)
   mpc_t x, z;
   int inexact;
 
-  mpc_init (x);
-  mpc_init (z);
+  mpc_init2 (x, 8);
+  mpc_init2 (z, 8);
 
-  mpc_set_prec (x, 8);
-  mpc_set_prec (z, 8);
   mpc_set_si_si (x, 4, 3, MPC_RNDNN);
   inexact = mpc_sqr (z, x, MPC_RNDNN);
   if (MPC_INEX_RE(inexact) || MPC_INEX_IM(inexact))

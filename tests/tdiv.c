@@ -29,13 +29,9 @@ check_regular (void)
   mpc_t b, c, q;
   int inex;
 
-  mpc_init (b);
-  mpc_init (c);
-  mpc_init (q);
-
-  mpc_set_prec (b, 10);
-  mpc_set_prec (c, 10);
-  mpc_set_prec (q, 10);
+  mpc_init2 (b, 10);
+  mpc_init2 (c, 10);
+  mpc_init2 (q, 10);
 
   /* inexact result */
   mpc_set_ui_ui (b, 973, 964, MPC_RNDNN);

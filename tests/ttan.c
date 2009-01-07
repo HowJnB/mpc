@@ -44,10 +44,10 @@ pure_real_argument (void)
   mpc_t z;
   mpc_t tan_z;
 
-  mpfr_init (x);
-  mpfr_init (tan_x);
-  mpc_init (z);
-  mpc_init (tan_z);
+  mpfr_init2 (x, 79);
+  mpfr_init2 (tan_x, 113);
+  mpc_init2 (z, 79);
+  mpc_init2 (tan_z, 113);
 
   /* tan(1 +i*0) = tan(1) +i*0 */
   mpc_set_ui_ui (z, 1, 0, MPC_RNDNN);
@@ -132,11 +132,12 @@ pure_imaginary_argument (void)
   mpfr_t tanh_y;
   mpc_t z;
   mpc_t tan_z;
+  mp_prec_t prec = (mp_prec_t) 111;
 
-  mpfr_init (y);
-  mpfr_init (tanh_y);
-  mpc_init (z);
-  mpc_init (tan_z);
+  mpfr_init2 (y, 2);
+  mpfr_init2 (tanh_y, prec);
+  mpc_init2 (z, 2);
+  mpc_init2 (tan_z, prec);
 
   /* tan(0 +i) = +0 +i*tanh(1) */
   mpc_set_ui_ui (z, 0, 1, MPC_RNDNN);
@@ -148,7 +149,7 @@ pure_imaginary_argument (void)
     {
       mpc_t c99;
 
-      mpc_init (c99);
+      mpc_init2 (c99, prec);
       mpfr_set_ui (MPC_RE (c99), 0, GMP_RNDN);
       mpfr_set (MPC_IM (c99), tanh_y, GMP_RNDN);
 
@@ -164,7 +165,7 @@ pure_imaginary_argument (void)
     {
       mpc_t c99;
 
-      mpc_init (c99);
+      mpc_init2 (c99, prec);
       mpfr_set_ui (MPC_RE (c99), 0, GMP_RNDN);
       mpfr_set (MPC_IM (c99), tanh_y, GMP_RNDN);
 
@@ -180,7 +181,7 @@ pure_imaginary_argument (void)
     {
       mpc_t c99;
 
-      mpc_init (c99);
+      mpc_init2 (c99, prec);
       mpfr_set_ui (MPC_RE (c99), 0, GMP_RNDN);
       mpfr_set (MPC_IM (c99), tanh_y, GMP_RNDN);
 
@@ -196,7 +197,7 @@ pure_imaginary_argument (void)
     {
       mpc_t c99;
 
-      mpc_init (c99);
+      mpc_init2 (c99, prec);
       mpfr_set_ui (MPC_RE (c99), 0, GMP_RNDN);
       mpfr_set (MPC_IM (c99), tanh_y, GMP_RNDN);
 

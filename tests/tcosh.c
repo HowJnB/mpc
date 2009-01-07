@@ -46,9 +46,9 @@ pure_real_argument (void)
   mpc_t z;
   mpc_t cosh_z;
 
-  mpc_init (u);
-  mpc_init (z);
-  mpc_init (cosh_z);
+  mpc_init2 (z, 2);
+  mpc_init2 (u, 100);
+  mpc_init2 (cosh_z, 100);
 
   /* cosh(1 +i*0) = cosh(1) +i*0 */
   mpc_set_ui_ui (z, 1, 0, MPC_RNDNN);
@@ -92,9 +92,9 @@ pure_imaginary_argument (void)
   mpc_t z;
   mpc_t cosh_z;
 
-  mpc_init (u);
-  mpc_init (z);
-  mpc_init (cosh_z);
+  mpc_init2 (z, 2);
+  mpc_init2 (u, 100);
+  mpc_init2 (cosh_z, 100);
 
   /* cosh(+0 +i) = cos(1) +i*0 */
   mpc_set_ui_ui (z, 0, 1, MPC_RNDNN);

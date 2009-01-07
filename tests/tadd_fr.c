@@ -29,7 +29,7 @@ check_ternary_value (mpfr_prec_t prec_max, mpfr_prec_t step)
   mpc_t z;
   mpfr_t f;
 
-  mpc_init (z);
+  mpc_init2 (z, 2);
   mpfr_init (f);
 
   for (prec = 2; prec < prec_max; prec += step)

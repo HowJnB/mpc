@@ -74,7 +74,7 @@ mpc_div (mpc_ptr a, mpc_srcptr b, mpc_srcptr c, mpc_rnd_t rnd)
 
    prec = MPC_MAX_PREC(a);
 
-   mpc_init (res);
+   mpc_init2 (res, 2);
    mpfr_init (q);
 
    /* create the conjugate of c in c_conj without allocating new memory */

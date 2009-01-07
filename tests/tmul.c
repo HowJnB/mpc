@@ -135,7 +135,7 @@ check_regular (void)
   mpfr_set_str (MPC_IM (y), "-0xECp-146", 16, GMP_RNDN);
   cmpmul (x, y, MPC_RNDNN);
 
-  for (prec = 2; prec < 1000; prec = prec * 1.1 + 1) 
+  for (prec = 2; prec < 1000; prec = prec * 1.1 + 1)
     {
       mpc_set_prec (x, prec);
       mpc_set_prec (y, prec);
@@ -156,17 +156,13 @@ check_regular (void)
 static void
 check_special (void)
 {
-  mpc_t x, y, z, t;
+  mpc_t x, y, z;
   int inexact;
 
-  mpc_init (x);
-  mpc_init (y);
-  mpc_init (z);
-  mpc_init (t);
+  mpc_init2 (x, 8);
+  mpc_init2 (y, 8);
+  mpc_init2 (z, 8);
 
-  mpc_set_prec (x, 8);
-  mpc_set_prec (y, 8);
-  mpc_set_prec (z, 8);
   mpc_set_si_si (x, 4, 3, MPC_RNDNN);
   mpc_set_si_si (y, 1, -2, MPC_RNDNN);
   inexact = mpc_mul (z, x, y, MPC_RNDNN);
@@ -186,6 +182,7 @@ check_special (void)
 
   mpc_clear (x);
   mpc_clear (y);
+  mpc_clear (z);
 }
 
 #ifdef TIMING

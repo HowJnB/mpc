@@ -351,7 +351,7 @@ data_check (mpc_function function, const char *file_name)
     }
 
   /* 2. init needed variables */
-  mpc_init (z1);
+  mpc_init2 (z1, 2);
   switch (function.type)
     {
     case FC:
@@ -359,18 +359,18 @@ data_check (mpc_function function, const char *file_name)
       mpfr_init (x2);
       break;
     case CC:
-      mpc_init (z2);
-      mpc_init (z3);
+      mpc_init2 (z2, 2);
+      mpc_init2 (z3, 2);
       break;
     case CCC:
-      mpc_init (z2);
-      mpc_init (z3);
-      mpc_init (z4);
+      mpc_init2 (z2, 2);
+      mpc_init2 (z3, 2);
+      mpc_init2 (z4, 2);
       break;
     case CFC: case CCF:
       mpfr_init (x1);
-      mpc_init (z2);
-      mpc_init (z3);
+      mpc_init2 (z2, 2);
+      mpc_init2 (z3, 2);
       break;
     default:
       ;

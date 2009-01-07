@@ -28,7 +28,7 @@ check_ternary_value (void)
   unsigned int i;
   mpc_t z;
 
-  mpc_init (z);
+  mpc_init2 (z, 2);
 
   for (i=2; i <= 1024; i++)
     {

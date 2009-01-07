@@ -28,8 +28,8 @@ check_ternary_value (void)
   mpc_t x, y, z;
   mp_prec_t prec;
 
-  mpc_init (x);
-  mpc_init (y);
+  mpc_init2 (x, 2);
+  mpc_init2 (y, 2);
   mpc_init2 (z, 2);
 
   for (prec = 2; prec <= 1000; prec++)
