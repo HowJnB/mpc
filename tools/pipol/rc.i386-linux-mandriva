@@ -1,0 +1,6 @@
+#!/bin/sh
+urpmi.update -a --quiet
+urpmi --force --quiet libgmp3-devel
+urpmi --force --quiet libmpfr1
+urpmi --force --quiet libmpfr1-devel
+

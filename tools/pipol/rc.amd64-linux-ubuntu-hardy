@@ -1,0 +1,6 @@
+#!/bin/sh
+apt-get -y -q=2 install automake
+apt-get -y -q=2 install texinfo
+apt-get -y -q=2 install libtool
+apt-get -y -q=2 install libgmp3-dev
+apt-get -y -q=2 install libmpfr-dev

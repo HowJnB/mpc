@@ -1,0 +1,26 @@
+#!/bin/sh
+
+# AUTOMAKE 1.10.1 is in version 'Lenny'
+cat >>/etc/apt/sources.list <<EOF
+
+deb http://ftp.fr.debian.org/debian/ testing main
+deb http://security.debian.org/ testing/updates main
+EOF
+
+cat >>/etc/apt/apt.conf.d/100MpfrChanges <<EOF
+APT::Cache-Limit 141943904;
+APT::Default-Release "stable";
+EOF
+
+apt-get -qq update
+apt-get -qq -u dist-upgrade
+
+apt-get -qq install bzip2 <&-
+apt-get -qq install autoconf <&-
+apt-get -qq install -t testing automake <&-
+apt-get -qq install libtool <&-
+apt-get -qq install libgmp3-dev <&-
+
+# mpc needs it
+apt-get -qq install libmpfr-dev <&-
+

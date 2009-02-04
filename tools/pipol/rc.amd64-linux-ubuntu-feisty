@@ -1,0 +1,8 @@
+#!/bin/sh
+dpkg --configure -a
+apt-get -q=2 install autoconf
+apt-get -q=2 install automake
+apt-get -q=2 install texinfo
+apt-get -q=2 install libtool
+apt-get -q=2 install libgmp3-dev
+apt-get -q=2 install libmpfr-dev

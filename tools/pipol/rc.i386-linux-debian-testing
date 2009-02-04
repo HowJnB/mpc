@@ -1,0 +1,20 @@
+#!/bin/sh
+
+cat >>/etc/apt/apt.conf.d/100MpfrChanges <<EOF
+APT::Cache-Limit 141943904;
+APT::Default-Release "stable";
+EOF
+
+apt-get -qq update
+
+apt-get -q=2 install libstdc++5
+
+apt-get -qq install bzip2 <&-
+apt-get -qq install autoconf <&-
+apt-get -qq install automake <&-
+apt-get -qq install libtool <&-
+apt-get -qq install libgmp3-dev <&-
+
+# mpc needs it
+apt-get -qq install libmpfr-dev <&-
+

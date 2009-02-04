@@ -1,0 +1,15 @@
+#!/bin/sh
+smart channel --yes --disable 'openSUSE:Tools'
+smart channel --yes --disable 'OpenOffice.org:STABLE'
+smart channel --yes --disable 'OpenOffice.org:EXTRAS'
+smart channel --yes --add openSUSE type=yast2 name=current baseurl="http://download.opensuse.org/distribution/SL-OSS-factory/inst-source/"
+smart channel --yes --enable openSUSE
+smart update
+smart install rpm  --yes
+smart upgrade smart --yes
+smart install autoconf --yes
+smart install automake --yes
+smart install gmp-devel --yes
+smart install texinfo --yes
+smart install libmpfr1-2.3.1 --yes
+

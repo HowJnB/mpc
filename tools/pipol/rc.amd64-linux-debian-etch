@@ -1,0 +1,4 @@
+apt-get update
+apt-get install -q=2 libgmp3-dev
+apt-get install -q=2 libmpfr-dev
+apt-get install -q=2 libstdc++5

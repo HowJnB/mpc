@@ -10,23 +10,36 @@ yum.repos.d/fedora-updates-testing.repo
 These repositories are usefull when upgrading RedHat EL-5.0 from non-official
 directories (copied by rc.redhat into /etc/yum.repos.d).
 
-rc.fedora-core8
+rc.amd64-linux-debian-etch
+rc.amd64-linux-fedora
+rc.amd64-linux-mandriva
+rc.amd64-linux-suse-LES10
+rc.amd64-linux-ubuntu-feisty
+rc.amd64-linux-ubuntu-hardy
+rc.i386-linux-debian-etch
+rc.i386-linux-debian-testing
+rc.i386-linux-fedora-core8
+rc.i386-linux-fedora-core9
+rc.i386-linux-mandriva
+rc.ia64-linux-fedora
+rc.mac
 rc.redhat
 These 'run command' files update/install all the packages needed for mpfr and
 mpc compilation.
+Note that a binary mpfr-2.3.2 tarball is needed by rc.ia64-linux-fedora, read
+this file for further informations.
 
 nightly/multiopt
-The nightly-build script. It downloads the last version of the code from the
-subversion repository and try to compile it. Results are recorded in a log
-file '.pipol/log/<date>-multiopt'.
+The nightly-test script. It downloads the last development version of the
+code from the subversion repository and try to compile it. Results are
+recorded in a log file '.pipol/log/<date>-multiopt'.
 
-scripts/get-svn.sh
-Helper script that downloads code source. It displays help when launched
-without parameter.
+scripts/get-svn.sh 
+Helper script that downloads code source. Run it without parameter to display
+help.
 
 scripts/compile-svn.sh
-Helper script that compiles code. It displays help when launched without
-parameter.
+Helper script that compiles code. Run it without parameter to display help.
 
 Nightly-build HOWTO 
 -------------------

@@ -4,8 +4,8 @@
 /opt/local/bin/port install automake
 /opt/local/bin/port install libtool
 /opt/local/bin/port install gzip
-/opt/local/bin/port install gmp
-/opt/local/bin/port install mpfr
+/opt/local/bin/port install gmp +devel
+/opt/local/bin/port install mpfr +devel
 chmod 1777 /pipol
 rm -rf /usr/local/lib/*
 rm -rf /usr/local/include/*
