@@ -41,6 +41,11 @@ MA 02111-1307, USA. */
 # define _MPC_H_HAVE_FILE 1
 #endif
 
+/* Check if stdint.h/inttypes.h is included */
+#if defined (INTMAX_C) && defined (UINTMAX_C)
+# define _MPC_H_HAVE_INTMAX_T 1
+#endif
+
 /* Return values */
 
 /* Transform negative to 2, positive to 1, leave 0 unchanged */
@@ -154,11 +159,21 @@ __MPC_DECLSPEC int  mpc_abs   __MPC_PROTO ((mpfr_ptr, mpc_srcptr, mp_rnd_t));
 __MPC_DECLSPEC int  mpc_sqrt  __MPC_PROTO ((mpc_ptr, mpc_srcptr, mpc_rnd_t));
 __MPC_DECLSPEC int  mpc_set   __MPC_PROTO ((mpc_ptr, mpc_srcptr, mpc_rnd_t));
 __MPC_DECLSPEC int  mpc_set_d_d __MPC_PROTO ((mpc_ptr, double, double, mpc_rnd_t));
+__MPC_DECLSPEC int  mpc_set_ld_ld __MPC_PROTO ((mpc_ptr, long double, long double, mpc_rnd_t));
 __MPC_DECLSPEC int  mpc_set_fr __MPC_PROTO ((mpc_ptr, mpfr_srcptr, mpc_rnd_t));
+__MPC_DECLSPEC int  mpc_set_f_f __MPC_PROTO ((mpc_ptr, mpf_srcptr, mpf_srcptr, mpc_rnd_t));
 __MPC_DECLSPEC int  mpc_set_fr_fr __MPC_PROTO ((mpc_ptr, mpfr_srcptr, mpfr_srcptr, mpc_rnd_t));
+__MPC_DECLSPEC int  mpc_set_q_q __MPC_PROTO ((mpc_ptr, mpq_srcptr, mpq_srcptr, mpc_rnd_t));
+__MPC_DECLSPEC int  mpc_set_si_si __MPC_PROTO ((mpc_ptr, long int, long int, mpc_rnd_t));
 __MPC_DECLSPEC int  mpc_set_ui_fr __MPC_PROTO ((mpc_ptr, unsigned long int, mpfr_srcptr, mpc_rnd_t));
 __MPC_DECLSPEC int  mpc_set_ui_ui __MPC_PROTO ((mpc_ptr, unsigned long int, unsigned long int, mpc_rnd_t));
-__MPC_DECLSPEC int  mpc_set_si_si __MPC_PROTO ((mpc_ptr, long int, long int, mpc_rnd_t));
+__MPC_DECLSPEC int  mpc_set_z_z __MPC_PROTO ((mpc_ptr, mpz_srcptr, mpz_srcptr, mpc_rnd_t));
+
+#ifdef _MPC_H_HAVE_INTMAX_T
+__MPC_DECLSPEC int  mpc_set_sj_sj __MPC_PROTO ((mpc_ptr, intmax_t, intmax_t, mpc_rnd_t));
+__MPC_DECLSPEC int  mpc_set_uj_uj __MPC_PROTO ((mpc_ptr, uintmax_t, uintmax_t, mpc_rnd_t));
+#endif
+
 __MPC_DECLSPEC int  mpc_real __MPC_PROTO ((mpfr_ptr, mpc_srcptr, mpfr_rnd_t));
 __MPC_DECLSPEC int  mpc_imag __MPC_PROTO ((mpfr_ptr, mpc_srcptr, mpfr_rnd_t));
 __MPC_DECLSPEC int  mpc_arg __MPC_PROTO ((mpfr_ptr, mpc_srcptr, mpfr_rnd_t));
@@ -185,6 +200,7 @@ __MPC_DECLSPEC void mpc_set_prec __MPC_PROTO ((mpc_ptr, mp_prec_t));
 __MPC_DECLSPEC void mpc_set_default_prec __MPC_PROTO ((mp_prec_t));
 __MPC_DECLSPEC mp_prec_t mpc_get_default_prec __MPC_PROTO ((void));
 __MPC_DECLSPEC __gmp_const char * mpc_get_version __MPC_PROTO ((void));
+
 #ifdef _MPC_H_HAVE_FILE
 __MPC_DECLSPEC size_t mpc_inp_str __MPC_PROTO ((mpc_ptr, FILE *, int, mpc_rnd_t));
 __MPC_DECLSPEC size_t mpc_out_str __MPC_PROTO ((FILE *, int, size_t, mpc_srcptr, mpc_rnd_t));
@@ -196,12 +212,29 @@ __MPC_DECLSPEC size_t mpc_out_str __MPC_PROTO ((FILE *, int, size_t, mpc_srcptr,
 
 #define mpc_realref(x) (&((x)->re))
 #define mpc_imagref(x) (&((x)->im))
+
 #define mpc_set_d(x, y, rnd) mpc_set_d_d(x, y, 0.0, rnd)
 #define mpc_set_ui(x, y, rnd) mpc_set_ui_ui(x, y, 0ul, rnd)
 #define mpc_set_si(x, y, rnd) mpc_set_si_si(x, y, 0l, rnd)
+
 #define mpc_add_si(x, y, z, rnd) \
  ( (z) >= 0 ? mpc_add_ui ((x), (y), (unsigned long int) (z), (rnd)) : mpc_sub_ui ((x), (y), (unsigned long int) (-(z)), (rnd)) )
 #define mpc_cmp_si(x, y) \
  ( mpc_cmp_si_si ((x), (y), 0l) )
 #define mpc_ui_sub(x, y, z, r) mpc_ui_ui_sub (x, y, 0ul, z, r)
+
+/* If you need a set_x_y function that is not provided by MPC, you can use the
+   MPC_SET_X_Y macro in its definition. For instance, in set_x_x.c we have:
+
+   int mpc_set_ui_fr (mpc_ptr z, unsigned long int a, mpfr_srcptr b, mpc_rnd_t rnd)
+     MPC_SET_X_Y (_ui,, z, a, b, rnd)
+*/
+#define MPC_SET_X_Y(real_t, imag_t, z, real_value, imag_value, rnd)     \
+  {                                                                     \
+    int _inex_re, _inex_im;                                             \
+    _inex_re = (mpfr_set ## real_t) (MPC_RE (z), (real_value), MPC_RND_RE (rnd)); \
+    _inex_im = (mpfr_set ## imag_t) (MPC_IM (z), (imag_value), MPC_RND_IM (rnd)); \
+    return MPC_INEX (_inex_re, _inex_im);                               \
+  }
+
 #endif /* ifndef __MPC_H */

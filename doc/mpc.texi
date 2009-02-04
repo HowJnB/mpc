@@ -546,29 +546,41 @@ via @var{pi}.
 @cindex Complex assignment functions
 
 These functions assign new values to already initialized complex numbers
-(@pxref{Initializing Complex Numbers}).
+(@pxref{Initializing Complex Numbers}). When using any functions with
+@code{intmax_t} parameter, you must include @code{<stdint.h>} or
+@code{<inttypes.h>} before @file{mpc.h}, to allow @file{mpc.h} to define
+prototypes for these functions.
 
-@deftypefn Function int mpc_set (mpc_t @var{rop}, mpc_t @var{op}, mpc_rnd_t @var{rnd})
-@deftypefnx Macro int mpc_set_ui (mpc_t @var{rop}, unsigned long int @var{op}, mpc_rnd_t @var{rnd})
+@deftypefun int mpc_set (mpc_t @var{rop}, mpc_t @var{op}, mpc_rnd_t @var{rnd})
+Set the value of @var{rop} from @var{op}, rounded to the precision of @var{rop}
+with the given rounding mode @var{rnd}.
+@end deftypefun
+
+@deftypefn Macro int mpc_set_ui (mpc_t @var{rop}, unsigned long int @var{op}, mpc_rnd_t @var{rnd})
 @deftypefnx Macro int mpc_set_si (mpc_t @var{rop}, long int @var{op}, mpc_rnd_t @var{rnd})
 @deftypefnx Macro int mpc_set_d (mpc_t @var{rop}, double @var{op}, mpc_rnd_t @var{rnd})
 @deftypefnx Macro int mpc_set_fr (mpc_t @var{rop}, mpfr_t @var{op}, mpc_rnd_t @var{rnd})
-Set the value of @var{rop} from @var{op}, rounded to the precision of @var{rop}
-with the given rounding mode @var{rnd}.
-Except for @code{mpc_set}, the argument @var{op} is interpreted as real,
-so the imaginary part of @var{rop} is set to zero with a positive sign.
-Please note that even a @code{long int} may have to be rounded,
-if the destination precision is less than the machine word width.
-For @code{mpc_set_d}, be careful that the input number @var{op}
-may not be exactly representable as a double-precision number (this happens for
-0.1 for instance), in which case it is first
-rounded by the C compiler to a double-precision number, and then only
-to a complex number.
+Set the value of @var{rop} from @var{op}, rounded to the precision of
+@var{rop} with the given rounding mode @var{rnd}.
+The argument @var{op} is interpreted as real, so the imaginary part of
+@var{rop} is set to zero with a positive sign.
+Please note that even a @code{long int} may have to be rounded, if the
+destination precision is less than the machine word width.
+For @code{mpc_set_d}, be careful that the input number @var{op} may not be
+exactly representable as a double-precision number (this happens for 0.1 for
+instance), in which case it is first rounded by the C compiler to a
+double-precision number, and then only to a complex number.
 @end deftypefn
 
 @deftypefun int mpc_set_d_d (mpc_t @var{rop}, double @var{op1}, double @var{op2}, mpc_rnd_t @var{rnd})
+@deftypefunx int mpc_set_ld_ld (mpc_t @var{rop}, long double @var{op1}, long double @var{op2}, mpc_rnd_t @var{rnd})
 @deftypefunx int mpc_set_ui_ui (mpc_t @var{rop}, unsigned long int @var{op1}, unsigned long int @var{op2}, mpc_rnd_t @var{rnd})
 @deftypefunx int mpc_set_si_si (mpc_t @var{rop}, long int @var{op1}, long int @var{op2}, mpc_rnd_t @var{rnd})
+@deftypefunx int mpc_set_uj_uj (mpc_t @var{rop}, uintmax_t @var{op1}, uintmax_t @var{op2}, mpc_rnd_t @var{rnd})
+@deftypefunx int mpc_set_sj_sj (mpc_t @var{rop}, intmax_t @var{op1}, intmax_t @var{op2}, mpc_rnd_t @var{rnd})
+@deftypefunx int mpc_set_f_f (mpc_t @var{rop}, mpf_t @var{op1}, mpf_t @var{op2}, mpc_rnd_t @var{rnd})
+@deftypefunx int mpc_set_q_q (mpc_t @var{rop}, mpq_t @var{op1}, mpq_t @var{op2}, mpc_rnd_t @var{rnd})
+@deftypefunx int mpc_set_z_z (mpc_t @var{rop}, mpz_t @var{op1}, mpz_t @var{op2}, mpc_rnd_t @var{rnd})
 @deftypefunx int mpc_set_fr_fr (mpc_t @var{rop}, mpfr_t @var{op1}, mpfr_t @var{op2}, mpc_rnd_t @var{rnd})
 @deftypefunx int mpc_set_ui_fr (mpc_t @var{rop}, unsigned long int @var{op1}, mpfr_t @var{op2}, mpc_rnd_t @var{rnd})
 Set the real part of @var{rop} from @var{op1}, and its imaginary part from
