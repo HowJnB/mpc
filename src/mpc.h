@@ -158,15 +158,22 @@ __MPC_DECLSPEC int  mpc_norm  __MPC_PROTO ((mpfr_ptr, mpc_srcptr, mp_rnd_t));
 __MPC_DECLSPEC int  mpc_abs   __MPC_PROTO ((mpfr_ptr, mpc_srcptr, mp_rnd_t));
 __MPC_DECLSPEC int  mpc_sqrt  __MPC_PROTO ((mpc_ptr, mpc_srcptr, mpc_rnd_t));
 __MPC_DECLSPEC int  mpc_set   __MPC_PROTO ((mpc_ptr, mpc_srcptr, mpc_rnd_t));
+__MPC_DECLSPEC int  mpc_set_d __MPC_PROTO ((mpc_ptr, double, mpc_rnd_t));
 __MPC_DECLSPEC int  mpc_set_d_d __MPC_PROTO ((mpc_ptr, double, double, mpc_rnd_t));
+__MPC_DECLSPEC int  mpc_set_ld __MPC_PROTO ((mpc_ptr, long double, mpc_rnd_t));
 __MPC_DECLSPEC int  mpc_set_ld_ld __MPC_PROTO ((mpc_ptr, long double, long double, mpc_rnd_t));
-__MPC_DECLSPEC int  mpc_set_fr __MPC_PROTO ((mpc_ptr, mpfr_srcptr, mpc_rnd_t));
+__MPC_DECLSPEC int  mpc_set_f __MPC_PROTO ((mpc_ptr, mpf_srcptr, mpc_rnd_t));
 __MPC_DECLSPEC int  mpc_set_f_f __MPC_PROTO ((mpc_ptr, mpf_srcptr, mpf_srcptr, mpc_rnd_t));
+__MPC_DECLSPEC int  mpc_set_fr __MPC_PROTO ((mpc_ptr, mpfr_srcptr, mpc_rnd_t));
 __MPC_DECLSPEC int  mpc_set_fr_fr __MPC_PROTO ((mpc_ptr, mpfr_srcptr, mpfr_srcptr, mpc_rnd_t));
+__MPC_DECLSPEC int  mpc_set_q __MPC_PROTO ((mpc_ptr, mpq_srcptr, mpc_rnd_t));
 __MPC_DECLSPEC int  mpc_set_q_q __MPC_PROTO ((mpc_ptr, mpq_srcptr, mpq_srcptr, mpc_rnd_t));
+__MPC_DECLSPEC int  mpc_set_si __MPC_PROTO ((mpc_ptr, long int, mpc_rnd_t));
 __MPC_DECLSPEC int  mpc_set_si_si __MPC_PROTO ((mpc_ptr, long int, long int, mpc_rnd_t));
 __MPC_DECLSPEC int  mpc_set_ui_fr __MPC_PROTO ((mpc_ptr, unsigned long int, mpfr_srcptr, mpc_rnd_t));
+__MPC_DECLSPEC int  mpc_set_ui __MPC_PROTO ((mpc_ptr, unsigned long int, mpc_rnd_t));
 __MPC_DECLSPEC int  mpc_set_ui_ui __MPC_PROTO ((mpc_ptr, unsigned long int, unsigned long int, mpc_rnd_t));
+__MPC_DECLSPEC int  mpc_set_z __MPC_PROTO ((mpc_ptr, mpz_srcptr, mpc_rnd_t));
 __MPC_DECLSPEC int  mpc_set_z_z __MPC_PROTO ((mpc_ptr, mpz_srcptr, mpz_srcptr, mpc_rnd_t));
 
 #ifdef _MPC_H_HAVE_INTMAX_T
@@ -212,10 +219,6 @@ __MPC_DECLSPEC size_t mpc_out_str __MPC_PROTO ((FILE *, int, size_t, mpc_srcptr,
 
 #define mpc_realref(x) (&((x)->re))
 #define mpc_imagref(x) (&((x)->im))
-
-#define mpc_set_d(x, y, rnd) mpc_set_d_d(x, y, 0.0, rnd)
-#define mpc_set_ui(x, y, rnd) mpc_set_ui_ui(x, y, 0ul, rnd)
-#define mpc_set_si(x, y, rnd) mpc_set_si_si(x, y, 0l, rnd)
 
 #define mpc_add_si(x, y, z, rnd) \
  ( (z) >= 0 ? mpc_add_ui ((x), (y), (unsigned long int) (z), (rnd)) : mpc_sub_ui ((x), (y), (unsigned long int) (-(z)), (rnd)) )

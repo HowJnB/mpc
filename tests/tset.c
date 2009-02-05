@@ -1,4 +1,4 @@
-/* tset.c -- Test file for mpc_set_x functions.
+/* tset.c -- Test file for mpc_set_x and mpc_set_x_x functions.
 
 Copyright (C) 2009 Philippe Th\'eveny
 
@@ -100,6 +100,13 @@ main (void)
           || mpfr_cmp_ui (MPC_IM(z), prec) != 0)
         PRINT_ERROR ("mpc_set_ui_ui", prec, z);
 
+      mpc_set_ld (z, 1.23456789L, MPC_RNDNN);
+      mpfr_clear_flags ();
+      if (mpfr_cmp (MPC_RE(z), fr) != 0
+          || mpfr_cmp_ui (MPC_IM(z), 0) != 0
+          || mpfr_erangeflag_p())
+        PRINT_ERROR ("mpc_set_ld", prec, z);
+
       mpc_set_prec (x, prec);
       mpfr_set_ui(fr, 1, GMP_RNDN);
       mpfr_div_ui(fr, fr, 3, GMP_RNDN);
@@ -145,6 +152,13 @@ main (void)
           || mpfr_erangeflag_p())
         PRINT_ERROR ("mpc_set_fr_fr", prec, z);
 
+      mpc_set_z (z, mpz, MPC_RNDNN);
+      mpfr_clear_flags ();
+      if (mpfr_cmp (MPC_RE(z), fr) != 0
+          || mpfr_cmp_ui (MPC_IM(z), 0) != 0
+          || mpfr_erangeflag_p())
+        PRINT_ERROR ("mpc_set_z", prec, z);
+
       mpfr_set_q (fr, mpq, GMP_RNDN);
       mpc_set_q_q (z, mpq, mpq, MPC_RNDNN);
       mpfr_clear_flags ();
@@ -160,6 +174,13 @@ main (void)
           || mpfr_erangeflag_p())
         PRINT_ERROR ("mpc_set_fr_fr", prec, z);
 
+      mpc_set_q (z, mpq, MPC_RNDNN);
+      mpfr_clear_flags ();
+      if (mpfr_cmp (MPC_RE(z), fr) != 0
+          || mpfr_cmp_ui (MPC_IM(z), 0) != 0
+          || mpfr_erangeflag_p())
+        PRINT_ERROR ("mpc_set_q", prec, z);
+
       mpfr_set_f (fr, mpf, GMP_RNDN);
       mpc_set_f_f (z, mpf, mpf, MPC_RNDNN);
       mpfr_clear_flags ();
@@ -167,6 +188,13 @@ main (void)
           || mpfr_cmp (MPC_IM(z), fr) != 0
           || mpfr_erangeflag_p())
         PRINT_ERROR ("mpc_set_f_f", prec, z);      
+
+      mpc_set_f (z, mpf, MPC_RNDNN);
+      mpfr_clear_flags ();
+      if (mpfr_cmp (MPC_RE(z), fr) != 0
+          || mpfr_cmp_ui (MPC_IM(z), 0) != 0
+          || mpfr_erangeflag_p())
+        PRINT_ERROR ("mpc_set_f", prec, z);      
 
 #ifdef _MPC_H_HAVE_INTMAX_T
       {
