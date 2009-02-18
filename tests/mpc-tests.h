@@ -1,6 +1,6 @@
 /* Tests helper functions.
 
-Copyright (C) 2008 Philippe Th\'eveny, Andreas Enge
+Copyright (C) 2008, 2009 Philippe Th\'eveny, Andreas Enge
 
 This file is part of the MPC Library.
 
@@ -28,6 +28,18 @@ MA 02111-1307, USA. */
   printf (#X" [%ld]=", MPFR_PREC (X));\
   mpfr_out_str (stdout, 2, 0, (X), GMP_RNDN);\
   printf ("\n");
+
+
+#define MPC_INEX_STR(inex)                      \
+  (inex) == 0 ? "(0, 0)"                        \
+    : (inex) == 1 ? "(+1, 0)"                   \
+    : (inex) == 2 ? "(-1, 0)"                   \
+    : (inex) == 4 ? "(0, +1)"                   \
+    : (inex) == 5 ? "(+1, +1)"                  \
+    : (inex) == 6 ? "(-1, +1)"                  \
+    : (inex) == 8 ? "(0, -1)"                   \
+    : (inex) == 9 ? "(+1, -1)"                  \
+    : (inex) == 10 ? "(-1, -1)" : "unknown"
 
 #define QUOTE(X) NAME(X)
 #define NAME(X) #X
@@ -147,3 +159,12 @@ void tgeneric (mpc_function, mpfr_prec_t, mpfr_prec_t, mpfr_prec_t, mp_exp_t);
 /* data_check (function, "data_file_name") checks function results against
    precomputed data in a file.*/
 void data_check (mpc_function, const char *);
+
+/* helper file reading functions */
+void skip_whitespace_comments (FILE *fp);
+void read_ternary (FILE *fp, int* ternary);
+void read_mpfr_rounding_mode (FILE *fp, mpfr_rnd_t* rnd);
+void read_mpc_rounding_mode (FILE *fp, mpc_rnd_t* rnd);
+mpfr_prec_t read_mpfr_prec (FILE *fp);
+void read_mpfr (FILE *fp, mpfr_ptr x, int *known_sign);
+void read_mpc (FILE *fp, mpc_ptr z, known_signs_t *ks);

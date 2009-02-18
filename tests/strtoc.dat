@@ -1,0 +1,119 @@
+# Data file for mpc_strtoc.
+#
+# Copyright (C) 2009 Philippe Th\'eveny
+#
+# This file is part of the MPC Library.
+#
+# The MPC Library is free software; you can redistribute it and/or modify
+# it under the terms of the GNU Lesser General Public License as published by
+# the Free Software Foundation; either version 2.1 of the License, or (at your
+# option) any later version.
+#
+# The MPC Library is distributed in the hope that it will be useful, but
+# WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
+# or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Lesser General Public
+# License for more details.
+#
+# You should have received a copy of the GNU Lesser General Public License
+# along with the MPC Library; see the file COPYING.LIB.  If not, write to
+# the Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston,
+# MA 02111-1307, USA.
+#
+# The format respects the parameter order in function prototype as follow:
+# 
+# INEX_RE INEX_IM PREC_ROP_RE  ROP_RE  PREC_ROP_IM  ROP_IM  "NSTRING" "RSTRING" BASE  RND_RE  RND_IM
+#
+# The string NSTRING is considered as a complex number rop = rop1 + i*rop2
+# written in base BASE. The remainder of the string, i.e. non-whitespace
+# characters being not part of the number, is equal to RSTRING.
+#
+# ROP_RE is checked against rop1 rounded to the precision PREC_ROP_RE
+#   in the direction RND_RE
+# ROP_IM is checked against rop2 rounded to the precision PREC_ROP_IM
+#   in the direction RND_IM
+# INEX_RE is the ternary value for the real part with the following notation:
+# "?" ternary value not checked
+# "+" if ROP_RE is greater than the exact mathematical result
+# "0" if ROP_RE is exactly the mathematical result
+# "-" if ROP_RE is less than the exact mathematical result
+# (m.m. INEX_IM)
+# rounding modes notation:
+# "N" is rounding to nearest
+# "Z" is rounding towards zero
+# "U" is rounding towards plus infinity
+# "D" is rounding towards minus infinity
+# Use prefixes "0b" for values in base two, "0x" for values in base sixteen,
+#   no prefix for value in base ten.
+# In all bases, "nan" is NaN, "inf" is infinity;
+# The sign of the result is checked with "+inf", "-inf", "-0", or "+0".
+
+# invalid strings
+0 0 53 +0 53 +0        "non"                    "non"   10 N N
+0 0 53 +0 53 +0        "NON"                    "NON"   10 N N
+0 0 53 +0 53 +0        "N A N"                  "N A N" 10 N N
+0 0 53 +0 53 +0        "iii"                    "iii"   10 N N
+0 0 53 +0 53 +0        "i i"                    "i i"   10 N N
+0 0 53 +0 53 +0        "1*1"                    "1*1"   10 N N
+0 0 53 +0 53 +0        "."                      "."     10 N N
+0 0 53 +0 53 +0        ". 1"                    ". 1"   10 N N
+0 0 53 +0 53 +0        "I-I"                    "I-I"   20 N N #sign ambiguity
+0 0 53 +0 53 +0        "-I+I"                   "-I+I"  20 N N #sign ambiguity
+# special values
+0 0 53  nan 53   +0    "nan"                      ""               10 N N
+0 0 53  nan 53   +0    "NAN"                      ""               10 N N
+0 0 53  nan 53  nan    "@nan@(quiet)+nan*I"       ""               10 N N
+0 0 53  inf 53   +0    "inf"                      ""               10 N N
+0 0 53 -inf 53   +0    "-inf"                     ""               10 N N
+0 0 53 +inf 53   +0    "       infinity"          ""               10 N N
+0 0 53 +inf 53   +0    "+ INF            x"       "x"              10 N N
+0 0 53   +0 53 +inf    "i*inf"                    ""               10 N N
+0 0 53   +0 53 +inf    "INF*I"                    ""               10 N N
+0 0 53   +0 53 -inf    "-i *infinity"             ""               10 N N
+0 0 53   +0 53 -inf    " - INF* I"                ""               10 N N
+0 0 53 -inf 53   +0    " -@inf@"                  ""               10 N N
+0 0 53 +inf 53  nan    "inf + i * @nan@(quiet)"   ""               10 N N
+0 0 53  nan 53   +0    "NaN  + inf"               "+ inf"          10 N N
+0 0 53  nan 53  nan    "NaN  +i*nan((keep out))"  "((keep out))"   10 N N
+0 0 53  nan 53   +0    " nan nan nan nan *i"      "nan nan nan *i" 10 N N
+# pure real argument
+0 0 53                     +0 53 +0    "0"                 ""      10 N N
+0 0 53                     +0 53 +0    "00000"             ""      10 N N
+0 0 53                     +0 53 +0    "+0"                ""      10 N N
+0 0 53                     -0 53 +0    "-0"                ""      10 N N
+0 0 53                     +1 53 +0    "1"                 ""      10 N N
+0 0 53                     +1 53 +0    "1a"                "a"     10 N N
+0 0 53                     +1 53 +0    "1+2"               "+2"    10 N N
+- 0 53   +0x9D70A3D70A3D7p-51 53 +0    "+          1.23"   ""      10 N N  
+0 0 53                    -10 53 +0    "-10."              ""      10 N N
+0 0 53                +0x5p-3 53 +0    ".625"              ""      10 N N
+- 0 53 +0x14E718D7D7625Ap+612 53 +0    "1e200     "        ""      10 N N
+0 0 53                +0x7530 53 +0    " 3e+4"             ""      10 N N 
+- 0 53  +0x10C6F7A0B5ED8Dp-73 53 +0    ".5e-6"             ""      10 N N 
+- 0 53  +0x1B1C1E0D914133p-83 53 +0    "7.89E-10"          ""      10 N N
++ 0 53  -0x7B426FAB61F00Cp+56 53 +0    "  -  25@+32"       ""      10 N N
+0 0 53                    -25 53 +0    "- 25p+32"          "p+32"  10 N N
+0 0 53                     +0 53 +0    "0xabcd"            "xabcd" 10 N N #no prefix in base ten
+0 0 53                     +0 53 +0    "+0b010"            "b010"  10 N N #no prefix in base ten
+# pure imaginary argument
+0 0 53 +0 53                     +1    "i"                 ""     10 N N
+0 0 53 +0 53                     +1    "i"                 ""     20 N N
+0 0 53 +0 53                     -1    "-      I"          ""     10 N N
+0 0 53 +0 53                     -2    "-2.*I"             ""     10 N N
+0 0 53 +0 53                     +2    "+i  * 2"           ""     10 N N
+0 0 53 +0 53                    +17    "h*i"               ""     20 N N
+0 0 53 +0 53                    +18    "i*i"               ""     20 N N
+0 0 53 +0 53                    +18    "i*i*i"             "*i"   20 N N
+0 + 53 +0 53  -0x14F800008637BDp-44    "-33.55000005e+1*i" ""     10 N Z
+0 + 53 +0 53  -0xA1765976008AFp-401    "-i*.550000E-105 "  ""     10 N U
+# complex argument
+0 0 53        +1 53      +1   " 1   +       i"    "" 10 N N
+0 0 53        +7 53     +14   "i*  14 + 7 "       "" 10 N N
+0 0 53       +17 53      +1   " i + 17"           "" 10 N N
+0 0 53       +27 53      +1   " i + 17"           "" 20 N N
+0 0 53       +18 53      +1   " i+i"              "" 20 N N
+0 0 53       -18 53      -1   "-i-i"              "" 20 N N
+0 0 53       +18 53      -1   " i-1*i"            "" 20 N N
+0 0 53       -18 53      +1   "-i+i*1"            "" 20 N N
+0 0 53       +18 53     +18   " i + i * i"        "" 20 N N
+0 0 53    -14643 53  +20328   " + i * foo - bar"  "" 36 N N
+0 0 53    0b1010 53  0xabcd   "0b1010+i*0xabcd"   ""  0 N N #base autodetection

@@ -1,6 +1,6 @@
 /* Read data file and check function.
 
-Copyright (C) 2008 Andreas Enge, Philippe Th\'eveny
+Copyright (C) 2008, 2009 Andreas Enge, Philippe Th\'eveny
 
 This file is part of the MPC Library.
 
@@ -29,11 +29,11 @@ MA 02111-1307, USA. */
 #define __SRCDIR .
 #endif
 
-static char *pathname;
-static unsigned long line_number;
+char *pathname;
+unsigned long line_number;
    /* file name with complete path and currently read line;
       kept globally to simplify parameter passing */
-static int nextchar;
+int nextchar;
    /* character appearing next in the file, may be EOF */
 
 #define __NOT_CHECKED 255
@@ -45,22 +45,11 @@ static int nextchar;
   (inex) == __NOT_CHECKED ? "?"                 \
     : (inex) == +1 ? "+1"                       \
     : (inex) == -1 ? "-1" : "0"
-#define MPC_INEX_STR(inex)                      \
-  (inex) == 0 ? "(0, 0)"                        \
-    : (inex) == 1 ? "(+1, 0)"                   \
-    : (inex) == 2 ? "(-1, 0)"                   \
-    : (inex) == 4 ? "(0, +1)"                   \
-    : (inex) == 5 ? "(+1, +1)"                  \
-    : (inex) == 6 ? "(-1, +1)"                  \
-    : (inex) == 8 ? "(0, -1)"                   \
-    : (inex) == 9 ? "(+1, -1)"                  \
-    : (inex) == 10 ? "(-1, -1)" : "unknown"
 
-
-const char *mpfr_rnd_mode [] =
+static const char *mpfr_rnd_mode [] =
   { "GMP_RNDN", "GMP_RNDZ", "GMP_RNDU", "GMP_RNDD" };
 
-const char *rnd_mode[] =
+static const char *rnd_mode[] =
   { "MPC_RNDNN", "MPC_RNDZN", "MPC_RNDUN", "MPC_RNDDN",
     "undefined", "undefined", "undefined", "undefined", "undefined",
     "undefined", "undefined", "undefined", "undefined", "undefined",
@@ -105,7 +94,7 @@ skip_whitespace (FILE *fp)
    }
 }
 
-static void
+void
 skip_whitespace_comments (FILE *fp)
    /* skips over all whitespace and comments, if any */
 {
@@ -120,7 +109,7 @@ skip_whitespace_comments (FILE *fp)
 /* All following read routines skip over whitespace and comments; */
 /* so after calling them, nextchar is either EOF or the beginning */
 /* of a non-comment token.                                        */
-static void
+void
 read_ternary (FILE *fp, int* ternary)
 {
   switch (nextchar)
@@ -147,7 +136,7 @@ read_ternary (FILE *fp, int* ternary)
   skip_whitespace_comments (fp);
 }
 
-static void
+void
 read_mpfr_rounding_mode (FILE *fp, mpfr_rnd_t* rnd)
 {
   switch (nextchar)
@@ -180,7 +169,7 @@ read_mpfr_rounding_mode (FILE *fp, mpfr_rnd_t* rnd)
     skip_whitespace_comments (fp);
 }
 
-static void
+void
 read_mpc_rounding_mode (FILE *fp, mpc_rnd_t* rnd)
 {
    mpfr_rnd_t re, im;
@@ -189,7 +178,7 @@ read_mpc_rounding_mode (FILE *fp, mpc_rnd_t* rnd)
    *rnd = RNDC (re, im);
 }
 
-static mpfr_prec_t
+mpfr_prec_t
 read_mpfr_prec (FILE *fp)
 {
    unsigned long prec;
@@ -235,7 +224,7 @@ read_mpfr_mantissa (FILE *fp, mpfr_ptr x)
    skip_whitespace_comments (fp);
 }
 
-static void
+void
 read_mpfr (FILE *fp, mpfr_ptr x, int *known_sign)
 {
    mpfr_set_prec (x, read_mpfr_prec (fp));
@@ -250,7 +239,7 @@ read_mpfr (FILE *fp, mpfr_ptr x, int *known_sign)
           || nextchar == '+' || nextchar == '-';
 }
 
-static void
+void
 read_mpc (FILE *fp, mpc_ptr z, known_signs_t *ks)
 {
   read_mpfr (fp, MPC_RE (z), ks == NULL ? NULL : &ks->re);

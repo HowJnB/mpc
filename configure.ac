@@ -1,6 +1,6 @@
 /* configure.ac
 
-Copyright (C) 2008 Andreas Enge, Philippe Th\'eveny
+Copyright (C) 2008, 2009 Andreas Enge, Philippe Th\'eveny
 
 This file is part of the MPC Library.
 
@@ -132,7 +132,7 @@ error
 
 # Checks for header files.
 AC_HEADER_STDC
-AC_CHECK_HEADERS([inttypes.h limits.h unistd.h sys/time.h])
+AC_CHECK_HEADERS([locale.h inttypes.h limits.h unistd.h sys/time.h])
 
 # Checks for typedefs, structures, and compiler characteristics.
 AC_C_CONST
