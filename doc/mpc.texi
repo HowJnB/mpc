@@ -607,7 +607,7 @@ a valid number in base @var{base}; otherwise it returns @minus{}1, and
 Read a complex number from a string @var{nptr} in base @var{base}, rounded to
 the precision of @var{rop} with the given rounding mode @var{rnd}.
 @var{base} must be either 0 (to detect the base, see @code{mpfr_strtofr} in
-mpfr manual) or a number from 2 to 36 (otherwise the behavior is undefined).
+MPFR manual) or a number from 2 to 36 (otherwise the behavior is undefined).
 If @var{nptr} starts with valid data, the result is stored in @var{rop} and
 @var{*endptr} points to the character just after the valid data. Otherwise,
 @var{rop} is set to zero and the value of @var{nptr} is stored in the location
@@ -621,16 +621,15 @@ The expected form of a complex number in a string is:
 @item either the real part optionally followed by sign and imaginary part, or
 the imaginary part optionally followed by sign and real part;
 @end itemize
-
 The real part is a floating-point number. It can be preceded and followed by one
 or more white-spaces.
-The imaginary part consist of three parts the character 'I' (case
-insensitive), the multiplication '*' and a floating-point. Each part can be
-followed or preceded by one or more white-spaces, and they can appear in two
-orders: either 'I' followed by '*' followed by the floating-point, or the
-floating-point followed by '*' followed by 'I'.
+The imaginary part consist of three parts: the character 'I' (case
+insensitive), the multiplication '*', and a floating-point. Each part
+can be followed or preceded by one or more white-spaces, and they can
+appear in two orders: either 'I' followed by '*' followed by the
+floating-point, or the floating-point followed by '*' followed by 'I'.
 The form of a floating-point depends on the base and is described in the
-documentation of @code{mpfr_strtofr} in the mpfr manual.
+documentation of @code{mpfr_strtofr} in the MPFR manual.
 For instance, @code{"i* 1.25e+7 + .17"}, @code{"@@nan@@ + i * 2"} and
 @code{"@minus{}7*I"} are valid strings for @code{mpc_strtoc} and @var{base} =
 10.
