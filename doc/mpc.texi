@@ -614,8 +614,9 @@ the precision of @var{rop} with the given rounding mode @var{rnd}.
 MPFR manual) or a number from 2 to 36 (otherwise the behavior is undefined).
 If @var{nptr} starts with valid data, the result is stored in @var{rop} and
 @var{*endptr} points to the character just after the valid data. Otherwise,
-@var{rop} is set to zero and the value of @var{nptr} is stored in the location
-referenced by @var{endptr} (if @var{endptr} is not a null pointer).
+@var{rop} is set to @code{nan + i * nan} and the value of @var{nptr} is stored
+in the location referenced by @var{endptr} (if @var{endptr} is not a null
+pointer).
 The returned value indicates the position of @var{rop} with respect to the
 exact (infinite precision) value, like the @code{mpc_set} functions.
 

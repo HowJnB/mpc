@@ -591,5 +591,7 @@ mpc_strtoc (mpc_ptr rop, char *nptr, char **endptr, int base, mpc_rnd_t rnd)
  error:
   if (endptr != NULL)
     *endptr = nptr;
-  return mpc_set_ui_ui (rop, 0, 0, rnd);
+  mpfr_set_nan (MPC_RE (rop));
+  mpfr_set_nan (MPC_IM (rop));
+  return 0;
 }

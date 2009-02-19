@@ -48,16 +48,16 @@
 # The sign of the result is checked with "+inf", "-inf", "-0", or "+0".
 
 # invalid strings
-0 0 53 +0 53 +0        "non"                    "non"   10 N N
-0 0 53 +0 53 +0        "NON"                    "NON"   10 N N
-0 0 53 +0 53 +0        "N A N"                  "N A N" 10 N N
-0 0 53 +0 53 +0        "iii"                    "iii"   10 N N
-0 0 53 +0 53 +0        "i i"                    "i i"   10 N N
-0 0 53 +0 53 +0        "1*1"                    "1*1"   10 N N
-0 0 53 +0 53 +0        "."                      "."     10 N N
-0 0 53 +0 53 +0        ". 1"                    ". 1"   10 N N
-0 0 53 +0 53 +0        "I-I"                    "I-I"   20 N N #sign ambiguity
-0 0 53 +0 53 +0        "-I+I"                   "-I+I"  20 N N #sign ambiguity
+0 0 53 nan 53 nan       "non"                    "non"   10 N N
+0 0 53 nan 53 nan       "NON"                    "NON"   10 N N
+0 0 53 nan 53 nan       "N A N"                  "N A N" 10 N N
+0 0 53 nan 53 nan       "iii"                    "iii"   10 N N
+0 0 53 nan 53 nan       "i i"                    "i i"   10 N N
+0 0 53 nan 53 nan       "1*1"                    "1*1"   10 N N
+0 0 53 nan 53 nan       "."                      "."     10 N N
+0 0 53 nan 53 nan       ". 1"                    ". 1"   10 N N
+0 0 53 nan 53 nan       "I-I"                    "I-I"   20 N N #sign ambiguity
+0 0 53 nan 53 nan       "-I+I"                   "-I+I"  20 N N #sign ambiguity
 # special values
 0 0 53  nan 53   +0    "nan"                      ""               10 N N
 0 0 53  nan 53   +0    "NAN"                      ""               10 N N
