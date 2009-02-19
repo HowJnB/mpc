@@ -428,6 +428,9 @@ numbers, it is rounded to the one with the least significant bit set to zero.
 For example, the number 5, which is represented by (101) in binary, is rounded
 to (100)=4 with a precision of two bits, and not to (110)=6.
 
+
+@section Return Value
+
 Most MPC functions have a return value of type @code{int}, which is used
 to indicate the position of the rounded real and imaginary parts with respect
 to the exact (infinite precision) values.
@@ -598,9 +601,10 @@ See the documentation of @code{mpc_strtoc} for a detailed description of the
 valid string formats.
 Contrary to @code{mpc_strtoc}, @code{mpc_set_str} requires the @emph{whole}
 string to represent a valid complex number.
-This function returns 0 if the entire string up to the final null character is
-a valid number in base @var{base}; otherwise it returns @minus{}1, and
-@var{rop} may have changed.
+This function returns the usual inexact value (@pxref{MPC Basics,, Return
+Value}), if the entire string up to the final null character is a valid number
+in base @var{base}; otherwise it returns @minus{}1, and @var{rop} may have
+changed.
 @end deftypefun
 
 @deftypefun int mpc_strtoc (mpc_t @var{rop}, char *@var{nptr}, char **@var{endptr}, int @var{base}, mpc_rnd_t @var{rnd})
