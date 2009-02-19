@@ -184,23 +184,23 @@ read_number (const char * const str, const int base)
 
   /* read decimal part */
   if (IS_IN (*ptr, decimal_point))
-      {
-        /* when a floating-point number start with the decimal point, it must be
-           followed by at least one digit */
-        for (++ptr; IS_IN (*ptr, digits); ++ptr);
-        if (ptr == str + 1)
-          goto error;
-      }
-    else if (IS_IN (*ptr, digits))
-      {
-        /* the number begins with at least one digit */
-        for (++ptr; IS_IN (*ptr, digits); ++ptr);
+    {
+      /* when a floating-point number start with the decimal point, it must be
+         followed by at least one digit */
+      for (++ptr; IS_IN (*ptr, digits); ++ptr);
+      if (ptr == str + 1)
+        goto error;
+    }
+  else if (IS_IN (*ptr, digits))
+    {
+      /* the number begins with at least one digit */
+      for (++ptr; IS_IN (*ptr, digits); ++ptr);
 
-        if (IS_IN (*ptr, decimal_point))
-            for (++ptr; IS_IN (*ptr, digits); ++ptr);
-      }
-    else
-      goto error;
+      if (IS_IN (*ptr, decimal_point))
+        for (++ptr; IS_IN (*ptr, digits); ++ptr);
+    }
+  else
+    goto error;
 
   /* read exponent part */
   if (true_base != 10)
@@ -374,6 +374,7 @@ read_part (const char * const str, const int base, char **number, int* part_type
       else
         {
           *number = NULL;
+          *part_type = 3;
           return 0;
         }
     }
@@ -411,6 +412,7 @@ read_part (const char * const str, const int base, char **number, int* part_type
             {
               /* error: no character other than 'I' can follow "number*" */
               *part_type = 3;
+              free (*number);
               *number = NULL;
 
               return 0;
@@ -574,10 +576,13 @@ mpc_strtoc (mpc_ptr rop, char *nptr, char **endptr, int base, mpc_rnd_t rnd)
     inex_re = mpfr_strtofr (MPC_RE (rop), p1, &end, base, MPC_RND_RE (rnd));
   else
     inex_im = mpfr_strtofr (MPC_IM (rop), p1, &end, base, MPC_RND_IM (rnd));
-  free (p1);
   if (end == p1)
-    /* mpfr cannot read the string p1 */
-    goto error;
+    {
+      /* mpfr cannot read the string p1 */
+      free (p1);
+      goto error;
+    }
+  free (p1);
 
   if (endptr != NULL)
     *endptr = p;
