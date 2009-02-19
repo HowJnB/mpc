@@ -127,7 +127,7 @@ read_ternary (FILE *fp, int* ternary)
       *ternary = -1;
       break;
     default:
-      printf ("Error: Unexpected ternary value '%c' in file '%s' line %ld\n",
+      printf ("Error: Unexpected ternary value '%c' in file '%s' line %lu\n",
               nextchar, pathname, line_number);
       exit (1);
     }
@@ -154,7 +154,7 @@ read_mpfr_rounding_mode (FILE *fp, mpfr_rnd_t* rnd)
       *rnd = GMP_RNDD;
       break;
     default:
-      printf ("Error: Unexpected rounding mode '%c' in file '%s' line %ld\n",
+      printf ("Error: Unexpected rounding mode '%c' in file '%s' line %lu\n",
               nextchar, pathname, line_number);
       exit (1);
     }
@@ -162,7 +162,7 @@ read_mpfr_rounding_mode (FILE *fp, mpfr_rnd_t* rnd)
     nextchar = getc (fp);
     if (nextchar != EOF && !isspace (nextchar)) {
       printf ("Error: Rounding mode not followed by white space in file "
-              "'%s' line %ld\n",
+              "'%s' line %lu\n",
               pathname, line_number);
       exit (1);
     }
@@ -186,7 +186,7 @@ read_mpfr_prec (FILE *fp)
 
    if (nextchar == EOF) {
       printf ("Error: Unexpected EOF when reading mpfr precision "
-              "in file '%s' line %ld\n",
+              "in file '%s' line %lu\n",
               pathname, line_number);
       exit (1);
    }
@@ -195,7 +195,7 @@ read_mpfr_prec (FILE *fp)
    if (ferror (fp)) /* then also n == EOF */
       perror ("Error when reading mpfr precision");
    if (n == 0 || n == EOF || prec < MPFR_PREC_MIN || prec > MPFR_PREC_MAX) {
-      printf ("Error: Impossible mpfr precision in file '%s' line %ld\n",
+      printf ("Error: Impossible mpfr precision in file '%s' line %lu\n",
               pathname, line_number);
       exit (1);
    }
@@ -209,14 +209,14 @@ read_mpfr_mantissa (FILE *fp, mpfr_ptr x)
 {
    if (nextchar == EOF) {
       printf ("Error: Unexpected EOF when reading mpfr mantissa "
-              "in file '%s' line %ld\n",
+              "in file '%s' line %lu\n",
               pathname, line_number);
       exit (1);
    }
    ungetc (nextchar, fp);
    if (mpfr_inp_str (x, fp, 0, GMP_RNDN) == 0) {
       printf ("Error: Impossible to read mpfr mantissa "
-              "in file '%s' line %ld\n",
+              "in file '%s' line %lu\n",
               pathname, line_number);
       exit (1);
    }

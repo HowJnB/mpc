@@ -24,7 +24,7 @@ MA 02111-1307, USA. */
 #include "mpc-impl.h"
 
 int
-mpc_set_str (mpc_t z, char *str, int base, mp_rnd_t rnd)
+mpc_set_str (mpc_t z, char *str, int base, mpc_rnd_t rnd)
 {
   char *p;
 

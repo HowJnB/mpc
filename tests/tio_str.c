@@ -229,7 +229,7 @@ check_io_str (mpc_ptr read_number, mpc_ptr expected)
 
 #ifndef NO_STREAM_REDIRECTION
 /* test out_str with stream=NULL */
-void
+static void
 check_stdout (mpc_ptr read_number, mpc_ptr expected)
 {
   char tmp_file[] = "mpc_test";
