@@ -81,14 +81,14 @@ read_int (FILE *fp, int *nread, const char *name)
   skip_whitespace_comments (fp);
 }
 
-static void
-read_string (FILE *fp, char *str, const char *name)
+static size_t
+read_string (FILE *fp, char **buffer_ptr, size_t buffer_length, const char *name)
 {
-  size_t len;
-  size_t str_len;
+  size_t pos;
+  char *buffer;
 
-  len = 0;
-  str_len = str == NULL ? 0 : sizeof (str);
+  pos = 0;
+  buffer = *buffer_ptr;
 
   if (nextchar == '"')
     nextchar = getc (fp);
@@ -99,38 +99,41 @@ read_string (FILE *fp, char *str, const char *name)
     {
       if (nextchar == '\n')
         line_number++;
-      if (len + 1 > str_len)
+      if (pos + 1 > buffer_length)
         {
-          str = realloc (str, 2 * str_len);
-          if (str == NULL)
+          buffer = realloc (buffer, 2 * buffer_length);
+          if (buffer == NULL)
             {
               printf ("Cannot allocate memory\n");
               exit (1);
             }
-          str_len *= 2;
+          buffer_length *= 2;
         }
-      str[len++] = nextchar;
+      buffer[pos++] = nextchar;
       nextchar = getc (fp);
     }
 
   if (nextchar != '"')
     goto error;
 
-  if (len + 1 > str_len)
+  if (pos + 1 > buffer_length)
     {
-      str = realloc (str, str_len + 1);
-      if (str == NULL)
+      buffer = realloc (buffer, buffer_length + 1);
+      if (buffer == NULL)
         {
           printf ("Cannot allocate memory\n");
           exit (1);
         }
-      str_len *= 2;
+      buffer_length *= 2;
     }
-  str[len] = '\0';
+  buffer[pos] = '\0';
 
   nextchar = getc (fp);
   skip_whitespace_comments (fp);
-  return;
+
+  buffer_ptr = &buffer;
+
+  return buffer_length;
 
  error:
   printf ("Error: Unable to read %s in file '%s' line '%ld'\n",
@@ -143,7 +146,9 @@ main (void)
 {
   FILE *fp;
 
+  size_t str_len = 255;
   char *str = NULL;
+  size_t rstr_len = 255;
   char *rstr = NULL;
   char *end = NULL;
 
@@ -173,14 +178,14 @@ main (void)
     }
 
   /* 2. init needed variables */
-  str = (char *) malloc (255 * sizeof (char));
+  str = (char *) malloc (str_len * sizeof (char));
   if (str == NULL)
     {
       printf ("Cannot allocate memory\n");
       exit (1);
     }
-  rstr = (char *) malloc (255 * sizeof (char));
-  if (str == NULL)
+  rstr = (char *) malloc (rstr_len * sizeof (char));
+  if (rstr == NULL)
     {
       printf ("Cannot allocate memory\n");
       exit (1);
@@ -200,8 +205,8 @@ main (void)
       read_ternary (fp, &inex_im);
       read_mpc (fp, expected, NULL);
 
-      read_string (fp, str, "number string");
-      read_string (fp, rstr, "string remainder");
+      str_len = read_string (fp, &str, str_len, "number string");
+      rstr_len = read_string (fp, &rstr, rstr_len, "string remainder");
       read_int (fp, &base, "base");
       read_mpc_rounding_mode (fp, &rnd);
 

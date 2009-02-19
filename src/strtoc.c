@@ -176,7 +176,7 @@ read_number (const char * const str, const int base)
   else
     {
       /* set the set of digits in base BASE */
-      digits = malloc ((base+1) * sizeof (char));
+      digits = malloc ((true_base+1) * sizeof (char));
       if (digits == NULL) goto error;
       strncpy (digits, all_digits, true_base);
       digits[true_base] = '\0';
