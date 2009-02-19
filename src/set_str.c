@@ -1,4 +1,4 @@
-/* mpc_set_str -- Input a complex number from a given stream.
+/* mpc_set_str -- Convert a string into a complex number.
 
 Copyright (C) 2009 Philippe Th\'eveny
 
