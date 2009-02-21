@@ -1,9 +1,0 @@
-#!/bin/sh
-yum -y remove ccache
-
-yum -y install compat-libstdc++-33
-yum -y upgrade automake
-yum -y install libtool
-yum -y install texinfo
-yum -y install gmp-devel
-yum -y install mpfr-devel
