@@ -601,26 +601,28 @@ See the documentation of @code{mpc_strtoc} for a detailed description of the
 valid string formats.
 Contrary to @code{mpc_strtoc}, @code{mpc_set_str} requires the @emph{whole}
 string to represent a valid complex number.
-This function returns the usual inexact value (@pxref{MPC Basics,, Return
-Value}), if the entire string up to the final null character is a valid number
-in base @var{base}; otherwise it returns @minus{}1, and @var{rop} may have
-changed.
+This function returns the usual inexact value (@pxref{MPC Basics,,
+Return Value}) if the entire string up to the final null character is a
+valid number in base @var{base}; otherwise it returns @minus{}1, and
+@var{rop} is undefined.
 @end deftypefun
 
 @deftypefun int mpc_strtoc (mpc_t @var{rop}, char *@var{nptr}, char **@var{endptr}, int @var{base}, mpc_rnd_t @var{rnd})
 Read a complex number from a string @var{nptr} in base @var{base}, rounded to
 the precision of @var{rop} with the given rounding mode @var{rnd}.
-@var{base} must be either 0 (to detect the base, see @code{mpfr_strtofr} in
-MPFR manual) or a number from 2 to 36 (otherwise the behavior is undefined).
-If @var{nptr} starts with valid data, the result is stored in @var{rop} and
-@var{*endptr} points to the character just after the valid data. Otherwise,
-@var{rop} is set to @code{nan + i * nan} and the value of @var{nptr} is stored
-in the location referenced by @var{endptr} (if @var{endptr} is not a null
+The @var{base} must be either 0 (to detect the base, see
+@code{mpfr_strtofr} in MPFR manual) or a number from 2 to 36 (otherwise
+the behavior is undefined).
+If @var{nptr} starts with valid data, the result is stored in @var{rop}
+and @var{*endptr} points to the character just after the valid data (if
+@var{endptr} is not a null pointer). Otherwise, @var{rop} is set to
+@code{NaN + i * NaN} and the value of @var{nptr} is stored in the
+location referenced by @var{endptr} (if @var{endptr} is not a null
 pointer).
 The returned value indicates the position of @var{rop} with respect to the
 exact (infinite precision) value, like the @code{mpc_set} functions.
 
-The expected form of a complex number in a string is:
+The expected form of a complex number string is:
 @itemize
 @item an optional sign which can be preceded by one or more white-spaces;
 @item either the real part optionally followed by sign and imaginary part, or
@@ -629,23 +631,26 @@ the imaginary part optionally followed by sign and real part;
 The real part is a floating-point number. It can be preceded and followed by one
 or more white-spaces.
 The imaginary part consist of three parts: the character 'I' (case
-insensitive), the multiplication '*', and a floating-point. Each part
+insensitive), the '*' character, and a floating-point number. Each part
 can be followed or preceded by one or more white-spaces, and they can
 appear in two orders: either 'I' followed by '*' followed by the
-floating-point, or the floating-point followed by '*' followed by 'I'.
-The form of a floating-point depends on the base and is described in the
-documentation of @code{mpfr_strtofr} in the MPFR manual.
-For instance, @code{"i* 1.25e+7 + .17"}, @code{"@@nan@@ + i * 2"} and
-@code{"@minus{}7*I"} are valid strings for @code{mpc_strtoc} and @var{base} =
-10.
+floating-point number, or the floating-point number followed by '*'
+followed by 'I'.
 
-The strings formed with optional sign, optional white-spaces and the character
-'I' are interpreted as the pure imaginary +1*i (or @minus{}1*i if the minus
-sign appears) in all bases. In bases more or equal to nineteen, the string
-"I+I" is interpreted as the decimal number 18+1*I, the string
-"@minus{}I@minus{}I" is interpreted as the decimal number
-@minus{}18@minus{}1*I, and the strings "I@minus{}I" and "@minus{}I+I" are not
-considered as valid because of the ambiguity on the sign.
+The form of a floating-point number depends on the base and is described
+in the documentation of @code{mpfr_strtofr} in the MPFR manual.  For
+instance, @code{"i* 1.25e+7 + .17"}, @code{"@@nan@@ + i * 2"} and
+@code{"-7*I"} are valid strings for @code{mpc_strtoc} and
+@var{base} = 10.
+
+The strings formed with optional sign, optional white-spaces and the
+character 'I' are interpreted as the pure imaginary +1*i (or @minus{1}*i
+if the minus sign appears) in all bases. In bases 19 or more, the string
+"I+I" is interpreted as the decimal number 18+1*I, the string "-I-I" is
+interpreted as the decimal number @minus{18}@minus{1}*I, the string
+"-I*I" is interpreted as the decimal number @minus{18}*I, and the
+strings "I-I" and "-I+I" are not considered as valid because of the
+ambiguity on the sign.
 @end deftypefun
 
 
