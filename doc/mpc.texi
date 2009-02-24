@@ -429,6 +429,7 @@ For example, the number 5, which is represented by (101) in binary, is rounded
 to (100)=4 with a precision of two bits, and not to (110)=6.
 
 
+@anchor{return-value}
 @section Return Value
 
 Most MPC functions have a return value of type @code{int}, which is used
@@ -601,56 +602,63 @@ See the documentation of @code{mpc_strtoc} for a detailed description of the
 valid string formats.
 Contrary to @code{mpc_strtoc}, @code{mpc_set_str} requires the @emph{whole}
 string to represent a valid complex number.
-This function returns the usual inexact value (@pxref{MPC Basics,,
-Return Value}) if the entire string up to the final null character is a
-valid number in base @var{base}; otherwise it returns @minus{}1, and
-@var{rop} is undefined.
+This function returns the usual inexact value (@pxref{return-value,, Return
+Value}) if the entire string up to the final null character is a valid number
+in base @var{base}; otherwise it returns @minus{}1, and @var{rop} is set to
+NaN+i*NaN.
 @end deftypefun
 
 @deftypefun int mpc_strtoc (mpc_t @var{rop}, char *@var{nptr}, char **@var{endptr}, int @var{base}, mpc_rnd_t @var{rnd})
 Read a complex number from a string @var{nptr} in base @var{base}, rounded to
 the precision of @var{rop} with the given rounding mode @var{rnd}.
-The @var{base} must be either 0 (to detect the base, see
-@code{mpfr_strtofr} in MPFR manual) or a number from 2 to 36 (otherwise
-the behavior is undefined).
-If @var{nptr} starts with valid data, the result is stored in @var{rop}
-and @var{*endptr} points to the character just after the valid data (if
-@var{endptr} is not a null pointer). Otherwise, @var{rop} is set to
-@code{NaN + i * NaN} and the value of @var{nptr} is stored in the
-location referenced by @var{endptr} (if @var{endptr} is not a null
-pointer).
-The returned value indicates the position of @var{rop} with respect to the
-exact (infinite precision) value, like the @code{mpc_set} functions.
+The @var{base} must be either 0 or a number from 2 to 36 (otherwise the
+behavior is undefined).
+If @var{nptr} starts with valid data, the result is stored in @var{rop} and
+@var{*endptr} points to the character just after the valid data (if
+@var{endptr} is not a null pointer). Otherwise, @var{rop} is set to @code{NaN
++ i * NaN} and the value of @var{nptr} is stored in the location referenced by
+@var{endptr} (if @var{endptr} is not a null pointer).
+This function returns the usual inexact value (@pxref{return-value,, Return
+Value}).
 
 The expected form of a complex number string is:
 @itemize
-@item an optional sign which can be preceded by one or more white-spaces;
-@item either the real part optionally followed by sign and imaginary part, or
-the imaginary part optionally followed by sign and real part;
+@item the optional sign of the first part,
+@item a required part (either the real or imaginary part),
+@item optionally, the other part preceded by its sign.
 @end itemize
-The real part is a floating-point number. It can be preceded and followed by one
-or more white-spaces.
+A missing part is counted as +0, both the real part or the imaginary part can
+appear first, and if a part appears in second place, it must be preceded by
+its sign.
+A sign can be preceded or followed by one or more whitespaces.
+The real part is a floating-point number. It can be preceded and followed by
+one or more white-spaces.
 The imaginary part consist of three parts: the character 'I' (case
-insensitive), the '*' character, and a floating-point number. Each part
-can be followed or preceded by one or more white-spaces, and they can
-appear in two orders: either 'I' followed by '*' followed by the
-floating-point number, or the floating-point number followed by '*'
-followed by 'I'.
+insensitive), the '*' character, and a floating-point number.
+Each part can be followed or preceded by one or more white-spaces, and they
+can appear in two orders: either 'I' followed by '*' followed by the
+floating-point number, or the floating-point number followed by '*' followed
+by 'I'.
 
 The form of a floating-point number depends on the base and is described
-in the documentation of @code{mpfr_strtofr} in the MPFR manual.  For
-instance, @code{"i* 1.25e+7 + .17"}, @code{"@@nan@@ + i * 2"} and
-@code{"-7*I"} are valid strings for @code{mpc_strtoc} and
-@var{base} = 10.
+in the documentation of @code{mpfr_strtofr} in the MPFR manual.
+For instance, @code{"i* 1.25e+7 + .17"}, @code{"@@nan@@ + i * 2"} and
+@code{"-7*I"} are valid strings for @code{mpc_strtoc} and @var{base} = 10.
+If @var{base} = 0, then a prefix can indicate the base in which the
+floating-point number is written. Use prefix '0b' for binary numbers, prefix
+'0x' for hexadecimal numbers, and no prefix for decimal numbers.
+The real and imaginary part can be written in different bases.
+For instance, @code{"1.024e+3 +i*2.05e+3"} and @code{"0b1p+10 +i*0x802"} are
+valid strings for @code{base}=0 and represent the same value.
 
-The strings formed with optional sign, optional white-spaces and the
-character 'I' are interpreted as the pure imaginary +1*i (or @minus{1}*i
-if the minus sign appears) in all bases. In bases 19 or more, the string
-"I+I" is interpreted as the decimal number 18+1*I, the string "-I-I" is
-interpreted as the decimal number @minus{18}@minus{1}*I, the string
-"-I*I" is interpreted as the decimal number @minus{18}*I, and the
-strings "I-I" and "-I+I" are not considered as valid because of the
-ambiguity on the sign.
+All strings formed with (in order) optional white-spaces, optional sign,
+optional white-spaces and the character 'I' are interpreted as the pure
+imaginary number +1*i (or @minus{1}*i if the minus sign appears) in all bases.
+In bases 19 or more, the string "I+I" is interpreted as the decimal number
+18+1*i, the string "-I-I" is interpreted as the decimal number
+@minus{18}@minus{1}*i, the string "-I*I" is interpreted as the decimal number
+@minus{18}*i, and the strings "I-I" and "-I+I" are not considered as valid
+because of the ambiguity on the sign.
 @end deftypefun
 
 
