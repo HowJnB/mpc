@@ -3,24 +3,31 @@ Efficiency:
   Once mpc_sin_cos exists, improve mpc_tan to use it
 
 New functions to implement:
-- from Andreas Enge 16 September 2008:
-  mpc_sin_cos; needs mpfr_sinh_cosh
-- from Mickael Gastineau <gastineau@imcce.fr> 14 Apr 2008:
-  mpc_fma: d=a*b+c
-- from Andreas Enge 9 April 2008:
-  mpc_pow_ui
-- from Andreas Enge 9 April 2008:
-  depending on a preprocessor variable (DEBUG or MPC_LOG), add
-  logging: For each function call, output arguments and precision, and
-  the successive precisions in the main loop; allows to test with
-  real world data whether we hit corner cases
-  possibly: mpc_write and mpc_read that serialises mpc objects (output in
-  base 16 together with the precision of the variable)
-- from Andreas Enge and Philippe Théveny 9 April 2008
-  work plan for completing functionality
-    inverse trigonometric functions
-- from Andreas Enge and Philippe Théveny 17 July 2008
-  agm (and complex logarithm with agm ?)
+
+  a) needed for C99 support:
+
+     - mpc_pow (needed for C99 support)
+     - from Andreas Enge and Philippe Théveny 9 April 2008
+       work plan for completing functionality
+       inverse trigonometric and hyperbolic functions (needed for C99 support)
+
+  b) other functions
+
+     - from Andreas Enge 16 September 2008:
+       mpc_sin_cos (needs mpfr_sinh_cosh)
+     - from Mickael Gastineau <gastineau@imcce.fr> 14 Apr 2008:
+       mpc_fma: d=a*b+c
+     - from Andreas Enge 9 April 2008:
+       mpc_pow_ui
+     - from Andreas Enge 9 April 2008:
+       depending on a preprocessor variable (DEBUG or MPC_LOG), add
+       logging: For each function call, output arguments and precision, and
+       the successive precisions in the main loop; allows to test with
+       real world data whether we hit corner cases
+       possibly: mpc_write and mpc_read that serialises mpc objects (output in
+       base 16 together with the precision of the variable)
+     - from Andreas Enge and Philippe Théveny 17 July 2008
+       agm (and complex logarithm with agm ?)
 
 New tests to add:
 - from Andreas Enge and Philippe Théveny 9 April 2008
