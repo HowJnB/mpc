@@ -164,7 +164,7 @@ License for more details.
 MPC is a portable library written in C for arbitrary precision arithmetic
 on complex numbers providing correct rounding. Ultimately, it
 should implement a multiprecision equivalent of the C99 standard.
-It builds upon the GNU MP and the MPFR libraries.
+It builds upon the GNU MP and the GNU MPFR libraries.
 
 @section How to use this Manual
 
@@ -180,7 +180,7 @@ probably a good idea to skim through it.
 @cindex Installation
 
 To build MPC, you first have to install GNU MP (version 4.2.2 or higher) and
-MPFR (version 2.3.1 or higher) on your computer.  You need a C compiler,
+GNU MPFR (version 2.3.1 or higher) on your computer.  You need a C compiler,
 preferably GCC, but any reasonable compiler should work. And you need a
 standard Unix @samp{make} program, plus some other standard Unix utility
 programs.
