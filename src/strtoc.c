@@ -225,6 +225,7 @@ read_number (const char * const str, const int base)
       /* exponent number are always in base ten */
       if (true_base < 10)
         {
+          digits[2] = '2';
           digits[3] = '3';
           digits[4] = '4';
           digits[5] = '5';
