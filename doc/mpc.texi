@@ -628,11 +628,11 @@ This function returns the usual inexact value (@pxref{return-value,, Return
 Value}).
 
 The expected form of a complex number string is either a real number (an
-optional sign followed by a floating-point number), or a pair of real numbers
-in parentheses separated by whitespace. If a real number is read, the missing
-imaginary part is set to +0.
+optional leading whitespace, an optional sign followed by a floating-point
+number), or a pair of real numbers in parentheses separated by whitespace. If
+a real number is read, the missing imaginary part is set to +0.
 The form of a floating-point number depends on the base and is described
-in the documentation of @code{mpfr_strtofr} 
+in the documentation of @code{mpfr_strtofr}
 @ifinfo
 (@pxref{Assignment Functions,,, mpfr.info,MPFR}).
 @end ifinfo
