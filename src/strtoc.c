@@ -130,7 +130,7 @@ read_number (const char * const str, const int base)
    the very begining of STR (no space allowed).  Return the number of
    characters making up that number. */
 {
-  char digits[62] = "0123456789";
+  char digits[63] = "0123456789";
   const char *ptr = str;
   const char *end_fp;
   int true_base = base;
