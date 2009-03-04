@@ -29,8 +29,7 @@ MA 02111-1307, USA. */
 # endif
 #endif
 
-#include <stdio.h>
-#include "mpc.h"
+#include "mpc-tests.h"
 #include "mpc-impl.h"
 
 #define PRINT_ERROR(function_name, precision, a)                \
@@ -41,8 +40,8 @@ MA 02111-1307, USA. */
     exit (1);                                                   \
   } while (0)
   
-int
-main (void)
+static void
+check_set (void)
 {
   long int lo;
   mpz_t mpz;
@@ -220,6 +219,77 @@ main (void)
   mpfr_clear (fr);
   mpc_clear (x);
   mpc_clear (z);
+}
+
+static void
+check_set_str (mp_exp_t exp_max)
+{
+  mpc_t expected;
+  mpc_t got;
+  char *str;
+
+  mpfr_prec_t prec;
+  mp_exp_t exp_min;
+
+  mpc_init2 (expected, 1024);
+  mpc_init2 (got, 1024);
+
+  exp_min = mpfr_get_emin ();
+  if (exp_max <= 0)
+    exp_max = mpfr_get_emax ();
+  else if (exp_max > mpfr_get_emax ())
+    exp_max = mpfr_get_emax();
+  if (-exp_max > exp_min)
+    exp_min = - exp_max;
+
+  for (prec = 2; prec < 1024; prec += 7)
+    {
+      mpc_set_prec (got, prec);
+      mpc_set_prec (expected, prec);
+
+      mpfr_set_nan (MPC_RE (expected));
+      mpfr_set_inf (MPC_IM (expected), prec % 2 - 1);
+      str = mpc_get_str (10, 0, expected, MPC_RNDNN);
+      if (mpfr_nan_p (MPC_RE (got)) == 0
+          || mpfr_cmp (MPC_IM (got), MPC_IM (expected)) != 0)
+        {
+          printf ("Error: mpc_set_str o mpc_get_str != Id\n"
+                  "with str=\"%s\"\n", str);
+          OUT (expected);
+          printf ("     ");
+          OUT (got);
+          exit (1);
+        }
+      mpc_free_str (str);
+
+      test_default_random (expected, exp_min, exp_max, 128, 25);
+      str = mpc_get_str (10, 0, expected, MPC_RNDNN);
+      if (mpc_set_str (got, str, 10, MPC_RNDNN) == -1
+          || mpc_cmp (got, expected) != 0)
+        {
+          printf ("Error: mpc_set_str o mpc_get_str != Id\n"
+                  "with str=\"%s\"\n", str);
+          OUT (expected);
+          printf ("     ");
+          OUT (got);
+          exit (1);
+        }
+      mpc_free_str (str);
+    }
+
+  mpc_clear (expected);
+  mpc_clear (got);
+}
+
+int
+main (void)
+{
+  test_start ();
+
+  check_set ();
+  check_set_str (1024);
+
+  test_end ();
 
   return 0;
 }

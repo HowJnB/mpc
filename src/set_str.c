@@ -29,8 +29,7 @@ mpc_set_str (mpc_t z, char *str, int base, mpc_rnd_t rnd)
   char *p;
   int inex;
 
-  if (*str == 0)
-    return -1;
   inex = mpc_strtoc (z, str, &p, base, rnd);
-  return (*p == 0) ? inex : -1;
+
+  return (p != str && *p == 0) ? inex : -1;
 }
