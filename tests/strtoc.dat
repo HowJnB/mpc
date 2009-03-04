@@ -66,8 +66,18 @@
 0 0 53 nan 53 nan      "(@nan@(quiet)"            "(@nan@(quiet)"  10 N N
 0 0 53 nan 53 nan      "zero"                     "zero"           10 N N 
 0 0 53 nan 53 nan      "&^+"                      "&^+"            10 N N
-0 0 53 nan 53 nan      "i"                        "i"              10 N N
-0 0 53 nan 53 nan      "I"                        "I"              10 N N
+0 0 53 nan 53 nan      "i"                        "i"              18 N N
+0 0 53 nan 53 nan      "I"                        "I"              18 N N
+0 0 53 nan 53 nan      "z"                        "z"              35 N N
+0 0 53 nan 53 nan      "Z"                        "Z"              35 N N
+0 0 53 nan 53 nan      "(i 0)"                    "(i 0)"          18 N N
+0 0 53 nan 53 nan      "(I 0)"                    "(I 0)"          18 N N
+0 0 53 nan 53 nan      "(z 0)"                    "(z 0)"          35 N N
+0 0 53 nan 53 nan      "(Z 0)"                    "(Z 0)"          35 N N
+0 0 53 nan 53 nan      "(0 i)"                    "(0 i)"          18 N N
+0 0 53 nan 53 nan      "(0 I)"                    "(0 I)"          18 N N
+0 0 53 nan 53 nan      "(0 z)"                    "(0 z)"          35 N N
+0 0 53 nan 53 nan      "(0 Z)"                    "(0 Z)"          35 N N
 # special values
 0 0 53  nan 53   +0    "nan"                      ""               10 N N
 0 0 53 +nan 53   +0    "+NAN"                     ""               10 N N
@@ -131,8 +141,8 @@
 0 + 53 +0 53  -0xA1765976008AFp-401    "(+0 -.550000E-105) " ""    10 N U
 0 0 53 0 53 18                         "(0 i)"               ""    19 N N
 0 0 53 0 53 18                         "(0 I)"               ""    19 N N
-0 0 53 0 53 35                         "(0 z)"               ""    19 N N
-0 0 53 0 53 35                         "(0 Z)"               ""    19 N N
+0 0 53 0 53 35                         "(0 z)"               ""    36 N N
+0 0 53 0 53 35                         "(0 Z)"               ""    36 N N
 # complex argument
 0 0 53            +1 53          +1    " (1   +1)     "      ""    10 N N
 0 0 53            +7 53         +14    "(7  14)"             ""    10 N N
