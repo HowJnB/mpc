@@ -65,6 +65,7 @@
 0 0 53 nan 53 nan      "(1 + 1)"                  "(1 + 1)"        10 N N
 0 0 53 nan 53 nan      "(@nan@(quiet)"            "(@nan@(quiet)"  10 N N
 0 0 53 nan 53 nan      "zero"                     "zero"           10 N N 
+0 0 53 nan 53 nan      "&^+"                      "_#$"            10 N N
 # special values
 0 0 53  nan 53   +0    "nan"                      ""               10 N N
 0 0 53 +nan 53   +0    "+NAN"                     ""               10 N N
