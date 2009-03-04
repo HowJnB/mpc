@@ -1,4 +1,4 @@
-/* mpc_strtoc -- Read a complex number from a stream.
+/* mpc_strtoc -- Read a complex number from a string.
 
 Copyright (C) 2009 Philippe Th\'eveny
 
@@ -38,6 +38,9 @@ mpc_strtoc (mpc_ptr rop, char *nptr, char **endptr, int base, mpc_rnd_t rnd)
   int inex_im = 0;
 
   if (base != 0 && (base < 2 || base > 62))
+    goto error;
+
+  if (nptr == NULL)
     goto error;
 
   p = nptr;

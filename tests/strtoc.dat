@@ -47,6 +47,10 @@
 # In all bases, "nan" is NaN, "inf" is infinity;
 # The sign of the result is checked with "+inf", "-inf", "-0", or "+0".
 
+# invalid base
+0 0 53 nan 53 nan      "(1 1)"                    "(1 1)"          99 N N
+0 0 53 nan 53 nan      "(1 1)"                    "(1 1)"           1 N N
+
 # invalid strings
 0 0 53 nan 53 nan      ""                         ""               10 N N
 0 0 53 nan 53 nan      "non"                      "non"            10 N N
@@ -78,6 +82,7 @@
 0 0 53 nan 53 nan      "(0 I)"                    "(0 I)"          18 N N
 0 0 53 nan 53 nan      "(0 z)"                    "(0 z)"          35 N N
 0 0 53 nan 53 nan      "(0 Z)"                    "(0 Z)"          35 N N
+
 # special values
 0 0 53  nan 53   +0    "nan"                      ""               10 N N
 0 0 53 +nan 53   +0    "+NAN"                     ""               10 N N
@@ -100,6 +105,7 @@
 0 0 53 -inf 53   -0    " (-@inf@ -0)"             ""               10 N N
 0 0 53 +inf 53  nan    "(+inf nan(9u137))     "   ""               10 N N
 0 0 53  nan 53   +0    "NaN  + inf"               "+ inf"          10 N N
+
 # pure real argument
 0 0 53                     +0 53 +0    "0"                 ""      10 N N
 0 0 53                     +0 53 +0    "00000"             ""      10 N N
@@ -129,6 +135,7 @@
 0 0 53 18 53 0                         "i"                   ""    19 N N
 0 0 53 35 53 0                         "z"                   ""    36 N N
 0 0 53 35 53 0                         "Z"                   ""    36 N N
+
 # pure imaginary argument
 0 0 53 +0 53                     +1    "(0 1)"               ""    10 N N
 0 0 53 +0 53                     +1    "(0 +1)"              ""    20 N N
@@ -143,6 +150,7 @@
 0 0 53 0 53 18                         "(0 I)"               ""    19 N N
 0 0 53 0 53 35                         "(0 z)"               ""    36 N N
 0 0 53 0 53 35                         "(0 Z)"               ""    36 N N
+
 # complex argument
 0 0 53            +1 53          +1    "(  1   +1)"          ""    10 N N
 0 0 53            +1 53          +1    " (1   +1)     "      ""    10 N N

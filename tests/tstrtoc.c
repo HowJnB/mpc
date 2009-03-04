@@ -55,8 +55,6 @@ static const char *rnd_mode[] =
     "undefined", "undefined",
   };
 
-static char file_name[] = "strtoc.dat";
-
 static void
 read_int (FILE *fp, int *nread, const char *name)
 {
@@ -141,8 +139,8 @@ read_string (FILE *fp, char **buffer_ptr, size_t buffer_length, const char *name
   exit (1);
 }
 
-int
-main (void)
+static void
+check_file (const char* file_name)
 {
   FILE *fp;
 
@@ -254,6 +252,44 @@ main (void)
   if (rstr != NULL)
     free (rstr);
   free (pathname);
+}
 
+static void
+check_null (void)
+{
+  int inex;
+  char *end;
+  mpc_t z;
+
+  mpc_init2 (z, 53);
+
+  inex = mpc_strtoc (z, NULL, &end, 10, MPC_RNDNN);
+  if (end != NULL || inex != 0 || mpfr_nan_p (MPC_RE (z)) == 0
+      || mpfr_nan_p (MPC_IM (z)) == 0)
+    {
+      printf ("Error: mpc_strtoc(z, NULL) with an NULL pointer should fail"
+              " and the z value should be set to NaN +I*NaN\ngot ");
+      OUT (z);
+      exit (1);
+    }
+
+  inex = mpc_strtoc (z, "", &end, 10, MPC_RNDNN);
+  if (inex != 0 || mpfr_nan_p (MPC_RE (z)) == 0
+      || mpfr_nan_p (MPC_IM (z)) == 0)
+    {
+      printf ("Error: mpc_strtoc(z, "") with an empty string should fail"
+              " and the z value should be set to NaN +I*NaN\ngot ");
+      OUT (z);
+      exit (1);
+    }
+
+  mpc_clear (z);
+}
+
+int
+main (void)
+{
+  check_null ();
+  check_file ("strtoc.dat");
   return 0;
 }
