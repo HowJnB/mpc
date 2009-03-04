@@ -360,7 +360,13 @@ The C data type for such objects is @code{mpc_t}.
 The @dfn{Precision} is the number of bits used to represent the mantissa
 of the real and imaginary parts;
 the corresponding C data type is @code{mp_prec_t}.
-See the MPFR documentation for more details on the allowed precision range.
+For more details on the allowed precision range,
+@ifinfo
+@pxref{Nomenclature and Types,,, mpfr.info,MPFR}.
+@end ifinfo
+@ifnotinfo
+see Section ``Nomenclature and Types'' in @cite{MPFR}.
+@end ifnotinfo
 
 @cindex Rounding Mode
 @tindex @code{mpc_rnd_t}
@@ -621,44 +627,26 @@ If @var{nptr} starts with valid data, the result is stored in @var{rop} and
 This function returns the usual inexact value (@pxref{return-value,, Return
 Value}).
 
-The expected form of a complex number string is:
-@itemize
-@item the optional sign of the first part,
-@item a required part (either the real or imaginary part),
-@item optionally, the other part preceded by its sign.
-@end itemize
-A missing part is counted as +0, both the real part or the imaginary part can
-appear first, and if a part appears in second place, it must be preceded by
-its sign.
-A sign can be preceded or followed by one or more whitespaces.
-The real part is a floating-point number. It can be preceded and followed by
-one or more white-spaces.
-The imaginary part consist of three parts: the character 'I' (case
-insensitive), the '*' character, and a floating-point number.
-Each part can be followed or preceded by one or more white-spaces, and they
-can appear in two orders: either 'I' followed by '*' followed by the
-floating-point number, or the floating-point number followed by '*' followed
-by 'I'.
-
+The expected form of a complex number string is either a real number (an
+optional sign followed by a floating-point number), or a pair of real numbers
+in parentheses separated by whitespace. If a real number is read, the missing
+imaginary part is set to +0.
 The form of a floating-point number depends on the base and is described
-in the documentation of @code{mpfr_strtofr} in the MPFR manual.
-For instance, @code{"i* 1.25e+7 + .17"}, @code{"@@nan@@ + i * 2"} and
-@code{"-7*I"} are valid strings for @code{mpc_strtoc} and @var{base} = 10.
+in the documentation of @code{mpfr_strtofr} 
+@ifinfo
+(@pxref{Assignment Functions,,, mpfr.info,MPFR}).
+@end ifinfo
+@ifnotinfo
+in the MPFR manual.
+@end ifnotinfo
+For instance, @code{"3.1415926"}, @code{"(1.25e+7 +.17)"}, @code{"(@@nan@@
+2)"} and @code{"(-0 -7)"} are valid strings for @var{base} = 10.
 If @var{base} = 0, then a prefix can indicate the base in which the
 floating-point number is written. Use prefix '0b' for binary numbers, prefix
 '0x' for hexadecimal numbers, and no prefix for decimal numbers.
 The real and imaginary part can be written in different bases.
-For instance, @code{"1.024e+3 +i*2.05e+3"} and @code{"0b1p+10 +i*0x802"} are
+For instance, @code{"(1.024e+3 +2.05e+3)"} and @code{"(0b1p+10 +0x802)"} are
 valid strings for @code{base}=0 and represent the same value.
-
-All strings formed with (in order) optional white-spaces, optional sign,
-optional white-spaces and the character 'I' are interpreted as the pure
-imaginary number +1*i (or @minus{1}*i if the minus sign appears) in all bases.
-In bases 19 or more, the string "I+I" is interpreted as the decimal number
-18+1*i, the string "-I-I" is interpreted as the decimal number
-@minus{18}@minus{1}*i, the string "-I*I" is interpreted as the decimal number
-@minus{18}*i, and the strings "I-I" and "-I+I" are not considered as valid
-because of the ambiguity on the sign.
 @end deftypefun
 
 

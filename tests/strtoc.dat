@@ -48,72 +48,90 @@
 # The sign of the result is checked with "+inf", "-inf", "-0", or "+0".
 
 # invalid strings
-0 0 53 nan 53 nan       "non"                    "non"   10 N N
-0 0 53 nan 53 nan       "NON"                    "NON"   10 N N
-0 0 53 nan 53 nan       "N A N"                  "N A N" 10 N N
-0 0 53 nan 53 nan       "iii"                    "iii"   10 N N
-0 0 53 nan 53 nan       "i i"                    "i i"   10 N N
-0 0 53 nan 53 nan       "1*1"                    "1*1"   10 N N
-0 0 53 nan 53 nan       "."                      "."     10 N N
-0 0 53 nan 53 nan       ". 1"                    ". 1"   10 N N
-0 0 53 nan 53 nan       "I-I"                    "I-I"   20 N N #sign ambiguity
-0 0 53 nan 53 nan       "-I+I"                   "-I+I"  20 N N #sign ambiguity
+0 0 53 nan 53 nan      ""                         ""               10 N N
+0 0 53 nan 53 nan      "non"                      "non"            10 N N
+0 0 53 nan 53 nan      "NON"                      "NON"            10 N N
+0 0 53 nan 53 nan      "N A N"                    "N A N"          10 N N
+0 0 53 nan 53 nan      "(1) 1"                    "(1) 1"          10 N N #no imaginary part
+0 0 53 nan 53 nan      "."                        "."              10 N N
+0 0 53 nan 53 nan      ". 1"                      ". 1"            10 N N #no space allowed here
+0 0 53 nan 53 nan      "+ 1"                      "+ 1"             2 N N #no space allowed here
+0 0 53 nan 53 nan      "+3 "                      "+3 "             2 N N #invalid digit
+0 0 53 nan 53 nan      "+ INF "                   "+ INF "         10 N N #no space allowed here
+0 0 53 nan 53 nan      "( +INF)"                  "( +INF)"        10 N N
+0 0 53 nan 53 nan      "(1+1)"                    "(1+1)"          10 N N
+0 0 53 nan 53 nan      "( 1 +1)"                  "( 1 +1)"        10 N N
+0 0 53 nan 53 nan      "(1 +1 )"                  "(1 +1 )"        10 N N
+0 0 53 nan 53 nan      "(1 + 1)"                  "(1 + 1)"        10 N N
+0 0 53 nan 53 nan      "(@nan@(quiet)"            "(@nan@(quiet)"  10 N N
+0 0 53 nan 53 nan      "zero"                     "zero"           10 N N 
 # special values
 0 0 53  nan 53   +0    "nan"                      ""               10 N N
-0 0 53  nan 53   +0    "NAN"                      ""               10 N N
-0 0 53  nan 53  nan    "@nan@(quiet)+nan*I"       ""               10 N N
+0 0 53 +nan 53   +0    "+NAN"                     ""               10 N N
+0 0 53  nan 53   +0    "  @NAN@  "                ""               10 N N
+0 0 53  nan 53  nan    "(@nan@(QUIET) nan)"       ""               10 N N
+0 0 53  nan 53   +0    "@nan@(quiet"              "(quiet"         10 N N
+0 0 53  nan 53   +0    "NaN((keep out))"          "((keep out))"   10 N N
+0 0 53  nan 53   +0    "nan(0 1)"                 "(0 1)"          10 N N
+0 0 53  nan 53   +0    "nan(0-1)"                 "(0-1)"          10 N N
+0 0 53  nan 53   +0    "nan(0_1)"                 ""               10 N N
+0 0 53  nan 53   +0    " nan nan nan nan"         "nan nan nan"    10 N N
 0 0 53  inf 53   +0    "inf"                      ""               10 N N
 0 0 53 -inf 53   +0    "-inf"                     ""               10 N N
 0 0 53 +inf 53   +0    "       infinity"          ""               10 N N
-0 0 53 +inf 53   +0    "+ INF            x"       "x"              10 N N
-0 0 53   +0 53 +inf    "i*inf"                    ""               10 N N
-0 0 53   +0 53 +inf    "INF*I"                    ""               10 N N
-0 0 53   +0 53 -inf    "-i *infinity"             ""               10 N N
-0 0 53   +0 53 -inf    " - INF* I"                ""               10 N N
-0 0 53 -inf 53   +0    " -@inf@"                  ""               10 N N
-0 0 53 +inf 53  nan    "inf + i * @nan@(quiet)"   ""               10 N N
+0 0 53 +inf 53   +0    "+INF            x"        "x"              10 N N
+0 0 53   +0 53 +inf    "(0 +inf)"                 ""               10 N N
+0 0 53   +0 53 +inf    "  (+0 INF)  "             ""               10 N N
+0 0 53   +0 53 -inf    "(0 -infinity)"            ""               10 N N
+0 0 53   +0 53 -inf    "  (+0 -INF)"              ""               10 N N
+0 0 53 -inf 53   -0    " (-@inf@ -0)"             ""               10 N N
+0 0 53 +inf 53  nan    "(+inf nan(9u137))     "   ""               10 N N
 0 0 53  nan 53   +0    "NaN  + inf"               "+ inf"          10 N N
-0 0 53  nan 53  nan    "NaN  +i*nan((keep out))"  "((keep out))"   10 N N
-0 0 53  nan 53   +0    " nan nan nan nan *i"      "nan nan nan *i" 10 N N
 # pure real argument
 0 0 53                     +0 53 +0    "0"                 ""      10 N N
 0 0 53                     +0 53 +0    "00000"             ""      10 N N
 0 0 53                     +0 53 +0    "+0"                ""      10 N N
 0 0 53                     -0 53 +0    "-0"                ""      10 N N
 0 0 53                     +1 53 +0    "1"                 ""      10 N N
+0 0 53                     +1 53 +0    "001"               ""      10 N N
+0 0 53                     +1 53 +0    "1 +1"              "+1"    10 N N
 0 0 53                     +1 53 +0    "1a"                "a"     10 N N
+0 0 53                     +1 53 +0    "1e-"               "e-"    10 N N
 0 0 53                     +1 53 +0    "1+2"               "+2"    10 N N
-- 0 53   +0x9D70A3D70A3D7p-51 53 +0    "+          1.23"   ""      10 N N  
-0 0 53                    -10 53 +0    "-10."              ""      10 N N
-0 0 53                +0x5p-3 53 +0    ".625"              ""      10 N N
-- 0 53 +0x14E718D7D7625Ap+612 53 +0    "1e200     "        ""      10 N N
-0 0 53                +0x7530 53 +0    " 3e+4"             ""      10 N N 
+- 0 53   +0x9D70A3D70A3D7p-51 53 +0    "(+1.23 0.0)"       ""      10 N N  
+0 0 53                    -10 53 +0    "(-10. 0000) "      ""      10 N N
+0 0 53                +0x5p-3 53 -0    "(.625 -0)"         ""      10 N N
+- 0 53 +0x14E718D7D7625Ap+612 53 +0    "(1e200  0)"        ""      10 N N
+0 0 53                +0x7530 53 +0    " (3e+4 0)"         ""      10 N N 
 - 0 53  +0x10C6F7A0B5ED8Dp-73 53 +0    ".5e-6"             ""      10 N N 
-- 0 53  +0x1B1C1E0D914133p-83 53 +0    "7.89E-10"          ""      10 N N
-+ 0 53  -0x7B426FAB61F00Cp+56 53 +0    "  -  25@+32"       ""      10 N N
-0 0 53                    -25 53 +0    "- 25p+32"          "p+32"  10 N N
+- 0 53  +0x1B1C1E0D914133p-83 53 +0    "(7.89E-10 0)"      ""      10 N N
++ 0 53  -0x7B426FAB61F00Cp+56 53 +0    "  -25@+32"         ""      10 N N
+0 0 53                    -25 53 +0    "-25p+32"           "p+32"  10 N N
+0 0 53                 +43981 53 +0    "0xabcd"            ""      16 N N
 0 0 53                     +0 53 +0    "0xabcd"            "xabcd" 10 N N #no prefix in base ten
+0 0 53                     +2 53 +0    "+0b010"            ""       2 N N
 0 0 53                     +0 53 +0    "+0b010"            "b010"  10 N N #no prefix in base ten
+0 0 53                     +1 53 +0    "1*i"               "*i"    10 N N
+0 0 53                    +18 53 +0    "i*i"               "*i"    20 N N
 # pure imaginary argument
-0 0 53 +0 53                     +1    "i"                 ""     10 N N
-0 0 53 +0 53                     +1    "i"                 ""     20 N N
-0 0 53 +0 53                     -1    "-      I"          ""     10 N N
-0 0 53 +0 53                     -2    "-2.*I"             ""     10 N N
-0 0 53 +0 53                     +2    "+i  * 2"           ""     10 N N
-0 0 53 +0 53                    +17    "h*i"               ""     20 N N
-0 0 53 +0 53                    +18    "i*i"               ""     20 N N
-0 0 53 +0 53                    +18    "i*i*i"             "*i"   20 N N
-0 + 53 +0 53  -0x14F800008637BDp-44    "-33.55000005e+1*i" ""     10 N Z
-0 + 53 +0 53  -0xA1765976008AFp-401    "-i*.550000E-105 "  ""     10 N U
+0 0 53 +0 53                     +1    "(0 1)"               ""    10 N N
+0 0 53 +0 53                     +1    "(0 +1)"              ""    20 N N
+0 0 53 -0 53                     -1    "  (-0 -1)"           ""    10 N N
+0 0 53 -0 53                     -2    "(-0 -2)   "          ""    10 N N
+0 0 53 +0 53                     +2    "(+0 2)"              ""    10 N N
+0 0 53 +0 53                    +17    "(0 h)"               ""    20 N N
+0 0 53 +0 53                    +18    "(0 i)"               ""    20 N N
+0 + 53 +0 53  -0x14F800008637BDp-44    "(0 -33.55000005e+1)" ""    10 N Z
+0 + 53 +0 53  -0xA1765976008AFp-401    "(+0 -.550000E-105) " ""    10 N U
 # complex argument
-0 0 53        +1 53      +1   " 1   +       i"    "" 10 N N
-0 0 53        +7 53     +14   "i*  14 + 7 "       "" 10 N N
-0 0 53       +17 53      +1   " i + 17"           "" 10 N N
-0 0 53       +27 53      +1   " i + 17"           "" 20 N N
-0 0 53       +18 53      +1   " i+i"              "" 20 N N
-0 0 53       -18 53      -1   "-i-i"              "" 20 N N
-0 0 53       +18 53      -1   " i-1*i"            "" 20 N N
-0 0 53       -18 53      +1   "-i+i*1"            "" 20 N N
-0 0 53       +18 53     +18   " i + i * i"        "" 20 N N
-0 0 53    -14643 53  +20328   " + i * foo - bar"  "" 36 N N
-0 0 53    0b1010 53  0xabcd   "0b1010+i*0xabcd"   ""  0 N N #base autodetection
+0 0 53            +1 53          +1    " (1   +1)     "      ""    10 N N
+0 0 53            +7 53         +14    "(7  14)"             ""    10 N N
+0 0 53           +17 53          +1    "(+17 1)"             ""    10 N N
+0 0 53           +27 53          +1    " (+17 +1)"           ""    20 N N
+0 0 53           -18 53          -1    "(-i -1)"             ""    20 N N
+0 0 53           +18 53          -1    "(i -1)"              ""    20 N N
+0 0 53           -18 53          +1    "(-i +1)"             ""    20 N N
+0 0 53           +18 53         +18    "(i +i)"              ""    20 N N
+0 0 53        -14643 53      +20328    "(-bar foo)"          ""    36 N N
+0 0 53      -1647190 53     -512315    "(-zaza -azaz)"       ""    36 N N
+0 0 53        0b1010 53      0xabcd    "(0b1010 +0xabcd)"    ""     0 N N #base autodetection

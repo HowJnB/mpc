@@ -28,7 +28,9 @@ MA 02111-1307, USA. */
 #include "config.h"
 
 /* Check if c is in the set (case insensitive) */
-#define IS_IN(c, set) ((c) != '\0' && strchr ((set), tolower ((c))) != NULL)
+#define IS_IN_CI(c, set) ((c) != '\0' && strchr ((set), tolower ((c))) != NULL)
+/* Check if c is in the set (case sensitive) */
+#define IS_IN(c, set) ((c) != '\0' && strchr ((set), (c)) != NULL)
 
 /* Needs <locale.h> */
 #ifdef HAVE_LOCALE_H
@@ -40,6 +42,8 @@ static char *decimal_point;
 static size_t
 read_special (const char* p, const int base)
 {
+  char seq_char[] = "0123456789abcdefghijklmnopqrstuvwxyz_";
+
   if (*p == '@')
     {
       /* all bases: accept "@nan@" and "@inf@" (case insensitive) */
@@ -57,7 +61,7 @@ read_special (const char* p, const int base)
             {
               /* skip "(n-char-sequence)", see documentation of strtod */
               const char *q;
-              for (q = p + 6; *q != ')' && *q != '\0'; ++q);
+              for (q = p + 6; IS_IN_CI (*q, seq_char) ; ++q);
               if (*q == ')')
                 return q + 1 - p;
               else
@@ -75,11 +79,11 @@ read_special (const char* p, const int base)
           && tolower (p[1]) == 'a'
           && tolower (p[2]) == 'n')
         {
-          if (p[5] == '(')
+          if (p[3] == '(')
             {
               /* skip "(n-char-sequence)", see documentation of strtod */
               const char *q;
-              for (q = p + 4; *q != ')' && *q != '\0'; ++q);
+              for (q = p + 4; IS_IN_CI (*q, seq_char); ++q);
               if (*q == ')')
                 return q + 1 - p;
               else
@@ -126,10 +130,9 @@ read_number (const char * const str, const int base)
    the very begining of STR (no space allowed).  Return the number of
    characters making up that number. */
 {
-  const char all_digits[] = "0123456789abcdefghijklmnopqrstuvwxyz";
-  char ten_digits[] = "0123456789";
-  char *digits = NULL;
+  char digits[62] = "0123456789";
   const char *ptr = str;
+  const char *end_fp;
   int true_base = base;
 
   /* special number ? */
@@ -171,15 +174,26 @@ read_number (const char * const str, const int base)
           ptr += 2;
       }
 
-  if (true_base == 10)
-    digits = ten_digits;
-  else
+  if (true_base != 10)
     {
       /* set the set of digits in base BASE */
-      digits = malloc ((true_base+1) * sizeof (char));
-      if (digits == NULL) goto error;
-      strncpy (digits, all_digits, true_base);
-      digits[true_base] = '\0';
+      const char all_digits[] = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+        "abcdefghijklmnopqrstuvwxyz";
+      int i;
+
+      for (i = 0; i < true_base; ++i)
+        digits[i] = all_digits[i];
+
+      if (true_base > 10 && true_base < 37)
+        {
+          /* digits can be in lower case */
+          for (i = 0; i < true_base - 10; ++i)
+            digits[true_base + i] = all_digits[36 + i];
+
+          digits[2*true_base - 10] = '\0';
+        }
+      else
+        digits[true_base] = '\0';
     }
 
   /* read decimal part */
@@ -189,7 +203,7 @@ read_number (const char * const str, const int base)
          followed by at least one digit */
       for (++ptr; IS_IN (*ptr, digits); ++ptr);
       if (ptr == str + 1)
-        goto error;
+        return 0;
     }
   else if (IS_IN (*ptr, digits))
     {
@@ -200,226 +214,57 @@ read_number (const char * const str, const int base)
         for (++ptr; IS_IN (*ptr, digits); ++ptr);
     }
   else
-    goto error;
+    return 0;
 
   /* read exponent part */
-  if (true_base != 10)
-    {
-      /* exponent number are always in base ten */
-      free (digits);
-      digits = ten_digits;
-    }
+  end_fp = ptr;
+
   if (is_exponent_char (*ptr, true_base))
     {
       ++ptr;
+      /* exponent number are always in base ten */
+      if (true_base < 10)
+        {
+          digits[3] = '3';
+          digits[4] = '4';
+          digits[5] = '5';
+          digits[6] = '6';
+          digits[7] = '7';
+          digits[8] = '8';
+          digits[9] = '9';
+          digits[10] = '\0';
+        }
+      else if (true_base > 10)
+        digits[10] = '\0';
+
       if (*ptr =='+' || *ptr == '-')
         ++ptr;
       if (IS_IN (*ptr, digits))
         for (++ptr; IS_IN (*ptr, digits); ++ptr);
       else
-        goto error;
+        return end_fp - str;
     }
 
   return ptr - str;
-
- error:
-  if (digits != NULL && digits != ten_digits)
-    free (digits);
-
-  return 0;
 }
 
 static size_t
-read_part (const char * const str, const int base, char **number, int* part_type)
+read_part (const char * const str, const int base)
 /* Find in the string STR the first readable number written in base BASE.
-   Return the number of characters in the part (spaces included).
-   NUMBER is NULL if no number can be read, otherwise it points to a new
-   allocated string where the sign and digits of the number are
-   packed (without spaces).
-   Try to determine to which part it belongs:
-   *part_type == 0: real part
-   *part_type == 1: imaginary part
-   *part type == 2: cannot determine, an isolated 'I' is ambiguous
-   in bases more than eighteen.
-   *part_type == 3: unknown, when read_part failed
-
-   WARNING: The user will have to free the string pointed by NUMBER.*/
+   Return the number of characters in the part (spaces not included)
+   or zero if STR doesn't point to a floating-point number. */
 {
   size_t n;
   const char *p;
-  int type = 3; /* unknown */
-  char sign = '\0';
 
-  for (p = str; isspace (*p); ++p);
-
+  p = str;
   if (*p == '+' || *p == '-')
-    {
-      sign = *p;
-      for (++p; isspace (*p); ++p);
-    }
+      p++;
 
-  if (tolower (*p) == 'i')
-    {
-      if (base <= 18)
-        {
-          if ((n = read_special (p, base)) == 0)
-            {
-              /* it is not 'inf' or 'infinity' */
-              for (++p; isspace (*p); ++p);
-
-              switch (*p)
-                {
-                case '+': case '-': case '\0':
-                  {
-                    n = (sign != '\0') ? 3 : 2;
-                    *number = malloc (n * sizeof (char));
-                    if (*number == NULL) return 0;
-                    (*number)[0] = sign;
-                    (*number)[1] = '\0';
-                    strncat (*number, "1", 1);
-                  }
-                  *part_type = 1;
-
-                  return p - str;
-
-                case '*':
-                  for (++p; isspace (*p); ++p);
-                  type = 1; /* imaginary part */
-                  break;
-
-                default:
-                  /* error: characters other than +-* cannot follow an
-                     isolated 'I' */
-                  *part_type = 3;
-                  *number = NULL;
-
-                  return 0;
-                }
-            }
-        }
-      else
-        {
-          if (isspace (p[1]))
-            {
-              for (++p; isspace (*p); ++p);
-
-              switch (*p)
-                {
-                case '+': case '-': case '\0':
-                  {
-                    n = (sign != '\0') ? 3 : 2;
-                    *number = malloc (n * sizeof (char));
-                    if (*number == NULL) return 0;
-                    (*number)[0] = sign;
-                    (*number)[1] = '\0';
-                    strncat (*number, "I", 1);
-                  }
-                  *part_type = 2; /* isolated 'I' */
-
-                  return p - str;
-
-                case '*':
-                  type = 1; /* imaginary part */
-                  for (++p; isspace (*p); ++p);
-                  break;
-
-                default:
-                  /* error: characters other than +-* cannot follow an
-                     isolated 'I' */
-                  *part_type = 3;
-                  *number = NULL;
-
-                  return 0;
-                } 
-            }
-          else
-            switch (p[1])
-              {
-              case '+': case '-': case '\0':
-                {
-                  n = (sign != '\0') ? 3 : 2;
-                  *number = malloc (n * sizeof (char));
-                  if (*number == NULL) return 0;
-                  (*number)[0] = sign;
-                  (*number)[1] = '\0';
-                  strncat (*number, "I", 1);
-                }
-                *part_type = 2; /* isolated 'I' */
-                ++p;            /* 'i' */
-                return p - str;
-
-              case '*':
-                type = 1; /* imaginary part */
-                ++p;      /* 'i' */
-                ++p;      /* '*' */
-                for (; isspace (*p); ++p);
-              }
-        }
-    }
-
-  n = read_number (p, base);
-  if (n == 0)
-    {
-      if (type == 1)
-        {
-          n = (sign != '\0') ? 3 : 2;
-          *number = malloc (n * sizeof (char));
-          if (*number == NULL) return 0;
-          (*number)[0] = sign;
-          (*number)[1] = '\0';
-          strncat (*number, "1", 1);
-          *part_type = 1;
-          return p - str;
-        }
-      else
-        {
-          *number = NULL;
-          *part_type = 3;
-          return 0;
-        }
-    }
-  /* copy sign and number into a new string */
-  if (sign != '\0')
-    *number = malloc ((n+2) * sizeof (char));
-  else
-    *number = malloc ((n+1) * sizeof (char));
-  if (*number == NULL) return 0;
-  (*number)[0] = sign;
-  (*number)[1] = '\0';
-  strncat (*number, p, n);
+  if ((n = read_number (p, base)) == 0)
+    return 0;
 
   p += n;
-
-  if (type != 1)
-    {
-      /* we have read a number without "I*" before it, let's see if we can
-         find a "*I" after it.*/
-      for (; isspace (*p); ++p);
-      switch (*p)
-        {
-        case '+': case '-': case '\0':
-          type = 0; /* real part */
-          break;
-
-        case '*':
-          for (++p; isspace (*p); ++p);
-          if (tolower (*p) == 'i')
-            {
-              for (++p; isspace (*p); ++p);
-              type = 1; /* imaginary part */
-            }
-          else
-            {
-              /* error: no character other than 'I' can follow "number*" */
-              *part_type = 3;
-              free (*number);
-              *number = NULL;
-
-              return 0;
-            }
-        }
-    }
-  *part_type = (type == 3 ? 0 : type);
 
   return p - str;
 }
@@ -430,12 +275,11 @@ mpc_strtoc (mpc_ptr rop, char *nptr, char **endptr, int base, mpc_rnd_t rnd)
   char *p;
   char *end;
 
-  char *p1 = NULL;
-  int type1 = 3;
-  size_t size1 = 0;
-  char *p2 = NULL;
-  int type2 = 3;
-  size_t size2 = 0;
+  char *real_str = NULL;
+  size_t real_size = 0;
+  char *imag_str = NULL;
+  size_t imag_size = 0;
+  int bracketed = 0;
 
   int inex_re = 0;
   int inex_im = 0;
@@ -450,139 +294,50 @@ mpc_strtoc (mpc_ptr rop, char *nptr, char **endptr, int base, mpc_rnd_t rnd)
 #endif
 
   p = nptr;
-  if ((size1 = read_part (p, base, &p1, &type1)) == 0)
+  for (p = nptr; isspace (*p); ++p);
+
+  if (*p == '(')
+    {
+      bracketed = 1;
+      ++p;
+    }
+
+  real_str = p;
+  real_size = read_part (p, base);
+  if (real_size == 0)
     goto error;
-  p += size1;
+  p += real_size;
+
+  if (bracketed)
+    {
+      if (!isspace (*p))
+        goto error;
+
+      for (++p; isspace (*p); ++p);
+
+      imag_str = p;
+      imag_size = read_part (p, base);
+      if (imag_size == 0)
+        goto error;
+      p += imag_size;
+
+      if (*p != ')')
+        goto error;
+
+      p++;
+
+      inex_im = mpfr_strtofr (MPC_IM (rop), imag_str, &end, base, MPC_RND_IM (rnd));
+      if (imag_str + imag_size != end)
+        goto error;
+    }
+  else
+    inex_im = mpfr_set_ui (MPC_IM (rop), 0, MPC_RND_IM(rnd));
 
   for (; isspace (*p); ++p);
 
-  /* which caracter between the two parts ? */
-  if (*p != '+' && *p != '-')
-    type2 = 3; /* not read */
-  else
-    size2 = read_part (p, base, &p2, &type2);
-
-  /* table used for determination of the complex value
-
-     -------   type1=0      type=1     type1=2
-     type2=0   p1+i*0      p2+i*p1   p2+s1*i*1
-     type2=1   p1+i*p2      0+i*p1   p1+   i*p2
-     type2=2   p1+s2*i*1   p2+i*p1      (A)
-     type2=3   p1+i*0       0+i*p1      s1*i*1
-
-     type=0: real, 1: imaginary, 2: isolated 'I', 3: unread
-     s1: sign of p1, s2: sign of p2
-
-     (A): if s1 == s2 then p1+s2*i*1 else error
-  */
-
-  /* set part2 */
-  if (type2 == 3)
-    /* no part2 */
-    switch (type1)
-      {
-      case 0:
-        inex_im = mpfr_set_ui (MPC_IM (rop), 0, GMP_RNDN);
-        break;
-      case 1:
-        inex_re = mpfr_set_ui (MPC_RE (rop), 0, GMP_RNDN);
-        break;
-      case 2: /* part1 is considered as +-1*i */
-        type1 = 1; /* imaginary part */
-        p1[p1[0] == 'I' ? 0 : 1] = '1'; /* preserve sign */
-        inex_re = mpfr_set_ui (MPC_RE (rop), 0, GMP_RNDN);
-      }
-  else if (type1 == type2)
-    switch (type1)
-      {
-      case 0: /* both parts are real */
-        /* keep the first one and forget the other one */
-        inex_im = mpfr_set_ui (MPC_IM (rop), 0, MPC_RND_IM (rnd));
-        free (p2);
-        break;
-      case 1: /* both parts are imaginary */
-        /* keep the first one and forget the other one */
-        inex_re = mpfr_set_ui (MPC_RE (rop), 0, MPC_RND_RE (rnd));
-        free (p2);
-        break;
-      case 2: /* both parts are isolated I (base >= 19) */
-        if ((p1[0] == '-' && p2[0] != '-')
-            || (p1[0] != '-' && p2[0] == '-'))
-          {
-            /* the ambiguity cannot be solved: they do not share the same
-               sign */
-            free (p1);
-            free (p2);
-            goto error;
-          }
-        /* the second 'I' is considered as +-1*i */
-        p2[p2[0] == 'I' ? 0 : 1] = '1'; /* preserve sign */
-        type1 = 0; /* real part */
-        inex_im =
-          mpfr_strtofr (MPC_IM (rop), p2, &end, base, MPC_RND_IM (rnd));
-        free (p2);
-        if (end == p2)
-          {
-            /* mpfr cannot read the (modified) string p2 */
-            free (p1);
-            goto error;
-          }
-        p += size2;
-      }
-  else
-    {
-      /* real and imaginary parts can be identified */
-      switch (type1)
-        {
-        case 0:
-          if (type2 == 2)
-            p2[p2[0] == 'I' ? 0 : 1] = '1'; /* preserve sign */
-          inex_im =
-            mpfr_strtofr (MPC_IM (rop), p2, &end, base, MPC_RND_IM (rnd));
-          break;
-        case 1:
-          inex_re =
-            mpfr_strtofr (MPC_RE (rop), p2, &end, base, MPC_RND_RE (rnd));
-          break;
-        case 2:
-          if (type2 == 0)
-            {
-              type1 = 1; /* imaginary part */
-              p1[p1[0] == 'I' ? 0 : 1] = '1'; /* preserve sign */
-              inex_re =
-                mpfr_strtofr (MPC_RE (rop), p2, &end, base, MPC_RND_RE (rnd));
-            }
-          else
-            {
-              type1 = 0; /* real part */
-              inex_im =
-                mpfr_strtofr (MPC_IM (rop), p2, &end, base, MPC_RND_IM (rnd));
-            }
-        }          
-
-      free (p2);
-      if (end == p2)
-        {
-          /* mpfr cannot read the string p2 */
-          free (p1);
-          goto error;
-        }
-
-      p += size2;
-    }
-
-  /* set part 1 */
-  if (type1 == 0)
-    inex_re = mpfr_strtofr (MPC_RE (rop), p1, &end, base, MPC_RND_RE (rnd));
-  else
-    inex_im = mpfr_strtofr (MPC_IM (rop), p1, &end, base, MPC_RND_IM (rnd));
-  if (end == p1)
-    {
-      /* mpfr cannot read the string p1 */
-      free (p1);
-      goto error;
-    }
-  free (p1);
+  inex_re = mpfr_strtofr (MPC_RE(rop), real_str, &end, base, MPC_RND_RE (rnd));
+  if (real_str + real_size != end)
+    goto error;
 
   if (endptr != NULL)
     *endptr = p;
