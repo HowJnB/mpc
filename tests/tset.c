@@ -277,6 +277,24 @@ check_set_str (mp_exp_t exp_max)
       mpc_free_str (str);
     }
 
+  /* the real part has a zero exponent in base ten (fixed in r439) */
+  mpc_set_prec (expected, 37);
+  mpc_set_prec (got, 37);
+  mpc_set_ui (expected, 0x921FC04ED, GMP_RNDN);
+  mpc_div_2exp (expected, expected, 37, MPC_RNDNN);
+  str = mpc_get_str (10, 0, expected, MPC_RNDNN);
+  if (mpc_set_str (got, str, 10, MPC_RNDNN) == -1
+      || mpc_cmp (got, expected) != 0)
+    {
+      printf ("Error: mpc_set_str o mpc_get_str != Id\n"
+              "with str=\"%s\"\n", str);
+      OUT (expected);
+      printf ("     ");
+      OUT (got);
+      exit (1);
+    }
+  mpc_free_str (str);
+
   mpc_clear (expected);
   mpc_clear (got);
 }

@@ -28,7 +28,7 @@ MA 02111-1307, USA. */
 /* The output format is "(real imag)" */
 
 static char *
-prettify (const char *str, const mp_exp_t expo, int base)
+prettify (const char *str, const mp_exp_t expo, int base, int special)
 {
   size_t sz;
   char *pretty;
@@ -37,12 +37,9 @@ prettify (const char *str, const mp_exp_t expo, int base)
 
   sz = strlen (str) + 1; /* + terminal '\0' */
 
-  if (str[0] == '@' || str[1] == '@'
-      || (base == 10
-          && (tolower (str[0]) == 'i' || tolower (str[0]) == 'n'
-              || tolower (str[1]) == 'i' || tolower (str[1]) == 'n')))
+  if (special)
     {
-      /* special number: nan or inf */
+      /* special number: nan or inf or zero */
       pretty = (char *)malloc (sz * sizeof(char));
       strcpy (pretty, str);
 
@@ -53,7 +50,7 @@ prettify (const char *str, const mp_exp_t expo, int base)
 
   ++sz; /* + decimal point */
 
-  if (expo != 0)
+  if (expo != 1)
     {
       /* augment sz with the size needed for exponent in base ten */
       mp_exp_t x;
@@ -103,7 +100,7 @@ prettify (const char *str, const mp_exp_t expo, int base)
   strcat (pretty, s);
 
   /* exponent (in base ten) */
-  if (expo == 0)
+  if (expo == 1)
     return pretty;
 
   p = pretty + strlen (str) + 1;
@@ -134,6 +131,7 @@ mpc_get_str (int base, size_t n, mpc_srcptr op, mpc_rnd_t rnd)
   size_t needed_size;
   mp_exp_t expo;
   char *uggly;
+  int special;
   char *real_str;
   char *imag_str;
   char *complex_str = NULL;
@@ -141,16 +139,18 @@ mpc_get_str (int base, size_t n, mpc_srcptr op, mpc_rnd_t rnd)
   uggly = mpfr_get_str (NULL, &expo, base, n, MPC_RE (op), MPC_RND_RE (rnd));
   if (uggly == NULL)
     return NULL;
-  real_str = prettify (uggly, expo, base);
+  special = !mpfr_number_p (MPC_RE (op)) || mpfr_zero_p (MPC_RE (op));
+  real_str = prettify (uggly, expo, base, special);
   mpfr_free_str (uggly);
-
+    
   uggly = mpfr_get_str (NULL, &expo, base, n, MPC_IM (op), MPC_RND_IM (rnd));
   if (uggly == NULL)
     {
       free (real_str); /* TODO: use gmp_free_func */
       return NULL;
     }
-  imag_str = prettify (uggly, expo, base);
+  special = !mpfr_number_p (MPC_IM (op)) || mpfr_zero_p (MPC_IM (op));
+  imag_str = prettify (uggly, expo, base, special);
   mpfr_free_str (uggly);
 
   needed_size = strlen (real_str) + strlen (imag_str) + 4;
