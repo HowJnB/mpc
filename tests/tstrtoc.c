@@ -63,7 +63,7 @@ read_int (FILE *fp, int *nread, const char *name)
   if (nextchar == EOF)
     {
       printf ("Error: Unexpected EOF when reading mpfr precision "
-              "in file '%s' line %ld\n",
+              "in file '%s' line %lu\n",
               pathname, line_number);
       exit (1);
     }
@@ -71,7 +71,7 @@ read_int (FILE *fp, int *nread, const char *name)
   n = fscanf (fp, "%i", nread);
   if (ferror (fp) || n == 0 || n == EOF)
     {
-      printf ("Error: Cannot read %s in file '%s' line %ld\n",
+      printf ("Error: Cannot read %s in file '%s' line %lu\n",
               name, pathname, line_number);
       exit (1);
     }
@@ -134,7 +134,7 @@ read_string (FILE *fp, char **buffer_ptr, size_t buffer_length, const char *name
   return buffer_length;
 
  error:
-  printf ("Error: Unable to read %s in file '%s' line '%ld'\n",
+  printf ("Error: Unable to read %s in file '%s' line '%lu'\n",
           name, pathname, line_number);
   exit (1);
 }
