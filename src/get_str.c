@@ -22,10 +22,36 @@ MA 02111-1307, USA. */
 #include <stdio.h>
 #include <ctype.h>
 #include <string.h>
+#include <gmp.h>
+
 #include "mpc.h"
 #include "mpc-impl.h"
 
 /* The output format is "(real imag)" */
+
+/* mp_prec_t can be either int or long int */
+#if (__GMP_MP_SIZE_T_INT == 1)
+#define MPC_EXP_FORMAT_SPEC "i"
+#elif (__GMP_MP_SIZE_T_INT == 0)
+#define MPC_EXP_FORMAT_SPEC "li"
+#else
+#error "mp_exp_t size not supported"
+#endif
+
+static char *
+pretty_zero (mpfr_srcptr zero)
+{
+  char *pretty;
+
+  /* TODO: use gmp_alloc_func */
+  pretty = (char *)malloc (3 * sizeof(char));
+  
+  pretty[0] = mpfr_signbit (zero) ? '-' : '+';
+  pretty[1] = '0';
+  pretty[2] = '\0';
+
+  return pretty;
+}
 
 static char *
 prettify (const char *str, const mp_exp_t expo, int base, int special)
@@ -40,6 +66,7 @@ prettify (const char *str, const mp_exp_t expo, int base, int special)
   if (special)
     {
       /* special number: nan or inf or zero */
+      /* TODO: use gmp_alloc_func */
       pretty = (char *)malloc (sz * sizeof(char));
       strcpy (pretty, str);
 
@@ -120,7 +147,7 @@ prettify (const char *str, const mp_exp_t expo, int base, int special)
 
   *p = '\0';
 
-  sprintf (p, "%+ld", expo - 1); /* TODO: mp_exp_t type is not fixed */
+  sprintf (p, "%+"MPC_EXP_FORMAT_SPEC, expo - 1);
 
   return pretty;
 }
@@ -131,27 +158,35 @@ mpc_get_str (int base, size_t n, mpc_srcptr op, mpc_rnd_t rnd)
   size_t needed_size;
   mp_exp_t expo;
   char *uggly;
-  int special;
   char *real_str;
   char *imag_str;
   char *complex_str = NULL;
 
-  uggly = mpfr_get_str (NULL, &expo, base, n, MPC_RE (op), MPC_RND_RE (rnd));
-  if (uggly == NULL)
-    return NULL;
-  special = !mpfr_number_p (MPC_RE (op)) || mpfr_zero_p (MPC_RE (op));
-  real_str = prettify (uggly, expo, base, special);
-  mpfr_free_str (uggly);
-    
-  uggly = mpfr_get_str (NULL, &expo, base, n, MPC_IM (op), MPC_RND_IM (rnd));
-  if (uggly == NULL)
+  if (mpfr_zero_p (MPC_RE (op)))
+    real_str = pretty_zero (MPC_RE (op));
+  else
     {
-      free (real_str); /* TODO: use gmp_free_func */
-      return NULL;
+      uggly = mpfr_get_str (NULL, &expo, base, n, MPC_RE (op), MPC_RND_RE (rnd));
+      if (uggly == NULL)
+        return NULL;
+      real_str = prettify (uggly, expo, base, !mpfr_number_p (MPC_RE (op)));
+      mpfr_free_str (uggly);
     }
-  special = !mpfr_number_p (MPC_IM (op)) || mpfr_zero_p (MPC_IM (op));
-  imag_str = prettify (uggly, expo, base, special);
-  mpfr_free_str (uggly);
+
+
+  if (mpfr_zero_p (MPC_IM (op)))
+    imag_str = pretty_zero (MPC_RE (op));
+  else
+    {
+      uggly = mpfr_get_str (NULL, &expo, base, n, MPC_IM (op), MPC_RND_IM (rnd));
+      if (uggly == NULL)
+        {
+          free (real_str); /* TODO: use gmp_free_func */
+          return NULL;
+        }
+      imag_str = prettify (uggly, expo, base, !mpfr_number_p (MPC_IM (op)));
+      mpfr_free_str (uggly);
+    }
 
   needed_size = strlen (real_str) + strlen (imag_str) + 4;
  
