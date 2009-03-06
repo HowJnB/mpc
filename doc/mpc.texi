@@ -108,29 +108,10 @@ Complex Library, version @value{VERSION}
 * Reporting Bugs::              How to usefully report bugs.
 * MPC Basics::                  What every MPC user should know.
 * Complex Functions::           Functions for arithmetic on complex numbers.
-
-* Contributors::
-* References::
-* Concept Index::
-* Function Index::
-
-@detailmenu
- --- The Detailed Node Listing ---
-
-Complex Functions
-
-* Initializing Complex Numbers::
-* Assigning Complex Numbers::
-* Complex Comparison::
-* Projection & Decomposing::
-* Basic Arithmetic::
-* Power Functions and Logarithm::
-* Trigonometric Functions::
-* I/O of Complex Numbers::
-* Miscellaneous Complex Functions::
-* Internals::
-
-@end detailmenu
+* Contributors::                
+* References::                  
+* Concept Index::               
+* Function Index::              
 @end menu
 
 @c  @times{} made available as a "*" in info and html (already works in tex).
@@ -474,16 +455,17 @@ different word size.
 
 
 @menu
-* Initializing Complex Numbers::
-* Assigning Complex Numbers::
+* Initializing Complex Numbers::  
+* Assigning Complex Numbers::   
+* Conversion Functions::        
 * Complex Comparison::
-* Projection & Decomposing::
-* Basic Arithmetic::
-* Power Functions and Logarithm::
-* Trigonometric Functions::
-* I/O of Complex Numbers::
-* Miscellaneous Complex Functions::
-* Internals::
+* Projection & Decomposing::    
+* Basic Arithmetic::            
+* Power Functions and Logarithm::  
+* Trigonometric Functions::     
+* I/O of Complex Numbers::      
+* Miscellaneous Complex Functions::  
+* Internals::                   
 @end menu
 
 @node Initializing Complex Numbers, Assigning Complex Numbers, Complex Functions, Complex Functions
@@ -550,7 +532,7 @@ via @var{pi}.
 @end deftypefun
 
 
-@node Assigning Complex Numbers, Complex Comparison, Initializing Complex Numbers, Complex Functions
+@node Assigning Complex Numbers, Conversion Functions, Initializing Complex Numbers, Complex Functions
 @comment  node-name,  next,  previous,  up
 @section Assignment Functions
 @cindex Complex assignment functions
@@ -649,12 +631,28 @@ For instance, @code{"(1.024e+3 +2.05e+3)"} and @code{"(0b1p+10 +0x802)"} are
 valid strings for @code{base}=0 and represent the same value.
 @end deftypefun
 
-
-@node Complex Comparison, Projection & Decomposing, Assigning Complex Numbers, Complex Functions
+@node Conversion Functions, Complex Comparison, Assigning Complex Numbers, Complex Functions
 @comment  node-name,  next,  previous,  up
-@section Comparison Functions
+@cindex Conversion functions
+@section Conversion Functions
+
+@deftypefun {char *} mpc_get_str (int @var{b}, size_t @var{n}, mpfr_t @var{op}, mp_rnd_t @var{rnd})
+Convert @var{op} to a string of a parenthesed pair of numbers whose digits are
+written in in base @var{b}, with rounding in the direction @var{rnd}, where
+@var{n} is either zero or the number of significant digits; in the latter
+case, @var{n} must be greater or equal to 2. The base may vary from 2 to 36.
+If @var{n} is zero, the number of digits of the significand is chosen large
+enough so that re-reading the printed value with the same precision, assuming
+both output and input use rounding to nearest, will recover the original value
+of @var{op}.
+@end deftypefun
+
+
+@node Complex Comparison, Projection & Decomposing, Conversion Functions, Complex Functions
+@comment  node-name,  next,  previous,  up
 @cindex Complex comparisons functions
 @cindex Comparison functions
+@section Comparison Functions
 
 @deftypefn Function int mpc_cmp (mpc_t @var{op1}, mpc_t @var{op2})
 @deftypefnx Function int mpc_cmp_si_si (mpc_t @var{op1}, long int @var{op2r}, long int @var{op2i})

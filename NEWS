@@ -1,7 +1,7 @@
 Recent changes:
-  - new functions: mpc_strtoc, mpc_set_str, mpc_set_ld, mpc_set_ld_ld,
-    mpc_set_si_si, mpc_set_uj_uj, mpc_set_sj_sj, mpc_set_f, mpc_set_f_f,
-    mpc_set_q, mpc_set_q_q, mpc_set_z and mpc_set_z_z
+  - new functions: mpc_get_str, mpc_set_str, mpc_strtoc, mpc_set_ld,
+    mpc_set_ld_ld, mpc_set_si_si, mpc_set_uj_uj, mpc_set_sj_sj, mpc_set_f,
+    mpc_set_f_f, mpc_set_q, mpc_set_q_q, mpc_set_z and mpc_set_z_z
   - default precision removed, as well as init and all init_set
     combinations; use init2 and init3, followed by set, instead
   - exp, log, cos, sin, tan, cosh, sinh, tanh and sqrt return
