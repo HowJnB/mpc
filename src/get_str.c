@@ -51,7 +51,7 @@ pretty_zero (mpfr_srcptr zero)
 
   /* TODO: use gmp_alloc_func */
   pretty = (char *)malloc (3 * sizeof(char));
-  
+
   pretty[0] = mpfr_signbit (zero) ? '-' : '+';
   pretty[1] = '0';
   pretty[2] = '\0';
@@ -66,7 +66,8 @@ prettify (const char *str, const mp_exp_t expo, int base, int special)
   char *pretty;
   char *p;
   const char *s;
-  const char *decimal_point;
+  mp_exp_t x;
+  int sign;
 
   sz = strlen (str) + 1; /* + terminal '\0' */
 
@@ -82,24 +83,23 @@ prettify (const char *str, const mp_exp_t expo, int base, int special)
 
   /* regular number */
 
-#ifdef HAVE_LOCALE_H
-  decimal_point = localeconv ()->decimal_point;
-#else
-  decimal_point = ".";
-#endif
+  sign = (str[0] == '-' || str[0] == '+');
+
+  x = expo - 1; /* expo is the exponent value with decimal point BEFORE
+                   the first digit, we wants decimal point AFTER the first
+                   digit */
+  if (base == 16)
+    x <<= 2; /* the output exponent is a binary exponent */
 
   ++sz; /* + decimal point */
 
-  if (expo != 1)
+  if (x != 0)
     {
-      /* augment sz with the size needed for exponent in base ten */
-      mp_exp_t x;
+      /* augment sz with the size needed for an exponent written in base
+         ten */
+      mp_exp_t xx;
 
       sz += 3; /* + exponent char + sign + 1 digit */
-
-      x = expo - 1; /* expo is the exponent value with decimal point BEFORE
-                       the first digit, we wants decimal point AFTER the first
-                       digit */
 
       if (x < 0)
         {
@@ -107,19 +107,21 @@ prettify (const char *str, const mp_exp_t expo, int base, int special)
              mp_exp_t type, (max value) is greater than (- min value / 10)) */
           if (x < -10)
             {
-              x = - (x / 10);
+              xx = - (x / 10);
               sz++;
             }
           else
-            x = -x;
+            xx = -x;
         }
+      else
+        xx = x;
 
       /* compute sz += floor(log(expo)/log(10)) without using libm
          functions */
-      while (x > 9)
+      while (xx > 9)
         {
           sz++;
-          x /= 10;
+          xx /= 10;
         }
     }
 
@@ -129,18 +131,22 @@ prettify (const char *str, const mp_exp_t expo, int base, int special)
   /* 1. optional sign plus first digit */
   s = str;
   *p++ = *s++;
-  if (str[0] == '-' || str[0] == '+')
+  if (sign)
     *p++ = *s++;
 
   /* 2. decimal point */
-  *p++ = *decimal_point;
+#ifdef HAVE_LOCALE_H
+  *p++ = *localeconv ()->decimal_point;
+#else
+  *p++ = ".";
+#endif
   *p = '\0';
 
   /* 3. other significant digits */
   strcat (pretty, s);
 
   /* 4. exponent (in base ten) */
-  if (expo == 1)
+  if (x == 0)
     return pretty;
 
   p = pretty + strlen (str) + 1;
@@ -160,7 +166,7 @@ prettify (const char *str, const mp_exp_t expo, int base, int special)
 
   *p = '\0';
 
-  sprintf (p, "%+"MPC_EXP_FORMAT_SPEC, expo - 1);
+  sprintf (p, "%+"MPC_EXP_FORMAT_SPEC, x);
 
   return pretty;
 }
@@ -202,7 +208,7 @@ mpc_get_str (int base, size_t n, mpc_srcptr op, mpc_rnd_t rnd)
     }
 
   needed_size = strlen (real_str) + strlen (imag_str) + 4;
- 
+
   /* TODO: use gmp_alloc_func */
   complex_str = (char *)malloc (needed_size * sizeof (char));
   if (complex_str == NULL)

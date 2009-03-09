@@ -227,6 +227,7 @@ check_set_str (mp_exp_t exp_max)
 
   mpfr_prec_t prec;
   mp_exp_t exp_min;
+  unsigned int base;
 
   mpc_init2 (expected, 1024);
   mpc_init2 (got, 1024);
@@ -244,14 +245,16 @@ check_set_str (mp_exp_t exp_max)
       mpc_set_prec (got, prec);
       mpc_set_prec (expected, prec);
 
+      base = 2 + (unsigned int) gmp_urandomm_ui (rands, 35);
+
       mpfr_set_nan (MPC_RE (expected));
       mpfr_set_inf (MPC_IM (expected), prec % 2 - 1);
-      str = mpc_get_str (10, 0, expected, MPC_RNDNN);
+      str = mpc_get_str (base, 0, expected, MPC_RNDNN);
       if (mpfr_nan_p (MPC_RE (got)) == 0
           || mpfr_cmp (MPC_IM (got), MPC_IM (expected)) != 0)
         {
           printf ("Error: mpc_set_str o mpc_get_str != Id\n"
-                  "with str=\"%s\"\n", str);
+                  "in base %u with str=\"%s\"\n", base, str);
           OUT (expected);
           printf ("     ");
           OUT (got);
@@ -260,12 +263,12 @@ check_set_str (mp_exp_t exp_max)
       mpc_free_str (str);
 
       test_default_random (expected, exp_min, exp_max, 128, 25);
-      str = mpc_get_str (10, 0, expected, MPC_RNDNN);
-      if (mpc_set_str (got, str, 10, MPC_RNDNN) == -1
+      str = mpc_get_str (base, 0, expected, MPC_RNDNN);
+      if (mpc_set_str (got, str, base, MPC_RNDNN) == -1
           || mpc_cmp (got, expected) != 0)
         {
           printf ("Error: mpc_set_str o mpc_get_str != Id\n"
-                  "with str=\"%s\"\n", str);
+                  "in base %u with str=\"%s\"\n", base, str);
           OUT (expected);
           printf ("     ");
           OUT (got);
