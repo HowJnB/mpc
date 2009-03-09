@@ -65,7 +65,7 @@ prettify (const char *str, const mp_exp_t expo, int base, int special)
 
   if (special)
     {
-      /* special number: nan or inf or zero */
+      /* special number: nan or inf */
       /* TODO: use gmp_alloc_func */
       pretty = (char *)malloc (sz * sizeof(char));
       strcpy (pretty, str);
