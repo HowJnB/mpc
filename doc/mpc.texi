@@ -578,7 +578,6 @@ double-precision number, and then only to a complex number.
 @deftypefunx int mpc_set_q_q (mpc_t @var{rop}, mpq_t @var{op1}, mpq_t @var{op2}, mpc_rnd_t @var{rnd})
 @deftypefunx int mpc_set_f_f (mpc_t @var{rop}, mpf_t @var{op1}, mpf_t @var{op2}, mpc_rnd_t @var{rnd})
 @deftypefunx int mpc_set_fr_fr (mpc_t @var{rop}, mpfr_t @var{op1}, mpfr_t @var{op2}, mpc_rnd_t @var{rnd})
-@deftypefunx int mpc_set_ui_fr (mpc_t @var{rop}, unsigned long int @var{op1}, mpfr_t @var{op2}, mpc_rnd_t @var{rnd})
 Set the real part of @var{rop} from @var{op1}, and its imaginary part from
 @var{op2}, according to the rounding mode @var{rnd}.
 @end deftypefun

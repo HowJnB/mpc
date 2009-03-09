@@ -4,6 +4,7 @@ Recent changes:
     mpc_set_f_f, mpc_set_q, mpc_set_q_q, mpc_set_z and mpc_set_z_z
   - default precision removed, as well as init and all init_set
     combinations; use init2 and init3, followed by set, instead
+  - mpc_set_ui_fr removed
   - exp, log, cos, sin, tan, cosh, sinh, tanh and sqrt return
     inexact value
   - Bug fixes:

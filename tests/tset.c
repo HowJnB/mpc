@@ -166,13 +166,6 @@ check_set (void)
           || mpfr_erangeflag_p())
         PRINT_ERROR ("mpc_set_q_q", prec, z);
 
-      mpc_set_ui_fr (z, prec, fr, MPC_RNDNN);
-      mpfr_clear_flags ();
-      if (mpfr_cmp_ui (MPC_RE(z), prec) != 0
-          || mpfr_cmp (MPC_IM(z), fr) != 0
-          || mpfr_erangeflag_p())
-        PRINT_ERROR ("mpc_set_fr_fr", prec, z);
-
       mpc_set_q (z, mpq, MPC_RNDNN);
       mpfr_clear_flags ();
       if (mpfr_cmp (MPC_RE(z), fr) != 0

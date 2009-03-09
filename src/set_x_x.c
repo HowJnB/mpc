@@ -77,7 +77,3 @@ int
 mpc_set_sj_sj (mpc_ptr z, intmax_t a, intmax_t b, mpc_rnd_t rnd)
   MPC_SET_X_X (_si, z, a, b, rnd)
 #endif
-
-int
-mpc_set_ui_fr (mpc_ptr z, unsigned long int a, mpfr_srcptr b, mpc_rnd_t rnd)
-  MPC_SET_X_Y (_ui,, z, a, b, rnd)
