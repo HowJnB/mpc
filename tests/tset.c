@@ -29,6 +29,10 @@ MA 02111-1307, USA. */
 # endif
 #endif
 
+#ifdef HAVE_LOCALE_H
+#include <locale.h>
+#endif
+
 #include "mpc-tests.h"
 #include "mpc-impl.h"
 
@@ -269,6 +273,32 @@ check_set_str (mp_exp_t exp_max)
         }
       mpc_free_str (str);
     }
+
+#ifdef HAVE_LOCALE_H
+  {
+    /* Check with ',' as a decimal point */
+    char *old_locale;
+
+    old_locale = setlocale (LC_ALL, "de_DE");
+    if (old_locale != NULL)
+      {
+        str = mpc_get_str (10, 0, expected, MPC_RNDNN);
+        if (mpc_set_str (got, str, 10, MPC_RNDNN) == -1
+            || mpc_cmp (got, expected) != 0)
+          {
+            printf ("Error: mpc_set_str o mpc_get_str != Id\n"
+                    "with str=\"%s\"\n", str);
+            OUT (expected);
+            printf ("     ");
+            OUT (got);
+            exit (1);
+          }
+        mpc_free_str (str);
+
+        setlocale (LC_ALL, old_locale);
+      }
+  }
+#endif /* HAVE_LOCALE_H */
 
   /* the real part has a zero exponent in base ten (fixed in r439) */
   mpc_set_prec (expected, 37);

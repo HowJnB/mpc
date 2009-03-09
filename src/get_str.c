@@ -27,7 +27,13 @@ MA 02111-1307, USA. */
 #include "mpc.h"
 #include "mpc-impl.h"
 
-/* The output format is "(real imag)" */
+/* Needs <locale.h> */
+#ifdef HAVE_LOCALE_H
+#include <locale.h>
+#endif
+
+/* The output format is "(real imag)", the decimal point of the locale is
+   used. */
 
 /* mp_prec_t can be either int or long int */
 #if (__GMP_MP_SIZE_T_INT == 1)
@@ -60,6 +66,7 @@ prettify (const char *str, const mp_exp_t expo, int base, int special)
   char *pretty;
   char *p;
   const char *s;
+  const char *decimal_point;
 
   sz = strlen (str) + 1; /* + terminal '\0' */
 
@@ -74,6 +81,12 @@ prettify (const char *str, const mp_exp_t expo, int base, int special)
     }
 
   /* regular number */
+
+#ifdef HAVE_LOCALE_H
+  decimal_point = localeconv ()->decimal_point;
+#else
+  decimal_point = ".";
+#endif
 
   ++sz; /* + decimal point */
 
@@ -113,20 +126,20 @@ prettify (const char *str, const mp_exp_t expo, int base, int special)
   pretty = (char *)malloc (sz * sizeof(char));
   p = pretty;
 
-  /* optional sign plus first digit */
+  /* 1. optional sign plus first digit */
   s = str;
   *p++ = *s++;
   if (str[0] == '-' || str[0] == '+')
     *p++ = *s++;
 
-  /* decimal point */
-  *p++ = '.';
+  /* 2. decimal point */
+  *p++ = *decimal_point;
   *p = '\0';
 
-  /* other significant digits */
+  /* 3. other significant digits */
   strcat (pretty, s);
 
-  /* exponent (in base ten) */
+  /* 4. exponent (in base ten) */
   if (expo == 1)
     return pretty;
 

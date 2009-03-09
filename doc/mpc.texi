@@ -642,11 +642,13 @@ valid strings for @code{base}=0 and represent the same value.
 Convert @var{op} to a string of a parenthesed pair of numbers whose digits are
 written in in base @var{b}, with rounding in the direction @var{rnd}, where
 @var{n} is either zero or the number of significant digits; in the latter
-case, @var{n} must be greater or equal to 2. The base may vary from 2 to 36.
+case, @var{n} must be greater or equal to 2.
+The base may vary from 2 to 36.
 If @var{n} is zero, the number of digits of the significand is chosen large
 enough so that re-reading the printed value with the same precision, assuming
 both output and input use rounding to nearest, will recover the original value
 of @var{op}.
+Note that @code{mpc_get_str} uses the decimal point of the current locale.
 @end deftypefun
 
 
