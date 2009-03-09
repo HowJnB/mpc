@@ -457,7 +457,7 @@ different word size.
 @menu
 * Initializing Complex Numbers::  
 * Assigning Complex Numbers::   
-* Conversion Functions::        
+* Conversion Functions::
 * Complex Comparison::
 * Projection & Decomposing::    
 * Basic Arithmetic::            
@@ -465,6 +465,7 @@ different word size.
 * Trigonometric Functions::     
 * I/O of Complex Numbers::      
 * Miscellaneous Complex Functions::  
+* Advanced Functions::          
 * Internals::                   
 @end menu
 
@@ -538,10 +539,12 @@ via @var{pi}.
 @cindex Complex assignment functions
 
 These functions assign new values to already initialized complex numbers
-(@pxref{Initializing Complex Numbers}). When using any functions with
-@code{intmax_t} parameter, you must include @code{<stdint.h>} or
-@code{<inttypes.h>} before @file{mpc.h}, to allow @file{mpc.h} to define
-prototypes for these functions.
+(@pxref{Initializing Complex Numbers}).
+When using any functions with @code{intmax_t} parameter, you must include
+@code{<stdint.h>} or @code{<inttypes.h>} before @file{mpc.h}, to allow
+@file{mpc.h} to define prototypes for these functions.
+If you need assignment functions that are not in the current API, you can
+define them using the @code{MPC_SET_X_Y} macro (@pxref{Advanced Functions}).
 
 @deftypefun int mpc_set (mpc_t @var{rop}, mpc_t @var{op}, mpc_rnd_t @var{rnd})
 Set the value of @var{rop} from @var{op}, rounded to the precision of @var{rop}
@@ -921,7 +924,7 @@ followed by a whitespace, thus @code{17+I*42} is invalid, but
 Return the number of bytes read, or if an error occurred, return 0.
 @end deftypefun
 
-@node Miscellaneous Complex Functions, Internals, I/O of Complex Numbers, Complex Functions
+@node Miscellaneous Complex Functions, Advanced Functions, I/O of Complex Numbers, Complex Functions
 @comment  node-name,  next,  previous,  up
 @section Miscellaneous Functions
 @cindex Miscellaneous complex functions
@@ -989,7 +992,41 @@ Here is an example of how to check the MPC version at compile time:
 @end example
 @end deftypefn
 
-@node Internals,  , Miscellaneous Complex Functions, Complex Functions
+@node Advanced Functions, Internals, Miscellaneous Complex Functions, Complex Functions
+@comment  node-name,  next,  previous,  up
+@section Advanced Functions
+
+@defmac MPC_SET_X_Y (@var{real_suffix},@var{imag_suffix}, @var{real}, @var{imag}, @var{rnd})
+MPC_SET_X_Y cannot be used by itself, it is designed to serve as the body of
+an assignment function definition.
+The @var{real_suffix} and @var{imag_suffix} parameters are the @code{_x}
+suffixes of the @code{mpfr_set_x} functions you would use to set the real and
+imaginary part separately.
+@var{real} (respectively @var{imag}) is the value you want to assign to the
+real (resp. imaginary) part, its type must conform to @var{real_suffix}
+(resp. @var{imag_suffix}).
+@var{rnd} is the @code{mpc_rnd_t} rounding mode.
+The return value is the usual inexact value (@pxref{return-value,, Return
+Value}).
+
+For instance, you can define mpc_set_ui_d as follows:
+@example
+int mpc_set_ui_d (mpc_t rop, long int re, double im, mpc_rnd_t rnd)
+    MPC_SET_X_Y (_ui, _d, re, im, rnd);
+@end example
+
+If one part is set to an @code{mpfr_t} value, the corresponding suffix is
+empty, as follows:
+@example
+int mpc_set_ui_fr (mpc_t rop, long int re, mpfr_ptr im, mpc_rnd_t rnd)
+    MPC_SET_X_Y (_ui, , re, im, rnd);
+@end example
+
+This macro might change incompatibly or even be removed in future versions.
+@end defmac
+
+
+@node Internals,  , Advanced Functions, Complex Functions
 @comment  node-name,  next,  previous,  up
 @section Internals
 

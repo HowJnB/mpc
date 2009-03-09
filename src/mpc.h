@@ -230,12 +230,6 @@ __MPC_DECLSPEC size_t mpc_out_str __MPC_PROTO ((FILE *, int, size_t, mpc_srcptr,
  ( mpc_cmp_si_si ((x), (y), 0l) )
 #define mpc_ui_sub(x, y, z, r) mpc_ui_ui_sub (x, y, 0ul, z, r)
 
-/* If you need a set_x_y function that is not provided by MPC, you can use the
-   MPC_SET_X_Y macro in its definition. For instance, in set_x_x.c we have:
-
-   int mpc_set_ui_fr (mpc_ptr z, unsigned long int a, mpfr_srcptr b, mpc_rnd_t rnd)
-     MPC_SET_X_Y (_ui,, z, a, b, rnd)
-*/
 #define MPC_SET_X_Y(real_t, imag_t, z, real_value, imag_value, rnd)     \
   {                                                                     \
     int _inex_re, _inex_im;                                             \
