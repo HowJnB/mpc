@@ -998,7 +998,7 @@ Here is an example of how to check the MPC version at compile time:
 @comment  node-name,  next,  previous,  up
 @section Advanced Functions
 
-@defmac MPC_SET_X_Y (@var{real_suffix},@var{imag_suffix}, @var{real}, @var{imag}, @var{rnd})
+@defmac MPC_SET_X_Y (@var{real_suffix}, @var{imag_suffix}, @var{real}, @var{imag}, @var{rnd})
 MPC_SET_X_Y cannot be used by itself, it is designed to serve as the body of
 an assignment function definition.
 The @var{real_suffix} and @var{imag_suffix} parameters are the @code{_x}
@@ -1024,7 +1024,7 @@ int mpc_set_ui_fr (mpc_t rop, long int re, mpfr_ptr im, mpc_rnd_t rnd)
     MPC_SET_X_Y (_ui, , re, im, rnd);
 @end example
 
-This macro might change incompatibly or even be removed in future versions.
+This macro might be removed in future versions.
 @end defmac
 
 

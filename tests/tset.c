@@ -43,7 +43,21 @@ MA 02111-1307, USA. */
     OUT(a);                                                     \
     exit (1);                                                   \
   } while (0)
-  
+
+/* test MPC_SET_X_Y though some functions */
+static int
+mpc_set_ui_fr (mpc_ptr z, unsigned long int a, mpfr_srcptr b, mpc_rnd_t rnd)
+  MPC_SET_X_Y (_ui, , z, a, b, rnd)
+
+static int
+mpc_set_fr_ui (mpc_ptr z, mpfr_srcptr a, unsigned long int b, mpc_rnd_t rnd)
+  MPC_SET_X_Y (,_ui, z, a, b, rnd)
+
+static int
+mpc_set_f_si (mpc_ptr z, mpf_t a, long int b, mpc_rnd_t rnd)
+  MPC_SET_X_Y (_f, _si, z, a, b, rnd)
+
+
 static void
 check_set (void)
 {
@@ -72,7 +86,7 @@ check_set (void)
       mpfr_set_prec (fr, prec);
 
       lo = -prec;
-      
+
       mpfr_set_d (fr, 1.23456789, GMP_RNDN);
 
       mpc_set_d (z, 1.23456789, MPC_RNDNN);
@@ -140,7 +154,7 @@ check_set (void)
           || mpfr_erangeflag_p())
         PRINT_ERROR ("mpc_set_fr", prec, z);
 
-      mpfr_set_z (fr, mpz, GMP_RNDN);      
+      mpfr_set_z (fr, mpz, GMP_RNDN);
       mpc_set_z_z (z, mpz, mpz, MPC_RNDNN);
       mpfr_clear_flags ();
       if (mpfr_cmp (MPC_RE(z), fr) != 0
@@ -170,6 +184,20 @@ check_set (void)
           || mpfr_erangeflag_p())
         PRINT_ERROR ("mpc_set_q_q", prec, z);
 
+      mpc_set_ui_fr (z, prec, fr, MPC_RNDNN);
+      mpfr_clear_flags ();
+      if (mpfr_cmp_ui (MPC_RE (z), prec) != 0
+          || mpfr_cmp (MPC_IM (z), fr) != 0
+          || mpfr_erangeflag_p ())
+        PRINT_ERROR ("mpc_set_ui_fr", prec, z);
+
+      mpc_set_fr_ui (z, fr, prec, MPC_RNDNN);
+      mpfr_clear_flags ();
+      if (mpfr_cmp (MPC_RE (z), fr) != 0
+          || mpfr_cmp_ui (MPC_IM (z), prec) != 0
+          || mpfr_erangeflag_p())
+        PRINT_ERROR ("mpc_set_fr_ui", prec, z);
+
       mpc_set_q (z, mpq, MPC_RNDNN);
       mpfr_clear_flags ();
       if (mpfr_cmp (MPC_RE(z), fr) != 0
@@ -183,14 +211,21 @@ check_set (void)
       if (mpfr_cmp (MPC_RE(z), fr) != 0
           || mpfr_cmp (MPC_IM(z), fr) != 0
           || mpfr_erangeflag_p())
-        PRINT_ERROR ("mpc_set_f_f", prec, z);      
+        PRINT_ERROR ("mpc_set_f_f", prec, z);
 
       mpc_set_f (z, mpf, MPC_RNDNN);
       mpfr_clear_flags ();
       if (mpfr_cmp (MPC_RE(z), fr) != 0
           || mpfr_cmp_ui (MPC_IM(z), 0) != 0
           || mpfr_erangeflag_p())
-        PRINT_ERROR ("mpc_set_f", prec, z);      
+        PRINT_ERROR ("mpc_set_f", prec, z);
+
+      mpc_set_f_si (z, mpf, lo, MPC_RNDNN);
+      mpfr_clear_flags ();
+      if (mpfr_cmp (MPC_RE (z), fr) != 0
+          || mpfr_cmp_si (MPC_IM (z), lo) != 0
+          || mpfr_erangeflag_p ())
+        PRINT_ERROR ("mpc_set_f", prec, z);
 
 #ifdef _MPC_H_HAVE_INTMAX_T
       {
