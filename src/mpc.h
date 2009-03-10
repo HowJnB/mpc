@@ -170,7 +170,6 @@ __MPC_DECLSPEC int  mpc_set_q __MPC_PROTO ((mpc_ptr, mpq_srcptr, mpc_rnd_t));
 __MPC_DECLSPEC int  mpc_set_q_q __MPC_PROTO ((mpc_ptr, mpq_srcptr, mpq_srcptr, mpc_rnd_t));
 __MPC_DECLSPEC int  mpc_set_si __MPC_PROTO ((mpc_ptr, long int, mpc_rnd_t));
 __MPC_DECLSPEC int  mpc_set_si_si __MPC_PROTO ((mpc_ptr, long int, long int, mpc_rnd_t));
-__MPC_DECLSPEC int  mpc_set_ui_fr __MPC_PROTO ((mpc_ptr, unsigned long int, mpfr_srcptr, mpc_rnd_t));
 __MPC_DECLSPEC int  mpc_set_ui __MPC_PROTO ((mpc_ptr, unsigned long int, mpc_rnd_t));
 __MPC_DECLSPEC int  mpc_set_ui_ui __MPC_PROTO ((mpc_ptr, unsigned long int, unsigned long int, mpc_rnd_t));
 __MPC_DECLSPEC int  mpc_set_z __MPC_PROTO ((mpc_ptr, mpz_srcptr, mpc_rnd_t));
