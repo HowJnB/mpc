@@ -431,6 +431,19 @@ return an integer that is 0, positive or negative depending on
 whether the rounded value is the same, larger or smaller then
 the exact result.
 
+
+@section Branch Cuts And Special Values
+
+Some complex functions have branch cuts, across which the function is
+discontinous. In MPC, the branch cuts chosen are the same as those
+specified for the corresponding functions in the ISO C99 standard.
+
+Likewise, when evaluated at a point whose real or imaginary part is
+either infinite or a NaN or a signed zero, a function returns the same
+value as those specified for the corresponding function in the ISO C99
+standard.
+
+
 @node Complex Functions, Contributors, MPC Basics, Top
 @comment  node-name,  next,  previous,  up
 @chapter Complex Functions
@@ -1083,6 +1096,9 @@ Approved March 21, 1985: IEEE Standards Board; approved July 26,
 @item
 Donald E. Knuth, "The Art of Computer Programming", vol 2,
 "Seminumerical Algorithms", 2nd edition, Addison-Wesley, 1981.
+
+@item
+ISO/IEC 9899:1999, Programming languages — C.
 
 @end itemize
 
