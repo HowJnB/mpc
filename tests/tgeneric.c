@@ -531,6 +531,18 @@ reuse_ccc (mpc_function* function, mpc_srcptr z, mpc_srcptr x,
 
       exit (1);
     }
+  mpc_set (got, x, MPC_RNDNN); /* exact */
+  function->pointer.CCC (expected, x, x, MPC_RNDNN);
+  function->pointer.CCC (got, got, got, MPC_RNDNN);
+  if (!same_mpc_value (got, expected, ks))
+    {
+      printf ("Error for %s(x, x, x) for\n", function->name);
+      OUT (x);
+      OUT (expected);
+      OUT (got);
+
+      exit (1);
+    }
 }
 
 static void
