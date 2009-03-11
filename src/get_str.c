@@ -181,13 +181,15 @@ mpc_get_str (int base, size_t n, mpc_srcptr op, mpc_rnd_t rnd)
   char *imag_str;
   char *complex_str = NULL;
 
+  if (base < 2 || base > 36)
+    return NULL;
+
   if (mpfr_zero_p (MPC_RE (op)))
     real_str = pretty_zero (MPC_RE (op));
   else
     {
       uggly = mpfr_get_str (NULL, &expo, base, n, MPC_RE (op), MPC_RND_RE (rnd));
-      if (uggly == NULL)
-        return NULL;
+      MPC_ASSERT (uggly != NULL);
       real_str = prettify (uggly, expo, base, !mpfr_number_p (MPC_RE (op)));
       mpfr_free_str (uggly);
     }
@@ -198,11 +200,7 @@ mpc_get_str (int base, size_t n, mpc_srcptr op, mpc_rnd_t rnd)
   else
     {
       uggly = mpfr_get_str (NULL, &expo, base, n, MPC_IM (op), MPC_RND_IM (rnd));
-      if (uggly == NULL)
-        {
-          free (real_str); /* TODO: use gmp_free_func */
-          return NULL;
-        }
+      MPC_ASSERT (uggly != NULL);
       imag_str = prettify (uggly, expo, base, !mpfr_number_p (MPC_IM (op)));
       mpfr_free_str (uggly);
     }
@@ -211,8 +209,7 @@ mpc_get_str (int base, size_t n, mpc_srcptr op, mpc_rnd_t rnd)
 
   /* TODO: use gmp_alloc_func */
   complex_str = (char *)malloc (needed_size * sizeof (char));
-  if (complex_str == NULL)
-    goto exit;
+  MPC_ASSERT (complex_str != NULL);
 
   strcpy (complex_str, "(");
   strcat (complex_str, real_str);
@@ -220,7 +217,6 @@ mpc_get_str (int base, size_t n, mpc_srcptr op, mpc_rnd_t rnd)
   strcat (complex_str, imag_str);
   strcat (complex_str, ")");
 
- exit:
   free (real_str); /* TODO: use gmp_free_func */
   free (imag_str);
 

@@ -28,7 +28,7 @@ MA 02111-1307, USA. */
 
 
 /*
- * MPFR macros
+ * MPFR constants and macros
  */
 
 #ifndef BITS_PER_MP_LIMB
@@ -80,6 +80,21 @@ do {                                                            \
 /* Safe absolute value (to avoid possible integer overflow) */
 /* type is the target (unsigned) type (copied from mpfr-impl.h) */
 #define SAFE_ABS(type,x) ((x) >= 0 ? (type)(x) : -(type)(x))
+
+
+/*
+ * ASSERT macros
+ */
+
+#define MPC_ASSERT(expr)                                        \
+  do {                                                          \
+    if (!(expr))                                                \
+      {                                                         \
+        fprintf (stderr, "%s:%d: MPC assertion failed: %s\n",   \
+                 __FILE__, __LINE__, #expr);                    \
+        abort();                                                \
+      }                                                         \
+  } while (0)
 
 
 /*

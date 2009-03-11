@@ -355,6 +355,13 @@ check_set_str (mp_exp_t exp_max)
     }
   mpc_free_str (str);
 
+  str = mpc_get_str (1, 0, expected, MPC_RNDNN);
+  if (str != NULL)
+    {
+      printf ("Error: mpc_get_str with base==1 should fail\n");
+      exit (1);
+    }
+
   mpc_clear (expected);
   mpc_clear (got);
 }
