@@ -26,27 +26,27 @@ MA 02111-1307, USA. */
 
 #include "config.h" /* for MPC_USE_LOGGING */
 
-#define MPFR_PREC(x) mpfr_get_prec(x)
-#define MPFR_EXP(x)  mpfr_get_exp(x)
-#define MPFR_CHANGE_SIGN(x) mpfr_neg(x,x,GMP_RNDN)
-#define MPFR_IS_SINGULAR(x) (mpfr_nan_p(x) || mpfr_inf_p(x) || mpfr_zero_p(x))
 
-/* Convention in C99 (G.3): z is regarded as an infinity if at least one of
-   its parts is infinite */
-#define MPC_IS_INF(z) (mpfr_inf_p(MPC_RE(z))||mpfr_inf_p(MPC_IM(z)))
-/* Convention in C99 (G.3): z is regarded as a zero if each of its parts is
-   a zero */
-#define MPC_IS_ZERO(z) (mpfr_zero_p(MPC_RE(z))&&mpfr_zero_p(MPC_IM(z)))
-
-#define MAX(h,i) ((h) > (i) ? (h) : (i))
-
-#ifndef MUL_KARATSUBA_THRESHOLD
-#define MUL_KARATSUBA_THRESHOLD 23
-#endif
+/*
+ * MPFR macros
+ */
 
 #ifndef BITS_PER_MP_LIMB
 #define BITS_PER_MP_LIMB mp_bits_per_limb
 #endif
+
+#define MPFR_PREC(x) mpfr_get_prec(x)
+#define MPFR_EXP(x)  mpfr_get_exp(x)
+
+#define MPFR_CHANGE_SIGN(x) mpfr_neg(x,x,GMP_RNDN)
+#define MPFR_IS_SINGULAR(x) (mpfr_nan_p(x) || mpfr_inf_p(x) || mpfr_zero_p(x))
+
+#define SWAP(a,b) { mpfr_srcptr tmp; tmp = a; a = b; b = tmp; }
+
+
+/*
+ * MPC macros
+ */
 
 #define MPC_PREC_RE(x) (MPFR_PREC(MPC_RE(x)))
 #define MPC_PREC_IM(x) (MPFR_PREC(MPC_IM(x)))
@@ -54,10 +54,13 @@ MA 02111-1307, USA. */
 
 #define INV_RND(r) \
    (((r) == GMP_RNDU) ? GMP_RNDD : (((r) == GMP_RNDD) ? GMP_RNDU : (r)))
-#define SWAP(a,b) { mpfr_srcptr tmp; tmp = a; a = b; b = tmp; }
-/* Safe absolute value (to avoid possible integer overflow) */
-/* type is the target (unsigned) type (copied from mpfr-impl.h */
-#define SAFE_ABS(type,x) ((x) >= 0 ? (type)(x) : -(type)(x))
+
+/* Convention in C99 (G.3): z is regarded as an infinity if at least one of
+   its parts is infinite */
+#define MPC_IS_INF(z) (mpfr_inf_p(MPC_RE(z))||mpfr_inf_p(MPC_IM(z)))
+/* Convention in C99 (G.3): z is regarded as a zero if each of its parts is
+   a zero */
+#define MPC_IS_ZERO(z) (mpfr_zero_p(MPC_RE(z))&&mpfr_zero_p(MPC_IM(z)))
 
 #define OUT(x)                                                  \
 do {                                                            \
@@ -68,7 +71,30 @@ do {                                                            \
 } while (0)
 
 
-/* Logging macros */
+/*
+ * Miscelaneous useful macros
+ */
+
+#define MAX(h,i) ((h) > (i) ? (h) : (i))
+
+/* Safe absolute value (to avoid possible integer overflow) */
+/* type is the target (unsigned) type (copied from mpfr-impl.h) */
+#define SAFE_ABS(type,x) ((x) >= 0 ? (type)(x) : -(type)(x))
+
+
+/*
+ * Constants
+ */
+
+#ifndef MUL_KARATSUBA_THRESHOLD
+#define MUL_KARATSUBA_THRESHOLD 23
+#endif
+
+
+/* 
+ * Logging macros
+ */
+
 #ifdef MPC_USE_LOGGING
 
 #define MPC_LOG_VAR(x)                          \
@@ -99,6 +125,7 @@ do {                                                            \
 #define MPC_LOG_MSG(x) MPC_LOG_MSG2 x
 
 #else /* MPC_USE_LOGGING */
+
 #define MPC_LOG_VAR(x)
 #define MPC_LOG_RND(r)
 #define MPC_LOG_MSG(x)
@@ -106,7 +133,9 @@ do {                                                            \
 #endif /* MPC_USE_LOGGING */
 
 
-/* Define internal functions */
+/* 
+ * Define internal functions
+ */
 
 #if defined (__cplusplus)
 extern "C" {
@@ -119,5 +148,6 @@ __MPC_DECLSPEC unsigned long  mpc_ceil_log2 __MPC_PROTO ((unsigned long));
 #if defined (__cplusplus)
 }
 #endif
+
 
 #endif
