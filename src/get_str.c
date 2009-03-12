@@ -171,12 +171,28 @@ prettify (const char *str, const mp_exp_t expo, int base, int special)
   return pretty;
 }
 
+static char *
+get_pretty_str (const int base, const size_t n, mpfr_srcptr x, mpfr_rnd_t rnd)
+{
+  mp_exp_t expo;
+  char *uggly;
+  char *pretty;
+
+  if (mpfr_zero_p (x))
+    return pretty_zero (x);
+
+  uggly = mpfr_get_str (NULL, &expo, base, n, x, rnd);
+  MPC_ASSERT (uggly != NULL);
+  pretty = prettify (uggly, expo, base, !mpfr_number_p (x));
+  mpfr_free_str (uggly);
+
+  return pretty;
+}
+
 char *
 mpc_get_str (int base, size_t n, mpc_srcptr op, mpc_rnd_t rnd)
 {
   size_t needed_size;
-  mp_exp_t expo;
-  char *uggly;
   char *real_str;
   char *imag_str;
   char *complex_str = NULL;
@@ -184,26 +200,8 @@ mpc_get_str (int base, size_t n, mpc_srcptr op, mpc_rnd_t rnd)
   if (base < 2 || base > 36)
     return NULL;
 
-  if (mpfr_zero_p (MPC_RE (op)))
-    real_str = pretty_zero (MPC_RE (op));
-  else
-    {
-      uggly = mpfr_get_str (NULL, &expo, base, n, MPC_RE (op), MPC_RND_RE (rnd));
-      MPC_ASSERT (uggly != NULL);
-      real_str = prettify (uggly, expo, base, !mpfr_number_p (MPC_RE (op)));
-      mpfr_free_str (uggly);
-    }
-
-
-  if (mpfr_zero_p (MPC_IM (op)))
-    imag_str = pretty_zero (MPC_RE (op));
-  else
-    {
-      uggly = mpfr_get_str (NULL, &expo, base, n, MPC_IM (op), MPC_RND_IM (rnd));
-      MPC_ASSERT (uggly != NULL);
-      imag_str = prettify (uggly, expo, base, !mpfr_number_p (MPC_IM (op)));
-      mpfr_free_str (uggly);
-    }
+  real_str = get_pretty_str (base, n, MPC_RE (op), MPC_RND_RE (rnd));
+  imag_str = get_pretty_str (base, n, MPC_IM (op), MPC_RND_IM (rnd));
 
   needed_size = strlen (real_str) + strlen (imag_str) + 4;
 
