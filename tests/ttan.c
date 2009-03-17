@@ -21,7 +21,6 @@ MA 02111-1307, USA. */
 
 #include <stdlib.h>
 #include "mpc-tests.h"
-#include "mpc-impl.h"
 
 static void
 test_failed (mpc_t op, mpc_t get, mpc_t expected)

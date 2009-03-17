@@ -22,7 +22,6 @@ MA 02111-1307, USA. */
 #include <stdio.h>
 #include <stdlib.h>
 #include "mpc-tests.h"
-#include "mpc-impl.h"
 
 void cmpsqr (mpc_srcptr, mpc_rnd_t);
 void testsqr (long, long, mp_prec_t, mpc_rnd_t);

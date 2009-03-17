@@ -34,7 +34,6 @@ MA 02111-1307, USA. */
 #endif
 
 #include "mpc-tests.h"
-#include "mpc-impl.h"
 
 #define PRINT_ERROR(function_name, precision, a)                \
   do {                                                          \
