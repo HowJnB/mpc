@@ -1,6 +1,6 @@
 /* mpc_sqr -- Square a complex number.
 
-Copyright (C) 2002, 2005, 2008 Andreas Enge, Paul Zimmermann, Philippe Th\'eveny
+Copyright (C) 2002, 2005, 2008, 2009 Andreas Enge, Paul Zimmermann, Philippe Th\'eveny
 
 This file is part of the MPC Library.
 
@@ -20,7 +20,6 @@ the Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston,
 MA 02111-1307, USA. */
 
 #include <stdio.h>
-#include "mpc.h"
 #include "mpc-impl.h"
 
 int

@@ -1,6 +1,6 @@
 /* Handle seed for random numbers.
 
-Copyright (C) 2008 Philippe Th\'eveny.
+Copyright (C) 2008, 2009 Philippe Th\'eveny.
 
 This file is part of the MPC Library.
 
@@ -26,10 +26,7 @@ MA 02111-1307, USA. */
 #include <stdio.h>
 #include <stdlib.h>
 
-#include <gmp.h>
-#include <mpfr.h>
-#include "mpc.h"
-#include "mpc-impl.h"
+#include "mpc-tests.h"
 
 #include "config.h"
 

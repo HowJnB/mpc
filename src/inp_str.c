@@ -1,6 +1,6 @@
 /* mpc_inp_str -- Input a complex number from a given stream.
 
-Copyright (C) 2002 Andreas Enge, Paul Zimmermann
+Copyright (C) 2002, 2009 Andreas Enge, Paul Zimmermann, Philippe Th\'eveny
 
 This file is part of the MPC Library.
 
@@ -21,9 +21,7 @@ MA 02111-1307, USA. */
 
 #include <stdio.h>
 #include <ctype.h>
-#include "gmp.h"
-#include "mpfr.h"
-#include "mpc.h"
+#include "mpc-impl.h"
 
 size_t
 mpc_inp_str (mpc_ptr rop, FILE *stream, int base, mpc_rnd_t rnd_mode)

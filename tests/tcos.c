@@ -1,6 +1,6 @@
 /* test file for mpc_cos.
 
-Copyright (C) 2008 2009 Andreas Enge, Philippe Th\'eveny
+Copyright (C) 2008, 2009 Andreas Enge, Philippe Th\'eveny
 
 This file is part of the MPC Library.
 
@@ -20,7 +20,6 @@ the Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston,
 MA 02111-1307, USA. */
 
 #include "mpc-tests.h"
-#include "mpc-impl.h"
 
 static void
 bug20090105 (void)

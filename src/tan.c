@@ -1,6 +1,6 @@
 /* mpc_tan -- tangent of a complex number.
 
-Copyright (C) 2008 Philippe Th\'eveny, Andreas Enge
+Copyright (C) 2008, 2009 Philippe Th\'eveny, Andreas Enge
 
 This file is part of the MPC Library.
 
@@ -20,8 +20,6 @@ the Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston,
 MA 02111-1307, USA. */
 
 #include <stdio.h>
-#include "mpfr.h"
-#include "mpc.h"
 #include "mpc-impl.h"
 
 int

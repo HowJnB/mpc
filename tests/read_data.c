@@ -23,7 +23,6 @@ MA 02111-1307, USA. */
 #include <string.h>
 #include <ctype.h>
 #include "mpc-tests.h"
-#include "mpc-impl.h"
 
 #ifndef __SRCDIR
 #define __SRCDIR .

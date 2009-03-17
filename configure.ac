@@ -76,8 +76,46 @@ AC_ARG_ENABLE([logging],
 
 # Checks for programs.
 AC_PROG_CC
-AC_PROG_LIBTOOL
 AC_PROG_SED
+case $host in
+  *-*-cygwin* | *-*-mingw* | *-*-pw32* | *-*-os2*)
+   AC_MSG_CHECKING(for DLL/static GMP)
+   if test "$enable_shared" = yes; then
+     LDFLAGS="$LDFLAGS -no-undefined"
+     dont_link_with_gmp="yes"
+     AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[
+#include "gmp.h"
+#if !__GMP_LIBGMP_DLL
+# error "Dead man"
+error
+#endif
+     ]], [[]])],[AC_MSG_RESULT(DLL)],[
+  AC_MSG_RESULT(static)
+  AC_MSG_ERROR([gmp.h isn't a DLL: use --enable-static --disable-shared]) ])
+     AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[
+#include "mpfr.h"
+#if !__GMP_LIBGMP_DLL
+# error "Dead man"
+error
+#endif
+     ]], [[]])],[AC_MSG_RESULT(DLL)],[
+  AC_MSG_RESULT(static)
+  AC_MSG_ERROR([gmp.h isn't a DLL: use --enable-static --disable-shared]) ])
+   else
+     AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[
+#include "gmp.h"
+#if __GMP_LIBGMP_DLL
+# error "Dead man"
+error
+#endif
+     ]], [[]])],[AC_MSG_RESULT(static)],[
+  AC_MSG_RESULT(DLL)
+  AC_MSG_ERROR([gmp.h is a DLL: use --disable-static --enable-shared]) ])
+  fi
+  ;;
+esac
+dnl Finally set up LibTool
+AC_PROG_LIBTOOL
 
 # Checks for libraries.
 AC_CHECK_LIB([gmp], [__gmpz_init],
@@ -145,7 +183,10 @@ AC_CHECK_FUNCS([dup dup2 fileno],,
         [AC_DEFINE([NO_STREAM_REDIRECTION],1,[Do not check mpc_out_str on stdout])])
 
 # Checks if compiler accepts warning flags.
-AX_C_CHECK_FLAG(-ansi,,,WARNINGCFLAGS="$WARNINGCFLAGS -ansi",)
+case $host in
+     *-*-cygwin* | *-*-mingw*) ;;
+     *) AX_C_CHECK_FLAG(-ansi,,,WARNINGCFLAGS="$WARNINGCFLAGS -ansi",) ;;
+esac
 AX_C_CHECK_FLAG(-pedantic,,,WARNINGCFLAGS="$WARNINGCFLAGS -pedantic",)
 AX_C_CHECK_FLAG(-Wall,,,WARNINGCFLAGS="$WARNINGCFLAGS -Wall",)
 AX_C_CHECK_FLAG(-Wextra,,,WARNINGCFLAGS="$WARNINGCFLAGS -Wextra",)

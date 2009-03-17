@@ -1,6 +1,6 @@
 /* tget_version.c -- Test file for mpc_get_version
 
-Copyright (C) 2002, 2003, 2004, 2005, 2007, 2008 Andreas Enge, Paul Zimmermann, Philippe Th\'eveny
+Copyright (C) 2002, 2003, 2004, 2005, 2007, 2008, 2009 Andreas Enge, Paul Zimmermann, Philippe Th\'eveny
 
 This file is part of the MPC Library.
 
@@ -22,7 +22,7 @@ MA 02111-1307, USA. */
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
-#include "mpc.h"
+#include "mpc-tests.h"
 
 int
 main (void)

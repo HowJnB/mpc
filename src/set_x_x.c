@@ -30,7 +30,7 @@ MA 02111-1307, USA. */
 # endif
 #endif
 
-#include "mpc.h"
+#include "mpc-impl.h"
 
 #define MPC_SET_X_X(type, z, real_value, imag_value, rnd)       \
   MPC_SET_X_Y (type, type, z, real_value, imag_value, rnd)

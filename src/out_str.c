@@ -1,6 +1,6 @@
 /* mpc_out_str -- Output a complex number on a given stream.
 
-Copyright (C) 2002 Andreas Enge, Paul Zimmermann
+Copyright (C) 2002, 2009 Andreas Enge, Paul Zimmermann, Philippe Th\'eveny
 
 This file is part of the MPC Library.
 
@@ -21,9 +21,7 @@ MA 02111-1307, USA. */
 
 #include <stdio.h>
 #include <ctype.h>
-#include "gmp.h"
-#include "mpfr.h"
-#include "mpc.h"
+#include "mpc-impl.h"
 
 size_t
 mpc_out_str (FILE *stream, int base, size_t n, mpc_srcptr op, mpc_rnd_t rnd)

@@ -1,6 +1,6 @@
 /* test file for mpc_log.
 
-Copyright (C) 2008 Andreas Enge, Philippe Th\'eveny, Paul Zimmermann
+Copyright (C) 2008, 2009 Andreas Enge, Philippe Th\'eveny, Paul Zimmermann
 
 This file is part of the MPC Library.
 
@@ -21,7 +21,6 @@ MA 02111-1307, USA. */
 
 #include <stdlib.h>
 #include "mpc-tests.h"
-#include "mpc-impl.h"
 
 static void
 check_exp_log (void)

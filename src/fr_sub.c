@@ -1,6 +1,6 @@
 /* mpc_fr_sub -- Substract a complex number from a floating-point number.
 
-Copyright (C) 2008 Philippe Th\'eveny
+Copyright (C) 2008, 2009 Philippe Th\'eveny
 
 This file is part of the MPC Library.
 
@@ -19,9 +19,6 @@ along with the MPC Library; see the file COPYING.LIB.  If not, write to
 the Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston,
 MA 02111-1307, USA. */
 
-#include "gmp.h"
-#include "mpfr.h"
-#include "mpc.h"
 #include "mpc-impl.h"
 
 /* return 0 iff both the real and imaginary parts are exact */

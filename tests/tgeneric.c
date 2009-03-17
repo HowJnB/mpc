@@ -1,6 +1,6 @@
 /* File for generic tests.
 
-Copyright (C) 2008 Philippe Th\'eveny, Andreas Enge
+Copyright (C) 2008, 2009 Philippe Th\'eveny, Andreas Enge
 
 This file is part of the MPC Library.
 
@@ -22,7 +22,6 @@ MA 02111-1307, USA. */
 /* #include <stdlib.h> */
 
 #include "mpc-tests.h"
-#include "mpc-impl.h"
 
 /* Warning: unlike the MPFR macro (defined in mpfr-impl.h), this one returns
    true when b is singular */

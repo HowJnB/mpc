@@ -1,6 +1,6 @@
 /* tmul -- test file for mpc_mul.
 
-Copyright (C) 2002, 2005, 2008 Andreas Enge, Paul Zimmermann, Philippe Th\'eveny
+Copyright (C) 2002, 2005, 2008, 2009 Andreas Enge, Paul Zimmermann, Philippe Th\'eveny
 
 This file is part of the MPC Library.
 
@@ -24,7 +24,6 @@ MA 02111-1307, USA. */
 #include <sys/times.h>
 #endif
 #include "mpc-tests.h"
-#include "mpc-impl.h"
 
 static void
 cmpmul (mpc_srcptr x, mpc_srcptr y, mpc_rnd_t rnd)

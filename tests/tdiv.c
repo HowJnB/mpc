@@ -1,6 +1,6 @@
 /* tdiv -- test file for mpc_div.
 
-Copyright (C) 2002, 2008 Andreas Enge, Paul Zimmermann, Philippe Th\'eveny
+Copyright (C) 2002, 2008, 2009 Andreas Enge, Paul Zimmermann, Philippe Th\'eveny
 
 This file is part of the MPC Library.
 
@@ -21,7 +21,6 @@ MA 02111-1307, USA. */
 
 #include <stdlib.h>
 #include "mpc-tests.h"
-#include "mpc-impl.h"
 
 static void
 check_regular (void)

@@ -1,6 +1,6 @@
 /* test file for mpc_cosh.
 
-Copyright (C) 2008 Philippe Th\'eveny, Paul Zimmermann, Andreas Enge
+Copyright (C) 2008, 2009 Philippe Th\'eveny, Paul Zimmermann, Andreas Enge
 
 This file is part of the MPC Library.
 
@@ -22,7 +22,6 @@ MA 02111-1307, USA. */
 #include <stdio.h>
 #include <stdlib.h>
 #include "mpc-tests.h"
-#include "mpc-impl.h"
 
 static void
 test_failed (mpc_t op, mpc_t get, mpc_t expected)

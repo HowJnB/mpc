@@ -1,6 +1,6 @@
 /* tmul_i -- test file for mpc_mul_i.
 
-Copyright (C) 2008 Philippe Theveny
+Copyright (C) 2008, 2009 Philippe Theveny
 
 This file is part of the MPC Library.
 
@@ -20,7 +20,6 @@ the Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston,
 MA 02111-1307, USA. */
 
 #include "mpc-tests.h"
-#include "mpc-impl.h"
 
 static void
 check_different_precisions()

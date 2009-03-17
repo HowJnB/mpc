@@ -22,7 +22,6 @@ MA 02111-1307, USA. */
 #include <string.h>
 #include <ctype.h>
 #include <stdio.h>
-#include "mpc.h"
 #include "mpc-impl.h"
 
 #include "config.h"

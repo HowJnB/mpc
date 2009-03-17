@@ -1,7 +1,7 @@
 /* mpc_cmp_si_si -- Compare a complex number to a number of the form
    b+c*i with b and c signed integers.
 
-Copyright (C) 2005 Andreas Enge
+Copyright (C) 2005, 2009 Andreas Enge, Philippe Th\'eveny
 
 This file is part of the MPC Library.
 
@@ -20,9 +20,7 @@ along with the MPC Library; see the file COPYING.LIB.  If not, write to
 the Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston,
 MA 02111-1307, USA. */
 
-#include "gmp.h"
-#include "mpfr.h"
-#include "mpc.h"
+#include "mpc-impl.h"
 
 /* return 0 iff a = b */
 int

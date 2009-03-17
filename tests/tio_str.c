@@ -24,7 +24,6 @@ MA 02111-1307, USA. */
 #include <string.h>
 
 #include "mpc-tests.h"
-#include "mpc-impl.h"
 
 #ifdef HAVE_UNISTD_H
 #include <unistd.h>

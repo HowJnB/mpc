@@ -1,6 +1,6 @@
 /* Comparison functions.
 
-Copyright (C) 2008 Philippe Th\'eveny
+Copyright (C) 2008, 2009 Philippe Th\'eveny
 
 This file is part of the MPC Library.
 
@@ -20,7 +20,6 @@ the Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston,
 MA 02111-1307, USA. */
 
 #include "mpc-tests.h"
-#include "mpc-impl.h"
 
 /* comparisons, see description in mpc-tests.h */
 int
