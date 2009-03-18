@@ -10,6 +10,7 @@ Recent changes:
     inexact value
   - Bug fixes:
     - mpc_get_version and MPC_VERSION_STRING agree
+    - compilation on i686-pc-cygwin and i686-pc-mingw32 fixed
 
 Changes in version 0.5.2:
   - New macros:
