@@ -52,8 +52,8 @@ mpc_div (mpc_ptr a, mpc_srcptr b, mpc_srcptr c, mpc_rnd_t rnd)
    if (mpfr_zero_p(MPC_RE(c))) {
       /* (re_b+i*im_b)/(i*c) = im_b/c - i * (re_b/c) */
       int overlap = (a == b) || (a == c);
-      mpc_t res;
       mpfr_t cloc;
+
       if (overlap)
          mpc_init3 (res, MPFR_PREC (MPC_RE (a)), MPFR_PREC (MPC_IM (a)));
       else
