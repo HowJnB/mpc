@@ -61,7 +61,7 @@ mpc_div (mpc_ptr a, mpc_srcptr b, mpc_srcptr c, mpc_rnd_t rnd)
       cloc [0] = MPC_IM (c) [0];
       inexact_re = mpfr_div (MPC_RE(res), MPC_IM(b), cloc, MPC_RND_RE(rnd));
       mpfr_neg (cloc, cloc, GMP_RNDN);
-         /* changes the sign only in cloc, not in c; no need to correct later */
+      /* changes the sign only in cloc, not in c; no need to correct later */
       inexact_im = mpfr_div (MPC_IM(res), MPC_RE(b), cloc, MPC_RND_IM(rnd));
       if (overlap)
          mpc_clear (a);
