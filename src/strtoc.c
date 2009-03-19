@@ -28,6 +28,8 @@ MA 02111-1307, USA. */
 
 static void
 skip_whitespace (char **p) {
+   /* TODO: This function had better be inlined, but it is unclear whether
+      the hassle to get this implemented across all platforms is worth it. */
    while (isspace ((unsigned char) **p))
       (*p)++;
 }
@@ -40,52 +42,48 @@ mpc_strtoc (mpc_ptr rop, char *nptr, char **endptr, int base, mpc_rnd_t rnd) {
    int inex_re = 0, inex_im = 0;
 
    if (nptr == NULL || base > 36 || base == 1)
-    goto error;
+     goto error;
 
-  p = nptr;
-  skip_whitespace (&p);
+   p = nptr;
+   skip_whitespace (&p);
 
-  if (*p == '(')
-    {
+   if (*p == '('){
       bracketed = 1;
       ++p;
-    }
+   }
 
-  inex_re = mpfr_strtofr (MPC_RE(rop), p, &end, base, MPC_RND_RE (rnd));
-  if (end == p)
-    goto error;
-  p = end;
+   inex_re = mpfr_strtofr (MPC_RE(rop), p, &end, base, MPC_RND_RE (rnd));
+   if (end == p)
+      goto error;
+   p = end;
 
-  if (bracketed)
-    {
+   if (bracketed) {
       if (!isspace (*p))
-        goto error;
+         goto error;
 
-      for (++p; isspace (*p); ++p);
+      skip_whitespace (&p);
 
       inex_im = mpfr_strtofr (MPC_IM(rop), p, &end, base, MPC_RND_IM (rnd));
       if (end == p)
-        goto error;
+         goto error;
       p = end;
 
       if (*p != ')')
-        goto error;
+         goto error;
 
       p++;
-    }
-  else
-    inex_im = mpfr_set_ui (MPC_IM (rop), 0, MPC_RND_IM(rnd));
+   }
+   else
+     inex_im = mpfr_set_ui (MPC_IM (rop), 0, MPC_RND_IM(rnd));
 
-  for (; isspace (*p); ++p);
+   if (endptr != NULL)
+      *endptr = p;
+   return MPC_INEX (inex_re, inex_im);
 
-  if (endptr != NULL)
-    *endptr = p;
-  return MPC_INEX (inex_re, inex_im);
-
- error:
-  if (endptr != NULL)
-    *endptr = nptr;
-  mpfr_set_nan (MPC_RE (rop));
-  mpfr_set_nan (MPC_IM (rop));
-  return -1;
+error:
+   if (endptr != NULL)
+      *endptr = nptr;
+   mpfr_set_nan (MPC_RE (rop));
+   mpfr_set_nan (MPC_IM (rop));
+   return -1;
 }
