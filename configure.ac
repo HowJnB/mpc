@@ -87,12 +87,16 @@ AC_ARG_ENABLE([logging],
 # Checks for programs.
 AC_PROG_CC
 AC_PROG_SED
+
+
+dnl Configs for Windows DLLs (copied from MPFR)
+dnl libtool requires "-no-undefined" for win32 dll
+dnl It also disables the tests involving the linking with LIBGMP if DLL
 case $host in
   *-*-cygwin* | *-*-mingw* | *-*-pw32* | *-*-os2*)
    AC_MSG_CHECKING(for DLL/static GMP)
    if test "$enable_shared" = yes; then
      LDFLAGS="$LDFLAGS -no-undefined"
-     dont_link_with_gmp="yes"
      AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[
 #include "gmp.h"
 #if !__GMP_LIBGMP_DLL
