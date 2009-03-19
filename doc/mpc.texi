@@ -682,7 +682,7 @@ them to output streams.
 When using any of these functions, you need to include @file{stdio.h}
 @emph{before} @file{mpc.h}.
 
-@deftypefun int mpc_inp_str (mpc_t @var{rop}, FILE *@var{stream}, size_t *@var {read}, int @var{base}, mpc_rnd_t @var{rnd})
+@deftypefun int mpc_inp_str (mpc_t @var{rop}, FILE *@var{stream}, size_t *@var{read}, int @var{base}, mpc_rnd_t @var{rnd})
 Input a string in base @var{base} in the same format as for
 @code{mpc_strtoc} from stdio stream @var{stream},
 rounded according to @var{rnd}, and put the read complex number into @var{rop}.
