@@ -108,10 +108,10 @@ Complex Library, version @value{VERSION}
 * Reporting Bugs::              How to usefully report bugs.
 * MPC Basics::                  What every MPC user should know.
 * Complex Functions::           Functions for arithmetic on complex numbers.
-* Contributors::                
-* References::                  
-* Concept Index::               
-* Function Index::              
+* Contributors::
+* References::
+* Concept Index::
+* Function Index::
 @end menu
 
 @c  @times{} made available as a "*" in info and html (already works in tex).
@@ -468,18 +468,18 @@ different word size.
 
 
 @menu
-* Initializing Complex Numbers::  
-* Assigning Complex Numbers::   
+* Initializing Complex Numbers::
+* Assigning Complex Numbers::
 * Conversion Functions::
 * Complex Comparison::
-* Projection & Decomposing::    
-* Basic Arithmetic::            
-* Power Functions and Logarithm::  
-* Trigonometric Functions::     
-* I/O of Complex Numbers::      
-* Miscellaneous Complex Functions::  
-* Advanced Functions::          
-* Internals::                   
+* Projection & Decomposing::
+* Basic Arithmetic::
+* Power Functions and Logarithm::
+* Trigonometric Functions::
+* I/O of Complex Numbers::
+* Miscellaneous Complex Functions::
+* Advanced Functions::
+* Internals::
 @end menu
 
 @node Initializing Complex Numbers, Assigning Complex Numbers, Complex Functions, Complex Functions
@@ -603,7 +603,7 @@ Set @var{rop} to the value of the string @var{s} in base @var{base}, rounded
 to the precision of @var{rop} with the given rounding mode @var{rnd}.
 See the documentation of @code{mpc_strtoc} for a detailed description of the
 valid string formats.
-Contrary to @code{mpc_strtoc}, @code{mpc_set_str} requires the @emph{whole}
+Contrarily to @code{mpc_strtoc}, @code{mpc_set_str} requires the @emph{whole}
 string to represent a valid complex number.
 This function returns the usual inexact value (@pxref{return-value,, Return
 Value}) if the entire string up to the final null character is a valid number
@@ -615,12 +615,14 @@ NaN+i*NaN.
 Read a complex number from a string @var{nptr} in base @var{base}, rounded to
 the precision of @var{rop} with the given rounding mode @var{rnd}.
 The @var{base} must be either 0 or a number from 2 to 36 (otherwise the
-behavior is undefined).
-If @var{nptr} starts with valid data, the result is stored in @var{rop} and
-@var{*endptr} points to the character just after the valid data (if
-@var{endptr} is not a null pointer). Otherwise, @var{rop} is set to @code{NaN
-+ i * NaN} and the value of @var{nptr} is stored in the location referenced by
-@var{endptr} (if @var{endptr} is not a null pointer).
+behaviour is undefined).
+If @var{nptr} starts with valid data, the result is stored in @var{rop} and,
+if @var{endptr} is not the null pointer,
+@var{*endptr} points to the character just after the valid data.
+Otherwise, @var{rop} is set to @code{NaN + i * NaN} and,
+if @var{endptr} is not the null pointer,
+the value of @var{nptr} is stored in the location referenced by
+@var{endptr}.
 This function returns the usual inexact value (@pxref{return-value,, Return
 Value}).
 
@@ -638,10 +640,10 @@ in the MPFR manual.
 @end ifnotinfo
 For instance, @code{"3.1415926"}, @code{"(1.25e+7 +.17)"}, @code{"(@@nan@@
 2)"} and @code{"(-0 -7)"} are valid strings for @var{base} = 10.
-If @var{base} = 0, then a prefix can indicate the base in which the
+If @var{base} = 0, then a prefix may be used to indicate the base in which the
 floating-point number is written. Use prefix '0b' for binary numbers, prefix
 '0x' for hexadecimal numbers, and no prefix for decimal numbers.
-The real and imaginary part can be written in different bases.
+The real and imaginary part may then be written in different bases.
 For instance, @code{"(1.024e+3 +2.05e+3)"} and @code{"(0b1p+10 +0x802)"} are
 valid strings for @code{base}=0 and represent the same value.
 @end deftypefun
@@ -652,16 +654,17 @@ valid strings for @code{base}=0 and represent the same value.
 @section Conversion Functions
 
 @deftypefun {char *} mpc_get_str (int @var{b}, size_t @var{n}, mpfr_t @var{op}, mp_rnd_t @var{rnd})
-Convert @var{op} to a string of a parenthesed pair of numbers whose digits are
-written in in base @var{b}, with rounding in the direction @var{rnd}, where
-@var{n} is either zero or the number of significant digits; in the latter
-case, @var{n} must be greater or equal to 2.
-The base may vary from 2 to 36.
-If @var{n} is zero, the number of digits of the significand is chosen large
+Convert @var{op} to a string containing the real and imaginary parts of
+@var{b}, separated by white space and enclosed in a pair of parentheses.
+The numbers are written in base @var{b} (which may vary from 2 to 36) and
+rounded according to @var{rnd}. The number of significant digits, at least 2,
+is given by @var{n}. It is also possible to let
+@var{n} be zero, in which case the number of digits is chosen large
 enough so that re-reading the printed value with the same precision, assuming
 both output and input use rounding to nearest, will recover the original value
 of @var{op}.
-Note that @code{mpc_get_str} uses the decimal point of the current locale.
+Note that @code{mpc_get_str} uses the decimal point of the current locale
+if available, and @samp{.} otherwise.
 @end deftypefun
 
 
@@ -890,15 +893,14 @@ rounded according to @var{rnd} with the precision of @var{rop}.
 @cindex Output functions
 @cindex I/O functions
 
-Functions that perform input from a standard input/output
-stream, and functions that output to
-a standard input/output stream.
-Passing a null pointer for a @var{stream} argument to any of
-these functions will make them read from @code{stdin} and write to
+These functions read numbers from input streams and write
+them to output streams.
+Passing a null pointer as @var{stream} argument to any of
+these functions makes them read from @code{stdin} and write to
 @code{stdout}, respectively.
 
 When using any of these functions, you need to include @file{stdio.h}
-before @file{mpc.h}.
+@emph{before} @file{mpc.h}.
 
 @deftypefun size_t mpc_out_str (FILE *@var{stream}, int @var{base}, size_t @var{n_digits}, mpc_t @var{op}, mpc_rnd_t @var{rnd})
 Output @var{op} on stdio stream @var{stream}, in
