@@ -686,14 +686,6 @@ these functions makes them read from @code{stdin} and write to
 When using any of these functions, you need to include @file{stdio.h}
 @emph{before} @file{mpc.h}.
 
-@deftypefun size_t mpc_out_str (FILE *@var{stream}, int @var{base}, size_t @var{n_digits}, mpc_t @var{op}, mpc_rnd_t @var{rnd})
-Output @var{op} on stdio stream @var{stream} in
-base @var{base}, rounded according to @var{rnd}, in the same format
-as for @code{mpc_strtoc}
-
-Return the number of characters written.
-@end deftypefun
-
 @deftypefun size_t mpc_inp_str (mpc_t @var{rop}, FILE *@var{stream}, int @var{base}, mpc_rnd_t @var{rnd})
 Input a string in base @var{base} in the same format as for
 @code{mpc_strtoc} from stdio stream @var{stream},
@@ -701,6 +693,14 @@ rounded according to @var{rnd}, and put the read complex number into @var{rop}.
 Return the number of bytes read.
 
 If an error occurs, set @var{rop} to @code{NaN + i * NaN} and return 0.
+@end deftypefun
+
+@deftypefun size_t mpc_out_str (FILE *@var{stream}, int @var{base}, size_t @var{n_digits}, mpc_t @var{op}, mpc_rnd_t @var{rnd})
+Output @var{op} on stdio stream @var{stream} in
+base @var{base}, rounded according to @var{rnd}, in the same format
+as for @code{mpc_strtoc}
+
+Return the number of characters written.
 @end deftypefun
 
 
