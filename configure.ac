@@ -45,8 +45,12 @@ AC_ARG_WITH([mpfr],
             [AC_HELP_STRING([--with-mpfr=DIR],
                            [MPFR install directory])],
             [
-            CPPFLAGS="-I$withval/include $CPPFLAGS"
-            LDFLAGS="-L$withval/lib $LDFLAGS"
+            if test -z "$with_mpfr_include" -a -z "$with_mpfr_lib" ; then
+               CPPFLAGS="-I$withval/include $CPPFLAGS"
+               LDFLAGS="-L$withval/lib $LDFLAGS"
+            else
+               AC_MSG_FAILURE([Do not use --with-mpfr and --with-mpfr-include/--with-mpfr-lib options simultaneously.])
+            fi
             ])
 AC_ARG_WITH([gmp_include],
             [AC_HELP_STRING([--with-gmp-include=DIR],
@@ -60,8 +64,12 @@ AC_ARG_WITH([gmp],
             [AC_HELP_STRING([--with-gmp=DIR],
                            [GMP install directory])],
             [
-            CPPFLAGS="-I$withval/include $CPPFLAGS"
-            LDFLAGS="-L$withval/lib $LDFLAGS"
+            if test -z "$with_gmp_lib" -a -z "$with_gmp_include" ; then
+               CPPFLAGS="-I$withval/include $CPPFLAGS"
+               LDFLAGS="-L$withval/lib $LDFLAGS"
+            else
+               AC_MSG_FAILURE([Do not use --with-gmp and --with-gmp-include/--with-gmp-lib options simultaneously.])
+            fi
             ])
 AC_ARG_VAR([MPC_USE_LOGGING], [defined if logging support wanted])
 AC_ARG_ENABLE([logging],
