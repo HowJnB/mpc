@@ -21,6 +21,8 @@ Creating a new release
  5) Execute "autoreconf; touch doc/mpc.texi; make distcheck".
     This updates the date and version number in doc/version.texi and
     creates the tarball for distribution.
+    Warning: do this on a machine with a recent libtool (for example 2.2.x
+    instead of 1.5.x which in buggy).
  6) Create an svn tag from inside the svn root:
     svn cp trunk tags/VERSION
  7) Update the web page inside svn and on the server.
