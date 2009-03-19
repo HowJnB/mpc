@@ -9,6 +9,8 @@ Recent changes:
     combinations; use init2 and init3, followed by set, instead
   - exp, log, cos, sin, tan, cosh, sinh, tanh and sqrt return
     inexact value
+  - Get default $CC and $CFLAGS from gmp.h (__GMP_CC / __GMP_CFLAGS,
+    which are available as of GMP 4.2.3).
   - Bug fixes:
     - mpc_get_version and MPC_VERSION_STRING agree
     - compilation on i686-pc-cygwin and i686-pc-mingw32 fixed
