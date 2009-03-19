@@ -55,18 +55,10 @@ mpc_realloc_str (char * str, size_t oldlen, size_t newlen) {
 }
 
 
-static void
-mpc_free_str_len (char *str, size_t len) {
-   void (*freefunc) (void *, size_t);
-   mp_get_memory_functions (NULL, NULL, &freefunc);
-   (*freefunc) (str, len * sizeof (char));
-}
-
-
-
 size_t
 mpc_inp_str (mpc_ptr rop, FILE *stream, int base, mpc_rnd_t rnd_mode) {
    size_t white, nread;
+   int inex = -1;
    int c;
    int par = 0;
 
@@ -102,16 +94,18 @@ mpc_inp_str (mpc_ptr rop, FILE *stream, int base, mpc_rnd_t rnd_mode) {
          else /* put whitespace back into stream */
             ungetc (c, stream);
          str = mpc_realloc_str (str, strsize, nread + 1);
+         strsize = nread + 1;
          str [nread] = '\0';
-         if (mpc_set_str (rop, str, base, rnd_mode) != -1) {
-            mpc_free_str_len (str, strsize);
-            return white + nread;
-         }
+         inex = mpc_set_str (rop, str, base, rnd_mode);
       }
-      mpc_free_str_len (str, strsize);
+      mpc_free_str (str);
    }
 
-   mpfr_set_nan (MPC_RE(rop));
-   mpfr_set_nan (MPC_IM(rop));
-   return 0;
+   if (inex == -1) {
+      mpfr_set_nan (MPC_RE(rop));
+      mpfr_set_nan (MPC_IM(rop));
+      return 0;
+   }
+   else
+      return white + nread;
 }
