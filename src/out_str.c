@@ -1,6 +1,6 @@
 /* mpc_out_str -- Output a complex number on a given stream.
 
-Copyright (C) 2002, 2009 Andreas Enge, Paul Zimmermann, Philippe Th\'eveny
+Copyright (C) 2009 Andreas Enge
 
 This file is part of the MPC Library.
 
@@ -24,25 +24,17 @@ MA 02111-1307, USA. */
 #include "mpc-impl.h"
 
 size_t
-mpc_out_str (FILE *stream, int base, size_t n, mpc_srcptr op, mpc_rnd_t rnd)
-{
-  mpfr_t positive_imag;
-  size_t size;
+mpc_out_str (FILE *stream, int base, size_t n, mpc_srcptr op, mpc_rnd_t rnd) {
+   size_t size = 3; /* for '(', ' ' and ')' */
 
-  if (stream == NULL)
-    stream = stdout; /* fprintf does not allow NULL as first argument */
+   if (stream == NULL)
+      stream = stdout; /* fprintf does not allow NULL as first argument */
 
-  size = mpfr_out_str (stream, base, n, MPC_RE(op), MPC_RND_RE(rnd));
+   fprintf (stream, "(");
+   size += mpfr_out_str (stream, base, n, MPC_RE(op), MPC_RND_RE(rnd));
+   fprintf (stream, " ");
+   size += mpfr_out_str (stream, base, n, MPC_IM(op), MPC_RND_RE(rnd));
+   fprintf (stream, ")");
 
-  positive_imag[0] = MPC_IM (op)[0];
-  if (mpfr_signbit (MPC_IM (op)))
-    {
-      size += fprintf (stream, " -I*");
-      mpfr_setsign (positive_imag, positive_imag, 0, GMP_RNDN);
-    }
-  else
-    size += fprintf (stream, " +I*");
-  size += mpfr_out_str (stream, base, n, positive_imag, MPC_RND_IM(rnd));
-
-  return size;
+   return size;
 }

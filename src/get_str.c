@@ -42,7 +42,7 @@ MA 02111-1307, USA. */
 #endif
 
 static char *
-mpc_alloc_str (int len) {
+mpc_alloc_str (size_t len) {
    void * (*allocfunc) (size_t);
    mp_get_memory_functions (&allocfunc, NULL, NULL);
    return (char *) ((*allocfunc) (len * sizeof (char)));

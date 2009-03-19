@@ -913,42 +913,20 @@ When using any of these functions, you need to include @file{stdio.h}
 @emph{before} @file{mpc.h}.
 
 @deftypefun size_t mpc_out_str (FILE *@var{stream}, int @var{base}, size_t @var{n_digits}, mpc_t @var{op}, mpc_rnd_t @var{rnd})
-Output @var{op} on stdio stream @var{stream}, in
-base @var{base}, rounded according to @var{rnd}.
-First the real part is printed, then @code{+I*} followed by the imaginary part.
-The base may vary from 2 to 36.  Print at most
-@var{n_digits} significant digits for each part,
-or if @var{n_digits} is 0, enough digits so that
-@var{op} can be read back exactly rounding to nearest.
-
-In addition to the significant digits, a decimal point at the right of the
-first digit and a
-trailing exponent, in the form @samp{eNNN}, are printed.  If @var{base}
-is greater than 10, @samp{@@} will be used instead of @samp{e} as
-exponent delimiter.
+Output @var{op} on stdio stream @var{stream} in
+base @var{base}, rounded according to @var{rnd}, in the same format
+as for @code{mpc_strtoc}
 
 Return the number of characters written.
 @end deftypefun
 
 @deftypefun size_t mpc_inp_str (mpc_t @var{rop}, FILE *@var{stream}, int @var{base}, mpc_rnd_t @var{rnd})
-Input a string in base @var{base} from stdio stream @var{stream},
-rounded according to @var{rnd}, and put the
-read complex in @var{rop}.
-Each of the real and imaginary part should be of the form @samp{M@@N} or,
-if the base is 10 or less, alternatively @samp{MeN} or @samp{MEN}.
-@samp{M} is the mantissa and
-@samp{N} is the exponent.  The mantissa is always in the specified base.  The
-exponent is always read in decimal.
-This function first reads the real part, then @code{+} or @code{-} followed by
-@code{I*} or @code{i*} and the absolute value of the imaginary part.
+Input a string in base @var{base} in the same format as for
+@code{mpc_strtoc} from stdio stream @var{stream},
+rounded according to @var{rnd}, and put the read complex number into @var{rop}.
+Return the number of bytes read.
 
-The argument @var{base} may be in the range 2 to 36.
-
-Note: since the real part is read with @code{mpfr_inp_str}, it should be
-followed by a whitespace, thus @code{17+I*42} is invalid, but
-@code{17 +I*42} is valid.
-
-Return the number of bytes read, or if an error occurred, return 0.
+If an error occurs, set @var{rop} to @code{NaN + i * NaN} and return 0.
 @end deftypefun
 
 @node Miscellaneous Complex Functions, Advanced Functions, I/O of Complex Numbers, Complex Functions

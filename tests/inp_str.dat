@@ -19,10 +19,10 @@
 # the Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston,
 # MA 02111-1307, USA.
 #
-1 +I*1
-1 -i*1
-invalid_real_part +I*1
-17 invalid_imaginary_part
-17 +unvalid_imaginary_part
-17 +Iunvalid_imaginary_part
-17 +I*unvalid_imaginary_part
+(1 1)
+(1 -1)
+(invalid_real_part 1)
+(17 invalid_imaginary_part)
+(17 +unvalid_imaginary_part)
+(17 +unvalid_imaginary_part)
+(17 +unvalid_imaginary_part)
