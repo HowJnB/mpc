@@ -24,8 +24,6 @@ MA 02111-1307, USA. */
 #include <stdio.h>
 #include "mpc-impl.h"
 
-#include "config.h"
-
 static void
 skip_whitespace (char **p) {
    /* TODO: This function had better be inlined, but it is unclear whether
