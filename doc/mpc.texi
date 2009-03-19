@@ -1,6 +1,6 @@
 \input texinfo
 @ignore
-Copyright (C) 2002, 2003, 2004, 2005, 2006, 2007, 2008
+Copyright (C) 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009
 Andreas Enge, Philippe Th\'eveny, Paul Zimmermann
 
 This file is part of the MPC Library.
@@ -470,13 +470,12 @@ different word size.
 @menu
 * Initializing Complex Numbers::
 * Assigning Complex Numbers::
-* Conversion Functions::
+* String and Stream Input and Output::
 * Complex Comparison::
 * Projection & Decomposing::
 * Basic Arithmetic::
 * Power Functions and Logarithm::
 * Trigonometric Functions::
-* I/O of Complex Numbers::
 * Miscellaneous Complex Functions::
 * Advanced Functions::
 * Internals::
@@ -546,7 +545,7 @@ via @var{pi}.
 @end deftypefun
 
 
-@node Assigning Complex Numbers, Conversion Functions, Initializing Complex Numbers, Complex Functions
+@node Assigning Complex Numbers, String and Stream Input and Output, Initializing Complex Numbers, Complex Functions
 @comment  node-name,  next,  previous,  up
 @section Assignment Functions
 @cindex Complex assignment functions
@@ -598,6 +597,12 @@ Set the real part of @var{rop} from @var{op1}, and its imaginary part from
 @var{op2}, according to the rounding mode @var{rnd}.
 @end deftypefun
 
+
+@node String and Stream Input and Output, Complex Comparison, Assigning Complex Numbers, Complex Functions
+@comment  node-name,  next,  previous,  up
+@cindex String and stream input and output
+@section String and Stream Input and Output
+
 @deftypefun int mpc_strtoc (mpc_t @var{rop}, char *@var{nptr}, char **@var{endptr}, int @var{base}, mpc_rnd_t @var{rnd})
 Read a complex number from a string @var{nptr} in base @var{base}, rounded to
 the precision of @var{rop} with the given rounding mode @var{rnd}.
@@ -648,11 +653,6 @@ in base @var{base}; otherwise it returns @minus{}1, and @var{rop} is set to
 NaN+i*NaN.
 @end deftypefun
 
-@node Conversion Functions, Complex Comparison, Assigning Complex Numbers, Complex Functions
-@comment  node-name,  next,  previous,  up
-@cindex Conversion functions
-@section Conversion Functions
-
 @deftypefun {char *} mpc_get_str (int @var{b}, size_t @var{n}, mpfr_t @var{op}, mp_rnd_t @var{rnd})
 Convert @var{op} to a string containing the real and imaginary parts of
 @var{b}, separated by a space and enclosed in a pair of parentheses.
@@ -677,8 +677,34 @@ Free the string @var{str}, which needs to have been allocated by
 a call to @code{mpc_get_str}.
 @end deftypefun
 
+The following two functions read numbers from input streams and write
+them to output streams.
+Passing a null pointer as @var{stream} argument to any of
+these functions makes them read from @code{stdin} and write to
+@code{stdout}, respectively.
 
-@node Complex Comparison, Projection & Decomposing, Conversion Functions, Complex Functions
+When using any of these functions, you need to include @file{stdio.h}
+@emph{before} @file{mpc.h}.
+
+@deftypefun size_t mpc_out_str (FILE *@var{stream}, int @var{base}, size_t @var{n_digits}, mpc_t @var{op}, mpc_rnd_t @var{rnd})
+Output @var{op} on stdio stream @var{stream} in
+base @var{base}, rounded according to @var{rnd}, in the same format
+as for @code{mpc_strtoc}
+
+Return the number of characters written.
+@end deftypefun
+
+@deftypefun size_t mpc_inp_str (mpc_t @var{rop}, FILE *@var{stream}, int @var{base}, mpc_rnd_t @var{rnd})
+Input a string in base @var{base} in the same format as for
+@code{mpc_strtoc} from stdio stream @var{stream},
+rounded according to @var{rnd}, and put the read complex number into @var{rop}.
+Return the number of bytes read.
+
+If an error occurs, set @var{rop} to @code{NaN + i * NaN} and return 0.
+@end deftypefun
+
+
+@node Complex Comparison, Projection & Decomposing, String and Stream Input and Output, Complex Functions
 @comment  node-name,  next,  previous,  up
 @cindex Complex comparisons functions
 @cindex Comparison functions
@@ -859,7 +885,7 @@ so that the imaginary part of the result lies in
 @end deftypefun
 
 
-@node Trigonometric Functions, I/O of Complex Numbers, Power Functions and Logarithm, Complex Functions
+@node Trigonometric Functions, Miscellaneous Complex Functions, Power Functions and Logarithm, Complex Functions
 @comment  node-name,  next,  previous,  up
 @section Trigonometric Functions
 @cindex Trigonometric functions
@@ -895,41 +921,7 @@ rounded according to @var{rnd} with the precision of @var{rop}.
 @end deftypefun
 
 
-@node I/O of Complex Numbers, Miscellaneous Complex Functions, Trigonometric Functions, Complex Functions
-@comment  node-name,  next,  previous,  up
-@section Input and Output Functions
-@cindex Complex input and output functions
-@cindex Input functions
-@cindex Output functions
-@cindex I/O functions
-
-These functions read numbers from input streams and write
-them to output streams.
-Passing a null pointer as @var{stream} argument to any of
-these functions makes them read from @code{stdin} and write to
-@code{stdout}, respectively.
-
-When using any of these functions, you need to include @file{stdio.h}
-@emph{before} @file{mpc.h}.
-
-@deftypefun size_t mpc_out_str (FILE *@var{stream}, int @var{base}, size_t @var{n_digits}, mpc_t @var{op}, mpc_rnd_t @var{rnd})
-Output @var{op} on stdio stream @var{stream} in
-base @var{base}, rounded according to @var{rnd}, in the same format
-as for @code{mpc_strtoc}
-
-Return the number of characters written.
-@end deftypefun
-
-@deftypefun size_t mpc_inp_str (mpc_t @var{rop}, FILE *@var{stream}, int @var{base}, mpc_rnd_t @var{rnd})
-Input a string in base @var{base} in the same format as for
-@code{mpc_strtoc} from stdio stream @var{stream},
-rounded according to @var{rnd}, and put the read complex number into @var{rop}.
-Return the number of bytes read.
-
-If an error occurs, set @var{rop} to @code{NaN + i * NaN} and return 0.
-@end deftypefun
-
-@node Miscellaneous Complex Functions, Advanced Functions, I/O of Complex Numbers, Complex Functions
+@node Miscellaneous Complex Functions, Advanced Functions, Trigonometric Functions, Complex Functions
 @comment  node-name,  next,  previous,  up
 @section Miscellaneous Functions
 @cindex Miscellaneous complex functions
