@@ -136,7 +136,7 @@ prettify (const char *str, const mp_exp_t expo, int base, int special)
         }
     }
 
-  pretty = (char *)malloc (sz * sizeof(char));
+  pretty = mpc_alloc_str (sz);
   p = pretty;
 
   /* 1. optional sign plus first digit */
