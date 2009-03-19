@@ -135,7 +135,7 @@ prettify (const char *str, const mp_exp_t expo, int base, int special)
 #ifdef HAVE_LOCALE_H
   *p++ = *localeconv ()->decimal_point;
 #else
-  *p++ = ".";
+  *p++ = '.';
 #endif
   *p = '\0';
 
