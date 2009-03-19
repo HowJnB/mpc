@@ -1,6 +1,6 @@
 /* mpc_strtoc -- Read a complex number from a string.
 
-Copyright (C) 2009 Philippe Th\'eveny
+Copyright (C) 2009 Philippe Th\'eveny, Andreas Enge
 
 This file is part of the MPC Library.
 
@@ -26,24 +26,24 @@ MA 02111-1307, USA. */
 
 #include "config.h"
 
+static void
+skip_whitespace (char **p) {
+   while (isspace ((unsigned char) **p))
+      (*p)++;
+}
+
 int
-mpc_strtoc (mpc_ptr rop, char *nptr, char **endptr, int base, mpc_rnd_t rnd)
-{
-  char *p;
-  char *end;
-  int bracketed = 0;
+mpc_strtoc (mpc_ptr rop, char *nptr, char **endptr, int base, mpc_rnd_t rnd) {
+   char *p, *end;
+   int bracketed = 0;
 
-  int inex_re = 0;
-  int inex_im = 0;
+   int inex_re = 0, inex_im = 0;
 
-  if (base != 0 && (base < 2 || base > 62))
-    goto error;
-
-  if (nptr == NULL)
+   if (nptr == NULL || base > 36 || base == 1)
     goto error;
 
   p = nptr;
-  for (p = nptr; isspace (*p); ++p);
+  skip_whitespace (&p);
 
   if (*p == '(')
     {
@@ -67,7 +67,7 @@ mpc_strtoc (mpc_ptr rop, char *nptr, char **endptr, int base, mpc_rnd_t rnd)
       if (end == p)
         goto error;
       p = end;
-      
+
       if (*p != ')')
         goto error;
 
@@ -87,5 +87,5 @@ mpc_strtoc (mpc_ptr rop, char *nptr, char **endptr, int base, mpc_rnd_t rnd)
     *endptr = nptr;
   mpfr_set_nan (MPC_RE (rop));
   mpfr_set_nan (MPC_IM (rop));
-  return 0;
+  return -1;
 }

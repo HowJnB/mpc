@@ -1,6 +1,6 @@
 /* test file for mpc_strtoc.
 
-Copyright (C) 2009 Philippe Th\'eveny
+Copyright (C) 2009 Philippe Th\'eveny, Andreas Enge
 
 This file is part of the MPC Library.
 
@@ -153,7 +153,7 @@ check_file (const char* file_name)
   int inex_im;
   mpc_t expected, got;
   mpc_rnd_t rnd = MPC_RNDNN;
-  int inex = 0;
+  int inex = 0, inex_expected;
   known_signs_t ks = {1, 1};
 
 
@@ -200,6 +200,10 @@ check_file (const char* file_name)
       read_ternary (fp, &inex_re);
       read_ternary (fp, &inex_im);
       read_mpc (fp, expected, NULL);
+      if (inex_re == TERNARY_ERROR || inex_im == TERNARY_ERROR)
+         inex_expected = -1;
+      else
+         inex_expected = MPC_INEX (inex_re, inex_im);
 
       str_len = read_string (fp, &str, str_len, "number string");
       rstr_len = read_string (fp, &rstr, rstr_len, "string remainder");
@@ -212,7 +216,7 @@ check_file (const char* file_name)
       inex = mpc_strtoc (got, str, &end, base, rnd);
 
       /* 3.3 compare this result with the expected one */
-      if (inex != MPC_INEX (inex_re, inex_im)
+      if (inex != inex_expected
           || !same_mpc_value (got, expected, ks)
           || strcmp (end, rstr) != 0)
         {
@@ -262,20 +266,10 @@ check_null (void)
   mpc_init2 (z, 53);
 
   inex = mpc_strtoc (z, NULL, &end, 10, MPC_RNDNN);
-  if (end != NULL || inex != 0 || mpfr_nan_p (MPC_RE (z)) == 0
+  if (end != NULL || inex != -1 || mpfr_nan_p (MPC_RE (z)) == 0
       || mpfr_nan_p (MPC_IM (z)) == 0)
     {
-      printf ("Error: mpc_strtoc(z, NULL) with an NULL pointer should fail"
-              " and the z value should be set to NaN +I*NaN\ngot ");
-      OUT (z);
-      exit (1);
-    }
-
-  inex = mpc_strtoc (z, "", &end, 10, MPC_RNDNN);
-  if (inex != 0 || mpfr_nan_p (MPC_RE (z)) == 0
-      || mpfr_nan_p (MPC_IM (z)) == 0)
-    {
-      printf ("Error: mpc_strtoc(z, "") with an empty string should fail"
+      printf ("Error: mpc_strtoc(z, NULL) with a NULL pointer should fail"
               " and the z value should be set to NaN +I*NaN\ngot ");
       OUT (z);
       exit (1);

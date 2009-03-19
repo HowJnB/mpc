@@ -35,13 +35,11 @@ unsigned long line_number;
 int nextchar;
    /* character appearing next in the file, may be EOF */
 
-#define __NOT_CHECKED 255
-/* ternary value comparison */
 #define MPC_INEX_CMP(r, i, c)                           \
-  (((r) == __NOT_CHECKED || (r) == MPC_INEX_RE(c))      \
-   && ((i) == __NOT_CHECKED || (i) == MPC_INEX_IM (c)))
+  (((r) == TERNARY_NOT_CHECKED || (r) == MPC_INEX_RE(c))      \
+   && ((i) == TERNARY_NOT_CHECKED || (i) == MPC_INEX_IM (c)))
 #define MPFR_INEX_STR(inex)                     \
-  (inex) == __NOT_CHECKED ? "?"                 \
+  (inex) == TERNARY_NOT_CHECKED ? "?"                 \
     : (inex) == +1 ? "+1"                       \
     : (inex) == -1 ? "-1" : "0"
 
@@ -113,8 +111,11 @@ read_ternary (FILE *fp, int* ternary)
 {
   switch (nextchar)
     {
+    case '!':
+      *ternary = TERNARY_ERROR;
+      break;
     case '?':
-      *ternary = __NOT_CHECKED;
+      *ternary = TERNARY_NOT_CHECKED;
       break;
     case '+':
       *ternary = +1;
@@ -379,7 +380,7 @@ data_check (mpc_function function, const char *file_name)
           read_fc (fp, &inex_re, x1, &sign_real, z1, &mpfr_rnd);
           mpfr_set_prec (x2, MPFR_PREC (x1));
           inex = function.pointer.FC (x2, z1, mpfr_rnd);
-          if ((inex_re != __NOT_CHECKED && inex_re != inex)
+          if ((inex_re != TERNARY_NOT_CHECKED && inex_re != inex)
               || !same_mpfr_value (x1, x2, sign_real))
             {
               mpfr_t got, expected;
@@ -390,7 +391,7 @@ data_check (mpc_function function, const char *file_name)
               printf ("%s(op) failed (%s:%lu)\nwith rounding mode %s\n",
                       function.name, file_name, line_number-1,
                       mpfr_rnd_mode[mpfr_rnd]);
-              if (inex_re != __NOT_CHECKED && inex_re != inex)
+              if (inex_re != TERNARY_NOT_CHECKED && inex_re != inex)
                 printf("ternary value: got %s, expected %s\n",
                        MPFR_INEX_STR (inex), MPFR_INEX_STR (inex_re));
               OUT (op);

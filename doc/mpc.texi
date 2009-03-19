@@ -616,15 +616,14 @@ Read a complex number from a string @var{nptr} in base @var{base}, rounded to
 the precision of @var{rop} with the given rounding mode @var{rnd}.
 The @var{base} must be either 0 or a number from 2 to 36 (otherwise the
 behaviour is undefined).
-If @var{nptr} starts with valid data, the result is stored in @var{rop} and,
-if @var{endptr} is not the null pointer,
+If @var{nptr} starts with valid data, the result is stored in @var{rop},
+the usual inexact value is returned (@pxref{return-value,, Return
+Value}) and, if @var{endptr} is not the null pointer,
 @var{*endptr} points to the character just after the valid data.
-Otherwise, @var{rop} is set to @code{NaN + i * NaN} and,
+Otherwise, @var{rop} is set to @code{NaN + i * NaN}, -1 is returned and,
 if @var{endptr} is not the null pointer,
 the value of @var{nptr} is stored in the location referenced by
 @var{endptr}.
-This function returns the usual inexact value (@pxref{return-value,, Return
-Value}).
 
 The expected form of a complex number string is either a real number (an
 optional leading whitespace, an optional sign followed by a floating-point

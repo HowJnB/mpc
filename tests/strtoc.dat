@@ -1,6 +1,6 @@
 # Data file for mpc_strtoc.
 #
-# Copyright (C) 2009 Philippe Th\'eveny
+# Copyright (C) 2009 Philippe Th\'eveny, Andreas Enge
 #
 # This file is part of the MPC Library.
 #
@@ -20,7 +20,7 @@
 # MA 02111-1307, USA.
 #
 # The format respects the parameter order in function prototype as follow:
-# 
+#
 # INEX_RE INEX_IM PREC_ROP_RE  ROP_RE  PREC_ROP_IM  ROP_IM  "NSTRING" "RSTRING" BASE  RND_RE  RND_IM
 #
 # The string NSTRING is considered as a complex number rop = rop1 + i*rop2
@@ -33,6 +33,7 @@
 #   in the direction RND_IM
 # INEX_RE is the ternary value for the real part with the following notation:
 # "?" ternary value not checked
+# "!" function should return error indicator -1
 # "+" if ROP_RE is greater than the exact mathematical result
 # "0" if ROP_RE is exactly the mathematical result
 # "-" if ROP_RE is less than the exact mathematical result
@@ -48,40 +49,40 @@
 # The sign of the result is checked with "+inf", "-inf", "-0", or "+0".
 
 # invalid base
-0 0 53 nan 53 nan      "(1 1)"                    "(1 1)"          99 N N
-0 0 53 nan 53 nan      "(1 1)"                    "(1 1)"           1 N N
+! ! 53 nan 53 nan      "(1 1)"                    "(1 1)"          99 N N
+! ! 53 nan 53 nan      "(1 1)"                    "(1 1)"           1 N N
 
 # invalid strings
-0 0 53 nan 53 nan      ""                         ""               10 N N
-0 0 53 nan 53 nan      "non"                      "non"            10 N N
-0 0 53 nan 53 nan      "NON"                      "NON"            10 N N
-0 0 53 nan 53 nan      "N A N"                    "N A N"          10 N N
-0 0 53 nan 53 nan      "(1) 1"                    "(1) 1"          10 N N #no imaginary part
-0 0 53 nan 53 nan      "."                        "."              10 N N
-0 0 53 nan 53 nan      ". 1"                      ". 1"            10 N N #no space allowed here
-0 0 53 nan 53 nan      "+ 1"                      "+ 1"             2 N N #no space allowed here
-0 0 53 nan 53 nan      "+3 "                      "+3 "             2 N N #invalid digit
-0 0 53 nan 53 nan      "+ INF "                   "+ INF "         10 N N #no space allowed here
-0 0 53 nan 53 nan      "( +INF)"                  "( +INF)"        10 N N
-0 0 53 nan 53 nan      "(1 +1 "                   "(1 +1 "         10 N N
-0 0 53 nan 53 nan      "(1+1)"                    "(1+1)"          10 N N
-0 0 53 nan 53 nan      "(1 +1 )"                  "(1 +1 )"        10 N N
-0 0 53 nan 53 nan      "(1 + 1)"                  "(1 + 1)"        10 N N
-0 0 53 nan 53 nan      "(@nan@(quiet)"            "(@nan@(quiet)"  10 N N
-0 0 53 nan 53 nan      "zero"                     "zero"           10 N N 
-0 0 53 nan 53 nan      "&^+"                      "&^+"            10 N N
-0 0 53 nan 53 nan      "i"                        "i"              18 N N
-0 0 53 nan 53 nan      "I"                        "I"              18 N N
-0 0 53 nan 53 nan      "z"                        "z"              35 N N
-0 0 53 nan 53 nan      "Z"                        "Z"              35 N N
-0 0 53 nan 53 nan      "(i 0)"                    "(i 0)"          18 N N
-0 0 53 nan 53 nan      "(I 0)"                    "(I 0)"          18 N N
-0 0 53 nan 53 nan      "(z 0)"                    "(z 0)"          35 N N
-0 0 53 nan 53 nan      "(Z 0)"                    "(Z 0)"          35 N N
-0 0 53 nan 53 nan      "(0 i)"                    "(0 i)"          18 N N
-0 0 53 nan 53 nan      "(0 I)"                    "(0 I)"          18 N N
-0 0 53 nan 53 nan      "(0 z)"                    "(0 z)"          35 N N
-0 0 53 nan 53 nan      "(0 Z)"                    "(0 Z)"          35 N N
+! ! 53 nan 53 nan      ""                         ""               10 N N
+! ! 53 nan 53 nan      "non"                      "non"            10 N N
+! ! 53 nan 53 nan      "NON"                      "NON"            10 N N
+! ! 53 nan 53 nan      "N A N"                    "N A N"          10 N N
+! ! 53 nan 53 nan      "(1) 1"                    "(1) 1"          10 N N #no imaginary part
+! ! 53 nan 53 nan      "."                        "."              10 N N
+! ! 53 nan 53 nan      ". 1"                      ". 1"            10 N N #no space allowed here
+! ! 53 nan 53 nan      "+ 1"                      "+ 1"             2 N N #no space allowed here
+! ! 53 nan 53 nan      "+3 "                      "+3 "             2 N N #invalid digit
+! ! 53 nan 53 nan      "+ INF "                   "+ INF "         10 N N #no space allowed here
+! ! 53 nan 53 nan      "( +INF)"                  "( +INF)"        10 N N
+! ! 53 nan 53 nan      "(1 +1 "                   "(1 +1 "         10 N N
+! ! 53 nan 53 nan      "(1+1)"                    "(1+1)"          10 N N
+! ! 53 nan 53 nan      "(1 +1 )"                  "(1 +1 )"        10 N N
+! ! 53 nan 53 nan      "(1 + 1)"                  "(1 + 1)"        10 N N
+! ! 53 nan 53 nan      "(@nan@(quiet)"            "(@nan@(quiet)"  10 N N
+! ! 53 nan 53 nan      "zero"                     "zero"           10 N N
+! ! 53 nan 53 nan      "&^+"                      "&^+"            10 N N
+! ! 53 nan 53 nan      "i"                        "i"              18 N N
+! ! 53 nan 53 nan      "I"                        "I"              18 N N
+! ! 53 nan 53 nan      "z"                        "z"              35 N N
+! ! 53 nan 53 nan      "Z"                        "Z"              35 N N
+! ! 53 nan 53 nan      "(i 0)"                    "(i 0)"          18 N N
+! ! 53 nan 53 nan      "(I 0)"                    "(I 0)"          18 N N
+! ! 53 nan 53 nan      "(z 0)"                    "(z 0)"          35 N N
+! ! 53 nan 53 nan      "(Z 0)"                    "(Z 0)"          35 N N
+! ! 53 nan 53 nan      "(0 i)"                    "(0 i)"          18 N N
+! ! 53 nan 53 nan      "(0 I)"                    "(0 I)"          18 N N
+! ! 53 nan 53 nan      "(0 z)"                    "(0 z)"          35 N N
+! ! 53 nan 53 nan      "(0 Z)"                    "(0 Z)"          35 N N
 
 # special values
 0 0 53  nan 53   +0    "nan"                      ""               10 N N
@@ -117,12 +118,12 @@
 0 0 53                     +1 53 +0    "1a"                "a"     10 N N
 0 0 53                     +1 53 +0    "1e-"               "e-"    10 N N
 0 0 53                     +1 53 +0    "1+2"               "+2"    10 N N
-- 0 53   +0x9D70A3D70A3D7p-51 53 +0    "(+1.23 0.0)"       ""      10 N N  
+- 0 53   +0x9D70A3D70A3D7p-51 53 +0    "(+1.23 0.0)"       ""      10 N N
 0 0 53                    -10 53 +0    "(-10. 0000) "      ""      10 N N
 0 0 53                +0x5p-3 53 -0    "(.625 -0)"         ""      10 N N
 - 0 53 +0x14E718D7D7625Ap+612 53 +0    "(1e200  0)"        ""      10 N N
-0 0 53                +0x7530 53 +0    " (3e+4 0)"         ""      10 N N 
-- 0 53  +0x10C6F7A0B5ED8Dp-73 53 +0    ".5e-6"             ""      10 N N 
+0 0 53                +0x7530 53 +0    " (3e+4 0)"         ""      10 N N
+- 0 53  +0x10C6F7A0B5ED8Dp-73 53 +0    ".5e-6"             ""      10 N N
 - 0 53  +0x1B1C1E0D914133p-83 53 +0    "(7.89E-10 0)"      ""      10 N N
 + 0 53  -0x7B426FAB61F00Cp+56 53 +0    "  -25@+32"         ""      10 N N
 0 0 53                    -25 53 +0    "-25p+32"           "p+32"  10 N N

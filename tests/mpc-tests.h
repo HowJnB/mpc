@@ -22,6 +22,11 @@ MA 02111-1307, USA. */
 #include <stdio.h>
 #include "mpc-impl.h"
 
+#define TERNARY_NOT_CHECKED 255
+   /* special value to indicate that the ternary value is not checked */
+#define TERNARY_ERROR 254
+   /* special value to indicate that an error occurred in an mpc function */
+
 #define MPFR_OUT(X) \
   printf (#X" [%ld]=", MPFR_PREC (X));\
   mpfr_out_str (stdout, 2, 0, (X), GMP_RNDN);\
