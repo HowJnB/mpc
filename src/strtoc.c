@@ -58,7 +58,7 @@ mpc_strtoc (mpc_ptr rop, char *nptr, char **endptr, int base, mpc_rnd_t rnd) {
    p = end;
 
    if (bracketed) {
-      if (!isspace (*p))
+     if (!isspace ((unsigned char)*p))
          goto error;
 
       skip_whitespace (&p);
