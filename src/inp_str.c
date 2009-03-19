@@ -66,51 +66,49 @@ mpc_free_str_len (char *str, size_t len) {
 
 size_t
 mpc_inp_str (mpc_ptr rop, FILE *stream, int base, mpc_rnd_t rnd_mode) {
-   size_t size, nread;
+   size_t white, nread;
    int c;
+   int par = 0;
 
    if (stream == NULL)
       stream = stdin;
 
-   size = skip_whitespace (stream);
+   white = skip_whitespace (stream);
    c = getc (stream);
    if (c != EOF) {
-      if (c != '(') {
-         /* real number without parentheses */
-         ungetc (c, stream);
-         nread = mpfr_inp_str (MPC_RE(rop), stream, base, MPC_RND_RE(rnd_mode));
-         if (nread != 0) {
-            size += nread;
-            mpfr_set_ui (MPC_IM(rop), 0ul, GMP_RNDN);
-            return size;
+      /* If c=='(', set par=true and read everything up to ')'; otherwise,
+         par=false already and read everything up to white space.
+         Then have mpc_setstr do the work.                                 */
+      size_t strsize = 100;
+      char *str = mpc_alloc_str (strsize);
+      nread = 0;
+      if (c == '(')
+         par = 1;
+      while (c != EOF &&
+            ((par && c != ')') || (!par && !isspace ((unsigned char) c)))) {
+         str [nread] = (char) c;
+         nread++;
+         if (nread == strsize) {
+            str = mpc_realloc_str (str, strsize, 2 * strsize);
+            strsize *= 2;
          }
+         c = getc (stream);
       }
-      else {
-         /* Complex number in parentheses; read everything from '(' to ')'
-            into a string and have mpc_setstr do the work                  */
-         size_t strsize = 100;
-         char *str = mpc_alloc_str (strsize);
-         nread = 0;
-         while (c != EOF && c != ')') {
-            str [nread] = (char) c;
-            nread++;
-            if (nread == strsize) {
-               str = mpc_realloc_str (str, strsize, 2 * strsize);
-               strsize *= 2;
-            }
-            c = getc (stream);
-         }
-         if (c != EOF) {
+      if (c != EOF) {
+         if (par) {
             str [nread] = ')';
             nread++;
-            str = mpc_realloc_str (str, strsize, nread + 1);
-            str [nread] = '\0';
-            size += nread;
-            if (mpc_set_str (rop, str, base, rnd_mode) != -1)
-               return size;
          }
-         mpc_free_str_len (str, strsize);
+         else /* put whitespace back into stream */
+            ungetc (c, stream);
+         str = mpc_realloc_str (str, strsize, nread + 1);
+         str [nread] = '\0';
+         if (mpc_set_str (rop, str, base, rnd_mode) != -1) {
+            mpc_free_str_len (str, strsize);
+            return white + nread;
+         }
       }
+      mpc_free_str_len (str, strsize);
    }
 
    mpfr_set_nan (MPC_RE(rop));
