@@ -679,26 +679,26 @@ a call to @code{mpc_get_str}.
 
 The following two functions read numbers from input streams and write
 them to output streams.
-Passing a null pointer as @var{stream} argument to any of
-these functions makes them read from @code{stdin} and write to
-@code{stdout}, respectively.
-
 When using any of these functions, you need to include @file{stdio.h}
 @emph{before} @file{mpc.h}.
 
-@deftypefun size_t mpc_inp_str (mpc_t @var{rop}, FILE *@var{stream}, int @var{base}, mpc_rnd_t @var{rnd})
+@deftypefun int mpc_inp_str (mpc_t @var{rop}, FILE *@var{stream}, size_t *@var {read}, int @var{base}, mpc_rnd_t @var{rnd})
 Input a string in base @var{base} in the same format as for
 @code{mpc_strtoc} from stdio stream @var{stream},
 rounded according to @var{rnd}, and put the read complex number into @var{rop}.
-Return the number of bytes read.
+If @var{stream} is the null pointer, @var{rop} is read from @code{stdin}.
+Return the usual inexact value;
+if an error occurs, set @var{rop} to @code{NaN + i * NaN} and return -1.
 
-If an error occurs, set @var{rop} to @code{NaN + i * NaN} and return 0.
+If @var{read} is not the null pointer, it is set to the number of
+read characters.
 @end deftypefun
 
 @deftypefun size_t mpc_out_str (FILE *@var{stream}, int @var{base}, size_t @var{n_digits}, mpc_t @var{op}, mpc_rnd_t @var{rnd})
 Output @var{op} on stdio stream @var{stream} in
 base @var{base}, rounded according to @var{rnd}, in the same format
 as for @code{mpc_strtoc}
+If @var{stream} is the null pointer, @var{rop} is written to @code{stdout}.
 
 Return the number of characters written.
 @end deftypefun
