@@ -1,6 +1,6 @@
 # Makefile for the MPC library (Windows version).
 #
-# Copyright (C) 2002, 2004, 2005, 2007, 2008 Andreas Enge, Mickael Gastineau, Paul Zimmermann
+# Copyright (C) 2002, 2004, 2005, 2007, 2008, 2009 Andreas Enge, Mickael Gastineau, Paul Zimmermann
 #
 # This file is part of the MPC Library.
 #
@@ -39,18 +39,18 @@ CPP = cl.exe
 CC = cl.exe
 CDEFAULTFLAGS=/O2 /GR- /MD /nologo /EHs
 
-VERSION=0.5.2
+VERSION=0.6-dev
 
 ######################## do not edit below this line ##########################
 
-DIRMPC=.\src\
-DIRMPCTESTS=$(DIRMPC)\..\tests\
+DIRMPC=.\src
+DIRMPCTESTS=.\tests\\
 
 INCLUDES = /I$(DIRMPC) /I$(GMPDIR)\include  /I$(MPFR)\include
 CKERNELFLAGS = $(CDEFAULTFLAGS) /D__GMP_LIBGMP_DLL   $(INCLUDES)
 CFLAGS = $(CKERNELFLAGS)  /D__MPC_WITHIN_MPC /D_GMP_IEEE_FLOATS /DHAVE_CONFIG_H
 
-TESTCOMPILE=$(CC) $(CKERNELFLAGS) $(DIRMPC)\..\tests\tgeneric.c $(DIRMPC)\..\tests\comparisons.c $(DIRMPC)\..\tests\read_data.c $(DIRMPC)\..\tests\random.c $(DIRMPC)\..\tests\
+TESTCOMPILE=$(CC) $(CKERNELFLAGS) $(DIRMPCTESTS)\tgeneric.c $(DIRMPCTESTS)\comparisons.c $(DIRMPCTESTS)\read_data.c $(DIRMPCTESTS)\random.c $(DIRMPCTESTS)
 MIDTESTCOMPILE=/link  /out:$(DIRMPCTESTS)
 ENDTESTCOMPILE=/LIBPATH:"$(GMPDIR)\lib" libmpc.lib libmpfr.lib libgmp.lib
 
@@ -85,8 +85,9 @@ $(DIRMPC)\fr_div.obj \
 $(DIRMPC)\fr_sub.obj \
 $(DIRMPC)\get_prec.obj \
 $(DIRMPC)\get_prec2.obj \
+$(DIRMPC)\get_str.obj \
+$(DIRMPC)\get_version.obj \
 $(DIRMPC)\imag.obj \
-$(DIRMPC)\init.obj \
 $(DIRMPC)\init2.obj \
 $(DIRMPC)\init3.obj \
 $(DIRMPC)\inp_str.obj \
@@ -105,18 +106,15 @@ $(DIRMPC)\random.obj \
 $(DIRMPC)\random2.obj \
 $(DIRMPC)\real.obj \
 $(DIRMPC)\set.obj \
-$(DIRMPC)\set_d_d.obj \
-$(DIRMPC)\set_dfl_prec.obj \
-$(DIRMPC)\set_fr.obj \
-$(DIRMPC)\set_fr_fr.obj \
 $(DIRMPC)\set_prec.obj \
-$(DIRMPC)\set_si_si.obj \
-$(DIRMPC)\set_ui_fr.obj \
-$(DIRMPC)\set_ui_ui.obj \
+$(DIRMPC)\set_str.obj \
+$(DIRMPC)\set_x.obj \
+$(DIRMPC)\set_x_x.obj \
 $(DIRMPC)\sin.obj \
 $(DIRMPC)\sinh.obj \
 $(DIRMPC)\sqr.obj \
 $(DIRMPC)\sqrt.obj \
+$(DIRMPC)\strtoc.obj \
 $(DIRMPC)\sub.obj \
 $(DIRMPC)\sub_fr.obj \
 $(DIRMPC)\sub_ui.obj \
@@ -125,8 +123,7 @@ $(DIRMPC)\tanh.obj \
 $(DIRMPC)\uceil_log2.obj \
 $(DIRMPC)\ui_div.obj \
 $(DIRMPC)\ui_ui_sub.obj \
-$(DIRMPC)\urandom.obj \
-$(DIRMPC)\version.obj
+$(DIRMPC)\urandom.obj 
 
 
 
@@ -150,8 +147,9 @@ fr_div.obj \
 fr_sub.obj \
 get_prec.obj \
 get_prec2.obj \
+get_str.obj \
+get_version.obj \
 imag.obj \
-init.obj \
 init2.obj \
 init3.obj \
 inp_str.obj \
@@ -170,18 +168,15 @@ random.obj \
 random2.obj \
 real.obj \
 set.obj \
-set_d_d.obj \
-set_dfl_prec.obj \
-set_fr.obj \
-set_fr_fr.obj \
 set_prec.obj \
-set_si_si.obj \
-set_ui_fr.obj \
-set_ui_ui.obj \
+set_str.obj \
+set_x.obj \
+set_x_x.obj \
 sin.obj \
 sinh.obj \
 sqr.obj \
 sqrt.obj \
+strtoc.obj \
 sub.obj \
 sub_fr.obj \
 sub_ui.obj \
@@ -190,8 +185,7 @@ tanh.obj \
 uceil_log2.obj \
 ui_div.obj \
 ui_ui_sub.obj \
-urandom.obj \
-version.obj
+urandom.obj 
 
 #
 # Link target: automatically builds its object dependencies before
@@ -202,9 +196,9 @@ $(LIBRARY): $(DIRMPC)config.h $(CPPOBJECTS)
 	link.exe /DLL /out:$@ $(CPPLINKOBJECTS) /LIBPATH:"$(GMPDIR)\lib" libmpfr.lib libgmp.lib
 
 $(DIRMPC)config.h :
-	echo #define PACKAGE_STRING "mpc"           >$(DIRMPC)config.h
-	echo #define PACKAGE_VERSION "$(VERSION)"   >>$(DIRMPC)config.h
-	echo #define STDC_HEADERS 1                 >>$(DIRMPC)config.h
+	echo #define PACKAGE_STRING "mpc"           >$(DIRMPC)\config.h
+	echo #define PACKAGE_VERSION "$(VERSION)"   >>$(DIRMPC)\config.h
+	echo #define STDC_HEADERS 1                 >>$(DIRMPC)\config.h
 
 
 #
@@ -237,6 +231,8 @@ test :
 	copy $(GMPDIR)\lib\*gmp*.dll $(DIRMPCTESTS)
 	copy $(MPFRDIR)\lib\*mpfr*.dll $(DIRMPCTESTS)
 	copy $(LIBRARY)  $(DIRMPCTESTS)
+        $(TESTCOMPILE)tset.c  $(MIDTESTCOMPILE)tset.exe $(ENDTESTCOMPILE)
+        cd $(DIRMPCTESTS) && tset.exe && cd ..
         $(TESTCOMPILE)tabs.c  $(MIDTESTCOMPILE)tabs.exe $(ENDTESTCOMPILE)
         cd $(DIRMPCTESTS) && tabs.exe && cd ..
         $(TESTCOMPILE)tadd.c  $(MIDTESTCOMPILE)tadd.exe $(ENDTESTCOMPILE)
@@ -261,14 +257,16 @@ test :
         cd $(DIRMPCTESTS) && tdiv_fr.exe && cd ..
         $(TESTCOMPILE)tdiv_ui.c  $(MIDTESTCOMPILE)tdiv_ui.exe $(ENDTESTCOMPILE)
         cd $(DIRMPCTESTS) && tdiv_ui.exe && cd ..
-        $(TESTCOMPILE)test.c  $(MIDTESTCOMPILE)test.exe $(ENDTESTCOMPILE)
-        cd $(DIRMPCTESTS) && test.exe && cd ..
         $(TESTCOMPILE)texp.c  $(MIDTESTCOMPILE)texp.exe $(ENDTESTCOMPILE)
         cd $(DIRMPCTESTS) && texp.exe && cd ..
         $(TESTCOMPILE)tfr_div.c  $(MIDTESTCOMPILE)tfr_div.exe $(ENDTESTCOMPILE)
         cd $(DIRMPCTESTS) && tfr_div.exe && cd ..
         $(TESTCOMPILE)tfr_sub.c  $(MIDTESTCOMPILE)tfr_sub.exe $(ENDTESTCOMPILE)
         cd $(DIRMPCTESTS) && tfr_sub.exe && cd ..
+        $(TESTCOMPILE)tget_version.c  $(MIDTESTCOMPILE)tget_version.exe $(ENDTESTCOMPILE)
+        cd $(DIRMPCTESTS) && tget_version.exe && cd ..
+        $(TESTCOMPILE)tio_str.c  $(MIDTESTCOMPILE)tio_str.exe $(ENDTESTCOMPILE)
+        cd $(DIRMPCTESTS) && tio_str.exe && cd ..
         $(TESTCOMPILE)timag.c  $(MIDTESTCOMPILE)timag.exe $(ENDTESTCOMPILE)
         cd $(DIRMPCTESTS) && timag.exe && cd ..
         $(TESTCOMPILE)tlog.c  $(MIDTESTCOMPILE)tlog.exe $(ENDTESTCOMPILE)
@@ -289,6 +287,8 @@ test :
         cd $(DIRMPCTESTS) && tneg.exe && cd ..
         $(TESTCOMPILE)tnorm.c  $(MIDTESTCOMPILE)tnorm.exe $(ENDTESTCOMPILE)
         cd $(DIRMPCTESTS) && tnorm.exe && cd ..
+        $(TESTCOMPILE)tprec.c  $(MIDTESTCOMPILE)tprec.exe $(ENDTESTCOMPILE)
+        cd $(DIRMPCTESTS) && tprec.exe && cd ..
         $(TESTCOMPILE)tproj.c  $(MIDTESTCOMPILE)tproj.exe $(ENDTESTCOMPILE)
         cd $(DIRMPCTESTS) && tproj.exe && cd ..
         $(TESTCOMPILE)treal.c  $(MIDTESTCOMPILE)treal.exe $(ENDTESTCOMPILE)
@@ -301,6 +301,8 @@ test :
         cd $(DIRMPCTESTS) && tsqr.exe && cd ..
         $(TESTCOMPILE)tsqrt.c  $(MIDTESTCOMPILE)tsqrt.exe $(ENDTESTCOMPILE)
         cd $(DIRMPCTESTS) && tsqrt.exe && cd ..
+        $(TESTCOMPILE)tstrtoc.c  $(MIDTESTCOMPILE)tstrtoc.exe $(ENDTESTCOMPILE)
+        cd $(DIRMPCTESTS) && tstrtoc.exe && cd ..
         $(TESTCOMPILE)tsub.c  $(MIDTESTCOMPILE)tsub.exe $(ENDTESTCOMPILE)
         cd $(DIRMPCTESTS) && tsub.exe && cd ..
         $(TESTCOMPILE)tsub_fr.c  $(MIDTESTCOMPILE)tsub_fr.exe $(ENDTESTCOMPILE)
