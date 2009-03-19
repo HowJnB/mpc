@@ -597,10 +597,14 @@ Set the real part of @var{rop} from @var{op1}, and its imaginary part from
 @var{op2}, according to the rounding mode @var{rnd}.
 @end deftypefun
 
+For functions assigning complex variables from strings or input streams,
+@pxref{string-io,,String and Stream Input and Output}.
+
 
 @node String and Stream Input and Output, Complex Comparison, Assigning Complex Numbers, Complex Functions
 @comment  node-name,  next,  previous,  up
 @cindex String and stream input and output
+@anchor{string-io}
 @section String and Stream Input and Output
 
 @deftypefun int mpc_strtoc (mpc_t @var{rop}, char *@var{nptr}, char **@var{endptr}, int @var{base}, mpc_rnd_t @var{rnd})

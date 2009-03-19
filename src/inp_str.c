@@ -55,9 +55,9 @@ mpc_realloc_str (char * str, size_t oldlen, size_t newlen) {
 }
 
 
-size_t
-mpc_inp_str (mpc_ptr rop, FILE *stream, int base, mpc_rnd_t rnd_mode) {
-   size_t white, nread;
+int
+mpc_inp_str (mpc_ptr rop, FILE *stream, size_t *read, int base, mpc_rnd_t rnd_mode) {
+   size_t white, nread = 0;
    int inex = -1;
    int c;
    int par = 0;
@@ -73,7 +73,6 @@ mpc_inp_str (mpc_ptr rop, FILE *stream, int base, mpc_rnd_t rnd_mode) {
          Then have mpc_setstr do the work.                                 */
       size_t strsize = 100;
       char *str = mpc_alloc_str (strsize);
-      nread = 0;
       if (c == '(')
          par = 1;
       while (c != EOF &&
@@ -104,8 +103,8 @@ mpc_inp_str (mpc_ptr rop, FILE *stream, int base, mpc_rnd_t rnd_mode) {
    if (inex == -1) {
       mpfr_set_nan (MPC_RE(rop));
       mpfr_set_nan (MPC_IM(rop));
-      return 0;
    }
-   else
-      return white + nread;
+   if (read != NULL)
+      *read = white + nread;
+   return inex;
 }

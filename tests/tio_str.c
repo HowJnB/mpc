@@ -93,7 +93,7 @@ check_data_file (mpc_ptr read_number, char *file_name)
   skip_comments (fp);
 
   /* 2.1 regular number with I */
-  if (mpc_inp_str (read_number, fp, 10, MPC_RNDUZ) == 0)
+  if (mpc_inp_str (read_number, fp, NULL, 10, MPC_RNDUZ) == -1)
     {
       printf ("Error: mpc_inp_str cannot correctly read number line %lu in file %s\n",
               line_number, file_name);
@@ -118,7 +118,7 @@ check_data_file (mpc_ptr read_number, char *file_name)
   skip_line (fp);
   skip_comments (fp);
 
-  if (mpc_inp_str (read_number, fp, 10, MPC_RNDUZ) == 0)
+  if (mpc_inp_str (read_number, fp, NULL, 10, MPC_RNDUZ) == -1)
     {
       printf ("Error: mpc_inp_str cannot correctly re-read number line %lu "
               "in file %s\n", line_number, file_name);
@@ -141,35 +141,35 @@ check_data_file (mpc_ptr read_number, char *file_name)
   skip_line (fp);
   skip_comments (fp);
 
-  if (mpc_inp_str (read_number, fp, 10, MPC_RNDUZ) != 0)
+  if (mpc_inp_str (read_number, fp, NULL, 10, MPC_RNDUZ) != -1)
     goto read_error;
 
   /* 2.4 with valid real part but invalid imaginary part */
   skip_line (fp);
   skip_comments (fp);
 
-  if (mpc_inp_str (read_number, fp, 10, MPC_RNDUZ) != 0)
+  if (mpc_inp_str (read_number, fp, NULL, 10, MPC_RNDUZ) != -1)
     goto read_error;
 
   /* 2.5 with valid real part and + but invalid rest */
   skip_line (fp);
   skip_comments (fp);
 
-  if (mpc_inp_str (read_number, fp, 10, MPC_RNDUZ) != 0)
+  if (mpc_inp_str (read_number, fp, NULL, 10, MPC_RNDUZ) != -1)
     goto read_error;
 
   /* 2.6 with valid real part and +I but invalid rest */
   skip_line (fp);
   skip_comments (fp);
 
-  if (mpc_inp_str (read_number, fp, 10, MPC_RNDUZ) != 0)
+  if (mpc_inp_str (read_number, fp, NULL, 10, MPC_RNDUZ) != -1)
     goto read_error;
 
   /* 2.7 with valid real part and +I* but invalid rest */
   skip_line (fp);
   skip_comments (fp);
 
-  if (mpc_inp_str (read_number, fp, 10, MPC_RNDUZ) != 0)
+  if (mpc_inp_str (read_number, fp, NULL, 10, MPC_RNDUZ) != -1)
     goto read_error;
 
   fclose (fp);
@@ -177,7 +177,7 @@ check_data_file (mpc_ptr read_number, char *file_name)
   return ;
 
  read_error:
-  printf ("Error: mpc_inp_str should return 0 but does not (line %lu "
+  printf ("Error: mpc_inp_str should return -1 but does not (line %lu "
           "in file %s)\n", line_number, file_name);
 
   exit (1);
@@ -205,7 +205,7 @@ check_io_str (mpc_ptr read_number, mpc_ptr expected)
 
       exit (1);
     };
-  if (mpc_inp_str (read_number, fp, 10, MPC_RNDNN) == 0)
+  if (mpc_inp_str (read_number, fp, NULL, 10, MPC_RNDNN) == -1)
     {
       printf ("Error: mpc_inp_str cannot correctly re-read number "
               "in file %s\n", tmp_file);
@@ -215,7 +215,7 @@ check_io_str (mpc_ptr read_number, mpc_ptr expected)
   fclose (fp);
 
   /* mpc_cmp set erange flag when an operand is a NaN */
-  mpfr_clear_flags (); 
+  mpfr_clear_flags ();
   if (mpc_cmp (read_number, expected) != 0 || mpfr_erangeflag_p())
     {
       printf ("Error: inp_str o out_str <> Id\n");
@@ -246,7 +246,7 @@ check_stdout (mpc_ptr read_number, mpc_ptr expected)
   fflush(stdin);
   fd = dup(fileno(stdin));
   freopen(tmp_file, "r", stdin);
-  if (mpc_inp_str (read_number, NULL, 2, MPC_RNDNN) == 0)
+  if (mpc_inp_str (read_number, NULL, NULL, 2, MPC_RNDNN) == -1)
     {
       printf ("mpc_inp_str cannot correctly re-read number "
               "in file %s\n", tmp_file);
@@ -296,7 +296,7 @@ main (void)
 #ifndef NO_STREAM_REDIRECTION
   mpc_set_si_si (x, 1, -4, MPC_RNDNN);
   mpc_div_ui (x, x, 3, MPC_RNDDU);
-  
+
   check_stdout(z, x);
 #endif
 
