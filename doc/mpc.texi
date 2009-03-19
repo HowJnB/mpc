@@ -604,7 +604,8 @@ to the precision of @var{rop} with the given rounding mode @var{rnd}.
 See the documentation of @code{mpc_strtoc} for a detailed description of the
 valid string formats.
 Contrarily to @code{mpc_strtoc}, @code{mpc_set_str} requires the @emph{whole}
-string to represent a valid complex number.
+string to represent a valid complex number (potentially followed by
+additional white space).
 This function returns the usual inexact value (@pxref{return-value,, Return
 Value}) if the entire string up to the final null character is a valid number
 in base @var{base}; otherwise it returns @minus{}1, and @var{rop} is set to
