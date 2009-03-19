@@ -66,7 +66,6 @@
 ! ! 53 nan 53 nan      "( +INF)"                  "( +INF)"        10 N N
 ! ! 53 nan 53 nan      "(1 +1 "                   "(1 +1 "         10 N N
 ! ! 53 nan 53 nan      "(1+1)"                    "(1+1)"          10 N N
-! ! 53 nan 53 nan      "(1 +1 )"                  "(1 +1 )"        10 N N
 ! ! 53 nan 53 nan      "(1 + 1)"                  "(1 + 1)"        10 N N
 ! ! 53 nan 53 nan      "(@nan@(quiet)"            "(@nan@(quiet)"  10 N N
 ! ! 53 nan 53 nan      "zero"                     "zero"           10 N N
@@ -166,3 +165,6 @@
 0 0 53      -1647190 53     -512315    "(-zaza -azaz)"       ""    36 N N
 0 0 53       +0b1010 53     +0xabcd    "(0b1010 +0xabcd)"    ""     0 N N #base autodetection
 0 0 53       +0xabcd 53     +0b1010    "(+0xa.bcd@+3 0b.101p4)" ""  0 N N #base autodetection
+
+# white space before the closing ')'
+0 0 53            +1 53          +1    "(  1   +1   )1"      "1"    10 N N

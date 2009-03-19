@@ -55,7 +55,9 @@ mpc_strtoc (mpc_ptr rop, char *nptr, char **endptr, int base, mpc_rnd_t rnd) {
       goto error;
    p = end;
 
-   if (bracketed) {
+   if (!bracketed)
+     inex_im = mpfr_set_ui (MPC_IM (rop), 0ul, GMP_RNDN);
+   else {
      if (!isspace ((unsigned char)*p))
          goto error;
 
@@ -66,13 +68,12 @@ mpc_strtoc (mpc_ptr rop, char *nptr, char **endptr, int base, mpc_rnd_t rnd) {
          goto error;
       p = end;
 
+      skip_whitespace (&p);
       if (*p != ')')
          goto error;
 
       p++;
    }
-   else
-     inex_im = mpfr_set_ui (MPC_IM (rop), 0, MPC_RND_IM(rnd));
 
    if (endptr != NULL)
       *endptr = p;
