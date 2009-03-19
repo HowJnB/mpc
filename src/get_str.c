@@ -42,12 +42,27 @@ MA 02111-1307, USA. */
 #endif
 
 static char *
+mpc_alloc_str (int len) {
+   void * (*allocfunc) (size_t);
+   mp_get_memory_functions (&allocfunc, NULL, NULL);
+   return (char *) ((*allocfunc) (len * sizeof (char)));
+}
+
+
+void
+mpc_free_str (char *str) {
+   void (*freefunc) (void *, size_t);
+   mp_get_memory_functions (NULL, NULL, &freefunc);
+   (*freefunc) (str, (strlen (str) + 1) * sizeof (char));
+}
+
+
+static char *
 pretty_zero (mpfr_srcptr zero)
 {
   char *pretty;
 
-  /* TODO: use gmp_alloc_func */
-  pretty = (char *)malloc (3 * sizeof(char));
+  pretty = mpc_alloc_str (3);
 
   pretty[0] = mpfr_signbit (zero) ? '-' : '+';
   pretty[1] = '0';
@@ -71,8 +86,7 @@ prettify (const char *str, const mp_exp_t expo, int base, int special)
   if (special)
     {
       /* special number: nan or inf */
-      /* TODO: use gmp_alloc_func */
-      pretty = (char *)malloc (sz * sizeof(char));
+      pretty = mpc_alloc_str (sz);
       strcpy (pretty, str);
 
       return pretty;
@@ -202,9 +216,8 @@ mpc_get_str (int base, size_t n, mpc_srcptr op, mpc_rnd_t rnd)
 
   needed_size = strlen (real_str) + strlen (imag_str) + 4;
 
-  /* TODO: use gmp_alloc_func */
-  complex_str = (char *)malloc (needed_size * sizeof (char));
-  MPC_ASSERT (complex_str != NULL);
+  complex_str = mpc_alloc_str (needed_size);
+MPC_ASSERT (complex_str != NULL);
 
   strcpy (complex_str, "(");
   strcat (complex_str, real_str);
@@ -212,15 +225,8 @@ mpc_get_str (int base, size_t n, mpc_srcptr op, mpc_rnd_t rnd)
   strcat (complex_str, imag_str);
   strcat (complex_str, ")");
 
-  free (real_str); /* TODO: use gmp_free_func */
-  free (imag_str);
+  mpc_free_str (real_str);
+  mpc_free_str (imag_str);
 
   return complex_str;
-}
-
-void
-mpc_free_str (char *str)
-{
-  /* TODO: use gmp_free_func */
-  free (str);
 }
