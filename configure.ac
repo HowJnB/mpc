@@ -30,6 +30,8 @@ AC_CONFIG_HEADER([config.h])
 AM_INIT_AUTOMAKE([1.9 -Wall -Werror])
 AM_MAINTAINER_MODE
 
+AC_CANONICAL_HOST
+
 dnl Extra arguments to configure
 AC_ARG_WITH([mpfr_include],
             [AC_HELP_STRING([--with-mpfr-include=DIR],
