@@ -220,8 +220,8 @@ __MPC_DECLSPEC size_t mpc_out_str __MPC_PROTO ((FILE *, int, size_t, mpc_srcptr,
 }
 #endif
 
-#define mpc_realref(x) (&((x)->re))
-#define mpc_imagref(x) (&((x)->im))
+#define mpc_realref(x) ((x)->re)
+#define mpc_imagref(x) ((x)->im)
 
 #define mpc_add_si(x, y, z, rnd) \
  ( (z) >= 0 ? mpc_add_ui ((x), (y), (unsigned long int) (z), (rnd)) : mpc_sub_ui ((x), (y), (unsigned long int) (-(z)), (rnd)) )

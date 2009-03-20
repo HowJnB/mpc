@@ -753,7 +753,7 @@ direction @var{rnd}.
 @deftypefnx Macro mpfr_t mpc_imagref (mpc_t @var{op})
 Return a reference to the real part and imaginary part of @var{op},
 respectively. The @code{mpfr} functions can be used on the result of these
-macros.
+macros (note that the @code{mpfr_t} type is itself a pointer).
 @end deftypefn
 
 @deftypefn Function int mpc_arg (mpfr_t @var{rop}, mpc_t @var{op}, mpc_rnd_t @var{rnd})
