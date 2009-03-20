@@ -29,158 +29,75 @@ MA 02111-1307, USA. */
 #include <unistd.h>
 #endif
 
-#ifndef __SRCDIR
-#define __SRCDIR .
-#endif
-
-static unsigned long line_number;
+extern unsigned long line_number;
 /* character appearing next in the file, may be EOF */
-static int nextchar;
-
-/* read primitives */
-static void
-skip_line (FILE *fp)
-   /* skips characters until reaching '\n' or EOF; */
-   /* '\n' is skipped as well                      */
-{
-   while (nextchar != EOF && nextchar != '\n')
-      nextchar = getc (fp);
-   if (nextchar != EOF) {
-      line_number++;
-      nextchar = getc (fp);
-   }
-}
+extern int nextchar;
 
 static void
-skip_comments (FILE *fp)
-   /* skips over all whitespace and comments, if any */
-{
-   while (nextchar == '#') {
-      skip_line (fp);
-   }
-  ungetc (nextchar, fp);
-}
-
-/* Try reading valid and invalid complexes from file */
-static void
-check_data_file (mpc_ptr read_number, char *file_name)
+check_file (const char* file_name)
 {
   FILE *fp;
-  char *pathname;
 
-  /* 1. open data file */
-  pathname = (char *)malloc ((strlen (QUOTE (__SRCDIR)) + strlen (file_name)
-                              + 2) * sizeof (char));
-  if (pathname == NULL)
+  size_t str_len = 255;
+  char *str = NULL;
+
+  int base;
+  int inex_re;
+  int inex_im;
+  mpc_t expected, got;
+  mpc_rnd_t rnd = MPC_RNDNN;
+  int inex = 0, inex_expected;
+  known_signs_t ks = {1, 1};
+  size_t sz;
+
+  fp = open_data_file (file_name);
+  
+  str = (char *) malloc (str_len * sizeof (char));
+  if (str == NULL)
     {
       printf ("Cannot allocate memory\n");
-
       exit (1);
     }
-  sprintf (pathname, QUOTE (__SRCDIR)"/%s", file_name);
-  fp = fopen (pathname, "r");
-  if (fp == NULL)
-    {
-      fprintf (stderr, "Unable to open %s\n", pathname);
+  mpc_init2 (expected, 53);
+  mpc_init2 (got, 53);
 
-      exit (1);
-    }
-
-  /* 2. read data file */
+  /* read data file */
   line_number = 1;
   nextchar = getc (fp);
-  /* skips over all comments, if any */
-  skip_comments (fp);
+  skip_whitespace_comments (fp);
 
-  /* 2.1 regular number with I */
-  if (mpc_inp_str (read_number, fp, NULL, 10, MPC_RNDUZ) == -1)
+  while (nextchar != EOF)
     {
-      printf ("Error: mpc_inp_str cannot correctly read number line %lu in file %s\n",
-              line_number, file_name);
-      OUT (read_number);
+      /* 1. read a line of data: expected result, base, rounding mode */
+      read_ternary (fp, &inex_re);
+      read_ternary (fp, &inex_im);
+      read_mpc (fp, expected, &ks);
+      if (inex_re == TERNARY_ERROR || inex_im == TERNARY_ERROR)
+         inex_expected = -1;
+      else
+         inex_expected = MPC_INEX (inex_re, inex_im);
+      read_int (fp, &base, "base");
+      read_mpc_rounding_mode (fp, &rnd);
 
-      exit (1);
+      /* 2. read string at the same precision as the expected result */
+      ungetc (nextchar, fp);
+      mpfr_set_prec (MPC_RE (got), MPC_PREC_RE (expected));
+      mpfr_set_prec (MPC_IM (got), MPC_PREC_IM (expected));
+      inex = mpc_inp_str (got, fp, &sz, base, rnd);
+
+      /* 3. compare this result with the expected one */
+
+      /* TODO */
+
+      nextchar = getc (fp);
+      skip_whitespace_comments (fp);
     }
 
-  mpfr_clear_flags (); /* mpc_cmp set erange flag when an operand is
-                          a NaN */
-  if (mpc_cmp_si_si (read_number, 1, 1) != 0 || mpfr_erangeflag_p())
-    {
-      printf ("Error: mpc_inp_str do not correctly re-read number "
-              "line %lu in file %s\n", line_number, file_name);
-      OUT (read_number);
-      printf ("expected: 1 +I*1\n");
-
-      exit (1);
-    }
-
-  /* 2.2 with i instead of I */
-  skip_line (fp);
-  skip_comments (fp);
-
-  if (mpc_inp_str (read_number, fp, NULL, 10, MPC_RNDUZ) == -1)
-    {
-      printf ("Error: mpc_inp_str cannot correctly re-read number line %lu "
-              "in file %s\n", line_number, file_name);
-
-      exit (1);
-    }
-
-  mpfr_clear_flags ();
-  if (mpc_cmp_si_si (read_number, 1, -1) != 0 || mpfr_erangeflag_p())
-    {
-      printf ("Error: mpc_inp_str do not correctly re-read number line %lu "
-              "in file %s\n", line_number, file_name);
-      OUT (read_number);
-      printf ("expected: 1 -I* 1\n");
-
-      exit (1);
-    }
-
-  /* 2.3 with invalid real part */
-  skip_line (fp);
-  skip_comments (fp);
-
-  if (mpc_inp_str (read_number, fp, NULL, 10, MPC_RNDUZ) != -1)
-    goto read_error;
-
-  /* 2.4 with valid real part but invalid imaginary part */
-  skip_line (fp);
-  skip_comments (fp);
-
-  if (mpc_inp_str (read_number, fp, NULL, 10, MPC_RNDUZ) != -1)
-    goto read_error;
-
-  /* 2.5 with valid real part and + but invalid rest */
-  skip_line (fp);
-  skip_comments (fp);
-
-  if (mpc_inp_str (read_number, fp, NULL, 10, MPC_RNDUZ) != -1)
-    goto read_error;
-
-  /* 2.6 with valid real part and +I but invalid rest */
-  skip_line (fp);
-  skip_comments (fp);
-
-  if (mpc_inp_str (read_number, fp, NULL, 10, MPC_RNDUZ) != -1)
-    goto read_error;
-
-  /* 2.7 with valid real part and +I* but invalid rest */
-  skip_line (fp);
-  skip_comments (fp);
-
-  if (mpc_inp_str (read_number, fp, NULL, 10, MPC_RNDUZ) != -1)
-    goto read_error;
-
-  fclose (fp);
-
-  return ;
-
- read_error:
-  printf ("Error: mpc_inp_str should return -1 but does not (line %lu "
-          "in file %s)\n", line_number, file_name);
-
-  exit (1);
+  mpc_clear (expected);
+  mpc_clear (got);
+  if (str != NULL)
+    free (str);
+  close_data_file (fp);
 }
 
 static void
@@ -188,6 +105,7 @@ check_io_str (mpc_ptr read_number, mpc_ptr expected)
 {
   char tmp_file[] = "mpc_test";
   FILE *fp;
+  size_t sz;
 
   if (!(fp = fopen (tmp_file, "w")))
     {
@@ -205,7 +123,7 @@ check_io_str (mpc_ptr read_number, mpc_ptr expected)
 
       exit (1);
     };
-  if (mpc_inp_str (read_number, fp, NULL, 10, MPC_RNDNN) == -1)
+  if (mpc_inp_str (read_number, fp, &sz, 10, MPC_RNDNN) == -1)
     {
       printf ("Error: mpc_inp_str cannot correctly re-read number "
               "in file %s\n", tmp_file);
@@ -215,7 +133,7 @@ check_io_str (mpc_ptr read_number, mpc_ptr expected)
   fclose (fp);
 
   /* mpc_cmp set erange flag when an operand is a NaN */
-  mpfr_clear_flags ();
+  mpfr_clear_flags (); 
   if (mpc_cmp (read_number, expected) != 0 || mpfr_erangeflag_p())
     {
       printf ("Error: inp_str o out_str <> Id\n");
@@ -233,6 +151,7 @@ check_stdout (mpc_ptr read_number, mpc_ptr expected)
 {
   char tmp_file[] = "mpc_test";
   int fd;
+  size_t sz;
 
   fflush(stdout);
   fd = dup(fileno(stdout));
@@ -246,7 +165,7 @@ check_stdout (mpc_ptr read_number, mpc_ptr expected)
   fflush(stdin);
   fd = dup(fileno(stdin));
   freopen(tmp_file, "r", stdin);
-  if (mpc_inp_str (read_number, NULL, NULL, 2, MPC_RNDNN) == -1)
+  if (mpc_inp_str (read_number, NULL, &sz, 2, MPC_RNDNN) == -1)
     {
       printf ("mpc_inp_str cannot correctly re-read number "
               "in file %s\n", tmp_file);
@@ -278,10 +197,13 @@ main (void)
   mpc_init2 (z, 1000);
   mpc_init2 (x, 1000);
 
+  check_file ("inp_str.dat");
+
+  test_start();
+
   for (prec = 2; prec <= 1000; prec+=7)
     {
       mpc_set_prec (z, prec);
-      check_data_file (z, "inp_str.dat");
 
       mpc_set_prec (x, prec);
       mpc_set_si_si (x, 1, 1, MPC_RNDNN);
@@ -291,17 +213,22 @@ main (void)
       mpfr_set_inf (MPC_RE(x), -1);
       mpfr_set_inf (MPC_IM(x), +1);
       check_io_str (z, x);
+
+      test_default_random (z,  -1024, 1024, 128, 25);
+      check_io_str (z, x);
     }
 
 #ifndef NO_STREAM_REDIRECTION
   mpc_set_si_si (x, 1, -4, MPC_RNDNN);
   mpc_div_ui (x, x, 3, MPC_RNDDU);
-
+  
   check_stdout(z, x);
 #endif
 
   mpc_clear (z);
   mpc_clear (x);
+
+  test_end();
 
   return 0;
 }
