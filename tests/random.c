@@ -23,7 +23,6 @@ MA 02111-1307, USA. */
    test_end at the end.
    These are an adaptation of those of MPFR. */
 
-#include <stdio.h>
 #include <stdlib.h>
 
 #include "mpc-tests.h"

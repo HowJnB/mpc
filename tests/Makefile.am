@@ -1,6 +1,6 @@
 ## Makefile.am -- Process this file with automake to produce Makefile.in
 AM_CFLAGS=@WARNINGCFLAGS@
-AM_CPPFLAGS = -I$(top_srcdir)/src -D__SRCDIR=$(srcdir)
+AM_CPPFLAGS = -I$(top_srcdir)/src
 LDADD = libmpc-tests.la $(top_builddir)/src/libmpc.la
 
 check_PROGRAMS = tio_str tabs tadd tadd_fr tadd_ui targ tconj tcos tcosh tdiv	\
