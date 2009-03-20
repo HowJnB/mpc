@@ -21,12 +21,7 @@ MA 02111-1307, USA. */
 
 #include <stdlib.h>
 #include <string.h>
-#include <ctype.h>
 #include "mpc-tests.h"
-
-#ifndef __SRCDIR
-#define __SRCDIR .
-#endif
 
 char *pathname;
 unsigned long line_number;
@@ -35,18 +30,19 @@ unsigned long line_number;
 int nextchar;
    /* character appearing next in the file, may be EOF */
 
-#define MPC_INEX_CMP(r, i, c)                           \
+#define MPC_INEX_CMP(r, i, c)                                 \
   (((r) == TERNARY_NOT_CHECKED || (r) == MPC_INEX_RE(c))      \
    && ((i) == TERNARY_NOT_CHECKED || (i) == MPC_INEX_IM (c)))
+
 #define MPFR_INEX_STR(inex)                     \
-  (inex) == TERNARY_NOT_CHECKED ? "?"                 \
+  (inex) == TERNARY_NOT_CHECKED ? "?"           \
     : (inex) == +1 ? "+1"                       \
     : (inex) == -1 ? "-1" : "0"
 
 static const char *mpfr_rnd_mode [] =
   { "GMP_RNDN", "GMP_RNDZ", "GMP_RNDU", "GMP_RNDD" };
 
-static const char *rnd_mode[] =
+const char *rnd_mode[] =
   { "MPC_RNDNN", "MPC_RNDZN", "MPC_RNDUN", "MPC_RNDDN",
     "undefined", "undefined", "undefined", "undefined", "undefined",
     "undefined", "undefined", "undefined", "undefined", "undefined",
@@ -64,6 +60,42 @@ static const char *rnd_mode[] =
     "undefined", "undefined", "undefined", "undefined", "undefined",
     "undefined", "undefined",
   };
+
+/* file functions */
+FILE *
+open_data_file (const char *file_name)
+{
+  FILE *fp;
+  char *src_dir;
+
+  src_dir = getenv ("srcdir");
+  if (src_dir == NULL)
+    src_dir = ".";
+
+  pathname = malloc (((strlen (src_dir)) + strlen (file_name) + 2)
+                     * sizeof (char));
+  if (pathname == NULL)
+    {
+      printf ("Cannot allocate memory\n");
+      exit (1);
+    }
+  sprintf (pathname, "%s/%s", src_dir, file_name);
+  fp = fopen (pathname, "r");
+  if (fp == NULL)
+    {
+      fprintf (stderr, "Unable to open %s\n", pathname);
+      exit (1);
+    }
+
+  return fp;
+}
+
+void
+close_data_file (FILE *fp)
+{
+  free (pathname);
+  fclose (fp);
+}
 
 /* read primitives */
 static void
@@ -101,6 +133,67 @@ skip_whitespace_comments (FILE *fp)
       if (nextchar != EOF)
          skip_whitespace (fp);
    }
+}
+
+
+size_t
+read_string (FILE *fp, char **buffer_ptr, size_t buffer_length, const char *name)
+{
+  size_t pos;
+  char *buffer;
+
+  pos = 0;
+  buffer = *buffer_ptr;
+
+  if (nextchar == '"')
+    nextchar = getc (fp);
+  else
+    goto error;
+
+  while (nextchar != EOF && nextchar != '"')
+    {
+      if (nextchar == '\n')
+        line_number++;
+      if (pos + 1 > buffer_length)
+        {
+          buffer = realloc (buffer, 2 * buffer_length);
+          if (buffer == NULL)
+            {
+              printf ("Cannot allocate memory\n");
+              exit (1);
+            }
+          buffer_length *= 2;
+        }
+      buffer[pos++] = nextchar;
+      nextchar = getc (fp);
+    }
+
+  if (nextchar != '"')
+    goto error;
+
+  if (pos + 1 > buffer_length)
+    {
+      buffer = realloc (buffer, buffer_length + 1);
+      if (buffer == NULL)
+        {
+          printf ("Cannot allocate memory\n");
+          exit (1);
+        }
+      buffer_length *= 2;
+    }
+  buffer[pos] = '\0';
+
+  nextchar = getc (fp);
+  skip_whitespace_comments (fp);
+
+  buffer_ptr = &buffer;
+
+  return buffer_length;
+
+ error:
+  printf ("Error: Unable to read %s in file '%s' line '%lu'\n",
+          name, pathname, line_number);
+  exit (1);
 }
 
 /* All following read routines skip over whitespace and comments; */
@@ -176,6 +269,30 @@ read_mpc_rounding_mode (FILE *fp, mpc_rnd_t* rnd)
    read_mpfr_rounding_mode (fp, &re);
    read_mpfr_rounding_mode (fp, &im);
    *rnd = RNDC (re, im);
+}
+
+void
+read_int (FILE *fp, int *nread, const char *name)
+{
+  int n = 0;
+
+  if (nextchar == EOF)
+    {
+      printf ("Error: Unexpected EOF when reading mpfr precision "
+              "in file '%s' line %lu\n",
+              pathname, line_number);
+      exit (1);
+    }
+  ungetc (nextchar, fp);
+  n = fscanf (fp, "%i", nread);
+  if (ferror (fp) || n == 0 || n == EOF)
+    {
+      printf ("Error: Cannot read %s in file '%s' line %lu\n",
+              name, pathname, line_number);
+      exit (1);
+    }
+  nextchar = getc (fp);
+  skip_whitespace_comments (fp);
 }
 
 mpfr_prec_t
@@ -323,23 +440,9 @@ data_check (mpc_function function, const char *file_name)
   known_signs_t signs;
   int inex = 0;
 
-  /* 1. open data file */
-  pathname = (char *)malloc ((strlen (QUOTE (__SRCDIR)) + strlen (file_name)
-                              + 2) * sizeof (char));
-  if (pathname == NULL)
-    {
-      printf ("Cannot allocate memory\n");
-      exit (1);
-    }
-  sprintf (pathname, QUOTE (__SRCDIR)"/%s", file_name);
-  fp = fopen (pathname, "r");
-  if (fp == NULL)
-    {
-      fprintf (stderr, "Unable to open %s\n", pathname);
-      exit (1);
-    }
+  fp = open_data_file (file_name);
 
-  /* 2. init needed variables */
+  /* 1. init needed variables */
   mpc_init2 (z1, 2);
   switch (function.type)
     {
@@ -365,7 +468,7 @@ data_check (mpc_function function, const char *file_name)
       ;
     }
 
-  /* 3. read data file */
+  /* 2. read data file */
   line_number = 1;
   nextchar = getc (fp);
   skip_whitespace_comments (fp);
@@ -555,7 +658,7 @@ data_check (mpc_function function, const char *file_name)
         }
     }
 
-  /* 4. Clear used variables */
+  /* 3. Clear used variables */
   mpc_clear (z1);
   switch (function.type)
     {
@@ -581,6 +684,5 @@ data_check (mpc_function function, const char *file_name)
       ;
     }
 
-  fclose (fp);
-  free (pathname);
+  close_data_file (fp);
 }

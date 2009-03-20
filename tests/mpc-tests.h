@@ -20,13 +20,11 @@ the Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston,
 MA 02111-1307, USA. */
 
 #include <stdio.h>
+#include <ctype.h>
+
 #include "mpc-impl.h"
 
-#define TERNARY_NOT_CHECKED 255
-   /* special value to indicate that the ternary value is not checked */
-#define TERNARY_ERROR 254
-   /* special value to indicate that an error occurred in an mpc function */
-
+/** OUTPUT HELPER MACROS */
 #define MPFR_OUT(X) \
   printf (#X" [%ld]=", MPFR_PREC (X));\
   mpfr_out_str (stdout, 2, 0, (X), GMP_RNDN);\
@@ -163,11 +161,21 @@ void tgeneric (mpc_function, mpfr_prec_t, mpfr_prec_t, mpfr_prec_t, mp_exp_t);
    precomputed data in a file.*/
 void data_check (mpc_function, const char *);
 
+FILE * open_data_file (const char *file_name);
+void close_data_file (FILE *fp);
+
 /* helper file reading functions */
 void skip_whitespace_comments (FILE *fp);
 void read_ternary (FILE *fp, int* ternary);
 void read_mpfr_rounding_mode (FILE *fp, mpfr_rnd_t* rnd);
 void read_mpc_rounding_mode (FILE *fp, mpc_rnd_t* rnd);
 mpfr_prec_t read_mpfr_prec (FILE *fp);
+void read_int (FILE *fp, int *n, const char *name);
+size_t read_string (FILE *fp, char **buffer_ptr, size_t buffer_length, const char *name);
 void read_mpfr (FILE *fp, mpfr_ptr x, int *known_sign);
 void read_mpc (FILE *fp, mpc_ptr z, known_signs_t *ks);
+
+#define TERNARY_NOT_CHECKED 255
+   /* special value to indicate that the ternary value is not checked */
+#define TERNARY_ERROR 254
+   /* special value to indicate that an error occurred in an mpc function */

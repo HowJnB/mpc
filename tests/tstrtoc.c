@@ -19,123 +19,17 @@ along with the MPC Library; see the file COPYING.LIB.  If not, write to
 the Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston,
 MA 02111-1307, USA. */
 
-#include <ctype.h>
 #include <string.h>
-#include <stdio.h>
 #include <stdlib.h>
 
 #include "mpc-tests.h"
-
-#ifndef __SRCDIR
-#define __SRCDIR .
-#endif
 
 extern unsigned long line_number;
 extern int nextchar;
 extern char *pathname;
 
-static const char *rnd_mode[] =
-  { "MPC_RNDNN", "MPC_RNDZN", "MPC_RNDUN", "MPC_RNDDN",
-    "undefined", "undefined", "undefined", "undefined", "undefined",
-    "undefined", "undefined", "undefined", "undefined", "undefined",
-    "undefined", "undefined",
-    "MPC_RNDNZ", "MPC_RNDZZ", "MPC_RNDUZ", "MPC_RNDDZ",
-    "undefined", "undefined", "undefined", "undefined", "undefined",
-    "undefined", "undefined", "undefined", "undefined", "undefined",
-    "undefined", "undefined",
-    "MPC_RNDNU", "MPC_RNDZU", "MPC_RNDUU", "MPC_RNDDU",
-    "undefined", "undefined", "undefined", "undefined", "undefined",
-    "undefined", "undefined", "undefined", "undefined", "undefined",
-    "undefined", "undefined",
-    "MPC_RNDND", "MPC_RNDZD", "MPC_RNDUD", "MPC_RNDDD",
-    "undefined", "undefined", "undefined", "undefined", "undefined",
-    "undefined", "undefined", "undefined", "undefined", "undefined",
-    "undefined", "undefined",
-  };
-
-static void
-read_int (FILE *fp, int *nread, const char *name)
-{
-  int n = 0;
-
-  if (nextchar == EOF)
-    {
-      printf ("Error: Unexpected EOF when reading mpfr precision "
-              "in file '%s' line %lu\n",
-              pathname, line_number);
-      exit (1);
-    }
-  ungetc (nextchar, fp);
-  n = fscanf (fp, "%i", nread);
-  if (ferror (fp) || n == 0 || n == EOF)
-    {
-      printf ("Error: Cannot read %s in file '%s' line %lu\n",
-              name, pathname, line_number);
-      exit (1);
-    }
-  nextchar = getc (fp);
-  skip_whitespace_comments (fp);
-}
-
-static size_t
-read_string (FILE *fp, char **buffer_ptr, size_t buffer_length, const char *name)
-{
-  size_t pos;
-  char *buffer;
-
-  pos = 0;
-  buffer = *buffer_ptr;
-
-  if (nextchar == '"')
-    nextchar = getc (fp);
-  else
-    goto error;
-
-  while (nextchar != EOF && nextchar != '"')
-    {
-      if (nextchar == '\n')
-        line_number++;
-      if (pos + 1 > buffer_length)
-        {
-          buffer = realloc (buffer, 2 * buffer_length);
-          if (buffer == NULL)
-            {
-              printf ("Cannot allocate memory\n");
-              exit (1);
-            }
-          buffer_length *= 2;
-        }
-      buffer[pos++] = nextchar;
-      nextchar = getc (fp);
-    }
-
-  if (nextchar != '"')
-    goto error;
-
-  if (pos + 1 > buffer_length)
-    {
-      buffer = realloc (buffer, buffer_length + 1);
-      if (buffer == NULL)
-        {
-          printf ("Cannot allocate memory\n");
-          exit (1);
-        }
-      buffer_length *= 2;
-    }
-  buffer[pos] = '\0';
-
-  nextchar = getc (fp);
-  skip_whitespace_comments (fp);
-
-  buffer_ptr = &buffer;
-
-  return buffer_length;
-
- error:
-  printf ("Error: Unable to read %s in file '%s' line '%lu'\n",
-          name, pathname, line_number);
-  exit (1);
-}
+/* names of rounding modes */
+extern char *rnd_mode[];
 
 static void
 check_file (const char* file_name)
@@ -157,23 +51,9 @@ check_file (const char* file_name)
   known_signs_t ks = {1, 1};
 
 
-  /* 1. open data file */
-  pathname = (char *)malloc ((strlen (QUOTE (__SRCDIR)) + strlen (file_name)
-                              + 2) * sizeof (char));
-  if (pathname == NULL)
-    {
-      printf ("Cannot allocate memory\n");
-      exit (1);
-    }
-  sprintf (pathname, QUOTE (__SRCDIR)"/%s", file_name);
-  fp = fopen (pathname, "r");
-  if (fp == NULL)
-    {
-      fprintf (stderr, "Unable to open %s\n", pathname);
-      exit (1);
-    }
-
-  /* 2. init needed variables */
+  fp = open_data_file (file_name);
+  
+  /* initializations */
   str = (char *) malloc (str_len * sizeof (char));
   if (str == NULL)
     {
@@ -189,14 +69,14 @@ check_file (const char* file_name)
   mpc_init2 (expected, 53);
   mpc_init2 (got, 53);
 
-  /* 3. read data file */
+  /* read data file */
   line_number = 1;
   nextchar = getc (fp);
   while (nextchar != EOF)
     {
       skip_whitespace_comments (fp);
 
-      /* 3.1 read a line of data: expected result, base, rounding mode */
+      /* 1. read a line of data: expected result, base, rounding mode */
       read_ternary (fp, &inex_re);
       read_ternary (fp, &inex_im);
       read_mpc (fp, expected, NULL);
@@ -210,12 +90,12 @@ check_file (const char* file_name)
       read_int (fp, &base, "base");
       read_mpc_rounding_mode (fp, &rnd);
 
-      /* 3.2 convert string at the same precision as the expected result */
+      /* 2. convert string at the same precision as the expected result */
       mpfr_set_prec (MPC_RE (got), MPC_PREC_RE (expected));
       mpfr_set_prec (MPC_IM (got), MPC_PREC_IM (expected));
       inex = mpc_strtoc (got, str, &end, base, rnd);
 
-      /* 3.3 compare this result with the expected one */
+      /* 3. compare this result with the expected one */
       if (inex != inex_expected
           || !same_mpc_value (got, expected, ks)
           || strcmp (end, rstr) != 0)
@@ -244,16 +124,13 @@ check_file (const char* file_name)
       end = NULL;
     }
 
-  fclose (fp);
-
-  /* 4. Clear used variables */
   mpc_clear (expected);
   mpc_clear (got);
   if (str != NULL)
     free (str);
   if (rstr != NULL)
     free (rstr);
-  free (pathname);
+  close_data_file (fp);
 }
 
 static void
