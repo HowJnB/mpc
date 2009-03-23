@@ -126,6 +126,7 @@ void cmpsqr (mpc_srcptr x, mpc_rnd_t rnd)
 
   mpc_clear (z);
   mpc_clear (t);
+  mpc_clear (u);
 }
 
 

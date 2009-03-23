@@ -693,10 +693,15 @@ tgeneric (mpc_function function, mpfr_prec_t prec_min,
       mpc_init2 (z2, prec_max);
       special_cases = 2;
       break;
-    case CCI: case CCS:
-    case CCU: case CUC:
     case CCF: case CFC:
       mpfr_init2 (x1, prec_max);
+      mpc_init2 (z2, prec_max);
+      mpc_init2 (z3, prec_max);
+      mpc_init2 (zzzz, 4*prec_max);
+      special_cases = 3;
+      break;
+    case CCI: case CCS:
+    case CCU: case CUC:
       mpc_init2 (z2, prec_max);
       mpc_init2 (z3, prec_max);
       mpc_init2 (zzzz, 4*prec_max);
@@ -993,6 +998,10 @@ tgeneric (mpc_function function, mpfr_prec_t prec_min,
       break;
     case CCF: case CFC:
       mpfr_clear (x1);
+      mpc_clear (z2);
+      mpc_clear (z3);
+      mpc_clear (zzzz);
+      break;
     case CUUC:
     case CCI: case CCS:
     case CCU: case CUC:
