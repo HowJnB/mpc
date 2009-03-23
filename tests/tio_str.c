@@ -102,7 +102,7 @@ check_file (const char* file_name)
                    inex, expected_inex);
           if (size !=  expected_size)
             printf ("     got size: %lu\nexpected size: %lu\n     ",
-                    size, expected_size);
+                    (unsigned long int) size, (unsigned long int) expected_size);
           OUT (got);
           OUT (expected);
 

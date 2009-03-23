@@ -58,7 +58,7 @@
 ! ! 53  nan 53  nan      1 10 N N  ".       #no digit
 ! ! 53  nan 53  nan      2  2 N N  "+3      #invalid binary digit
 ! ! 53  nan 53  nan      7 10 N N  "( +INF) #one part missing
-! ! 53  nan 53  nan      7 10 N N  "(1 (1 ( #too much level of parentheses
+! ! 53  nan 53  nan      7 10 N N  "(1 (1 ( #too many levels of parentheses
 ! ! 53  nan 53  nan      7 10 N N  "((1 1))
 ! ! 53  nan 53  nan      3 10 N N  "+1)     #opening parenthesis missing
 ! ! 53  nan 53  nan      5 10 N N  "(1 +1
