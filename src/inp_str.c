@@ -68,35 +68,39 @@ mpc_inp_str (mpc_ptr rop, FILE *stream, size_t *read, int base, mpc_rnd_t rnd_mo
    white = skip_whitespace (stream);
    c = getc (stream);
    if (c != EOF) {
-      /* If c=='(', set par=true and read everything up to ')'; otherwise,
-         par=false already and read everything up to white space.
-         Then have mpc_setstr do the work.                                 */
+      /* If c=='(', set par=1 and read everything up to ')' skipping one level
+         of nested pair of parentheses; otherwise, par=0 already and read
+         everything up to white space.  Then have mpc_setstr do the work.  */
       size_t strsize = 100;
       char *str = mpc_alloc_str (strsize);
-      if (c == '(')
-         par = 1;
-      while (c != EOF &&
-            ((par && c != ')') || (!par && !isspace ((unsigned char) c)))) {
+      while (c != EOF && c != '\n' 
+             && (par != 0 || !isspace ((unsigned char) c))) {
          str [nread] = (char) c;
          nread++;
          if (nread == strsize) {
             str = mpc_realloc_str (str, strsize, 2 * strsize);
             strsize *= 2;
          }
+         if (c == '(') {
+           par++;
+           if (par > 2)
+             break;
+         }
+         else if (c == ')') {
+           par--;
+           if (par < 0)
+             break;
+         }
          c = getc (stream);
       }
-      if (c != EOF) {
-         if (par) {
-            str [nread] = ')';
-            nread++;
-         }
-         else /* put whitespace back into stream */
-            ungetc (c, stream);
-         str = mpc_realloc_str (str, strsize, nread + 1);
-         strsize = nread + 1;
-         str [nread] = '\0';
-         inex = mpc_set_str (rop, str, base, rnd_mode);
-      }
+      if (isspace ((unsigned char) c))
+        ungetc (c, stream);
+      
+      str = mpc_realloc_str (str, strsize, nread + 1);
+      strsize = nread + 1;
+      str [nread] = '\0';
+      inex = mpc_set_str (rop, str, base, rnd_mode);
+      
       mpc_free_str (str);
    }
 
