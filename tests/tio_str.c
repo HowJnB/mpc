@@ -39,9 +39,6 @@ check_file (const char* file_name)
 {
   FILE *fp;
 
-  size_t str_len = 255;
-  char *str = NULL;
-
   int tmp;
   int base;
   int inex_re;
@@ -54,12 +51,6 @@ check_file (const char* file_name)
 
   fp = open_data_file (file_name);
 
-  str = (char *) malloc (str_len * sizeof (char));
-  if (str == NULL)
-    {
-      printf ("Cannot allocate memory\n");
-      exit (1);
-    }
   mpc_init2 (expected, 53);
   mpc_init2 (got, 53);
 
@@ -115,8 +106,6 @@ check_file (const char* file_name)
 
   mpc_clear (expected);
   mpc_clear (got);
-  if (str != NULL)
-    free (str);
   close_data_file (fp);
 }
 
