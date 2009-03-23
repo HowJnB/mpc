@@ -340,7 +340,7 @@ check_set_str (mp_exp_t exp_max)
   /* the real part has a zero exponent in base ten (fixed in r439) */
   mpc_set_prec (expected, 37);
   mpc_set_prec (got, 37);
-  mpc_set_str (expected, "921FC04EDp-35", 16, GMP_RNDN);
+  mpc_set_str (expected, "921FC04EDp-35  ", 16, GMP_RNDN);
   str = mpc_get_str (10, 0, expected, MPC_RNDNN);
   if (mpc_set_str (got, str, 10, MPC_RNDNN) == -1
       || mpc_cmp (got, expected) != 0)

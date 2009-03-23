@@ -84,7 +84,8 @@ check_file (const char* file_name)
       read_mpc_rounding_mode (fp, &rnd);
 
       /* 2. read string at the same precision as the expected result */
-      ungetc (nextchar, fp);
+      while (nextchar != '"')
+        nextchar = getc (fp);
       mpfr_set_prec (MPC_RE (got), MPC_PREC_RE (expected));
       mpfr_set_prec (MPC_IM (got), MPC_PREC_IM (expected));
       inex = mpc_inp_str (got, fp, &size, base, rnd);
