@@ -82,7 +82,6 @@ check_file (const char* file_name)
       inex = mpc_inp_str (got, fp, &size, base, rnd);
 
       /* 3. compare this result with the expected one */
-
       if (inex != expected_inex || !same_mpc_value (got, expected, ks)
           || size != expected_size)
         {
@@ -94,13 +93,16 @@ check_file (const char* file_name)
           if (size !=  expected_size)
             printf ("     got size: %lu\nexpected size: %lu\n     ",
                     (unsigned long int) size, (unsigned long int) expected_size);
+          printf ("    ");
           OUT (got);
           OUT (expected);
 
           exit (1);
         }
 
+      while ((nextchar = getc (fp)) != '"');
       nextchar = getc (fp);
+
       skip_whitespace_comments (fp);
     }
 
