@@ -256,23 +256,16 @@ AC_C_CONST
 AC_TYPE_SIZE_T
 AC_HEADER_TIME
 
-# Checks for library functions.
+# Checks if compiler accepts warning flags.
+MPC_PROG_CC_WARNINGCFLAGS([WARNINGCFLAGS])
+
+# Checks for library functions with warning flags.
+old_cflags=$CFLAGS
+CFLAGS="$CFLAGS $WARNINGCFLAGS"
 AC_CHECK_FUNCS([gettimeofday])
 AC_CHECK_FUNCS([dup dup2 fileno],,
         [AC_DEFINE([NO_STREAM_REDIRECTION],1,[Do not check mpc_out_str on stdout])])
-
-# Checks if compiler accepts warning flags.
-if test x$GCC = xyes ; then
-  case $host in
-     *-*-cygwin* | *-*-mingw*) ;;
-     *) AX_C_CHECK_FLAG(-ansi,,,WARNINGCFLAGS="$WARNINGCFLAGS -ansi",) ;;
-  esac
-  AX_C_CHECK_FLAG(-pedantic,,,WARNINGCFLAGS="$WARNINGCFLAGS -pedantic",)
-  AX_C_CHECK_FLAG(-Wall,,,WARNINGCFLAGS="$WARNINGCFLAGS -Wall",)
-  AX_C_CHECK_FLAG(-Wextra,,,WARNINGCFLAGS="$WARNINGCFLAGS -Wextra",)
-  AX_C_CHECK_FLAG(-Werror,,,WARNINGCFLAGS="$WARNINGCFLAGS -Werror",)
-  AC_SUBST(WARNINGCFLAGS)
-fi
+CFLAGS=$old_cflags
 
 AC_CONFIG_FILES([Makefile src/Makefile tests/Makefile doc/Makefile])
 AC_OUTPUT

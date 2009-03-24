@@ -90,3 +90,31 @@ AC_DEFUN([AX_C_CHECK_FLAG],[
     $5
   ])
 ])
+
+#
+# SYNOPSIS
+#
+#
+MPC_PROG_CC_WARNINGFLAG([CFLAG-VAR])
+#
+# DESCRIPTION
+#
+# For development version only: Checks if gcc accepts warning flags.
+# Put accepted ones into CFLAG-VAR.
+#
+AC_DEFUN([MPC_PROG_CC_WARNINGCFLAGS], [
+  AC_REQUIRE([AC_PROG_GREP])
+  if echo $VERSION | grep -c dev >/dev/null 2>&1 ; then
+    if test x$GCC = xyes ; then
+      case $host in
+        *-*-cygwin* | *-*-mingw*) ;;
+        *) AX_C_CHECK_FLAG(-ansi,,,$1="$$1 -ansi",) ;;
+      esac
+      AX_C_CHECK_FLAG(-pedantic,,,$1="$$1 -pedantic",)
+      AX_C_CHECK_FLAG(-Wall,,,$1="$$1 -Wall",)
+      AX_C_CHECK_FLAG(-Wextra,,,$1="$$1 -Wextra",)
+      AX_C_CHECK_FLAG(-Werror,,,$1="$$1 -Werror",)
+      AC_SUBST($1)
+    fi
+  fi
+])
