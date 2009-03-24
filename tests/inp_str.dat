@@ -90,6 +90,7 @@
 0 0 53  nan 53  nan     18 10 N N  "(@nan@(QUIET) nan) "
 0 0 53  nan 53   +0      5 10 N N  "@nan@ "
 0 0 53  nan 53   +0     12 10 N N  "NaN(keepout) "
+0 0 53  nan 53   +0    122 10 N N  "Nan(very_long_suffix_oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo) "
 0 0 53  nan 53   +0      8 10 N N  "nan(0_1) "
 0 0 53  nan 53   +0      3 10 N N  "nan "
 0 0 53  inf 53   +0      3 10 N N  "inf "
