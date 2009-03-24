@@ -237,7 +237,7 @@ mpc_tan (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
       /* FIXME: compute
          k = Exp(Re(x))+Exp(Re(y))-2min{Exp(Re(y)), Exp(Im(y))}-Exp(Re(x/y))
          avoiding overflow */
-      k = exr - ezr + MAX(-eyr, eyr - 2 * eyi);
+      k = exr - ezr + MPC_MAX(-eyr, eyr - 2 * eyi);
       err = k < 2 ? 7 : (k == 2 ? 8 : (5 + k));
 
       /* Can the real part be rounded ? */

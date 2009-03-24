@@ -33,6 +33,20 @@ MA 02111-1307, USA. */
 #include "mpc.h"
 
 /*
+ * Miscelaneous useful macros
+ */
+
+#define MPC_MAX(h,i) ((h) > (i) ? (h) : (i))
+
+/* Safe absolute value (to avoid possible integer overflow) */
+/* type is the target (unsigned) type (copied from mpfr-impl.h) */
+#ifdef SAFE_ABS
+#undef SAFE_ABS
+#endif
+#define SAFE_ABS(type,x) ((x) >= 0 ? (type)(x) : -(type)(x))
+
+
+/*
  * MPFR constants and macros
  */
 
@@ -46,7 +60,7 @@ MA 02111-1307, USA. */
 #define MPFR_CHANGE_SIGN(x) mpfr_neg(x,x,GMP_RNDN)
 #define MPFR_IS_SINGULAR(x) (mpfr_nan_p(x) || mpfr_inf_p(x) || mpfr_zero_p(x))
 
-#define SWAP(a,b) { mpfr_srcptr tmp; tmp = a; a = b; b = tmp; }
+#define MPFR_SWAP(a,b) { mpfr_srcptr tmp; tmp = a; a = b; b = tmp; }
 
 
 /*
@@ -55,7 +69,7 @@ MA 02111-1307, USA. */
 
 #define MPC_PREC_RE(x) (MPFR_PREC(MPC_RE(x)))
 #define MPC_PREC_IM(x) (MPFR_PREC(MPC_IM(x)))
-#define MPC_MAX_PREC(x) MAX(MPC_PREC_RE(x), MPC_PREC_IM(x))
+#define MPC_MAX_PREC(x) MPC_MAX(MPC_PREC_RE(x), MPC_PREC_IM(x))
 
 #define INV_RND(r) \
    (((r) == GMP_RNDU) ? GMP_RNDD : (((r) == GMP_RNDD) ? GMP_RNDU : (r)))
@@ -74,17 +88,6 @@ do {                                                            \
   mpc_out_str (stdout, 2, 0, x, MPC_RNDNN);                     \
   printf ("\n");                                                \
 } while (0)
-
-
-/*
- * Miscelaneous useful macros
- */
-
-#define MAX(h,i) ((h) > (i) ? (h) : (i))
-
-/* Safe absolute value (to avoid possible integer overflow) */
-/* type is the target (unsigned) type (copied from mpfr-impl.h) */
-#define SAFE_ABS(type,x) ((x) >= 0 ? (type)(x) : -(type)(x))
 
 
 /*

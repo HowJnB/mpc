@@ -328,14 +328,14 @@ mpc_mul_karatsuba (mpc_ptr rop, mpc_srcptr op1, mpc_srcptr op2, mpc_rnd_t rnd)
 
   if (mpfr_cmp_abs (a, b) < 0)
     {
-      SWAP(a, b);
+      MPFR_SWAP (a, b);
       mul_i ++;
       mul_a = -1; /* consider i * (a+i*b) = -b + i*a */
     }
 
   if (mpfr_cmp_abs (c, d) < 0)
     {
-      SWAP(c, d);
+      MPFR_SWAP (c, d);
       mul_i ++;
       mul_c = -1; /* consider -d + i*c instead of c + i*d */
     }
@@ -384,8 +384,8 @@ mpc_mul_karatsuba (mpc_ptr rop, mpc_srcptr op1, mpc_srcptr op2, mpc_rnd_t rnd)
 
    if (sign_x * sign_u < 0)
     {  /* swap inputs */
-      SWAP (a, c);
-      SWAP (b, d);
+      MPFR_SWAP (a, c);
+      MPFR_SWAP (b, d);
       mpfr_swap (v, w);
       { int tmp; tmp = mul_a; mul_a = mul_c; mul_c = tmp; }
       sign_x = - sign_x;
@@ -433,7 +433,7 @@ mpc_mul_karatsuba (mpc_ptr rop, mpc_srcptr op1, mpc_srcptr op2, mpc_rnd_t rnd)
                {
                  prec_x = (MPFR_EXP(v) > MPFR_EXP(w)) ? MPFR_EXP(v) - MPFR_EXP(w)
                    : MPFR_EXP(w) - MPFR_EXP(v);
-                 prec_x += MAX(prec_v, prec_w) + 1;
+                 prec_x += MPC_MAX (prec_v, prec_w) + 1;
                }
            /* +1 is necessary for a potential carry */
 	     /* ensure we do not use a too large precision */
