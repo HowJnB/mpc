@@ -687,15 +687,23 @@ When using any of these functions, you need to include @file{stdio.h}
 @emph{before} @file{mpc.h}.
 
 @deftypefun int mpc_inp_str (mpc_t @var{rop}, FILE *@var{stream}, size_t *@var{read}, int @var{base}, mpc_rnd_t @var{rnd})
-Input a string in base @var{base} in the same format as for
-@code{mpc_strtoc} from stdio stream @var{stream},
-rounded according to @var{rnd}, and put the read complex number into @var{rop}.
+Input a string in base @var{base} in the same format as for @code{mpc_strtoc}
+from stdio stream @var{stream}, rounded according to @var{rnd}, and put the
+read complex number into @var{rop}.
 If @var{stream} is the null pointer, @var{rop} is read from @code{stdin}.
-Return the usual inexact value;
-if an error occurs, set @var{rop} to @code{NaN + i * NaN} and return -1.
+Return the usual inexact value; if an error occurs, set @var{rop} to @code{NaN
++ i * NaN} and return -1.
+If @var{read} is not the null pointer, it is set to the number of read
+characters.
 
-If @var{read} is not the null pointer, it is set to the number of
-read characters.
+Warning! A valid string for @code{mpc_strtoc} is not always valid for
+@code{mpc_inp_str} when it contains NaNs.
+For instance, two successive calls to @code{mpc_strtoc} read the string
+@code{"nan(13 1)"} as @code{NaN +i* 0} followed by @code{13 +i}, whereas
+@code{mpc_inp_str} considers it as an invalid string and only 6 characters
+have been read from the stream after it returns.
+This problem can be avoided with always putting whitespace between
+floating-point numbers.
 @end deftypefun
 
 @deftypefun size_t mpc_out_str (FILE *@var{stream}, int @var{base}, size_t @var{n_digits}, mpc_t @var{op}, mpc_rnd_t @var{rnd})
