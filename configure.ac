@@ -213,7 +213,8 @@ AC_LINK_IFELSE(
         AC_MSG_ERROR([libmpfr not found or uses a different ABI.])
         ])
 
-# Check for a recent GMP
+# Check for a recent GMP: we need GMP 4.2 because we use the
+# mp_get_memory_functions which appeared in GMP 4.2
 AC_MSG_CHECKING(for recent GMP)
 AC_COMPILE_IFELSE(
         [AC_LANG_SOURCE(
@@ -230,7 +231,9 @@ error
         AC_MSG_ERROR([GMP version >= 4.2 required])
         ])
 
-# Check for a recent MPFR
+# Check for a recent MPFR: we require MPFR 2.3.1 because of a bug in
+# mpfr_div_ui which makes mpc_div_ui returns the wrong sign of the zero part
+# when applied on a pure real or pure imaginary parameter (see mpfr r4950)
 AC_MSG_CHECKING(for recent MPFR)
 AC_COMPILE_IFELSE(
         [AC_LANG_SOURCE(
