@@ -214,7 +214,10 @@ AC_LINK_IFELSE(
         ])
 
 # Check for a recent GMP: we need GMP 4.2 because we use the
-# mp_get_memory_functions which appeared in GMP 4.2
+# mp_get_memory_functions which appeared in GMP 4.2.
+# Note also that GMP 4.1.1 does not compile on Core 2 with gcc 4.3.2:
+# dive_1.c:89: Error: Incorrect register `%edi' used with `q' suffix
+# (a fix was introduced in GMP 4.1.3)
 AC_MSG_CHECKING(for recent GMP)
 AC_COMPILE_IFELSE(
         [AC_LANG_SOURCE(
