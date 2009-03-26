@@ -13,7 +13,8 @@ Creating a new release
  1) Check the version number in configure.ac ("AC_INIT (mpc, _version_...)"),
     INSTALL, src/get_version.c, src/mpc.h (remove suffix in MPC_VERSION_STRING)
     and Makefile.vc.
- 2) Disactivate the -Werror option in configure.ac.
+ 2) Disactivate the -Werror option in configure.ac, and also -ansi
+    (http://lists.gforge.inria.fr/pipermail/mpc-discuss/2009-March/000137.html)
  3) Verify that the API version in src/Makefile.am is correct.
  4) Check that NEWS, BUGS and TODO are up to date, and that the minimal
     version numbers of gmp and mpfr in configure.ac, INSTALL and
