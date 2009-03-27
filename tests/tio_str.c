@@ -134,7 +134,7 @@ check_io_str (mpc_ptr read_number, mpc_ptr expected)
 
       exit (1);
     };
-  if (mpc_inp_str (read_number, fp, &sz, 10, MPC_RNDNN) != 0)
+  if (mpc_inp_str (read_number, fp, &sz, 10, MPC_RNDNN) == -1)
     {
       printf ("Error: mpc_inp_str cannot correctly re-read number "
               "in file %s\n", tmp_file);
@@ -215,17 +215,19 @@ main (void)
   for (prec = 2; prec <= 1000; prec+=7)
     {
       mpc_set_prec (z, prec);
-
       mpc_set_prec (x, prec);
+
       mpc_set_si_si (x, 1, 1, MPC_RNDNN);
       check_io_str (z, x);
+
       mpc_set_si_si (x, -1, 1, MPC_RNDNN);
       check_io_str (z, x);
+
       mpfr_set_inf (MPC_RE(x), -1);
       mpfr_set_inf (MPC_IM(x), +1);
       check_io_str (z, x);
 
-      test_default_random (z,  -1024, 1024, 128, 25);
+      test_default_random (x,  -1024, 1024, 128, 25);
       check_io_str (z, x);
     }
 
