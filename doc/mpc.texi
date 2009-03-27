@@ -1078,12 +1078,12 @@ Marc Helbling contributed the @code{mpc_ui_sub} and
 @item
 Torbj@"orn Granlund et al.
 @code{gmp} -- GNU multiprecision library.
-Version 4.2.2, @url{http://gmplib.org/}.
+Version 4.2.4, @url{http://gmplib.org/}.
 
 @item
 Guillaume Hanrot, Vincent Lef@`evre, Patrick P@'elissier, Paul Zimmermann et al.
 @code{mpfr} -- A library for multiple-precision floating-point               computations with exact rounding.
-Version 2.3.1, @url{http://www.mpfr.org}.
+Version 2.4.1, @url{http://www.mpfr.org}.
 
 @item
 IEEE standard for binary floating-point arithmetic, Technical Report
