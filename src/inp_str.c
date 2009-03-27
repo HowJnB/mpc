@@ -1,6 +1,6 @@
 /* mpc_inp_str -- Input a complex number from a given stream.
 
-Copyright (C) 2009 Andreas Enge, Philippe Th\'eveny
+Copyright (C) 2009 Andreas Enge, Philippe Th\'eveny, Paul Zimmermann.
 
 This file is part of the MPC Library.
 
@@ -36,24 +36,6 @@ skip_whitespace (FILE *stream) {
       ungetc (c, stream);
    return size;
 }
-
-
-static char *
-mpc_alloc_str (size_t len) {
-   void * (*allocfunc) (size_t);
-   mp_get_memory_functions (&allocfunc, NULL, NULL);
-   return (char *) ((*allocfunc) (len * sizeof (char)));
-}
-
-
-static char *
-mpc_realloc_str (char * str, size_t oldlen, size_t newlen) {
-   void * (*reallocfunc) (void *, size_t, size_t);
-   mp_get_memory_functions (NULL, &reallocfunc, NULL);
-   return (char *) ((*reallocfunc) (str, oldlen * sizeof (char),
-                    newlen * sizeof (char)));
-}
-
 
 /* Extract from stream the longest string made up of alphanumeric char and
    '_' (i.e. n-char-sequence).

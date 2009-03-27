@@ -1,6 +1,6 @@
 /* tset.c -- Test file for mpc_set_x and mpc_set_x_x functions.
 
-Copyright (C) 2009 Philippe Th\'eveny
+Copyright (C) 2009 Philippe Th\'eveny, Paul Zimmermann
 
 This file is part of the MPC Library.
 
@@ -279,7 +279,7 @@ check_set_str (mp_exp_t exp_max)
       mpc_set_prec (got, prec);
       mpc_set_prec (expected, prec);
 
-      base = 2 + (unsigned int) gmp_urandomm_ui (rands, 35);
+      base = 2 + (unsigned int) urandomm_ui (35);
 
       mpfr_set_nan (MPC_RE (expected));
       mpfr_set_inf (MPC_IM (expected), prec % 2 - 1);

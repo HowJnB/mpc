@@ -166,6 +166,9 @@ extern "C" {
 
 __MPC_DECLSPEC int  mpc_mul_naive     __MPC_PROTO ((mpc_ptr, mpc_srcptr, mpc_srcptr, mpc_rnd_t));
 __MPC_DECLSPEC int  mpc_mul_karatsuba __MPC_PROTO ((mpc_ptr, mpc_srcptr, mpc_srcptr, mpc_rnd_t));
+__MPC_DECLSPEC char* mpc_alloc_str __MPC_PROTO ((size_t));
+__MPC_DECLSPEC char* mpc_realloc_str __MPC_PROTO ((char*, size_t, size_t));
+__MPC_DECLSPEC void mpc_free_str __MPC_PROTO ((char*));
 unsigned long  mpc_ceil_log2 __MPC_PROTO ((unsigned long));
 
 #if defined (__cplusplus)

@@ -1,6 +1,6 @@
 /* Handle seed for random numbers.
 
-Copyright (C) 2008, 2009 Philippe Th\'eveny.
+Copyright (C) 2008, 2009 Philippe Th\'eveny, Paul Zimmermann
 
 This file is part of the MPC Library.
 
@@ -98,6 +98,45 @@ test_end (void)
     }
 }
 
+/* wrapper for gmp_urandomb_ui, which did not exist in old versions of GMP */
+static unsigned long
+urandomb_ui (unsigned long N)
+{
+#ifdef gmp_urandomb_ui /* does not exist in GMP 4.1.4 */
+  return gmp_urandomb_ui (rands, N);
+#else
+  mpz_t R;
+  unsigned long r;
+  mpz_init (R);
+  mpz_urandomb (R, rands, N);
+  r = mpz_get_ui (R);
+  mpz_clear (R);
+  return r;
+#endif
+}
+
+/* wrapper for gmp_urandomm_ui, which did not exist in old versions of GMP */
+unsigned long
+urandomm_ui (unsigned long N)
+{
+#ifdef gmp_urandomm_ui /* does not exist in GMP 4.1.4 */
+  return gmp_urandomm_ui (rands, N);
+#else
+  mpz_t R, S;
+  unsigned long r;
+  mpz_init_set_ui (S, N);
+  mpz_init (R);
+  /* there was a bug in mpz_urandomm up to GMP 4.2.4, when the 1st and 3rd
+     argument were the same */
+  mpz_urandomm (R, rands, S);
+  r = mpz_get_ui (R);
+  mpz_clear (R);
+  mpz_clear (S);
+  return r;
+#endif
+}
+
+
 /* Set z to a non zero value random value with absolute values of Re(z) and
    Im(z) either zero (but not both in the same time) or otherwise greater than
    or equal to 2^{emin-1} and less than 2^emax.
@@ -127,7 +166,7 @@ test_default_random (mpc_ptr z, mp_exp_t emin, mp_exp_t emax,
     
   if (zero_probability > 256)
     zero_probability = 256;
-  r = gmp_urandomb_ui (rands, 19);
+  r = urandomb_ui (19);
   if ((r & 0x1FF) < zero_probability
       || ((r >> 9) & 0x1FF) < zero_probability)
     {
@@ -146,16 +185,14 @@ test_default_random (mpc_ptr z, mp_exp_t emin, mp_exp_t emax,
         mpfr_set_ui (MPC_IM (z), 0, GMP_RNDN);
     }
   if (!mpfr_zero_p (MPC_RE (z)))
-    mpfr_set_exp (MPC_RE (z),
-                  (mp_exp_t) gmp_urandomm_ui (rands, range) + emin);
+    mpfr_set_exp (MPC_RE (z), (mp_exp_t) urandomm_ui (range) + emin);
 
   if (!mpfr_zero_p (MPC_IM (z)))
-    mpfr_set_exp (MPC_IM (z),
-                  (mp_exp_t) gmp_urandomm_ui (rands, range) + emin);
+    mpfr_set_exp (MPC_IM (z), (mp_exp_t) urandomm_ui (range) + emin);
 
   if (negative_probability > 256)
     negative_probability = 256;
-  r = gmp_urandomb_ui (rands, 16);
+  r = urandomb_ui (16);
   if ((r & 0xFF) < negative_probability)
     mpfr_neg (MPC_RE (z), MPC_RE (z), GMP_RNDN);
   if (((r>>8) & 0xFF) < negative_probability)

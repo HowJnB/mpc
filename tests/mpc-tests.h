@@ -1,6 +1,6 @@
 /* Tests helper functions.
 
-Copyright (C) 2008, 2009 Philippe Th\'eveny, Andreas Enge
+Copyright (C) 2008, 2009 Philippe Th\'eveny, Andreas Enge, Paul Zimmermann
 
 This file is part of the MPC Library.
 
@@ -58,6 +58,7 @@ void test_start (void);
 void test_end (void);
 
 void test_default_random (mpc_ptr, mp_exp_t, mp_exp_t, unsigned int, unsigned int);
+unsigned long urandomm_ui (unsigned long);
 
 
 /** COMPARISON FUNCTIONS **/

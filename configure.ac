@@ -213,25 +213,26 @@ AC_LINK_IFELSE(
         AC_MSG_ERROR([libmpfr not found or uses a different ABI.])
         ])
 
-# Check for a recent GMP: we need GMP 4.2 because we use the
-# mp_get_memory_functions which appeared in GMP 4.2.
-# Note also that GMP 4.1.1 does not compile on Core 2 with gcc 4.3.2:
+# Check for a recent GMP: we need GMP 4.1.3 because GMP 4.1.2 fails to compile
+# on Core 2 with gcc 4.3.2 for example:
 # dive_1.c:89: Error: Incorrect register `%edi' used with `q' suffix
-# (a fix was introduced in GMP 4.1.3)
+# Once we upgrade the minimal GMP version to GMP 4.2, we can simplify the code
+# using mp_get_memory_functions in mem.c and that using the gmp_random
+# functions in tests/random.c
 AC_MSG_CHECKING(for recent GMP)
 AC_COMPILE_IFELSE(
         [AC_LANG_SOURCE(
         [[
 #include "gmp.h"
-#if (__GNU_MP_VERSION*100 + __GNU_MP_VERSION_MINOR*10 < 420)
-# error "min GMP version is 4.2"
+#if (__GNU_MP_VERSION*100 + __GNU_MP_VERSION_MINOR*10 + __GNU_MP_VERSION_PATCHLEVEL < 413)
+# error "min GMP version is 4.1.3"
 error
 #endif
         ]])],
         [AC_MSG_RESULT(yes)],
         [
         AC_MSG_RESULT(no)
-        AC_MSG_ERROR([GMP version >= 4.2 required])
+        AC_MSG_ERROR([GMP version >= 4.1.3 required])
         ])
 
 # Check for a recent MPFR: we require MPFR 2.3.1 because of a bug in

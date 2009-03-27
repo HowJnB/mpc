@@ -1,6 +1,6 @@
 /* mpc_get_str -- Convert a complex number into a string.
 
-Copyright (C) 2009 Philippe Th\'eveny, Andreas Enge
+Copyright (C) 2009 Philippe Th\'eveny, Andreas Enge, Paul Zimmermann
 
 This file is part of the MPC Library.
 
@@ -40,22 +40,6 @@ MA 02111-1307, USA. */
 #else
 #error "mp_exp_t size not supported"
 #endif
-
-static char *
-mpc_alloc_str (size_t len) {
-   void * (*allocfunc) (size_t);
-   mp_get_memory_functions (&allocfunc, NULL, NULL);
-   return (char *) ((*allocfunc) (len * sizeof (char)));
-}
-
-
-void
-mpc_free_str (char *str) {
-   void (*freefunc) (void *, size_t);
-   mp_get_memory_functions (NULL, NULL, &freefunc);
-   (*freefunc) (str, (strlen (str) + 1) * sizeof (char));
-}
-
 
 static char *
 pretty_zero (mpfr_srcptr zero)
