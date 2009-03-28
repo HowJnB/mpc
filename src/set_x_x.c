@@ -75,5 +75,5 @@ mpc_set_uj_uj (mpc_ptr z, uintmax_t a, uintmax_t b, mpc_rnd_t rnd)
 
 int
 mpc_set_sj_sj (mpc_ptr z, intmax_t a, intmax_t b, mpc_rnd_t rnd)
-  MPC_SET_X_X (_si, z, a, b, rnd)
+  MPC_SET_X_X (_sj, z, a, b, rnd)
 #endif

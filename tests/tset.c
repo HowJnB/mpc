@@ -240,6 +240,12 @@ check_set (void)
         if (mpfr_cmp_ui (MPC_RE(z), prec) != 0
             || mpfr_cmp_ui (MPC_IM(z), prec) != 0)
           PRINT_ERROR ("mpc_set_sj_sj", prec, z);
+
+        im = INTMAX_MAX;
+        mpc_set_sj_sj (z, im, im, MPC_RNDNN);
+        if (mpfr_get_sj (MPC_RE(z), GMP_RNDN) != im ||
+            mpfr_get_sj (MPC_IM(z), GMP_RNDN) != im)
+          PRINT_ERROR ("mpc_set_sj_sj", im, z);
       }
 #endif /* _MPC_H_HAVE_INTMAX_T */
     }
