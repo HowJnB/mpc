@@ -21,6 +21,11 @@ the Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston,
 MA 02111-1307, USA.
 @end ignore
 
+@ignore
+A recent version of makeinfo is required: version 1.68 fails, version 4.12
+is ok.
+@end ignore
+
 @setfilename mpc.info
 @settitle MPC @value{VERSION}
 @synindex tp fn
