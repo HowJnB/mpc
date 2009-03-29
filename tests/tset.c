@@ -20,6 +20,7 @@ the Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston,
 MA 02111-1307, USA. */
 
 #include "config.h"
+#include <limits.h> /* for LONG_MAX */
 
 #if HAVE_INTTYPES_H
 # include <inttypes.h> /* for intmax_t */
@@ -239,13 +240,15 @@ check_set (void)
         mpc_set_sj_sj (z, im, im, MPC_RNDNN);
         if (mpfr_cmp_ui (MPC_RE(z), prec) != 0
             || mpfr_cmp_ui (MPC_IM(z), prec) != 0)
-          PRINT_ERROR ("mpc_set_sj_sj", prec, z);
+          PRINT_ERROR ("mpc_set_sj_sj (1)", prec, z);
 
-        im = INTMAX_MAX;
+	im = LONG_MAX;
+	if (sizeof (intmax_t) == 2 * sizeof (unsigned long))
+	  im = 2 * im * im + 4 * im + 1; /* gives 2^(2n-1)-1 from 2^(n-1)-1 */
         mpc_set_sj_sj (z, im, im, MPC_RNDNN);
         if (mpfr_get_sj (MPC_RE(z), GMP_RNDN) != im ||
             mpfr_get_sj (MPC_IM(z), GMP_RNDN) != im)
-          PRINT_ERROR ("mpc_set_sj_sj", im, z);
+          PRINT_ERROR ("mpc_set_sj_sj (2)", im, z);
       }
 #endif /* _MPC_H_HAVE_INTMAX_T */
     }
