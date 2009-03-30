@@ -22,8 +22,8 @@ MA 02111-1307, USA.
 @end ignore
 
 @ignore
-A recent version of makeinfo is required: version 1.68 fails, version 4.12
-is ok.
+A recent version of makeinfo is required: at least version 4.2, where copying
+was introduced.
 @end ignore
 
 @setfilename mpc.info
