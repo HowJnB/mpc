@@ -38,7 +38,7 @@ in the Texinfo documentation (type 'info mpc.info').
    
       make ps
 
-   This requires Texinfo package.
+   This requires Texinfo package (version 4.2 minimum).
 
 In case of difficulties, send a description of the problem to
 <enge at lix dot polytechnique.fr, zimmerma at loria dot fr>
