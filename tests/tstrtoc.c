@@ -54,13 +54,13 @@ check_file (const char* file_name)
   fp = open_data_file (file_name);
   
   /* initializations */
-  str = (char *) malloc (str_len * sizeof (char));
+  str = (char *) malloc (str_len);
   if (str == NULL)
     {
       printf ("Cannot allocate memory\n");
       exit (1);
     }
-  rstr = (char *) malloc (rstr_len * sizeof (char));
+  rstr = (char *) malloc (rstr_len);
   if (rstr == NULL)
     {
       printf ("Cannot allocate memory\n");

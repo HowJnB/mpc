@@ -72,8 +72,7 @@ open_data_file (const char *file_name)
   if (src_dir == NULL)
     src_dir = ".";
 
-  pathname = malloc (((strlen (src_dir)) + strlen (file_name) + 2)
-                     * sizeof (char));
+  pathname = malloc ((strlen (src_dir)) + strlen (file_name) + 2);
   if (pathname == NULL)
     {
       printf ("Cannot allocate memory\n");
