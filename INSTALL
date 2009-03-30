@@ -17,7 +17,7 @@ in the Texinfo documentation (type 'info mpc.info').
 
    This assumes that GMP and MPFR are installed in a directory searched by
    default by the compiler. Otherwise, use --with-gmp=DIR or --with-mpfr=DIR
-   (see Texinfo documentation).
+   (see the Texinfo documentation).
 
 2. You can optionally run the test suit, type
    
@@ -38,11 +38,10 @@ in the Texinfo documentation (type 'info mpc.info').
    
       make ps
 
-   This requires Texinfo package (version 4.2 minimum).
+   This requires the Texinfo package (version 4.2 at least).
 
-In case of difficulties, send a description of the problem to
-<enge at lix dot polytechnique.fr, zimmerma at loria dot fr>
-(replace 'at' by '@', and 'dot' by '.').
+In case of difficulties, please send a description of the problem to
+<mpc-discuss@lists.gforge.inria.fr>.
 
 ##############################################################################
 

@@ -69,10 +69,10 @@ extract_suffix (FILE *stream)
 }
 
 
-/* Extract from the stream the longest string of caracters which are not
-   whitespace with optional bracketed n-char_sequence after a NaN.
-   The user must free the returned string.
-   FIXME: The returned string is not always a valid floating-point number */
+/* Extract from the stream the longest string of characters which are neither
+   whitespace nor brackets (except for an optional bracketed n-char_sequence
+   directly following nan or @nan@ independently of case).
+   The user must free the returned string.                                    */
 static char *
 extract_string (FILE *stream)
 {
@@ -110,7 +110,7 @@ extract_string (FILE *stream)
          || tolower (str[0]) != 'n'
          || tolower (str[1]) != 'a'
          || tolower (str[2]) != 'n')
-        && (nread != 5 
+        && (nread != 5
             || str[0] != '@'
             || tolower (str[1]) != 'n'
             || tolower (str[2]) != 'a'
@@ -216,7 +216,7 @@ mpc_inp_str (mpc_ptr rop, FILE *stream, size_t *read, int base, mpc_rnd_t rnd_mo
      mpc_free_str (str);
    }
 
- error:
+error:
    if (inex == -1) {
       mpfr_set_nan (MPC_RE(rop));
       mpfr_set_nan (MPC_IM(rop));

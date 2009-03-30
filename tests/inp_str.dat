@@ -62,24 +62,24 @@
 ! ! 53  nan 53  nan      3 10 N N  "(1 (1 (1 0)))"
 ! ! 53  nan 53  nan      1 10 N N  "((1 1)) "
 ! ! 53  nan 53  nan      6 10 N N  "(1 +1 " #closing parenthesis missing
-! ! 53  nan 53  nan      4 10 N N  "(1+1) " #space needed FIXME: SIZE should be 2
+! ! 53  nan 53  nan      4 10 N N  "(1+1) " #space needed
 ! ! 53  nan 53  nan      5 10 N N  "(1 + 1) " #space after sign
 ! ! 53  nan 53  nan     17 10 N N  "(@nan@(quiet)  0 " #closing parenthesis missing
-! ! 53  nan 53  nan      4 10 N N  "zero "  #invalid digits FIXME: SIZE should be 0
-! ! 53  nan 53  nan      3 10 N N  "&^+ "   #invalid digits FIXME: SIZE should be 0
-! ! 53  nan 53  nan      1 18 N N  "i "     #invalid digit FIXME: SIZE should be 0
-! ! 53  nan 53  nan      1 18 N N  "I "     #invalid digit FIXME: SIZE should be 0
-! ! 53  nan 53  nan      1 35 N N  "z "     #invalid digit FIXME: SIZE should be 0
-! ! 53  nan 53  nan      1 35 N N  "Z "     #invalid digit FIXME: SIZE should be 0
-! ! 53  nan 53  nan      5 18 N N  "(i 0) " #invalid digit FIXME: SIZE should be 1
-! ! 53  nan 53  nan      5 18 N N  "(I 0) " #invalid digit FIXME: SIZE should be 1
-! ! 53  nan 53  nan      5 35 N N  "(z 0) " #invalid digit FIXME: SIZE should be 1
-! ! 53  nan 53  nan      5 35 N N  "(Z 0) " #invalid digit FIXME: SIZE should be 1
-! ! 53  nan 53  nan      5 18 N N  "(0 i) " #invalid digit FIXME: SIZE should be 3
-! ! 53  nan 53  nan      5 18 N N  "(0 I) " #invalid digit FIXME: SIZE should be 3
-! ! 53  nan 53  nan      5 35 N N  "(0 z) " #invalid digit FIXME: SIZE should be 3
-! ! 53  nan 53  nan      5 35 N N  "(0 Z) " #invalid digit FIXME: SIZE should be 3
-! ! 53  nan 53  nan      7 10 N N  "-25p+32 " #invalid exponent char in base 10 FIXME: SIZE should be 3
+! ! 53  nan 53  nan      4 10 N N  "zero "  #invalid digits
+! ! 53  nan 53  nan      3 10 N N  "&^+ "   #invalid digits
+! ! 53  nan 53  nan      1 18 N N  "i "     #invalid digit
+! ! 53  nan 53  nan      1 18 N N  "I "     #invalid digit
+! ! 53  nan 53  nan      1 35 N N  "z "     #invalid digit
+! ! 53  nan 53  nan      1 35 N N  "Z "     #invalid digit
+! ! 53  nan 53  nan      5 18 N N  "(i 0) " #invalid digit
+! ! 53  nan 53  nan      5 18 N N  "(I 0) " #invalid digit
+! ! 53  nan 53  nan      5 35 N N  "(z 0) " #invalid digit
+! ! 53  nan 53  nan      5 35 N N  "(Z 0) " #invalid digit
+! ! 53  nan 53  nan      5 18 N N  "(0 i) " #invalid digit
+! ! 53  nan 53  nan      5 18 N N  "(0 I) " #invalid digit
+! ! 53  nan 53  nan      5 35 N N  "(0 z) " #invalid digit
+! ! 53  nan 53  nan      5 35 N N  "(0 Z) " #invalid digit
+! ! 53  nan 53  nan      7 10 N N  "-25p+32 " #invalid exponent char in base 10
 ! ! 53  nan 53  nan      6 10 N N  "0xabcd  " #invalid prefix in base 10
 ! ! 53  nan 53  nan      6 10 N N  "+0b010 "  #invalid prefix in base 10
 
