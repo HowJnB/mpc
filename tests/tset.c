@@ -232,6 +232,16 @@ check_set (void)
         uintmax_t uim = prec;
         intmax_t im = prec;
 
+        mpc_set_uj (z, uim, MPC_RNDNN);
+        if (mpfr_cmp_ui (MPC_RE(z), prec) != 0
+            || mpfr_cmp_ui (MPC_IM(z), 0) != 0)
+          PRINT_ERROR ("mpc_set_uj", prec, z);
+
+        mpc_set_sj (z, im, MPC_RNDNN);
+        if (mpfr_cmp_ui (MPC_RE(z), prec) != 0
+            || mpfr_cmp_ui (MPC_IM(z), 0) != 0)
+          PRINT_ERROR ("mpc_set_sj (1)", prec, z);
+
         mpc_set_uj_uj (z, uim, uim, MPC_RNDNN);
         if (mpfr_cmp_ui (MPC_RE(z), prec) != 0
             || mpfr_cmp_ui (MPC_IM(z), prec) != 0)
@@ -245,6 +255,12 @@ check_set (void)
 	im = LONG_MAX;
 	if (sizeof (intmax_t) == 2 * sizeof (unsigned long))
 	  im = 2 * im * im + 4 * im + 1; /* gives 2^(2n-1)-1 from 2^(n-1)-1 */
+
+        mpc_set_sj (z, im, MPC_RNDNN);
+        if (mpfr_get_sj (MPC_RE(z), GMP_RNDN) != im ||
+            mpfr_cmp_ui (MPC_IM(z), 0) != 0)
+          PRINT_ERROR ("mpc_set_sj (2)", im, z);
+
         mpc_set_sj_sj (z, im, im, MPC_RNDNN);
         if (mpfr_get_sj (MPC_RE(z), GMP_RNDN) != im ||
             mpfr_get_sj (MPC_IM(z), GMP_RNDN) != im)

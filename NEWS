@@ -1,8 +1,8 @@
 Changes in version 0.6:
-  - New functions: mpc_get_str, mpc_set_str, mpc_strtoc, mpc_set_ld,
-    mpc_set_ld_ld, mpc_set_si_si, mpc_set_uj_uj, mpc_set_sj_sj, mpc_set_f,
-    mpc_set_f_f, mpc_set_q, mpc_set_q_q, mpc_set_z, mpc_set_z_z and
-    mpc_free_str
+  - New functions: mpc_get_str, mpc_set_str, mpc_strtoc, mpc_set_uj,
+    mpc_set_sj, mpc_set_ld, mpc_set_ld_ld, mpc_set_si_si, mpc_set_uj_uj,
+    mpc_set_sj_sj, mpc_set_f, mpc_set_f_f, mpc_set_q, mpc_set_q_q, mpc_set_z,
+    mpc_set_z_z and mpc_free_str
   - New macro: MPC_SET_X_Y
   - mpc_set_ui_fr removed
   - Default precision removed, as well as init and all init_set

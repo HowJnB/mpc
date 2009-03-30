@@ -20,6 +20,16 @@ along with the MPC Library; see the file COPYING.LIB.  If not, write to
 the Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston,
 MA 02111-1307, USA. */
 
+#include "config.h"
+
+#if HAVE_INTTYPES_H
+# include <inttypes.h> /* for intmax_t */
+#else
+# if HAVE_STDINT_H
+#  include <stdint.h>
+# endif
+#endif
+
 #include "mpc-impl.h"
 
 int
@@ -109,3 +119,27 @@ mpc_set_f (mpc_ptr a, mpf_srcptr b, mpc_rnd_t rnd)
 
   return MPC_INEX(inex_re, inex_im);
 }
+
+#ifdef _MPC_H_HAVE_INTMAX_T
+int
+mpc_set_uj (mpc_ptr a, uintmax_t b, mpc_rnd_t rnd)
+{
+  int inex_re, inex_im;
+
+  inex_re = mpfr_set_uj (MPC_RE (a), b, MPC_RND_RE (rnd));
+  inex_im = mpfr_set_ui (MPC_IM (a), 0, GMP_RNDN);
+
+  return MPC_INEX(inex_re, inex_im);
+}
+
+int
+mpc_set_sj (mpc_ptr a, intmax_t b, mpc_rnd_t rnd)
+{
+  int inex_re, inex_im;
+
+  inex_re = mpfr_set_sj (MPC_RE (a), b, MPC_RND_RE (rnd));
+  inex_im = mpfr_set_ui (MPC_IM (a), 0, GMP_RNDN);
+
+  return MPC_INEX(inex_re, inex_im);
+}
+#endif

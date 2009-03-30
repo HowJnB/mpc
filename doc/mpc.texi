@@ -570,6 +570,8 @@ with the given rounding mode @var{rnd}.
 
 @deftypefun int mpc_set_ui (mpc_t @var{rop}, unsigned long int @var{op}, mpc_rnd_t @var{rnd})
 @deftypefunx int mpc_set_si (mpc_t @var{rop}, long int @var{op}, mpc_rnd_t @var{rnd})
+@deftypefunx int mpc_set_uj (mpc_t @var{rop}, uintmax_t @var{op}, mpc_rnd_t @var{rnd})
+@deftypefunx int mpc_set_sj (mpc_t @var{rop}, intmax_t @var{op}, mpc_rnd_t @var{rnd})
 @deftypefunx int mpc_set_d (mpc_t @var{rop}, double @var{op}, mpc_rnd_t @var{rnd})
 @deftypefunx int mpc_set_ld (mpc_t @var{rop}, long double @var{op}, mpc_rnd_t @var{rnd})
 @deftypefunx int mpc_set_z (mpc_t @var{rop}, mpz_t @var{op} mpc_rnd_t @var{rnd})
