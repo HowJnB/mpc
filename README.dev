@@ -25,7 +25,8 @@ Creating a new release
     This updates the date and version number in doc/version.texi and
     creates the tarball for distribution.
     Warning: do this on a machine with a recent libtool (for example 2.2.x
-    instead of 1.5.x which is buggy).
+    instead of 1.5.x which is buggy, cf
+    http://lists.gforge.inria.fr/pipermail/mpc-discuss/2009-March/000106.html)
  5) Create an svn tag from inside the svn root:
     svn cp trunk tags/VERSION
  6) Update the web page inside svn and on the server.
