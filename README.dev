@@ -29,11 +29,11 @@ Creating a new release
     http://lists.gforge.inria.fr/pipermail/mpc-discuss/2009-March/000106.html)
  5) Create an svn tag from inside the svn root:
     svn cp trunk tags/VERSION
- 6) Update the web page inside svn and on the server.
+ 6) Update the web page on the server.
     The html documentation is created with
        makeinfo --html --no-split mpc.texi
     and the resulting mpc.html is copied to content_html.php.
  7) After the release, update the version number in configure.ac, INSTALL,
-    src/get_version.c and src/mpc.h.
+    src/get_version.c, src/mpc.h and Makefile.vc.
  9) Potentially increase the API version in src/Makefile.am.
 10) Commit the changes to svn.
