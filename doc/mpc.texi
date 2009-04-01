@@ -664,7 +664,7 @@ in base @var{base}; otherwise it returns @minus{}1, and @var{rop} is set to
 NaN+i*NaN.
 @end deftypefun
 
-@deftypefun {char *} mpc_get_str (int @var{b}, size_t @var{n}, mpfr_t @var{op}, mp_rnd_t @var{rnd})
+@deftypefun {char *} mpc_get_str (int @var{b}, size_t @var{n}, mpc_t @var{op}, mp_rnd_t @var{rnd})
 Convert @var{op} to a string containing the real and imaginary parts of
 @var{b}, separated by a space and enclosed in a pair of parentheses.
 The numbers are written in base @var{b} (which may vary from 2 to 36) and
@@ -875,7 +875,7 @@ The returned value is zero iff the result is exact.
 
 @deftypefun int mpc_norm (mpfr_t @var{rop}, mpc_t @var{op}, mp_rnd_t @var{rnd})
 Set the floating-point number @var{rop} to the norm of @var{op}
-(i.e. the square of its absolute value),
+(i.e., the square of its absolute value),
 rounded in the direction @var{rnd}.
 The returned value is zero iff the result is exact.
 Note that the destination is of type @code{mpfr_t}, not @code{mpc_t}.
