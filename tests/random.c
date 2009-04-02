@@ -96,6 +96,7 @@ test_end (void)
       rands_initialized = 0;
       gmp_randclear (rands);
     }
+  mpfr_free_cache ();
 }
 
 /* wrapper for gmp_urandomb_ui, which did not exist in old versions of GMP */

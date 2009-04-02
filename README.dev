@@ -14,6 +14,7 @@ Required versions:
 Creating a new release
 ----------------------
 
+ 0) Run all tests with valgrind and check no memory leak remains.
  1) Check the version number in configure.ac ("AC_INIT (mpc, _version_...)"),
     INSTALL, src/get_version.c, src/mpc.h (remove suffix "-dev" in
     MPC_VERSION_STRING) and Makefile.vc.

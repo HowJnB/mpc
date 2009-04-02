@@ -30,14 +30,14 @@ mpc_norm (mpfr_ptr a, mpc_srcptr b, mp_rnd_t rnd)
 
   prec = MPFR_PREC(a);
 
-  mpfr_init (u);
-  mpfr_init (v);
-
   /* handling of special values; consistent with abs in that
      norm = abs^2; so norm (+-inf, nan) = norm (nan, +-inf) = +inf */
   if (   (mpfr_nan_p (MPC_RE (b)) || mpfr_nan_p (MPC_IM (b)))
       || (mpfr_inf_p (MPC_RE (b)) || mpfr_inf_p (MPC_IM (b))))
       return mpc_abs (a, b, rnd);
+
+  mpfr_init (u);
+  mpfr_init (v);
 
   if (!mpfr_zero_p(MPC_RE(b)) && !mpfr_zero_p(MPC_IM(b)) &&
       2 * SAFE_ABS (mp_exp_t, MPFR_EXP (MPC_RE (b)) - MPFR_EXP (MPC_IM (b)))
