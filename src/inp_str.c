@@ -130,6 +130,7 @@ extract_string (FILE *stream)
       strsize = nread + 1;
     }
 
+    /* Warning: the sprintf does not allow overlap between arguments. */
     n = lenstr + sprintf (str + lenstr, "(%s", suffix);
     MPC_ASSERT (n == nread);
 
