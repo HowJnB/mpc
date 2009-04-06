@@ -1,6 +1,6 @@
 /* tio_str.c -- Test file for mpc_inp_str and mpc_out_str.
 
-Copyright (C) 2009 Philippe Th\'eveny
+Copyright (C) 2009 Philippe Th\'eveny, Andreas Enge
 
 This file is part of the MPC Library.
 
@@ -166,7 +166,11 @@ check_stdout (mpc_ptr read_number, mpc_ptr expected)
 
   fflush(stdout);
   fd = dup(fileno(stdout));
-  freopen(tmp_file, "w", stdout);
+  if (freopen(tmp_file, "w", stdout) == NULL)
+  {
+     printf ("mpc_inp_str cannot redirect stdout\n");
+     exit (1);
+  }
   mpc_out_str (NULL, 2, 0, expected, MPC_RNDNN);
   fflush(stdout);
   dup2(fd, fileno(stdout));
@@ -175,7 +179,11 @@ check_stdout (mpc_ptr read_number, mpc_ptr expected)
 
   fflush(stdin);
   fd = dup(fileno(stdin));
-  freopen(tmp_file, "r", stdin);
+  if (freopen(tmp_file, "r", stdin) == NULL)
+  {
+     printf ("mpc_inp_str cannot redirect stdout\n");
+     exit (1);
+  }
   if (mpc_inp_str (read_number, NULL, &sz, 2, MPC_RNDNN) == -1)
     {
       printf ("mpc_inp_str cannot correctly re-read number "
