@@ -45,8 +45,20 @@ In case of difficulties, please send a description of the problem to
 
 ##############################################################################
 
+Note for AIX users:
+===================
+
+If GMP was built with the 64-bit ABI, before building and testing MPC,
+it might be necessary to set the OBJECT_MODE environment variable to 64
+by, e.g.,
+   export OBJECT_MODE=64
+This has been tested with the C compiler IBM XL C/C++ Enterprise Edition
+V8.0 for AIX, version: 08.00.0000.0021, GMP 4.2.4 and MPFR 2.4.1.
+
+##############################################################################
+
 Note for Windows users:
-======================
+=======================
 
 There is a special file Makefile.vc for Windows, contributed by Mickael
 Gastineau. This file works both for the Windows Server 2003 R2 Platform SDK,

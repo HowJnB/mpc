@@ -280,7 +280,16 @@ Delete all files copied by @samp{make install}.
 
 @section Known Build Problems
 
-No build problems are known. Please report any problems you encounter to
+On AIX, if GMP was built with the 64-bit ABI, before building and testing MPC,
+it might be necessary to set the @samp{OBJECT_MODE} environment variable to 64
+by, e.g.,
+
+@samp{export OBJECT_MODE=64}
+
+This has been tested with the C compiler IBM XL C/C++ Enterprise Edition
+V8.0 for AIX, version: 08.00.0000.0021, GMP 4.2.4 and MPFR 2.4.1.
+
+Please report any other problems you encounter to
 @samp{mpc-discuss@@lists.gforge.inria.fr}.
 @xref{Reporting Bugs}.
 
