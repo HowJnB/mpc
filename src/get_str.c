@@ -130,7 +130,7 @@ prettify (const char *str, const mp_exp_t expo, int base, int special)
     *p++ = *s++;
 
   /* 2. decimal point */
-#ifdef HAVE_LOCALE_H
+#ifdef HAVE_LOCALECONV
   *p++ = *localeconv ()->decimal_point;
 #else
   *p++ = '.';

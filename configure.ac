@@ -269,7 +269,7 @@ MPC_PROG_CC_WARNINGCFLAGS([WARNINGCFLAGS])
 # Checks for library functions with warning flags.
 old_cflags=$CFLAGS
 CFLAGS="$CFLAGS $WARNINGCFLAGS"
-AC_CHECK_FUNCS([gettimeofday])
+AC_CHECK_FUNCS([gettimeofday localeconv setlocale])
 AC_CHECK_FUNCS([dup dup2 fileno],,
         [AC_DEFINE([NO_STREAM_REDIRECTION],1,[Do not check mpc_out_str on stdout])])
 CFLAGS=$old_cflags

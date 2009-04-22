@@ -336,7 +336,7 @@ check_set_str (mp_exp_t exp_max)
       mpc_free_str (str);
     }
 
-#ifdef HAVE_LOCALE_H
+#ifdef HAVE_SETLOCALE
   {
     /* Check with ',' as a decimal point */
     char *old_locale;
@@ -360,7 +360,7 @@ check_set_str (mp_exp_t exp_max)
         setlocale (LC_ALL, old_locale);
       }
   }
-#endif /* HAVE_LOCALE_H */
+#endif /* HAVE_SETLOCALE */
 
   /* the real part has a zero exponent in base ten (fixed in r439) */
   mpc_set_prec (expected, 37);
