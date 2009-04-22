@@ -27,20 +27,20 @@
 # Rule [conj]: log(conj(z)) = conj(log(z))
 
 # log(-0 + i*0) = -inf + i*pi
-0 - 2 -inf 53  0x3243F6A8885A3p-48   2 -0 2 +0     N N
+0 - 2 -inf 53 +0x3243F6A8885A3p-48   2 -0 2 +0     N N
 0 + 2 -inf 53 -0x3243F6A8885A3p-48   2 -0 2 -0     N N
-0 - 2 -inf 53  0x3243F6A8885A3p-48   2 -0 2 +0     N D
+0 - 2 -inf 53 +0x3243F6A8885A3p-48   2 -0 2 +0     N D
 0 + 2 -inf 53 -0x3243F6A8885A32p-52  2 -0 2 -0     N D
 
 # log(+0 + i*0) = -inf + i*0
-0 0 2 -inf 2 +0                     2 +0 2 +0    N N
-0 0 2 -inf 2 -0                     2 +0 2 -0    N N
+0 0 2 -inf 2 +0                      2 +0 2 +0    N N
+0 0 2 -inf 2 -0                      2 +0 2 -0    N N
 
 # log(x + i*inf) = +inf + i*pi/2 for finite x
-0 - 2 +inf 53 0x3243F6A8885A3p-49  2  1 2 +inf   N N
-0 - 2 +inf 53 0x3243F6A8885A3p-49  2 +0 2 +inf   N N
-0 - 2 +inf 53 0x3243F6A8885A3p-49  2 -0 2 +inf   N N
-0 - 2 +inf 53 0x3243F6A8885A3p-49  2 -1 2 +inf   N N
+0 - 2 +inf 53 +0x3243F6A8885A3p-49  2  1 2 +inf   N N
+0 - 2 +inf 53 +0x3243F6A8885A3p-49  2 +0 2 +inf   N N
+0 - 2 +inf 53 +0x3243F6A8885A3p-49  2 -0 2 +inf   N N
+0 - 2 +inf 53 +0x3243F6A8885A3p-49  2 -1 2 +inf   N N
 # by [conj]: log(x - i*inf) = +inf - i*pi/2 for finite x
 0 + 2 +inf 53 -0x3243F6A8885A3p-49  2  1 2 -inf  N N
 0 + 2 +inf 53 -0x3243F6A8885A3p-49  2 +0 2 -inf  N N
@@ -96,6 +96,15 @@
 # log(x + i*y) with either x or y zero and the other non-zero
 + 0 53 0xB5535E0FD3FBDp-50  2                    0     5  0x11 2     0 N N
 + - 53 0xB5535E0FD3FBDp-50 53  0x3243F6A8885A3p-49     2     0 5  0x11 N N
-- - 53 0x5E38D81812CCBp-49 53  0x3243F6A8885A3p-48     5 -0x13 2     0 N N
+- - 53 0x5E38D81812CCBp-49 53  0x3243F6A8885A3p-48     5 -0x13 2    +0 N N
+- + 53 0x5E38D81812CCBp-49 53 -0x3243F6A8885A3p-48     5 -0x13 2    -0 N N
 - + 53 0x5E38D81812CCBp-49 53 -0x3243F6A8885A3p-49     2     0 5 -0x13 N N
 
+- + 53 0x19157DFDD1B3Fp-47  53  0x1921FB54442D19p-51   5 -0x17 2    +0 Z U
+- - 53 0x19157DFDD1B3Fp-47  53 -0x1921FB54442D19p-51   5 -0x17 2    -0 N D
++ - 53 0x19157DFDD1B3F1p-51 53  0x3243F6A8885A3p-48    5 -0x17 2    +0 U Z
+- + 53 0x19157DFDD1B3Fp-47  53 -0x3243F6A8885A3p-48    5 -0x17 2    -0 D N
+- - 53 0x8611A6D2511D3p-49  53  0x3243F6A8885A3p-48    7 -0x42 2    +0 Z D
+- + 53 0x8611A6D2511D3p-49  53 -0x3243F6A8885A3p-48    7 -0x42 2    -0 N Z
++ - 53 0x10C234DA4A23A7p-50 53  0x3243F6A8885A3p-48    7 -0x42 2    +0 U N
+- + 53 0x8611A6D2511D3p-49  53 -0x3243F6A8885A3p-48    7 -0x42 2    -0 D U

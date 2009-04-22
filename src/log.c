@@ -74,6 +74,15 @@ mpc_log (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd){
       }
       else {
          /* op = x + 0*y; let w = -x = |x| */
+         int negative_zero;
+         mpfr_rnd_t rnd_im;
+
+         negative_zero = mpfr_signbit (MPC_IM (op));
+         if (negative_zero)
+            rnd_im = INV_RND (MPC_RND_IM (rnd));
+         else
+            rnd_im = MPC_RND_IM (rnd);
+
          if (overlap) {
             mpfr_init2 (w, MPFR_PREC (MPC_RE (op)));
             mpfr_neg (w, MPC_RE (op), GMP_RNDN);
@@ -84,7 +93,12 @@ mpc_log (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd){
          }
 
          inex_re = mpfr_log (MPC_RE (rop), w, MPC_RND_RE (rnd));
-         inex_im = mpfr_const_pi (MPC_IM (rop), MPC_RND_IM (rnd));
+         inex_im = mpfr_const_pi (MPC_IM (rop), rnd_im);
+
+         if (negative_zero) {
+            mpc_conj (rop, rop, MPC_RNDNN);
+            inex_im = -inex_im;
+         }
 
          if (overlap)
             mpfr_clear (w);
