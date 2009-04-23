@@ -47,11 +47,11 @@ MA 02111-1307, USA. */
 /* test MPC_SET_X_Y though some functions */
 static int
 mpc_set_ui_fr (mpc_ptr z, unsigned long int a, mpfr_srcptr b, mpc_rnd_t rnd)
-  MPC_SET_X_Y (_ui, , z, a, b, rnd)
+  MPC_SET_X_Y (_ui, _fr, z, a, b, rnd)
 
 static int
 mpc_set_fr_ui (mpc_ptr z, mpfr_srcptr a, unsigned long int b, mpc_rnd_t rnd)
-  MPC_SET_X_Y (,_ui, z, a, b, rnd)
+  MPC_SET_X_Y (_fr, _ui, z, a, b, rnd)
 
 static int
 mpc_set_f_si (mpc_ptr z, mpf_t a, long int b, mpc_rnd_t rnd)
