@@ -45,7 +45,7 @@ mpc_set_f_f (mpc_ptr z, mpf_srcptr a, mpf_srcptr b, mpc_rnd_t rnd)
 
 int
 mpc_set_fr_fr (mpc_ptr z, mpfr_srcptr a, mpfr_srcptr b, mpc_rnd_t rnd)
-  MPC_SET_X_X (, z, a, b, rnd)
+  MPC_SET_X_X (_fr, z, a, b, rnd)
 
 int
 mpc_set_ld_ld (mpc_ptr z, long double a, long double b, mpc_rnd_t rnd)

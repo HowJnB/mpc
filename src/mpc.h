@@ -239,4 +239,14 @@ __MPC_DECLSPEC size_t mpc_out_str __MPC_PROTO ((FILE *, int, size_t, mpc_srcptr,
     return MPC_INEX (_inex_re, _inex_im);                               \
   }
 
+/* Macros' behavior with empty macro parameters is undefined in C89.
+   Let's define a fake mpfr_set_fr so that, for instance, mpc_set_fr_z would
+   be defined as follows: 
+   mpc_set_fr_z (mpc_t rop, mpfr_t x, mpz_t y, mpc_rnd_t rnd)
+       MPC_SET_X_Y (_fr, _z, rop, x, y, rnd)
+*/
+#ifndef mpfr_set_fr
+#define mpfr_set_fr mpfr_set
+#endif
+
 #endif /* ifndef __MPC_H */
