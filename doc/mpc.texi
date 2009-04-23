@@ -1042,8 +1042,8 @@ Here is an example of how to check the MPC version at compile time:
 @section Advanced Functions
 
 @defmac MPC_SET_X_Y (@var{real_suffix}, @var{imag_suffix}, @var{real}, @var{imag}, @var{rnd})
-MPC_SET_X_Y cannot be used by itself, it is designed to serve as the body of
-an assignment function definition.
+The macro MPC_SET_X_Y is designed to serve as the body of an assignment
+function and cannot be used by itself.
 The @var{real_suffix} and @var{imag_suffix} parameters are the @code{_x}
 suffixes of the @code{mpfr_set_x} functions you would use to set the real and
 imaginary part separately.
