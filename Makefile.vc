@@ -27,7 +27,7 @@
 #  nmake /f Makefile.vc  GMPDIR=gmpdirectory MPFRDIR=mpfrdirectory
 #      compile MPC
 #
-#  nmake /f Makefile.vc  install DESTDIR=installdirectory
+#  nmake /f Makefile.vc  install GMPDIR=gmpdirectory MPFRDIR=mpfrdirectory  DESTDIR=installdirectory
 #      install MPC to installdirectory
 #
 #  nmake /f Makefile.vc  check GMPDIR=gmpdirectory MPFRDIR=mpfrdirectory
@@ -92,6 +92,7 @@ $(DIRMPC)\init2.obj \
 $(DIRMPC)\init3.obj \
 $(DIRMPC)\inp_str.obj \
 $(DIRMPC)\log.obj \
+$(DIRMPC)\mem.obj \
 $(DIRMPC)\mul.obj \
 $(DIRMPC)\mul_2exp.obj \
 $(DIRMPC)\mul_fr.obj \
@@ -154,6 +155,7 @@ init2.obj \
 init3.obj \
 inp_str.obj \
 log.obj \
+mem.obj \
 mul.obj \
 mul_2exp.obj \
 mul_fr.obj \
@@ -215,16 +217,16 @@ clean:
 # install target: "nmake /f Makefile.vc install DESTDIR=xxx" to perform the installation.
 #
 
-install:
+install: $(LIBRARY) 
 	-mkdir $(DESTDIR)
 	-mkdir $(DESTDIR)\include
-	copy $(DIRMPC)mpc.h $(DESTDIR)\include
+	copy $(DIRMPC)\mpc.h $(DESTDIR)\include
 	-mkdir $(DESTDIR)\lib
 	copy $(LIBRARY) $(DESTDIR)\lib
 	copy $(LIBRARYLIB) $(DESTDIR)\lib
 
 #
-# install target: "nmake /f Makefile.vc check GMPDIR=xxx MPFRDIR=xxx" to perform the installation.
+# check target: "nmake /f Makefile.vc check GMPDIR=xxx MPFRDIR=xxx" to perform the installation.
 #
 check : test
 test :
@@ -293,6 +295,8 @@ test :
         cd $(DIRMPCTESTS) && tproj.exe && cd ..
         $(TESTCOMPILE)treal.c  $(MIDTESTCOMPILE)treal.exe $(ENDTESTCOMPILE)
         cd $(DIRMPCTESTS) && treal.exe && cd ..
+        $(TESTCOMPILE)treimref.c  $(MIDTESTCOMPILE)treimref.exe $(ENDTESTCOMPILE)
+        cd $(DIRMPCTESTS) && treimref.exe && cd ..
         $(TESTCOMPILE)tsin.c  $(MIDTESTCOMPILE)tsin.exe $(ENDTESTCOMPILE)
         cd $(DIRMPCTESTS) && tsin.exe && cd ..
         $(TESTCOMPILE)tsinh.c  $(MIDTESTCOMPILE)tsinh.exe $(ENDTESTCOMPILE)

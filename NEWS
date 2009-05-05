@@ -1,6 +1,7 @@
 Recent Changes:
   - Bug fixes:
     - log (along branch cut)
+  - Makefile.vc updated (thanks to Mickael Gastineau)
 
 Changes in version 0.6:
   - New functions: mpc_get_str, mpc_set_str, mpc_strtoc, mpc_set_uj,
