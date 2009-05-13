@@ -185,7 +185,7 @@ get_pretty_str (const int base, const size_t n, mpfr_srcptr x, mpfr_rnd_t rnd)
 }
 
 char *
-mpc_get_str (int base, size_t n, mpc_srcptr op, mp_rnd_t rnd)
+mpc_get_str (int base, size_t n, mpc_srcptr op, mpc_rnd_t rnd)
 {
   size_t needed_size;
   char *real_str;
