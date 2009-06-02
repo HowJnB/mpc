@@ -419,9 +419,31 @@ Unfortunately Gelfond-Schneider's theorem says nothing about the real and
 imaginary parts of $x^y$: $x^y$ might be transcendental, but its real part
 or imaginary part might be an exact (binary) floating-point number.
 
-We conjecture that exact powers can only occur when
-$y = a \cdot 2^b$, for $a$ and $b$ integers. It would then suffice to
-be able to recognize exact squares, as in the real case.
+Assume $y = m \cdot 2^e$, with $m$ an odd integer, and $e$ an integer.
+(The case $m=0$ is trivial.)
+If $e > 0$, then $x^y$ is trivially exact.
+If $e < 0$, we conjecture that exact powers can only occur when
+$x^{2^e}$ is itself exact. 
+It would then suffice to be able to recognize exact squares, as in the real
+case.
+
+If $x^y$ is known to be inexact, then we approximate it using
+$\exp(y \log x)$ and Ziv's strategy.
+After computing an integer $q$ such that $|y \log x| \leq 2^q$, we first
+approximate $y \log x$ with precision $p + q$, and then
+$\exp(y \log x)$ with precision $p \geq 4$, all with rounding
+to nearest.
+Let $\tilde{s} = \circ_{p+q}(\log x)$,
+we have $\tilde{s} = (\log x) (1 + \theta_1)$
+with $\theta_1$ a complex number of norm $\leq 2^{-p-q}$.
+Let $\tilde{t} = \circ_{p+q}(y \tilde{s})$, then
+$\tilde{t} = y \tilde{s} (1 + \theta_2) = (y \log x) (1 + \theta_3)^2$,
+where $\theta_2, \theta_3$ are complex numbers of norm $\leq 2^{-p-q}$,
+thus $|\tilde{t} - y \log x| \leq 2.5 \cdot 2^{-p}$ for $q \geq -3$.
+Now $\tilde{u} = \circ_p(\exp(\tilde{t})) =
+x^y \exp(2.5 \cdot 2^{-p}) (1 + \theta_4) = x^y (1 + 4 \theta_5)$,
+with $\theta_4, \theta_5$ complex numbers of norm $\leq 2^{-p}$.
+
 
 \bibliographystyle{acm}
 \bibliography{algorithms}
