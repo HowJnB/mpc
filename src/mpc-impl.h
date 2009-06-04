@@ -32,6 +32,9 @@ MA 02111-1307, USA. */
 
 #include "mpc.h"
 
+#define MPC_RE(x) ((x)->re)
+#define MPC_IM(x) ((x)->im)
+
 /*
  * Miscelaneous useful macros
  */
@@ -114,7 +117,7 @@ do {                                                            \
 #endif
 
 
-/* 
+/*
  * Logging macros
  */
 
@@ -156,7 +159,7 @@ do {                                                            \
 #endif /* MPC_USE_LOGGING */
 
 
-/* 
+/*
  * Define internal functions
  */
 

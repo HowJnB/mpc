@@ -1083,21 +1083,15 @@ This macro might be removed in future versions.
 @comment  node-name,  next,  previous,  up
 @section Internals
 
-These types and
-functions were mainly designed for the implementation of MPC,
+These macros and
+functions are mainly designed for the implementation of MPC,
 but may be useful for users too.
-However no upward compatibility is guaranteed.
+However, no upward compatibility is guaranteed.
 You need to include @code{mpc-impl.h} to use them.
 
-The @code{mpc_t} type consists of two fields of type @code{mpfr_t},
-one for the real part, one for the imaginary part.
-These fields can be accessed through @code{MPC_RE(z)} and @code{MPC_IM(z)}.
-
-Normally the real and imaginary part have the same precision, but
-the function @code{mpc_init3} enables one to have different precisions,
-and the user may also use @code{mpfr_set_prec} to change their precision.
 The macro @code{MPC_MAX_PREC(z)} gives the maximum of the precisions
-of the real and imaginary parts.
+of the real and imaginary parts of a complex number.
+
 
 @node Contributors, References, Complex Functions, Top
 @comment  node-name,  next,  previous,  up

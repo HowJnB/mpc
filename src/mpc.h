@@ -102,9 +102,6 @@ typedef struct {
 }
 __mpc_struct;
 
-#define MPC_RE(x) ((x)->re)
-#define MPC_IM(x) ((x)->im)
-
 typedef __mpc_struct mpc_t[1];
 typedef __mpc_struct *mpc_ptr;
 typedef __gmp_const __mpc_struct *mpc_srcptr;
@@ -234,14 +231,14 @@ __MPC_DECLSPEC size_t mpc_out_str __MPC_PROTO ((FILE *, int, size_t, mpc_srcptr,
 #define MPC_SET_X_Y(real_t, imag_t, z, real_value, imag_value, rnd)     \
   {                                                                     \
     int _inex_re, _inex_im;                                             \
-    _inex_re = (mpfr_set ## real_t) (MPC_RE (z), (real_value), MPC_RND_RE (rnd)); \
-    _inex_im = (mpfr_set ## imag_t) (MPC_IM (z), (imag_value), MPC_RND_IM (rnd)); \
+    _inex_re = (mpfr_set ## real_t) (mpc_realref (z), (real_value), MPC_RND_RE (rnd)); \
+    _inex_im = (mpfr_set ## imag_t) (mpc_imagref (z), (imag_value), MPC_RND_IM (rnd)); \
     return MPC_INEX (_inex_re, _inex_im);                               \
   }
 
 /* Macros' behavior with empty macro parameters is undefined in C89.
    Let's define a fake mpfr_set_fr so that, for instance, mpc_set_fr_z would
-   be defined as follows: 
+   be defined as follows:
    mpc_set_fr_z (mpc_t rop, mpfr_t x, mpz_t y, mpc_rnd_t rnd)
        MPC_SET_X_Y (_fr, _z, rop, x, y, rnd)
 */
