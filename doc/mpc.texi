@@ -915,6 +915,11 @@ when @var{rop} and @var{op1} are identical.
 Set @var{rop} to the square root of @var{op} rounded according to @var{rnd}.
 @end deftypefun
 
+@deftypefun int mpc_pow (mpc_t @var{rop}, mpc_t @var{op1}, mpc_t @var{op2}, mpc_rnd_t @var{rnd})
+Set @var{rop} to @var{op1} raised to the power @var{op2}, rounded according
+to @var{rnd}.
+@end deftypefun
+
 @deftypefun int mpc_exp (mpc_t @var{rop}, mpc_t @var{op}, mpc_rnd_t @var{rnd})
 Set @var{rop} to the exponential of @var{op},
 rounded according to @var{rnd} with the precision of @var{rop}.
