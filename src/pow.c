@@ -277,7 +277,7 @@ mpc_pow_exact (mpc_ptr z, mpc_srcptr x, mpfr_srcptr y, mpc_rnd_t rnd)
 int
 mpc_pow (mpc_ptr z, mpc_srcptr x, mpc_srcptr y, mpc_rnd_t rnd)
 {
-  int ret = -1;
+  int ret = -1, loop;
   mpc_t t, u;
   mp_prec_t p, q, pr, pi;
   long Q;
@@ -325,6 +325,13 @@ mpc_pow (mpc_ptr z, mpc_srcptr x, mpc_srcptr y, mpc_rnd_t rnd)
         goto end;
     }
 
+  /* Special case 1^y = 1 */
+  if (mpfr_zero_p (MPC_IM (x)) && mpfr_cmp_ui (MPC_RE (x), 1) == 0)
+    {
+      ret = mpc_set_ui (z, 1, rnd);
+      goto end;
+    }
+
   /* first bound |Re(y log(x))|, |Im(y log(x)| < 2^q */
   mpc_init2 (t, 64);
   mpc_log (t, x, MPC_RNDNN);
@@ -345,10 +352,9 @@ mpc_pow (mpc_ptr z, mpc_srcptr x, mpc_srcptr y, mpc_rnd_t rnd)
   mpc_init2 (u, p);
   pr += MPC_RND_RE(rnd) == GMP_RNDN;
   pi += MPC_RND_IM(rnd) == GMP_RNDN;
-  for (;;)
+  for (loop = 0;; loop++)
     {
       mp_exp_t dr, di;
-      int loop = 0;
       if (p + q > 64) /* otherwise we reuse the initial approximation
                          t of y*log(x), avoiding two computations */
         {
@@ -357,16 +363,21 @@ mpc_pow (mpc_ptr z, mpc_srcptr x, mpc_srcptr y, mpc_rnd_t rnd)
           mpc_mul (t, t, y, MPC_RNDNN);
         }
       mpc_exp (u, t, MPC_RNDNN);
-      /* since the error bound is global, we have to take into account the
-         exponent difference between the real and imaginary parts */
-      if (mpfr_get_exp (MPC_RE(u)) > mpfr_get_exp (MPC_IM(u)))
+      /* Since the error bound is global, we have to take into account the
+         exponent difference between the real and imaginary parts. We assume
+         either the real or the imaginary part of u is not zero.
+      */
+      dr = mpfr_zero_p (MPC_RE(u)) ? mpfr_get_exp (MPC_IM(u))
+        : mpfr_get_exp (MPC_RE(u));
+      di = mpfr_zero_p (MPC_IM(u)) ? dr : mpfr_get_exp (MPC_IM(u));
+      if (dr > di)
         {
+          di = dr - di;
           dr = 0;
-          di = mpfr_get_exp (MPC_RE(u)) - mpfr_get_exp (MPC_IM(u));
         }
       else
         {
-          dr = mpfr_get_exp (MPC_IM(u)) - mpfr_get_exp (MPC_RE(u));
+          dr = di - dr;
           di = 0;
         }
       /* the term -3 takes into account the factor 4 in the complex error
@@ -376,9 +387,10 @@ mpc_pow (mpc_ptr z, mpc_srcptr x, mpc_srcptr y, mpc_rnd_t rnd)
       if (mpfr_can_round (MPC_RE(u), p - 3 - dr, GMP_RNDN, GMP_RNDZ, pr) &&
           mpfr_can_round (MPC_IM(u), p - 3 - di, GMP_RNDN, GMP_RNDZ, pi))
         break;
-      p += 64;
       if (loop++ == 0)
-        p += dr + di;
+        p += dr + di + 64;
+      else
+        p += p / 2;
       mpc_set_prec (t, p + q);
       mpc_set_prec (u, p);
     }
