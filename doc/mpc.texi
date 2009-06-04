@@ -1044,9 +1044,11 @@ Here is an example of how to check the MPC version at compile time:
 @defmac MPC_SET_X_Y (@var{real_suffix}, @var{imag_suffix}, @var{real}, @var{imag}, @var{rnd})
 The macro MPC_SET_X_Y is designed to serve as the body of an assignment
 function and cannot be used by itself.
-The @var{real_suffix} and @var{imag_suffix} parameters are the @code{_x}
-suffixes of the @code{mpfr_set_x} functions you would use to set the real and
-imaginary part separately.
+The @var{real_suffix} and @var{imag_suffix} parameters are the
+types of the real and imaginary part, that is, the @code{x} in the
+@code{mpfr_set_x} function one would use to set the part, preceded
+by an underscore @code{_};
+for the mpfr type, use @code{_fr}.
 @var{real} (respectively @var{imag}) is the value you want to assign to the
 real (resp. imaginary) part, its type must conform to @var{real_suffix}
 (resp. @var{imag_suffix}).
@@ -1054,25 +1056,10 @@ real (resp. imaginary) part, its type must conform to @var{real_suffix}
 The return value is the usual inexact value (@pxref{return-value,, Return
 Value}).
 
-For instance, you can define mpc_set_ui_d as follows:
+For instance, you can define mpc_set_ui_fr as follows:
 @example
 int mpc_set_ui_d (mpc_t rop, long int re, double im, mpc_rnd_t rnd)
-    MPC_SET_X_Y (_ui, _d, re, im, rnd);
-@end example
-
-If one part is set to an @code{mpfr_t} value, the used parameters depend
-on your compiler. If your compiler accepts ISO C99 code, you can use an
-empty suffix for the corresponding part, as follows:
-@example
-int mpc_set_ui_fr (mpc_t rop, long int re, mpfr_ptr im, mpc_rnd_t rnd)
-    MPC_SET_X_Y (_ui, , re, im, rnd);
-@end example
-Macro with empty arguments has undefined behavior in ISO C89, so, if you
-need strict C89 code, use a @code{_fr} suffix for the corresponding
-part, as follows:
-@example
-int mpc_set_ui_fr (mpc_t rop, long int re, mpfr_ptr im, mpc_rnd_t rnd)
-    MPC_SET_X_Y (_ui, _fr, re, im, rnd);
+    MPC_SET_X_Y (_ui, _fr, rop, re, im, rnd);
 @end example
 
 This macro might be removed in future versions.
