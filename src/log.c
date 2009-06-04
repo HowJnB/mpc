@@ -137,13 +137,18 @@ mpc_log (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd){
       /* w is rounded down */
       mpc_norm (w, op, GMP_RNDD);
       /* error 1 ulp */
-      mpfr_log (w, w, GMP_RNDD);
-      /* generic error of log: (2^(2 - exp(w)) + 1) ulp */
 
-      if (MPFR_EXP (w) >= 2)
-         ok = mpfr_can_round (w, prec - 2, GMP_RNDD, MPC_RND_RE(rnd), MPC_PREC_RE(rop));
-      else
-         ok = mpfr_can_round (w, prec - 3 + MPFR_EXP (w), GMP_RNDD, MPC_RND_RE(rnd), MPC_PREC_RE(rop));
+      if (mpfr_inf_p (w))
+         ok = 1;
+      else {
+         mpfr_log (w, w, GMP_RNDD);
+         /* generic error of log: (2^(2 - exp(w)) + 1) ulp */
+
+         if (MPFR_EXP (w) >= 2)
+            ok = mpfr_can_round (w, prec - 2, GMP_RNDD, MPC_RND_RE(rnd), MPC_PREC_RE(rop));
+         else
+            ok = mpfr_can_round (w, prec - 3 + MPFR_EXP (w), GMP_RNDD, MPC_RND_RE(rnd), MPC_PREC_RE(rop));
+      }
    } while (ok == 0);
 
    /* imaginary part */
