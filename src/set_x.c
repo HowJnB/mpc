@@ -1,7 +1,7 @@
 /* mpc_set_fr -- Set the real part of a complex number from a real number
    (imaginary part equals +0 regardless of rounding mode).
 
-Copyright (C) 2008, 2009 Philippe Th\'eveny
+Copyright (C) 2008, 2009 Philippe Th\'eveny, Andreas Enge
 
 This file is part of the MPC Library.
 
@@ -32,114 +32,52 @@ MA 02111-1307, USA. */
 
 #include "mpc-impl.h"
 
+#define MPC_SET_X(real_t, z, real_value, rnd)     \
+  {                                                                     \
+    int _inex_re, _inex_im;                                             \
+    _inex_re = (mpfr_set_ ## real_t) (mpc_realref (z), (real_value), MPC_RND_RE (rnd)); \
+    _inex_im = mpfr_set_ui (mpc_imagref (z), 0, MPC_RND_IM (rnd)); \
+    return MPC_INEX (_inex_re, _inex_im);                               \
+  }
+
 int
 mpc_set_fr (mpc_ptr a, mpfr_srcptr b, mpc_rnd_t rnd)
-{
-  int inex_re, inex_im;
-
-  inex_re = mpfr_set (MPC_RE (a), b, MPC_RND_RE (rnd));
-  inex_im = mpfr_set_ui (MPC_IM (a), 0, GMP_RNDN);
-
-  return MPC_INEX(inex_re, inex_im);
-}
+   MPC_SET_X (fr, a, b, rnd)
 
 int
 mpc_set_d (mpc_ptr a, double b, mpc_rnd_t rnd)
-{
-  int inex_re, inex_im;
-
-  inex_re = mpfr_set_d (MPC_RE (a), b, MPC_RND_RE (rnd));
-  inex_im = mpfr_set_ui (MPC_IM (a), 0, GMP_RNDN);
-
-  return MPC_INEX(inex_re, inex_im);
-}
+   MPC_SET_X (d, a, b, rnd)
 
 int
 mpc_set_ld (mpc_ptr a, long double b, mpc_rnd_t rnd)
-{
-  int inex_re, inex_im;
-
-  inex_re = mpfr_set_ld (MPC_RE (a), b, MPC_RND_RE (rnd));
-  inex_im = mpfr_set_ui (MPC_IM (a), 0, GMP_RNDN);
-
-  return MPC_INEX(inex_re, inex_im);
-}
+   MPC_SET_X (ld, a, b, rnd)
 
 int
 mpc_set_ui (mpc_ptr a, unsigned long int b, mpc_rnd_t rnd)
-{
-  int inex_re, inex_im;
-
-  inex_re = mpfr_set_ui (MPC_RE (a), b, MPC_RND_RE (rnd));
-  inex_im = mpfr_set_ui (MPC_IM (a), 0, GMP_RNDN);
-
-  return MPC_INEX(inex_re, inex_im);
-}
+   MPC_SET_X (ui, a, b, rnd)
 
 int
 mpc_set_si (mpc_ptr a, long int b, mpc_rnd_t rnd)
-{
-  int inex_re, inex_im;
-
-  inex_re = mpfr_set_si (MPC_RE (a), b, MPC_RND_RE (rnd));
-  inex_im = mpfr_set_ui (MPC_IM (a), 0, GMP_RNDN);
-
-  return MPC_INEX(inex_re, inex_im);
-}
+   MPC_SET_X (si, a, b, rnd)
 
 int
 mpc_set_z (mpc_ptr a, mpz_srcptr b, mpc_rnd_t rnd)
-{
-  int inex_re, inex_im;
-
-  inex_re = mpfr_set_z (MPC_RE (a), b, MPC_RND_RE (rnd));
-  inex_im = mpfr_set_ui (MPC_IM (a), 0, GMP_RNDN);
-
-  return MPC_INEX(inex_re, inex_im);
-}
+   MPC_SET_X (z, a, b, rnd)
 
 int
 mpc_set_q (mpc_ptr a, mpq_srcptr b, mpc_rnd_t rnd)
-{
-  int inex_re, inex_im;
-
-  inex_re = mpfr_set_q (MPC_RE (a), b, MPC_RND_RE (rnd));
-  inex_im = mpfr_set_ui (MPC_IM (a), 0, GMP_RNDN);
-
-  return MPC_INEX(inex_re, inex_im);
-}
+   MPC_SET_X (q, a, b, rnd)
 
 int
 mpc_set_f (mpc_ptr a, mpf_srcptr b, mpc_rnd_t rnd)
-{
-  int inex_re, inex_im;
-
-  inex_re = mpfr_set_f (MPC_RE (a), b, MPC_RND_RE (rnd));
-  inex_im = mpfr_set_ui (MPC_IM (a), 0, GMP_RNDN);
-
-  return MPC_INEX(inex_re, inex_im);
-}
+   MPC_SET_X (f, a, b, rnd)
 
 #ifdef _MPC_H_HAVE_INTMAX_T
 int
 mpc_set_uj (mpc_ptr a, uintmax_t b, mpc_rnd_t rnd)
-{
-  int inex_re, inex_im;
-
-  inex_re = mpfr_set_uj (MPC_RE (a), b, MPC_RND_RE (rnd));
-  inex_im = mpfr_set_ui (MPC_IM (a), 0, GMP_RNDN);
-
-  return MPC_INEX(inex_re, inex_im);
-}
+   MPC_SET_X (uj, a, b, rnd)
 
 int
 mpc_set_sj (mpc_ptr a, intmax_t b, mpc_rnd_t rnd)
-{
-  int inex_re, inex_im;
-
-  inex_re = mpfr_set_sj (MPC_RE (a), b, MPC_RND_RE (rnd));
-  inex_im = mpfr_set_ui (MPC_IM (a), 0, GMP_RNDN);
-
-  return MPC_INEX(inex_re, inex_im);
-}
+   MPC_SET_X (sj, a, b, rnd)
 #endif
