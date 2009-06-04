@@ -139,6 +139,8 @@ mpc_log (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd){
       /* error 1 ulp */
 
       if (mpfr_inf_p (w))
+         /* FIXME
+            return +inf, which is wrong since the logarithm is representable */
          ok = 1;
       else {
          mpfr_log (w, w, GMP_RNDD);
