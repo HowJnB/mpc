@@ -1,4 +1,5 @@
 Recent Changes:
+  - New functions: mpc_pow
   - Bug fixes:
     - log (along branch cut)
   - Makefile.vc updated (thanks to Mickael Gastineau)
