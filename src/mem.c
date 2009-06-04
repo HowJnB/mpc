@@ -25,35 +25,23 @@ MA 02111-1307, USA. */
 char *
 mpc_alloc_str (size_t len)
 {
-#ifdef mp_get_memory_functions /* GMP >= 4.2 */
   void * (*allocfunc) (size_t);
   mp_get_memory_functions (&allocfunc, NULL, NULL);
   return (char *) ((*allocfunc) (len));
-#else /* GMP < 4.2 */
-  return (char *) __gmp_allocate_func (len);
-#endif
 }
 
 char *
 mpc_realloc_str (char * str, size_t oldlen, size_t newlen)
 {
-#ifdef mp_get_memory_functions /* GMP >= 4.2 */
   void * (*reallocfunc) (void *, size_t, size_t);
   mp_get_memory_functions (NULL, &reallocfunc, NULL);
   return (char *) ((*reallocfunc) (str, oldlen, newlen));
-#else /* GMP < 4.2 */
-  return (char *) __gmp_reallocate_func (str, oldlen, newlen);
-#endif
 }
 
 void
 mpc_free_str (char *str)
 {
-#ifdef mp_get_memory_functions /* GMP >= 4.2 */
   void (*freefunc) (void *, size_t);
   mp_get_memory_functions (NULL, NULL, &freefunc);
   (*freefunc) (str, strlen (str) + 1);
-#else /* GMP < 4.2 */
-  __gmp_free_func (str, strlen (str) + 1);
-#endif
 }

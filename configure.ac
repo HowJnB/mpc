@@ -213,30 +213,25 @@ AC_LINK_IFELSE(
         AC_MSG_ERROR([libmpfr not found or uses a different ABI.])
         ])
 
-# Check for a recent GMP: we need GMP 4.1.3 because GMP 4.1.2 fails to compile
-# on Core 2 with gcc 4.3.2 for example:
-# dive_1.c:89: Error: Incorrect register `%edi' used with `q' suffix
-# Once we upgrade the minimal GMP version to GMP 4.2, we can simplify the code
-# using mp_get_memory_functions in mem.c and that using the gmp_random
-# functions in tests/random.c
+# Check for a recent GMP
 AC_MSG_CHECKING(for recent GMP)
 AC_COMPILE_IFELSE(
         [AC_LANG_SOURCE(
         [[
 #include "gmp.h"
-#if (__GNU_MP_VERSION*100 + __GNU_MP_VERSION_MINOR*10 + __GNU_MP_VERSION_PATCHLEVEL < 413)
-# error "min GMP version is 4.1.3"
+#if (__GNU_MP_VERSION*100 + __GNU_MP_VERSION_MINOR*10 + __GNU_MP_VERSION_PATCHLEVEL < 420)
+# error "Minimal GMP version is 4.2"
 error
 #endif
         ]])],
         [AC_MSG_RESULT(yes)],
         [
         AC_MSG_RESULT(no)
-        AC_MSG_ERROR([GMP version >= 4.1.3 required])
+        AC_MSG_ERROR([GMP version >= 4.2 required])
         ])
 
 # Check for a recent MPFR: we require MPFR 2.3.1 because of a bug in
-# mpfr_div_ui which makes mpc_div_ui returns the wrong sign of the zero part
+# mpfr_div_ui which makes mpc_div_ui return the wrong sign of the zero part
 # when applied on a pure real or pure imaginary parameter (see mpfr r4950)
 AC_MSG_CHECKING(for recent MPFR)
 AC_COMPILE_IFELSE(
@@ -244,7 +239,7 @@ AC_COMPILE_IFELSE(
         [[
 #include "mpfr.h"
 #if (MPFR_VERSION < MPFR_VERSION_NUM (2,3,1))
-# error "min MPFR version is 2.3.1"
+# error "Minimal MPFR version is 2.3.1"
 error
 #endif
         ]])],

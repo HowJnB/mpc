@@ -165,7 +165,7 @@ probably a good idea to skim through it.
 @chapter Installing MPC
 @cindex Installation
 
-To build MPC, you first have to install GNU MP (version 4.1.3 or higher) and
+To build MPC, you first have to install GNU MP (version 4.2 or higher) and
 GNU MPFR (version 2.3.1 or higher) on your computer.  You need a C compiler,
 preferably GCC, but any reasonable compiler should work. And you need a
 standard Unix @samp{make} program, plus some other standard Unix utility
