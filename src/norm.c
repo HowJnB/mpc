@@ -61,11 +61,12 @@ mpc_norm (mpfr_ptr a, mpc_srcptr b, mp_rnd_t rnd)
         mpfr_set_prec (u, prec);
         mpfr_set_prec (v, prec);
 
-        /* first compute norm(b)^2 */
-        inexact = mpfr_sqr (u, MPC_RE(b), GMP_RNDN); /* err<=1/2ulp */
+        inexact = mpfr_sqr (u, MPC_RE(b), GMP_RNDN);  /* err<=1/2ulp */
         inexact |= mpfr_sqr (v, MPC_IM(b), GMP_RNDN); /* err<=1/2ulp*/
+        inexact |= mpfr_add (u, u, v, GMP_RNDN);      /* err <= 3/2 ulps */
 
-        inexact |= mpfr_add (u, u, v, GMP_RNDN);            /* err <= 3/2 ulps */
+        if (mpfr_inf_p (u))
+           inexact = 0;
       }
     while (inexact != 0 &&
            mpfr_can_round (u, prec - 2, GMP_RNDN, rnd, MPFR_PREC(a)) == 0);
