@@ -231,8 +231,8 @@ __MPC_DECLSPEC size_t mpc_out_str __MPC_PROTO ((FILE *, int, size_t, mpc_srcptr,
 #define MPC_SET_X_Y(real_t, imag_t, z, real_value, imag_value, rnd)     \
   {                                                                     \
     int _inex_re, _inex_im;                                             \
-    _inex_re = (mpfr_set ## real_t) (mpc_realref (z), (real_value), MPC_RND_RE (rnd)); \
-    _inex_im = (mpfr_set ## imag_t) (mpc_imagref (z), (imag_value), MPC_RND_IM (rnd)); \
+    _inex_re = (mpfr_set_ ## real_t) (mpc_realref (z), (real_value), MPC_RND_RE (rnd)); \
+    _inex_im = (mpfr_set_ ## imag_t) (mpc_imagref (z), (imag_value), MPC_RND_IM (rnd)); \
     return MPC_INEX (_inex_re, _inex_im);                               \
   }
 
