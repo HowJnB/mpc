@@ -306,7 +306,12 @@ mpc_pow (mpc_ptr z, mpc_srcptr x, mpc_srcptr y, mpc_rnd_t rnd)
     }
 
   /* Special case: x^y with y real. We conjecture this is the only case which
-     can lead to exactly representable results. */
+     can lead to exactly representable results.
+     FIXME: we could try this only after one failure of Ziv's strategy, to
+     reduce the overhead for normal operands. Also, this code might involve
+     huge exact computations, and sometimes Ziv's strategy might succeed when
+     the target precision is smaller than the one needed to get an exact
+     computation. */
   if (mpfr_zero_p (MPC_IM (y)))
     {
       if (mpfr_zero_p (MPC_IM (x))) /* both x and y are real: we can use MPFR
