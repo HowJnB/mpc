@@ -16,13 +16,16 @@
 \DeclareMathOperator{\minf}{\bigtriangledown}
 \DeclareMathOperator{\N}{\mathcal N}
 \DeclareMathOperator{\A}{\mathcal A}
+\newcommand {\Z}{\mathbb Z}
+\newcommand {\Q}{\mathbb Q}
+
 \newtheorem{lemma}{Lemma}
-\def\eos{\vrule height7pt width 6pt depth 0pt} %% end-of-something
-\newenvironment{proof}{\par\noindent{\bf Proof:}}{{\hfill\eos}\par\smallskip}
+\newtheorem{definition}[lemma]{Definition}
+\newenvironment{proof}{\noindent{\bf Proof:}}{{\hspace* {\fill}$\blacksquare$}}
 
 \title {MPC: Algorithms and Error Analysis}
 \author {Andreas Enge \and Philippe Th\'eveny \and Paul Zimmermann}
-\date {June 4, 2009}
+\date {June 5, 2009}
 
 \begin {document}
 \maketitle
@@ -410,30 +413,74 @@ k_R=\left\{
 \subsection {\texttt {mpc\_pow}}
 
 The main issue for the power function is to be able to recognize when the
-real or imaginary parts of $x^y$ might be exact, since in that case
+real or imaginary part of $x^y$ might be exact, since in that case
 Ziv's strategy will loop infinitely.
+From now on, we assume that the base $x$ of the power function is different
+from the trivial cases $0$ and $1$.
 
-First $x^y$ is real when $x$ is real and $y$ non-negative, or when
-$x$ is non-negative and $y$ is real.
+\begin {definition}
+A {\em dyadic real} is a real number $x$ that is exactly representable
+as a floating point number, that is, $x = m \cdot 2^e$ for some $m$, $e \in \Z$.
+A {\em dyadic complex} or {\em dyadic}, for short, is a complex number
+$x = x_1 + i x_2$ with both $x_1$ and $x_2$ dyadic reals.
+\end {definition}
 
-Gelfond-Schneider's theorem states that if $x$ is an algebraic number
-different from $0$ and $1$ and $y$ is an algebraic non-rational number,
-then $x^y$ is transcendental.
-Since all exact real floating-point numbers are rational and thus all exact
-complex floating point numbers are algebraic, $x^y$ can only be exact
-when $y$ is rational, that is, $y$ has zero imaginary part.
-Unfortunately, Gelfond-Schneider's theorem says nothing about the real and
-imaginary parts of $x^y$: $x^y$ may be transcendental, but its real part
-or imaginary part may be an exact (binary) floating-point number. This
-may happen, for instance, when $x$ and $y$ are real; we conjecture that
-when $y$ is not real, then $x^y$ is not exact.
+Gelfond-Schneider's theorem states that if $x$ is algebraic and
+$y$ is algebraic and not rational, then $x^y$ is transcendental.
+Since all dyadic complex numbers are algebraic, this implies that $x^y$ is
+not dyadic whenever $y$ has a non-zero imaginary part.
+Unfortunately, this does not yet rule out the possibility that
+either the real or the imaginary part of $x^y$ might still be dyadic,
+while the other part is transcendental. We conjecture that if
+$y$ has a non-zero imaginary part, then neither the real nor the imaginary
+part of $x^y$ may be dyadic. So in the following, we examine more closely
+the case that $y$ is a dyadic real.
+
+First, we concentrate on the case of positive $y$.
+
+\begin{lemma}
+\label{lemma1}
+Let $x$ be a dyadic complex and $m 2^e$ a positive dyadic real
+with $m \in \Z_{>0}$, $m$ odd and $e \in \Z$.
+Then $x^{m 2^e}$ is a dyadic complex if and only if $x^{2^e}$ is.
+\end{lemma}
+
+\begin{proof}
+Notice that the set of dyadic complex numbers forms a ring, whence any positive
+integral power of a dyadic complex is again a dyadic complex.
+Hence if $x^{2^e}$ is a dyadic complex, then so is $x^{m 2^e}$.
+
+Conversely, assume that $x^{m 2^e}$ is a dyadic complex. If $e \geq 0$,
+then $x^{2^e}$ is a dyadic complex independently of the assumption,
+and it remains to consider the case $e < 0$.
+
+Recall that $\Z [i]$, the ring of integers of $\Q (i)$, is a principal
+ideal domain with units $\Z [i]^\ast = \{ \pm 1, \pm i \} = \langle i \rangle$,
+in which $2$ is ramified: $(2) = (2 i) = (1 + i)^2$. Let $p_0 = 1 + i$, and
+$p_k$ for $k \geq 1$ the remaining primes of $\Z [i]$. Then any element
+$x$ of $\Q (i)$ has a unique decomposition as
+$x = i^u \prod_{k \geq 0} p_k^{\alpha_k}$ with $u \in \{ 0, 1, 2, 3\}$,
+$\alpha_k \in \Z$ and almost all $\alpha_k$ equal to zero. The number is
+dyadic if and only if $\alpha_k \geq 0$ for $k \geq 1$ and either
+$\alpha_0 \geq 0$ (in which case $x \in \Z [i]$) or $\alpha_0 < 0$ is even.
+
+Let $z = x^{m 2^e} = i^v \prod_k p_k^{\beta_k}$, so that $x^m = z^{2^{|e|}}$.
+The uniqueness of the prime decomposition implies that $2^{|e|}$ is a divisor
+of $\alpha_k$ and $\beta_k = \frac {m \alpha_k}{2^{|e|}}$. Then
+$x^{2^e} = i^w \prod_k p_k^{\gamma_k}$ with $w \equiv m^{-1} v \pmod 4$ and
+$\gamma_k = \frac {\beta_k}{m} = \frac {\alpha_k}{2^{|e|}}$. Now the
+conditions on $\beta_k$ derived from $z$ being a dyadic complex and the fact
+that $m$ is odd imply that the $\gamma_k$ also satisfy the conditions for
+$x^{2^e}$ to be a dyadic complex.
+\end{proof}
+
 \begin{lemma}
 Let $x = c + i d$ with $c, d$ integers. Assume $x$ is an exact square
 $x = (a + i b)^2$. If one of $a, b$ is a dyadic integer, i.e., of the form
 $m \cdot 2^e$, then both $a$ and $b$ are dyadic integers.
 \end{lemma}
 \begin{proof}
-Assume for example $a$ is a dyadic integer, and $b$ is not, thus 
+Assume for example $a$ is a dyadic integer, and $b$ is not, thus
 $a = m \cdot 2^e$ with $m, e$ integers, and $b$ cannot be written in that form.
 Either $b$ is rational,
 with a denominator which is not a power of two, or $b$ is irrational. In the
@@ -442,6 +489,9 @@ $a^2 - b^2$ will have a non-power-of-two denominator.
 The case where $a$ is not a dyadic integer and $b$ is a dyadic integer
 is symmetric.
 \end{proof}
+
+First $x^y$ is real when $x$ is real and $y$ non-negative, or when
+$x$ is non-negative and $y$ is real.
 
 Assume $y = m \cdot 2^e$, with $m$ an odd integer, and $e$ an integer.
 (The case $m=0$ is trivial.)
@@ -467,38 +517,6 @@ Now $\tilde{u} = \circ_p(\exp(\tilde{t})) =
 x^y \exp(2.5 \cdot 2^{-p}) (1 + \theta_4) = x^y (1 + 4 \theta_5)$,
 with $\theta_4, \theta_5$ complex numbers of norm $\leq 2^{-p}$.
 
-\begin{lemma} \label{lemma1}
-Let $x$ be a complex number with real and imaginary parts which are
-dyadic integers, i.e., of the form $\lambda \cdot 2^{\mu}$ with
-$\lambda, \mu$ integers. We call such a complex number a 
-\emph{dyadic complex}.
-If $m, e$ are integers, $m$ odd,
-$x^{m 2^e}$ is a dyadic complex if and only if $x^{2^e}$ is a dyadic complex.
-\end{lemma}
-\begin{proof}
-If $x^{2^e}$ is a dyadic complex, then $x^{m 2^e}$ is trivially a
-dyadic complex too, since raising a dyadic complex to an integer power
-gives a dyadic complex.
-
-Now assume $x^{m 2^e}$ is a dyadic complex. If $e \geq 0$ then $x^{2^e}$ is
-a dyadic complex too, thus we can assume $e < 0$.
-
-First assume $e=-1$.
-Write $x = (a + i b) \cdot 2^c$ with $a, b, c$ integers.
-Let $t = \sqrt{a + i b}$, then its $m$-th power
-can be written $t^m = t^{2k} \cdot t$ where $m=2k+1$.
-This shows that if $t$ is not a Gaussian integer, neither is $t^m$, since
-$t^{2k}$ is a Gaussian integer. This completes the proof for $e=-1$.
-
-We finish the proof by recurrence on $e$. Assume $e \leq -2$.
-Write $x' = x^{1/2}$. By hypothesis, $x^{m 2^e}$ is a dyadic complex,
-thus $x^{m/2} = x'^m$ is a dyadic complex too; the above argument shows that
-$x'$ is necessarily a dyadic complex.
-Now the argument for $e=-1$ applies to $x'$, and shows
-that $\sqrt{x'}$ is a dyadic complex. Thus we can apply the induction
-hypothesis to $x'$ and $e+1$: if $x'^{m 2^{e+1}} = x^{m 2^e}$ is a dyadic
-complex, then $x'^{2^{e+1}} = x^{2^e}$ is a dyadic complex.
-\end{proof}
 
 \bibliographystyle{acm}
 \bibliography{algorithms}
