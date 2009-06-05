@@ -26,7 +26,7 @@ mpc_norm (mpfr_ptr a, mpc_srcptr b, mp_rnd_t rnd)
 {
   mpfr_t u, v;
   mp_prec_t prec;
-  int inexact;
+  int inexact, overflow;
 
   prec = MPFR_PREC(a);
 
@@ -65,10 +65,9 @@ mpc_norm (mpfr_ptr a, mpc_srcptr b, mp_rnd_t rnd)
         inexact |= mpfr_sqr (v, MPC_IM(b), GMP_RNDN); /* err<=1/2ulp*/
         inexact |= mpfr_add (u, u, v, GMP_RNDN);      /* err <= 3/2 ulps */
 
-        if (mpfr_inf_p (u))
-           inexact = 0;
+        overflow = mpfr_inf_p (u);
       }
-    while (inexact != 0 &&
+    while (!overflow && inexact &&
            mpfr_can_round (u, prec - 2, GMP_RNDN, rnd, MPFR_PREC(a)) == 0);
 
     inexact |= mpfr_set (a, u, rnd);
