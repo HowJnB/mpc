@@ -266,18 +266,22 @@ mpc_pow_exact (mpc_ptr z, mpc_srcptr x, mpfr_srcptr y, mpc_rnd_t rnd)
   return ret;
 }
 
-/* Return 1 if y is an odd integer, 0 otherwise. Copied from MPFR, file pow.c
+/* Return 1 if y*2^k is an odd integer, 0 otherwise.
+   Adapted from MPFR, file pow.c.
+   
+   Example: with k=0, check if y is an odd integer.
+            with k=1, check if y is half-an-integer.
 */
 #define MPFR_LIMB_HIGHBIT ((mp_limb_t) 1 << (BITS_PER_MP_LIMB - 1))
 static int
-is_odd (mpfr_srcptr y)
+is_odd (mpfr_srcptr y, mp_exp_t k)
 {
   mp_exp_t expo;
   mp_prec_t prec;
   mp_size_t yn;
   mp_limb_t *yp;
 
-  expo = mpfr_get_exp (y);
+  expo = mpfr_get_exp (y) + k;
   if (expo <= 0)
     return 0;  /* |y| < 1 and not 0 */
 
@@ -348,7 +352,7 @@ mpc_pow (mpc_ptr z, mpc_srcptr x, mpc_srcptr y, mpc_rnd_t rnd)
         }
 
       /* Special case 1^y = 1 */
-      if (mpfr_cmp_ui (MPC_RE (x), 1) == 0)
+      if (mpfr_cmp_ui (MPC_RE(x), 1) == 0)
         {
           ret = mpc_set_ui (z, 1, rnd);
           goto end;
@@ -365,6 +369,14 @@ mpc_pow (mpc_ptr z, mpc_srcptr x, mpc_srcptr y, mpc_rnd_t rnd)
           ret = MPC_INEX(ret, mpfr_set_ui (MPC_IM (z), 0, MPC_RND_IM(rnd)));
           goto end;
         }
+
+      /* (-1)^(n+I*t) is real for n integer and t real */
+      if (mpfr_cmp_si (MPC_RE(x), -1) == 0 && mpfr_integer_p (MPC_RE(y)))
+        z_real = 1;
+
+      /* x^y is imaginary when: x is negative and y is half-an-integer */
+      if (mpfr_cmp_ui (MPC_RE(x), 0) < 0 && y_real && is_odd (MPC_RE(y), 1))
+        z_imag = 1;
     }
 
   /* I^(t*I) and (-I)^(t*I) are real for t real,
@@ -373,7 +385,7 @@ mpc_pow (mpc_ptr z, mpc_srcptr x, mpc_srcptr y, mpc_rnd_t rnd)
   if ((mpc_cmp_si_si (x, 0, 1) == 0 || mpc_cmp_si_si (x, 0, -1) == 0) &&
       mpfr_integer_p (MPC_RE(y)))
     { /* x is I or -I, and Re(y) is an integer */
-      if (is_odd (MPC_RE(y)))
+      if (is_odd (MPC_RE(y), 0))
         z_imag = 1; /* Re(y) odd: z is imaginary */
       else
         z_real = 1; /* Re(y) even: z is real */
@@ -471,10 +483,13 @@ mpc_pow (mpc_ptr z, mpc_srcptr x, mpc_srcptr y, mpc_rnd_t rnd)
   return ret;
 
  overflow:
-  /* if we have an overflow, we know that |z| is too large to be
+  /* If we have an overflow, we know that |z| is too large to be
      represented, but depending on arg(z), we should return +/-Inf +/- I*Inf.
      We assume t is the approximation of y*log(x), thus we want
-     exp(t) = exp(Re(t))+exp(I*Im(t)). */
+     exp(t) = exp(Re(t))+exp(I*Im(t)).
+     FIXME: this part of code is not 100% rigorous, since we don't consider
+     rounding errors.
+  */
   mpc_init2 (u, 64);
   mpfr_const_pi (MPC_RE(u), GMP_RNDN);
   mpfr_div_2exp (MPC_RE(u), MPC_RE(u), 1, GMP_RNDN); /* Pi/2 */
