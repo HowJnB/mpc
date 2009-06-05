@@ -413,6 +413,9 @@ The main issue for the power function is to be able to recognize when the
 real or imaginary parts of $x^y$ might be exact, since in that case
 Ziv's strategy will loop infinitely.
 
+First $x^y$ is real when $x$ is real and $y$ non-negative, or when
+$x$ is non-negative and $y$ is real.
+
 Gelfond-Schneider's theorem states that if $x$ is an algebraic number
 different from $0$ and $1$ and $y$ is an algebraic non-rational number,
 then $x^y$ is transcendental.

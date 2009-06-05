@@ -224,26 +224,27 @@ mpc_pow_exact (mpc_ptr z, mpc_srcptr x, mpfr_srcptr y, mpc_rnd_t rnd)
     {
       /* square a + I*b */
       mpz_mul (u, a, b);
-      mpz_mul (u, a, a);
+      mpz_mul (a, a, a);
       mpz_submul (a, b, b);
       mpz_mul_2exp (b, u, 1);
       ed *= 2;
       if (mpz_tstbit (my, t)) /* multiply by c + I*d */
         {
           mpz_mul (u, a, c);
-          mpz_submul (u, b, d);
+          mpz_submul (u, b, d); /* ac-bd */
           mpz_mul (b, b, c);
-          mpz_submul (b, a, d);
+          mpz_addmul (b, a, d); /* bc+ad */
           mpz_swap (a, u);
           ed += ec;
         }
     }
+  /* now a+I*b = (c+I*d)^my */
 
   while (ey-- > 0)
     {
       /* square a + I*b */
       mpz_mul (u, a, b);
-      mpz_mul (u, a, a);
+      mpz_mul (a, a, a);
       mpz_submul (a, b, b);
       mpz_mul_2exp (b, u, 1);
       ed *= 2;
@@ -251,8 +252,8 @@ mpc_pow_exact (mpc_ptr z, mpc_srcptr x, mpfr_srcptr y, mpc_rnd_t rnd)
 
   ret = mpfr_set_z (MPC_RE(z), a, MPC_RND_RE(rnd));
   ret = MPC_INEX(ret, mpfr_set_z (MPC_IM(z), b, MPC_RND_IM(rnd)));
-  mpfr_mul_2exp (MPC_RE(z), MPC_RE(z), ed, MPC_RND_RE(rnd));
-  mpfr_mul_2exp (MPC_IM(z), MPC_IM(z), ed, MPC_RND_IM(rnd));
+  mpfr_mul_2si (MPC_RE(z), MPC_RE(z), ed, MPC_RND_RE(rnd));
+  mpfr_mul_2si (MPC_IM(z), MPC_IM(z), ed, MPC_RND_IM(rnd));
 
  end:
   mpz_clear (my);
@@ -270,7 +271,7 @@ mpc_pow_exact (mpc_ptr z, mpc_srcptr x, mpfr_srcptr y, mpc_rnd_t rnd)
 int
 mpc_pow (mpc_ptr z, mpc_srcptr x, mpc_srcptr y, mpc_rnd_t rnd)
 {
-  int ret = -1, loop;
+  int ret = -1, loop, x_real, y_real;
   mpc_t t, u;
   mp_prec_t p, q, pr, pi;
   long Q;
@@ -291,43 +292,34 @@ mpc_pow (mpc_ptr z, mpc_srcptr x, mpc_srcptr y, mpc_rnd_t rnd)
       abort ();
     }
 
-  if (mpfr_zero_p (MPC_RE (x)) && mpfr_zero_p (MPC_IM (x)))
+  x_real = mpfr_zero_p (MPC_IM (x));
+  y_real = mpfr_zero_p (MPC_IM (y));
+  if (x_real) /* case x real */
     {
-      /* x is zero */
-      fprintf (stderr, "Zero case not yet implemented in mpc_pow\n");
-      abort ();
-    }
-
-  /* Special case: x^y with y real. We conjecture this is the only case which
-     can lead to exactly representable results.
-     FIXME: we could try this only after one failure of Ziv's strategy, to
-     reduce the overhead for normal operands. Also, this code might involve
-     huge exact computations, and sometimes Ziv's strategy might succeed when
-     the target precision is smaller than the one needed to get an exact
-     computation. */
-  if (mpfr_zero_p (MPC_IM (y)))
-    {
-      if (mpfr_zero_p (MPC_IM (x))) /* both x and y are real: we can use MPFR
-                                       when x >= 0 or y is an integer */
+      if (mpfr_zero_p (MPC_RE (x))) /* x is zero */
         {
-          if (mpfr_cmp_ui (MPC_RE (x), 0) >= 0 || mpfr_integer_p (MPC_RE (y)))
-            {
-              ret = mpfr_pow (MPC_RE (z), MPC_RE(x), MPC_RE(y), MPC_RND_RE(rnd));
-              ret = MPC_INEX(ret, mpfr_set_ui (MPC_IM (z), 0, MPC_RND_IM(rnd)));
-              goto end;
-            }
+          fprintf (stderr, "Zero case not yet implemented in mpc_pow\n");
+          abort ();
         }
 
-      ret = mpc_pow_exact (z, x, MPC_RE(y), rnd);
-      if (ret != -1)
-        goto end;
-    }
+      /* Special case 1^y = 1 */
+      if (mpfr_cmp_ui (MPC_RE (x), 1) == 0)
+        {
+          ret = mpc_set_ui (z, 1, rnd);
+          goto end;
+        }
 
-  /* Special case 1^y = 1 */
-  if (mpfr_zero_p (MPC_IM (x)) && mpfr_cmp_ui (MPC_RE (x), 1) == 0)
-    {
-      ret = mpc_set_ui (z, 1, rnd);
-      goto end;
+      /* x^y is real when:
+         (a) x is real and y is real non-negative or integer
+         (b) x is real non-negative and y is real */
+      if (y_real && (mpfr_cmp_ui (MPC_RE (x), 0) >= 0 ||
+                     mpfr_cmp_ui (MPC_RE (y), 0) >= 0 ||
+                     mpfr_integer_p (MPC_RE (y))))
+        {
+          ret = mpfr_pow (MPC_RE (z), MPC_RE(x), MPC_RE(y), MPC_RND_RE(rnd));
+          ret = MPC_INEX(ret, mpfr_set_ui (MPC_IM (z), 0, MPC_RND_IM(rnd)));
+          goto end;
+        }
     }
 
   /* first bound |Re(y log(x))|, |Im(y log(x)| < 2^q */
@@ -385,14 +377,25 @@ mpc_pow (mpc_ptr z, mpc_srcptr x, mpc_srcptr y, mpc_rnd_t rnd)
       if (mpfr_can_round (MPC_RE(u), p - 3 - dr, GMP_RNDN, GMP_RNDZ, pr) &&
           mpfr_can_round (MPC_IM(u), p - 3 - di, GMP_RNDN, GMP_RNDZ, pi))
         break;
-      if (loop++ == 0)
-        p += dr + di + 64;
+
+      if (loop == 0) /* first iteration of Ziv's algorithm */
+        {
+          /* check exact cases (see algorithms.tex) */
+          if (y_real)
+            {
+              ret = mpc_pow_exact (z, x, MPC_RE(y), rnd);
+              if (ret != -1)
+                goto exact;
+            }
+          p += dr + di + 64;
+        }
       else
         p += p / 2;
       mpc_set_prec (t, p + q);
       mpc_set_prec (u, p);
     }
   ret = mpc_set (z, u, rnd);
+ exact:
   mpc_clear (t);
   mpc_clear (u);
 
