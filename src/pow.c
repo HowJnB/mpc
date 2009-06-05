@@ -266,12 +266,57 @@ mpc_pow_exact (mpc_ptr z, mpc_srcptr x, mpfr_srcptr y, mpc_rnd_t rnd)
   return ret;
 }
 
+/* Return 1 if y is an odd integer, 0 otherwise. Copied from MPFR, file pow.c
+*/
+#define MPFR_LIMB_HIGHBIT ((mp_limb_t) 1 << (BITS_PER_MP_LIMB - 1))
+static int
+is_odd (mpfr_srcptr y)
+{
+  mp_exp_t expo;
+  mp_prec_t prec;
+  mp_size_t yn;
+  mp_limb_t *yp;
+
+  expo = mpfr_get_exp (y);
+  if (expo <= 0)
+    return 0;  /* |y| < 1 and not 0 */
+
+  prec = mpfr_get_prec (y);
+  if ((mpfr_prec_t) expo > prec)
+    return 0;  /* y is a multiple of 2^(expo-prec), thus not odd */
+
+  /* 0 < expo <= prec:
+     y = 1xxxxxxxxxt.zzzzzzzzzzzzzzzzzz[000]
+          expo bits   (prec-expo) bits
+
+     We have to check that:
+     (a) the bit 't' is set
+     (b) all the 'z' bits are zero
+  */
+
+  prec = ((prec - 1) / BITS_PER_MP_LIMB + 1) * BITS_PER_MP_LIMB - expo;
+  /* number of z+0 bits */
+
+  yn = prec / BITS_PER_MP_LIMB;
+  /* yn is the index of limb containing the 't' bit */
+
+  yp = y->_mpfr_d;
+  /* if expo is a multiple of BITS_PER_MP_LIMB, t is bit 0 */
+  if (expo % BITS_PER_MP_LIMB == 0 ? (yp[yn] & 1) == 0
+      : yp[yn] << ((expo % BITS_PER_MP_LIMB) - 1) != MPFR_LIMB_HIGHBIT)
+    return 0;
+  while (--yn >= 0)
+    if (yp[yn] != 0)
+      return 0;
+  return 1;
+}
+
 /* Put in z the value of x^y, rounded according to 'rnd'.
    Return the inexact flag in [0, 10]. */
 int
 mpc_pow (mpc_ptr z, mpc_srcptr x, mpc_srcptr y, mpc_rnd_t rnd)
 {
-  int ret = -1, loop, x_real, y_real, z_real = 0;
+  int ret = -1, loop, x_real, y_real, z_real = 0, z_imag = 0;
   mpc_t t, u;
   mp_prec_t p, q, pr, pi;
   long Q;
@@ -322,9 +367,17 @@ mpc_pow (mpc_ptr z, mpc_srcptr x, mpc_srcptr y, mpc_rnd_t rnd)
         }
     }
 
-  /* I^(t*I) and (-I)^(t*I) are real for t real */
-  z_real = mpfr_zero_p (MPC_RE (x)) && mpfr_zero_p (MPC_RE (y)) &&
-    (mpfr_cmp_ui (MPC_IM (x), 1) || mpfr_cmp_si (MPC_IM (x), -1));
+  /* I^(t*I) and (-I)^(t*I) are real for t real,
+     I^(n+t*I) and (-I)^(n+t*I) are real for n even and t real, and
+     I^(n+t*I) and (-I)^(n+t*I) are imaginary for n odd and t real */
+  if ((mpc_cmp_si_si (x, 0, 1) == 0 || mpc_cmp_si_si (x, 0, -1) == 0) &&
+      mpfr_integer_p (MPC_RE(y)))
+    { /* x is I or -I, and Re(y) is an integer */
+      if (is_odd (MPC_RE(y)))
+        z_imag = 1; /* Re(y) odd: z is imaginary */
+      else
+        z_real = 1; /* Re(y) even: z is real */
+    }
 
   /* first bound |Re(y log(x))|, |Im(y log(x)| < 2^q */
   mpc_init2 (t, 64);
@@ -378,7 +431,7 @@ mpc_pow (mpc_ptr z, mpc_srcptr x, mpc_srcptr y, mpc_rnd_t rnd)
          (see algorithms.tex) plus one due to the exponent difference: if
          z = a + I*b, where the relative error on z is at most 2^(-p), and
          EXP(a) = EXP(b) + k, the relative error on b is at most 2^(k-p) */
-      if (mpfr_can_round (MPC_RE(u), p - 3 - dr, GMP_RNDN, GMP_RNDZ, pr) &&
+      if ((z_imag || mpfr_can_round (MPC_RE(u), p - 3 - dr, GMP_RNDN, GMP_RNDZ, pr)) &&
           (z_real || mpfr_can_round (MPC_IM(u), p - 3 - di, GMP_RNDN, GMP_RNDZ, pi)))
         break;
 
@@ -402,6 +455,11 @@ mpc_pow (mpc_ptr z, mpc_srcptr x, mpc_srcptr y, mpc_rnd_t rnd)
     {
       ret = mpfr_set (MPC_RE(z), MPC_RE(u), MPC_RND_RE(rnd));
       ret = MPC_INEX(ret, mpfr_set_ui (MPC_IM(z), 0, MPC_RND_IM(rnd)));
+    }
+  else if (z_imag)
+    {
+      ret = mpfr_set (MPC_IM(z), MPC_IM(u), MPC_RND_IM(rnd));
+      ret = MPC_INEX(mpfr_set_ui (MPC_RE(z), 0, MPC_RND_RE(rnd)), ret);
     }
   else
     ret = mpc_set (z, u, rnd);
