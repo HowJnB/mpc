@@ -271,7 +271,7 @@ mpc_pow_exact (mpc_ptr z, mpc_srcptr x, mpfr_srcptr y, mpc_rnd_t rnd)
 int
 mpc_pow (mpc_ptr z, mpc_srcptr x, mpc_srcptr y, mpc_rnd_t rnd)
 {
-  int ret = -1, loop, x_real, y_real;
+  int ret = -1, loop, x_real, y_real, z_real = 0;
   mpc_t t, u;
   mp_prec_t p, q, pr, pi;
   long Q;
@@ -321,6 +321,10 @@ mpc_pow (mpc_ptr z, mpc_srcptr x, mpc_srcptr y, mpc_rnd_t rnd)
           goto end;
         }
     }
+
+  /* I^(t*I) and (-I)^(t*I) are real for t real */
+  z_real = mpfr_zero_p (MPC_RE (x)) && mpfr_zero_p (MPC_RE (y)) &&
+    (mpfr_cmp_ui (MPC_IM (x), 1) || mpfr_cmp_si (MPC_IM (x), -1));
 
   /* first bound |Re(y log(x))|, |Im(y log(x)| < 2^q */
   mpc_init2 (t, 64);
@@ -375,7 +379,7 @@ mpc_pow (mpc_ptr z, mpc_srcptr x, mpc_srcptr y, mpc_rnd_t rnd)
          z = a + I*b, where the relative error on z is at most 2^(-p), and
          EXP(a) = EXP(b) + k, the relative error on b is at most 2^(k-p) */
       if (mpfr_can_round (MPC_RE(u), p - 3 - dr, GMP_RNDN, GMP_RNDZ, pr) &&
-          mpfr_can_round (MPC_IM(u), p - 3 - di, GMP_RNDN, GMP_RNDZ, pi))
+          (z_real || mpfr_can_round (MPC_IM(u), p - 3 - di, GMP_RNDN, GMP_RNDZ, pi)))
         break;
 
       if (loop == 0) /* first iteration of Ziv's algorithm */
@@ -394,7 +398,13 @@ mpc_pow (mpc_ptr z, mpc_srcptr x, mpc_srcptr y, mpc_rnd_t rnd)
       mpc_set_prec (t, p + q);
       mpc_set_prec (u, p);
     }
-  ret = mpc_set (z, u, rnd);
+  if (z_real)
+    {
+      ret = mpfr_set (MPC_RE(z), MPC_RE(u), MPC_RND_RE(rnd));
+      ret = MPC_INEX(ret, mpfr_set_ui (MPC_IM(z), 0, MPC_RND_IM(rnd)));
+    }
+  else
+    ret = mpc_set (z, u, rnd);
  exact:
   mpc_clear (t);
   mpc_clear (u);
