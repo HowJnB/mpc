@@ -16,6 +16,9 @@
 \DeclareMathOperator{\minf}{\bigtriangledown}
 \DeclareMathOperator{\N}{\mathcal N}
 \DeclareMathOperator{\A}{\mathcal A}
+\newtheorem{lemma}{Lemma}
+\def\eos{\vrule height7pt width 6pt depth 0pt} %% end-of-something
+\newenvironment{proof}{\par\noindent{\bf Proof:}}{{\hfill\eos}\par\smallskip}
 
 \title {MPC: Algorithms and Error Analysis}
 \author {Andreas Enge \and Philippe Th\'eveny \and Paul Zimmermann}
@@ -447,6 +450,38 @@ Now $\tilde{u} = \circ_p(\exp(\tilde{t})) =
 x^y \exp(2.5 \cdot 2^{-p}) (1 + \theta_4) = x^y (1 + 4 \theta_5)$,
 with $\theta_4, \theta_5$ complex numbers of norm $\leq 2^{-p}$.
 
+\begin{lemma}
+Let $x$ be a complex number with real and imaginary parts which are
+dyadic integers, i.e., of the form $\lambda \cdot 2^{\mu}$ with
+$\lambda, \mu$ integers. We call such a complex number a 
+\emph{dyadic complex}.
+If $m, e$ are integers, $m$ odd,
+$x^{m 2^e}$ is a dyadic complex if and only if $x^{2^e}$ is a dyadic complex.
+\end{lemma}
+\begin{proof}
+If $x^{2^e}$ is a dyadic complex, then $x^{m 2^e}$ is trivially a
+dyadic complex too, since raising a dyadic complex to an integer power
+gives a dyadic complex.
+
+Now assume $x^{m 2^e}$ is a dyadic complex. If $e \geq 0$ then $x^{2^e}$ is
+a dyadic complex too, thus we can assume $e < 0$.
+
+First assume $e=-1$.
+Write $x = (a + i b) \cdot 2^c$ with $a, b, c$ integers.
+Let $t = \sqrt{a + i b}$, then its $m$-th power
+can be written $t^m = t^{2k} \cdot t$ where $m=2k+1$.
+This shows that if $t$ is not a Gaussian integer, neither is $t^m$, since
+$t^{2k}$ is a Gaussian integer. This completes the proof for $e=-1$.
+
+We finish the proof by recurrence on $e$. Assume $e \leq -2$.
+Write $x' = x^{1/2}$. By hypothesis, $x^{m 2^e}$ is a dyadic complex,
+thus $x^{m/2} = x'^m$ is a dyadic complex too; the above argument shows that
+$x'$ is necessarily a dyadic complex.
+Now the argument for $e=-1$ applies to $x'$, and shows
+that $\sqrt{x'}$ is a dyadic complex. Thus we can apply the induction
+hypothesis to $x'$ and $e+1$: if $x'^{m 2^{e+1}} = x^{m 2^e}$ is a dyadic
+complex, then $x'^{2^{e+1}} = x^{2^e}$ is a dyadic complex.
+\end{proof}
 
 \bibliographystyle{acm}
 \bibliography{algorithms}
