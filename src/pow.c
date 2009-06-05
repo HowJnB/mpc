@@ -29,14 +29,7 @@ MA 02111-1307, USA. */
 
    We have c = a^2 - b^2 and d = 2*a*b.
 
-   We first show that if one of a, b is exact, then both are.
-
-   Indeed, assume for example a is exact, and b is not, thus a = m*2^e with
-   m, e integers, and b cannot be written in that form. Either b is rational,
-   with a denominator which is not a power of two, or b is irrational. In the
-   second case, d = 2*a*b would be irrational two; in the first case, a^2 - b^2
-   will have a non-power-of-two denominator. The case a inexact, b exact is
-   symmetric.
+   If one of a, b is exact, then both are (see algorithms.tex).
 
    Case 1: a <> 0 and b <> 0.
    Let a = m*2^e and b = n*2^f with m, e, n, f integers, m and n odd

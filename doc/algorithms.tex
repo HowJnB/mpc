@@ -424,14 +424,28 @@ imaginary parts of $x^y$: $x^y$ may be transcendental, but its real part
 or imaginary part may be an exact (binary) floating-point number. This
 may happen, for instance, when $x$ and $y$ are real; we conjecture that
 when $y$ is not real, then $x^y$ is not exact.
+\begin{lemma}
+Let $x = c + i d$ with $c, d$ integers. Assume $x$ is an exact square
+$x = (a + i b)^2$. If one of $a, b$ is a dyadic integer, i.e., of the form
+$m \cdot 2^e$, then both $a$ and $b$ are dyadic integers.
+\end{lemma}
+\begin{proof}
+Assume for example $a$ is a dyadic integer, and $b$ is not, thus 
+$a = m \cdot 2^e$ with $m, e$ integers, and $b$ cannot be written in that form.
+Either $b$ is rational,
+with a denominator which is not a power of two, or $b$ is irrational. In the
+second case, $d = 2 a b$ would be irrational two; in the first case,
+$a^2 - b^2$ will have a non-power-of-two denominator.
+The case where $a$ is not a dyadic integer and $b$ is a dyadic integer
+is symmetric.
+\end{proof}
 
 Assume $y = m \cdot 2^e$, with $m$ an odd integer, and $e$ an integer.
 (The case $m=0$ is trivial.)
 If $e > 0$, then $x^y$ is trivially exact.
-If $e < 0$, we conjecture that exact powers can only occur when
+If $e < 0$, Lemma~\ref{lemma1} shows that exact powers can only occur when
 $x^{2^e}$ is itself exact.
-It would then suffice to be able to recognize exact squares, as in the real
-case.
+It thus suffices to recognize exact squares, as in the real case.
 
 If $x^y$ is known to be inexact, then we approximate it using
 $\exp(y \log x)$ and Ziv's strategy.
@@ -450,7 +464,7 @@ Now $\tilde{u} = \circ_p(\exp(\tilde{t})) =
 x^y \exp(2.5 \cdot 2^{-p}) (1 + \theta_4) = x^y (1 + 4 \theta_5)$,
 with $\theta_4, \theta_5$ complex numbers of norm $\leq 2^{-p}$.
 
-\begin{lemma}
+\begin{lemma} \label{lemma1}
 Let $x$ be a complex number with real and imaginary parts which are
 dyadic integers, i.e., of the form $\lambda \cdot 2^{\mu}$ with
 $\lambda, \mu$ integers. We call such a complex number a 
