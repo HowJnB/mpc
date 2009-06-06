@@ -174,7 +174,7 @@ mpc_pow_exact (mpc_ptr z, mpc_srcptr x, mpfr_srcptr y, mpc_rnd_t rnd)
       mpz_swap (a, c);
       mpz_swap (b, d);
       ec /= 2;
-      ey --;
+      ey ++;
     }
 
   if (ey < 0)
