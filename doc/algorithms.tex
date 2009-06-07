@@ -526,23 +526,35 @@ it is possible to take $e$ successive square roots of $x$; as soon as the
 process fails, it is clear that $x^{2^e}$ cannot be dyadic.
 
 \begin{lemma}
+\label {lm:sqrtrat}
+Let $x \in \Q (i)$, and write $x = (a + b i)^2$ with $a$, $b \in \R$.
+Then either both of $a$ and $b$ are rational, or none of them is.
+\end{lemma}
+
+\begin{proof}
+Assume that one of $a$ and $b$ is rational. Then $\Im x = 2 a b \in \Q$
+implies that also the other one is rational.
+\end{proof}
+
+\begin{lemma}
 Let $x$ be dyadic, and write $x = (a + b i)^2$ with $a$, $b \in \R$.
 Then either both of $a$ and $b$ are dyadic reals, or none of them is.
 \end{lemma}
 
 \begin{proof}
-Write $x = c + d i$ with $c$, $d$ dyadic reals, that is, rational numbers
-whose denominators are powers of~$2$. Assume that one of $a$ and
-$b$ is a dyadic real. Then $d = 2 a b$ implies that also the other one is
-rational, while $c = a^2 - b^2$ implies that also the square of the other
-one (and thus the number itself) has as denominator a power of~$2$.
+Assume that one of $a$ and $b$ is a dyadic real, that is, a rational with
+a power of~$2$ as denominator. Then $a$, $b \in \Q$ by Lemma~\ref {lm:sqrtrat}.
+Now, $\Re x = a^2 - b^2$ implies that also the square of the \textit {a priori}
+not dyadic coefficient $a$ or $b$, and thus the coefficient itself,
+has as denominator a power of~$2$.
 \end{proof}
 
 
 \begin {theorem}
 Let $x = m 2^e$ and $y = n 2^f$ be dyadic complex numbers with $m$ and $n$ odd,
-and let $z = x^y$. Then neither $\Re z$ nor $\Im z$ are dyadic reals,
-unless we are in one of the following cases:
+and let $z = x^y$. Call the pair $(x, y)$ {\em exceptional} if at least
+one of $\Re z$ or $\Im z$ is a dyadic real. Exceptional pairs occur
+only in the following cases:
 \begin {enumerate}
 \item
 $y = 0$; then $z = 1$
@@ -593,18 +605,23 @@ $(-m)^{-1}$ is dyadic, which for $m$ odd is only possible if $-m = 1$.
 The third subcase $f = -2$ is similar, but one needs that $(-x)^y$ is dyadic
 up to a factor of $\sqrt 2$.
 
-To show that no more subcases lead to dyadic results, assume that $f \leq -3$
-and let $x^y = \alpha \zeta = \alpha \zeta_r + i \alpha \zeta_i$, where
+We proceed to show that for $f \leq -3$, there is no exceptional pair.
+Suppose that $(x, y)$ is an exceptional pair; by switching to
+$\left( x^{|n|}, \frac {y}{|n|} \right)$, we may assume
+without loss of generality that $|n| = 1$. Then $x^y$ is obtained by
+taking $|f|$ successive square roots of either $x$ or $\frac {1}{x}$, both
+of which are elements of $\Q (i)$. Lemma~\ref {lm:sqrtrat} implies
+that both $\Re (x^y)$ and $\Im (x^y)$ are rational.
+
+Write $x^y = \alpha \zeta = \alpha \zeta_r + i \alpha \zeta_i$, where
 $\alpha = (-x)^y \in \R$ and $\zeta = \zeta_r + i \zeta_i$ is a primitive root
 of unity of order~$2^{|f| + 1}$.
-If both parts of $x^y$, $\alpha \zeta_r$ and $\alpha \zeta_i$, are elements
-of $\Q (i)$, then $\zeta \in \Q (i, \alpha)$. Moreover,
+Then $\alpha \zeta_r$, $\alpha \zeta_i \in \Q$ implies $\zeta \in \Q (i, \alpha)$.
+Moreover,
 $\alpha^2 = \alpha^2 (\zeta_r^2 + \zeta_i^2) =
 (\alpha \zeta_r)^2 + (\alpha \zeta_i)^2 \in \Q (i)$, so that $\Q (i, \alpha)$
-is an extension of degree at most~$4$ of $\Q$ containing $\Q (\zeta)$,
+is an extension of degree at most~$4$ of $\Q$ containing $\Q (\zeta)$
 and thus a primitive $16$-th root of unity, which is impossible.
-
-How to exclude that only one part is dyadic?
 \item
 \item
 \item
