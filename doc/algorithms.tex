@@ -5,8 +5,8 @@
 \usepackage[T1]{fontenc}
 \usepackage{amsmath,amssymb}
 
-\newcommand {\mpc}{\texttt {mpc}}
-\newcommand {\mpfr}{\texttt {mpfr}}
+\newcommand {\mpc}{{\tt mpc}}
+\newcommand {\mpfr}{{\tt mpfr}}
 \newcommand {\ulp}[1]{#1~ulp}
 \newcommand {\atantwo}{\operatorname {atan2}}
 \newcommand {\Ulp}{{\rm ulp}}
@@ -18,14 +18,23 @@
 \DeclareMathOperator{\A}{\mathcal A}
 \newcommand {\Z}{\mathbb Z}
 \newcommand {\Q}{\mathbb Q}
+\newcommand {\R}{\mathbb R}
 
-\newtheorem{lemma}{Lemma}
-\newtheorem{definition}[lemma]{Definition}
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{prop}[theorem]{Proposition}
+\newtheorem{conj}[theorem]{Conjecture}
 \newenvironment{proof}{\noindent{\bf Proof:}}{{\hspace* {\fill}$\blacksquare$}}
+
+\newcommand {\enumi}[1]{(\alph {#1})}
+\renewcommand {\labelenumi}{\enumi {enumi}}
+\newcommand {\enumii}[1]{(\roman {#1})}
+\renewcommand {\labelenumii}{\enumii {enumii}}
 
 \title {MPC: Algorithms and Error Analysis}
 \author {Andreas Enge \and Philippe Th\'eveny \and Paul Zimmermann}
-\date {June 5, 2009}
+\date {June 7, 2009}
 
 \begin {document}
 \maketitle
@@ -415,93 +424,8 @@ k_R=\left\{
 The main issue for the power function is to be able to recognize when the
 real or imaginary part of $x^y$ might be exact, since in that case
 Ziv's strategy will loop infinitely.
-From now on, we assume that the base $x$ of the power function is different
-from the trivial cases $0$ and $1$.
-
-\begin {definition}
-A {\em dyadic real} is a real number $x$ that is exactly representable
-as a floating point number, that is, $x = m \cdot 2^e$ for some $m$, $e \in \Z$.
-A {\em dyadic complex} or {\em dyadic}, for short, is a complex number
-$x = x_1 + i x_2$ with both $x_1$ and $x_2$ dyadic reals.
-\end {definition}
-
-Gelfond-Schneider's theorem states that if $x$ is algebraic and
-$y$ is algebraic and not rational, then $x^y$ is transcendental.
-Since all dyadic complex numbers are algebraic, this implies that $x^y$ is
-not dyadic whenever $y$ has a non-zero imaginary part.
-Unfortunately, this does not yet rule out the possibility that
-either the real or the imaginary part of $x^y$ might still be dyadic,
-while the other part is transcendental. We conjecture that if
-$y$ has a non-zero imaginary part, then neither the real nor the imaginary
-part of $x^y$ may be dyadic. So in the following, we examine more closely
-the case that $y$ is a dyadic real.
-
-First, we concentrate on the case of positive $y$.
-
-\begin{lemma}
-\label{lemma1}
-Let $x$ be a dyadic complex and $m 2^e$ a positive dyadic real
-with $m \in \Z_{>0}$, $m$ odd and $e \in \Z$.
-Then $x^{m 2^e}$ is a dyadic complex if and only if $x^{2^e}$ is.
-\end{lemma}
-
-\begin{proof}
-Notice that the set of dyadic complex numbers forms a ring, whence any positive
-integral power of a dyadic complex is again a dyadic complex.
-Hence if $x^{2^e}$ is a dyadic complex, then so is $x^{m 2^e}$.
-
-Conversely, assume that $x^{m 2^e}$ is a dyadic complex. If $e \geq 0$,
-then $x^{2^e}$ is a dyadic complex independently of the assumption,
-and it remains to consider the case $e < 0$.
-
-Recall that $\Z [i]$, the ring of integers of $\Q (i)$, is a principal
-ideal domain with units $\Z [i]^\ast = \{ \pm 1, \pm i \} = \langle i \rangle$,
-in which $2$ is ramified: $(2) = (2 i) = (1 + i)^2$. Let $p_0 = 1 + i$, and
-$p_k$ for $k \geq 1$ the remaining primes of $\Z [i]$. Then any element
-$x$ of $\Q (i)$ has a unique decomposition as
-$x = i^u \prod_{k \geq 0} p_k^{\alpha_k}$ with $u \in \{ 0, 1, 2, 3\}$,
-$\alpha_k \in \Z$ and almost all $\alpha_k$ equal to zero. The number is
-dyadic if and only if $\alpha_k \geq 0$ for $k \geq 1$ and either
-$\alpha_0 \geq 0$ (in which case $x \in \Z [i]$) or $\alpha_0 < 0$ is even.
-
-Let $z = x^{m 2^e} = i^v \prod_k p_k^{\beta_k}$, so that $x^m = z^{2^{|e|}}$.
-The uniqueness of the prime decomposition implies that $2^{|e|}$ is a divisor
-of $\alpha_k$ and $\beta_k = \frac {m \alpha_k}{2^{|e|}}$. Then
-$x^{2^e} = i^w \prod_k p_k^{\gamma_k}$ with $w \equiv m^{-1} v \pmod 4$ and
-$\gamma_k = \frac {\beta_k}{m} = \frac {\alpha_k}{2^{|e|}}$. Now the
-conditions on $\beta_k$ derived from $z$ being a dyadic complex and the fact
-that $m$ is odd imply that the $\gamma_k$ also satisfy the conditions for
-$x^{2^e}$ to be a dyadic complex.
-\end{proof}
-
-\begin{lemma}
-Let $x = c + i d$ with $c, d$ integers. Assume $x$ is an exact square
-$x = (a + i b)^2$. If one of $a, b$ is a dyadic integer, i.e., of the form
-$m \cdot 2^e$, then both $a$ and $b$ are dyadic integers.
-\end{lemma}
-\begin{proof}
-Assume for example $a$ is a dyadic integer, and $b$ is not, thus
-$a = m \cdot 2^e$ with $m, e$ integers, and $b$ cannot be written in that form.
-Either $b$ is rational,
-with a denominator which is not a power of two, or $b$ is irrational. In the
-second case, $d = 2 a b$ would be irrational two; in the first case,
-$a^2 - b^2$ will have a non-power-of-two denominator.
-The case where $a$ is not a dyadic integer and $b$ is a dyadic integer
-is symmetric.
-\end{proof}
-
-First $x^y$ is real when $x$ is real and $y$ non-negative, or when
-$x$ is non-negative and $y$ is real.
-
-Assume $y = m \cdot 2^e$, with $m$ an odd integer, and $e$ an integer.
-(The case $m=0$ is trivial.)
-If $e > 0$, then $x^y$ is trivially exact.
-If $e < 0$, Lemma~\ref{lemma1} shows that exact powers can only occur when
-$x^{2^e}$ is itself exact.
-It thus suffices to recognize exact squares, as in the real case.
-
-If $x^y$ is known to be inexact, then we approximate it using
-$\exp(y \log x)$ and Ziv's strategy.
+If both parts of $x^y$ are known to be inexact, then we use
+$x^y = \exp(y \log x)$ and Ziv's strategy.
 After computing an integer $q$ such that $|y \log x| \leq 2^q$, we first
 approximate $y \log x$ with precision $p + q$, and then
 $\exp(y \log x)$ with precision $p \geq 4$, all with rounding
@@ -516,6 +440,169 @@ thus $|\tilde{t} - y \log x| \leq 2.5 \cdot 2^{-p}$ for $q \geq -3$.
 Now $\tilde{u} = \circ_p(\exp(\tilde{t})) =
 x^y \exp(2.5 \cdot 2^{-p}) (1 + \theta_4) = x^y (1 + 4 \theta_5)$,
 with $\theta_4, \theta_5$ complex numbers of norm $\leq 2^{-p}$.
+
+In the remainder of this section, we determine the cases where at
+least one part of $x^y$ is exact, and for that, we assume $x$ to be
+different from the trivial cases $0$ and $1$.
+
+\begin {definition}
+A {\em dyadic real} is a real number $x$ that is exactly representable
+as a floating point number, that is, $x = m \cdot 2^e$ for some $m$, $e \in \Z$.
+A {\em dyadic complex} or {\em dyadic}, for short, is a complex number
+$x = x_1 + i x_2$ with both $x_1$ and $x_2$ dyadic reals.
+\end {definition}
+
+Recall that $\Z [i]$, the ring of Gaussian integers or integers of $\Q (i)$,
+is a principal ideal domain with units
+$\Z [i]^\ast = \{ \pm 1, \pm i \} = \langle i \rangle$,
+in which $2$ is ramified: $(2) = (2 i) = (1 + i)^2$. Let $p_0 = 1 + i$, and
+$p_k$ for $k \geq 1$ the remaining primes of $\Z [i]$. Then any element
+$x$ of $\Q (i)$ has a unique decomposition as
+$x = i^u \prod_{k \geq 0} p_k^{\alpha_k}$ with $u \in \{ 0, 1, 2, 3\}$,
+$\alpha_k \in \Z$ and almost all $\alpha_k$ equal to zero.
+
+\begin {prop}
+\label {prop:dyadic}
+The dyadics are precisely the $p_0$-units of $\Q (i)$, that is,
+the numbers $x = i^u \prod_{k \geq 0} p_k^{\alpha_k}$
+such that $\alpha_k \geq 0$ for $k \geq 1$.
+\end {prop}
+
+\begin {proof}
+This follows immediately from the fact that $p_k^{-1}$ for $k \geq 1$ is not
+dyadic, while $p_0^{-1} = \frac {1 - i}{2}$ is.
+\end {proof}
+
+Gelfond-Schneider's theorem states that if $x$ and $y$ are algebraic and
+$y$ is not rational, then $x^y$ is transcendental.
+Since all dyadic complex numbers are algebraic, this implies that $x^y$ is
+not dyadic whenever $y$ has a non-zero imaginary part.
+Unfortunately, this does not rule out the possibility that
+either the real or the imaginary part of $x^y$ might still be dyadic,
+while the other part is transcendental.
+For instance, $i^y$ is real for $y$ purely imaginary, so that
+also $x^y$ is real for $x \in \Z [i]^\ast$ and $y$ purely imaginary.
+
+\begin {conj}
+If $\Im y \neq 0$ and $x$ is not a unit of $\Z [i]$, then
+the real and the imaginary part of $x^y$ are transcendental.
+Or, more weakly, then neither the real nor the imaginary
+part of $x^y$ are dyadic reals.
+\end {conj}
+
+We then need to examine more closely the case of $y$ a dyadic real,
+and we first concentrate on positive $y$.
+
+\begin{lemma}
+\label{lemma1}
+Let $x$ be a dyadic complex and $m 2^e$ a positive dyadic real
+with $m \in \Z_{>0}$, $m$ odd and $e \in \Z$.
+Then $x^{m 2^e}$ is a dyadic complex if and only if $x^{2^e}$ is.
+\end{lemma}
+
+\begin{proof}
+Notice that by Proposition~\ref {prop:dyadic} the set of dyadics forms
+a ring, whence any positive integral power of a dyadic is again dyadic.
+Thus if $x^{2^e}$ is dyadic, then so is $x^{m 2^e}$.
+
+Conversely, assume that $x^{m 2^e}$ is dyadic. If $e \geq 0$,
+then $x^{2^e}$ is dyadic independently of the assumption,
+and it remains to consider the case $e < 0$.
+
+Write $x = i^u \prod_{k \geq 0} p_k^{\alpha_k}$
+and $z = x^{m 2^e} = i^v \prod_k p_k^{\beta_k}$, so that $x^m = z^{2^{|e|}}$.
+The uniqueness of the prime decomposition implies that
+$m \alpha_k = 2^{|e|} \beta_k$, and since $m$ is odd, $2^{|e|}$ must
+divide $\alpha_k$. Then
+$x^{2^e} = i^w \prod_k p_k^{\gamma_k}$ with $w \equiv m^{-1} v \pmod 4$ and
+$\gamma_k = \frac {\alpha_k}{2^{|e|}}$.
+Now $\alpha_k \geq 0$ for $k \geq 1$ implies $\gamma_k \geq 0$ for $k \geq 1$,
+and $x^{2^e}$ is dyadic by Proposition~\ref {prop:dyadic}.
+\end{proof}
+
+It remains to decide when $x^{2^e}$ is dyadic for $x$ dyadic. If $e \geq 0$,
+this is trivially the case. For $e < 0$, the question boils down to whether
+it is possible to take $e$ successive square roots of $x$; as soon as the
+process fails, it is clear that $x^{2^e}$ cannot be dyadic.
+
+\begin{lemma}
+Let $x$ be dyadic, and write $x = (a + b i)^2$ with $a$, $b \in \R$.
+Then either both of $a$ and $b$ are dyadic reals, or none of them is.
+\end{lemma}
+
+\begin{proof}
+Write $x = c + d i$ with $c$, $d$ dyadic reals, that is, rational numbers
+whose denominators are powers of~$2$. Assume that one of $a$ and
+$b$ is a dyadic real. Then $d = 2 a b$ implies that also the other one is
+rational, while $c = a^2 - b^2$ implies that also the square of the other
+one (and thus the number itself) has as denominator a power of~$2$.
+\end{proof}
+
+
+\begin {theorem}
+Let $x = m 2^e$ and $y = n 2^f$ be dyadic complex numbers with $m$ and $n$ odd,
+and let $z = x^y$. Then neither $\Re z$ nor $\Im z$ are dyadic reals,
+unless we are in one of the following cases:
+\begin {enumerate}
+\item
+$y = 0$; then $z = 1$
+\item
+$x \geq 0$ and $y \neq 0$ are real; then $\Im z = 0$, and the question
+whether $\Re z = x^y$ is dyadic involves only real numbers and
+can thus be delegated to \mpfr.
+\item
+$x < 0$ and $y \neq 0$ are real.
+\begin {enumerate}
+\item
+$y \in \Z$; then $\Im z = 0$, and $\Re z = x^y$ is dyadic if and only if
+$y > 0$, or $y < 0$ and $-x$ is a power of~$2$.
+\item
+$y \in \frac {1}{2} \Z \backslash \Z$, that is, $f = -1$;
+then $\Re z = 0$, and $\Im z = (-x)^y$ is dyadic if and only if
+$y > 0$ and $-x$ is a dyadic square (that is, $-m$ is a square
+and $e$ is even), or $y < 0$ and $-x$ is a power of~$4$.
+\item
+$y \in \frac {1}{4} \Z \backslash \frac {1}{2} \Z$, that is, $f = -2$;
+then $z = \frac {1 + i}{\sqrt 2} (-x)^y$ has both real and imaginary
+dyadic parts if and only if
+$y > 0$ and $-x$ is $4$~times a dyadic fourth power, that is,
+$-m$ is a fourth power and $e \equiv 2 \pmod 4$, or
+$y < 0$ and $-x$ is $4$~times a power of~$16$.
+\item
+$f \leq -3$; should not lead to anything, proof?
+\end {enumerate}
+\item
+$y$ not real;
+see Conjecture
+\item
+$y > 0$ real, $x$ not real;
+see above
+\item
+$y < 0$ real, $x$ not real;
+still to do
+\end {enumerate}
+\end {theorem}
+
+\begin {proof}
+\begin {enumerate}
+\item
+Clear by definition.
+\item
+Clear.
+\item
+The first two subcases $f \geq -1$ follow from the observations that
+$x^y = (-1)^y (-x)^y$, where $(-1)^y$ is dyadic, and that $(-x)^y$ is
+dyadic if and only if $y > 0$ and $(-x)^{2^f}$ is dyadic, or
+$y < 0$ and $(-x)^{2^f}$ is a power of~$2$.
+The third subcase $f = -2$ is similar, but one needs that $(-x)^y$ is dyadic
+up to a factor of $\sqrt 2$.
+If $f \leq -3$, \ldots
+\item
+\item
+\item
+\end {enumerate}
+\end {proof}
+
 
 
 \bibliographystyle{acm}
