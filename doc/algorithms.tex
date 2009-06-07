@@ -565,8 +565,6 @@ $y \in \frac {1}{4} \Z \backslash \frac {1}{2} \Z$, that is, $f = -2$;
 then $z = \frac {1 + i}{\sqrt 2} (-x)^y$ has both real and imaginary
 dyadic parts if and only if
 $e \equiv 2 \pmod 4$, $-m$ is a fourth power, and, in case $y < 0$, $-m = 1$.
-\item
-$f \leq -3$; should not lead to anything, proof?
 \end {enumerate}
 \item
 $y$ not real;
@@ -594,7 +592,19 @@ which leads to the result; for $y < 0$, one furthemore needs that
 $(-m)^{-1}$ is dyadic, which for $m$ odd is only possible if $-m = 1$.
 The third subcase $f = -2$ is similar, but one needs that $(-x)^y$ is dyadic
 up to a factor of $\sqrt 2$.
-If $f \leq -3$, \ldots
+
+To show that no more subcases lead to dyadic results, assume that $f \leq -3$
+and let $x^y = \alpha \zeta = \alpha \zeta_r + i \alpha \zeta_i$, where
+$\alpha = (-x)^y \in \R$ and $\zeta = \zeta_r + i \zeta_i$ is a primitive root
+of unity of order~$2^{|f| + 1}$.
+If both parts of $x^y$, $\alpha \zeta_r$ and $\alpha \zeta_i$, are elements
+of $\Q (i)$, then $\zeta \in \Q (i, \alpha)$. Moreover,
+$\alpha^2 = \alpha^2 (\zeta_r^2 + \zeta_i^2) =
+(\alpha \zeta_r)^2 + (\alpha \zeta_i)^2 \in \Q (i)$, so that $\Q (i, \alpha)$
+is an extension of degree at most~$4$ of $\Q$ containing $\Q (\zeta)$,
+and thus a primitive $16$-th root of unity, which is impossible.
+
+How to exclude that only one part is dyadic?
 \item
 \item
 \item
