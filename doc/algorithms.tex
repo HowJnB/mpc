@@ -555,7 +555,7 @@ $x < 0$ and $y \neq 0$ are real.
 \begin {enumerate}
 \item
 $y \in \Z$; then $\Im z = 0$, and $\Re z = x^y$ is dyadic if and only if
-$y > 0$, or $y < 0$ and $-x$ is a power of~$2$.
+$y > 0$, or $y < 0$ and $-m = 1$.
 \item
 $y \in \frac {1}{2} \Z \backslash \Z$, that is, $f = -1$;
 then $\Re z = 0$, and $\Im z = (-x)^y$ is dyadic if and only if
@@ -587,10 +587,11 @@ Clear by definition.
 \item
 Clear.
 \item
-The first two subcases $f \geq -1$ follow from the observations that
-$x^y = (-1)^y (-x)^y$, where $(-1)^y$ is dyadic, and that $(-x)^y$ is
-dyadic if and only if $y > 0$ and $(-x)^{2^f}$ is dyadic, or
-$y < 0$ and $(-x)^{2^f}$ is a power of~$2$.
+The first two subcases $f \geq -1$ follow from the observation that
+$x^y = (-1)^y (-x)^y$, where $(-1)^y \in \langle i \rangle$.
+For $y > 0$, the number $(-x)^y$ is dyadic if and only if $(-x)^{2^f}$ is,
+which leads to the result; for $y < 0$, one furthemore needs that
+$(-m)^{-1}$ is dyadic, which for $m$ odd is only possible if $-m = 1$.
 The third subcase $f = -2$ is similar, but one needs that $(-x)^y$ is dyadic
 up to a factor of $\sqrt 2$.
 If $f \leq -3$, \ldots
