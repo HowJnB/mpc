@@ -184,7 +184,9 @@ mpc_pow_exact (mpc_ptr z, mpc_srcptr x, mpfr_srcptr y, mpc_rnd_t rnd)
     }
 
   /* Now ey >= 0, it thus suffices to check that x^my is representable.
-     If my > 0, this is always true. */
+     If my > 0, this is always true. If my < 0, we first try to invert
+     (c+I*d)*2^ec.
+  */
   if (mpz_cmp_ui (my, 0) < 0)
     {
       /* If my < 0, 1 / (c + I*d) =
@@ -214,7 +216,7 @@ mpc_pow_exact (mpc_ptr z, mpc_srcptr x, mpfr_srcptr y, mpc_rnd_t rnd)
           mpz_div_2exp (c, c, t); /* now c = sign(c0) */
           mpz_div_2exp (d, d, t); /* now d = sign(d0) */
           mpz_neg (d, d);         /* now d = -sign(d0) */
-          ec -= t + 1;
+          ec = -ec - (t + 1);
         }
       else
         {
@@ -382,11 +384,10 @@ mpc_pow (mpc_ptr z, mpc_srcptr x, mpc_srcptr y, mpc_rnd_t rnd)
         }
 
       /* x^y is real when:
-         (a) x is real and y is real non-negative or integer
+         (a) x is real and y is integer
          (b) x is real non-negative and y is real */
-      if (y_real && (mpfr_cmp_ui (MPC_RE (x), 0) >= 0 ||
-                     mpfr_cmp_ui (MPC_RE (y), 0) >= 0 ||
-                     mpfr_integer_p (MPC_RE (y))))
+      if (y_real && (mpfr_integer_p (MPC_RE (y)) ||
+                     mpfr_cmp_ui (MPC_RE (x), 0) >= 0))
         {
           ret = mpfr_pow (MPC_RE (z), MPC_RE(x), MPC_RE(y), MPC_RND_RE(rnd));
           ret = MPC_INEX(ret, mpfr_set_ui (MPC_IM (z), 0, MPC_RND_IM(rnd)));

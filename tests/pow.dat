@@ -20,3 +20,16 @@
 # MA 02111-1307, USA.
 #
 # For explanations on the file format, see add.dat.
+
+# exact cases
+# (-4)^(1/4) = 1+i
+0 0 2 1 2 1 2 -4 2 0 2 0x1p-2 2 0 N N
+# for an odd positive integer n, a positive integer m and an integer e:
+# (-4 m^4 16^e)^(n/4) = (1+i)^n m^n 2^(e n)
+# m=3 e=5 n=7
+0 0 12 0x88Bp38 12 -0x88Bp38 7 -0x51p22 7 0 3 0x7p-2 3 0 N N
+# (-4 16^e)^(-n/4)    = (1-i)^n 2^(- (e+1) n)
+# e=3 n=5
+0 0 2 -0x1p-18 2 0x1p-18 2 -0x1p14 2 0 3 -0x5p-2 3 0 N N
+# e=2 n=5
+0 0 2 -0x1p-13 2 0x1p-13 2 -0x1p10 2 0 3 -0x5p-2 3 0 N N
