@@ -398,8 +398,11 @@ mpc_pow (mpc_ptr z, mpc_srcptr x, mpc_srcptr y, mpc_rnd_t rnd)
       if (mpfr_cmp_si (MPC_RE(x), -1) == 0 && mpfr_integer_p (MPC_RE(y)))
         z_real = 1;
 
-      /* x^y is imaginary when: x is negative and y is half-an-integer */
-      if (mpfr_cmp_ui (MPC_RE(x), 0) < 0 && y_real && is_odd (MPC_RE(y), 1))
+      /* x^y is imaginary when:
+         (a) x is negative and y is half-an-integer
+         (b) x = -1 and Re(y) is half-an-integer */
+      if (mpfr_cmp_ui (MPC_RE(x), 0) < 0 && is_odd (MPC_RE(y), 1) &&
+          (y_real || mpfr_cmp_si (MPC_RE(x), -1) == 0))
         z_imag = 1;
     }
 
