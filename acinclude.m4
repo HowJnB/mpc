@@ -111,7 +111,7 @@ AC_DEFUN([MPC_PROG_CC_WARNINGCFLAGS], [
         *) AX_C_CHECK_FLAG(-ansi,,,$1="$$1 -ansi",) ;;
       esac
       case $host in
-         *mac*) ;;
+         *darwin*) ;;
          *) AX_C_CHECK_FLAG(-D_FORTIFY_SOURCE=2,,,$1="$$1 -D_FORTIFY_SOURCE=2",) ;;
       esac
       AX_C_CHECK_FLAG(-pedantic,,,$1="$$1 -pedantic",)
