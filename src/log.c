@@ -29,7 +29,6 @@ mpc_log (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd){
    mp_prec_t prec;
    int loops = 0;
    int re_cmp, im_cmp;
-   int overlap = (rop == op);
    int inex_re, inex_im;
 
    /* special values: NaN and infinities */
@@ -70,7 +69,7 @@ mpc_log (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd){
       }
       else if (re_cmp > 0) {
          inex_re = mpfr_log (MPC_RE (rop), MPC_RE (op), MPC_RND_RE (rnd));
-         inex_im = mpfr_set_ui (MPC_IM (rop), 0, GMP_RNDN);
+         inex_im = mpfr_set (MPC_IM (rop), MPC_IM (op), MPC_RND_IM (rnd));
       }
       else {
          /* op = x + 0*y; let w = -x = |x| */
@@ -82,26 +81,14 @@ mpc_log (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd){
             rnd_im = INV_RND (MPC_RND_IM (rnd));
          else
             rnd_im = MPC_RND_IM (rnd);
-
-         if (overlap) {
-            mpfr_init2 (w, MPFR_PREC (MPC_RE (op)));
-            mpfr_neg (w, MPC_RE (op), GMP_RNDN);
-         }
-         else {
-            w [0] = *MPC_RE (op);
-            MPFR_CHANGE_SIGN (w);
-         }
-
+         w [0] = *MPC_RE (op);
+         MPFR_CHANGE_SIGN (w);
          inex_re = mpfr_log (MPC_RE (rop), w, MPC_RND_RE (rnd));
          inex_im = mpfr_const_pi (MPC_IM (rop), rnd_im);
-
          if (negative_zero) {
             mpc_conj (rop, rop, MPC_RNDNN);
             inex_im = -inex_im;
          }
-
-         if (overlap)
-            mpfr_clear (w);
       }
       return MPC_INEX(inex_re, inex_im);
    }
