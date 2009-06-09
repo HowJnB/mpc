@@ -1,6 +1,6 @@
 # Data test file for mpc_log.
 
-# Copyright (C) 2008 Paul Zimmermann
+# Copyright (C) 2008, 2009 Paul Zimmermann, Andreas Enge
 
 # This file is part of the MPC Library.
 #
@@ -35,6 +35,14 @@
 # log(+0 + i*0) = -inf + i*0
 0 0 2 -inf 2 +0                      2 +0 2 +0    N N
 0 0 2 -inf 2 -0                      2 +0 2 -0    N N
+
+# log(+1 +- i*0) = +0 +- i*0
+0 0 2 +0 2 +0                      2 1 2 +0    N N
+0 0 2 +0 2 -0                      2 1 2 -0    N N
+
+# log(-1 +- i*0) = +0 +- i*pi
+0 - 2 +0 53 +0x3243F6A8885A3p-48   2 -1 2 +0     N N
+0 + 2 +0 53 -0x3243F6A8885A3p-48   2 -1 2 -0     N N
 
 # log(x + i*inf) = +inf + i*pi/2 for finite x
 0 - 2 +inf 53 +0x3243F6A8885A3p-49  2  1 2 +inf   N N
