@@ -68,7 +68,7 @@ AC_DEFUN([AX_C_CHECK_FLAG],[
     save_CFLAGS="$CFLAGS"
     CFLAGS="$CFLAGS $1"
 
-    AC_COMPILE_IFELSE([
+    AC_LINK_IFELSE([
       AC_LANG_PROGRAM([$2],[$3])
     ],[
       eval "ax_cv_c_check_flag_$flag=yes"
