@@ -72,15 +72,14 @@ AC_ARG_WITH([gmp],
             fi
             ])
 
-dnl
 dnl Setup CC and CFLAGS
-dnl
 
-dnl Check if user request its CC and CFLAGS
+dnl Check for user specification of CC or CFLAGS
 if test -n "$CFLAGS" || test -n "$CC" ; then
- user_redefine_cc=yes
+   user_redefine_cc=yes
 fi
-# Checks for programs.
+
+# Check for programs
 AC_PROG_CC
 AC_PROG_CPP
 AC_PROG_EGREP
@@ -88,99 +87,18 @@ AC_PROG_SED
 AC_LANG(C)
 
 dnl Check for GMP CFLAGS in gmp.h
-dnl copied from MPFR's configure.in
-if test -z "$GMP_CFLAGS" -a -z "$user_redefine_cc" ; then
-   AC_MSG_CHECKING(for CC and CFLAGS in gmp.h)
-   # FIXME: Move this in aclocal ?
-   # Get CC
-   echo "#include \"gmp.h\"" >  conftest.c
-   echo "MPC_OPTION __GMP_CC"           >> conftest.c
-   GMP_CC=`$CPP $CPPFLAGS conftest.c 2> /dev/null | $EGREP MPC_OPTION | $SED -e 's/MPC_OPTION //g' | $SED -e 's/"//g'`
-   #Get CFLAGS
-   echo "#include \"gmp.h\"" >  conftest.c
-   echo "MPC_OPTION __GMP_CFLAGS"           >> conftest.c
-   GMP_CFLAGS=`$CPP $CPPFLAGS conftest.c 2> /dev/null | $EGREP MPC_OPTION | $SED -e 's/MPC_OPTION //g'| $SED -e 's/"//g'`
-   rm -f conftest*
-   if test "x$GMP_CFLAGS" = "x__GMP_CFLAGS" -o "x$GMP_CC" = "x__GMP_CC" ; then
-      AC_MSG_RESULT(no)
-      GMP_CFLAGS=
-      GMP_CC=
-   else
-      AC_MSG_RESULT(yes [CC=$GMP_CC CFLAGS=$GMP_CFLAGS])
-   fi
+if test -z "$user_redefine_cc" ; then
+   MPC_GMP_CC_CFLAGS
 fi
 
-dnl Check for GMP CFLAGS and CC (More optimized for the target)
-dnl But they may be invalid, so we must check them first
-dnl Don't redefine it if the user force them!
-if test -n "$GMP_CFLAGS" && test -z "$user_redefine_cc" ; then
- old_cflags=$CFLAGS
- old_cc=$CC
- CFLAGS=$GMP_CFLAGS
- CC=$GMP_CC
- AC_MSG_CHECKING(for CC=$GMP_CC and CFLAGS=$GMP_CFLAGS)
- AC_RUN_IFELSE(AC_LANG_PROGRAM([[/*hello*/]],[[/*world*/]]), [
-    AC_MSG_RESULT(yes)
-  ], [
-    AC_MSG_RESULT(no)
-    CFLAGS=$old_cflags
-    CC=$old_cc
-  ], [
-    AC_MSG_RESULT([can't test])
-    CFLAGS=$old_cflags
-    CC=$old_cc
-  ])
-  dnl CC may have change. Recheck for GCC.
-  GCC=
-  AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[
-#ifndef __GNUC__
-# error "GCC Not Found"
-error
-#endif
-  ]])], [
-  GCC=yes
-  ])
-fi
 
-dnl Configs for Windows DLLs (copied from MPFR).
-dnl libtool requires "-no-undefined" for win32 dll
-dnl It also disables the tests involving the linking with LIBGMP if DLL
+dnl Configs for Windows DLLs
 case $host in
   *-*-cygwin* | *-*-mingw* | *-*-pw32* | *-*-os2*)
-   AC_MSG_CHECKING(for DLL/static GMP)
-   if test "$enable_shared" = yes; then
-     LDFLAGS="$LDFLAGS -no-undefined"
-     AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[
-#include "gmp.h"
-#if !__GMP_LIBGMP_DLL
-# error "Dead man"
-error
-#endif
-     ]], [[]])],[AC_MSG_RESULT(DLL)],[
-  AC_MSG_RESULT(static)
-  AC_MSG_ERROR([gmp.h isn't a DLL: use --enable-static --disable-shared]) ])
-     AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[
-#include "mpfr.h"
-#if !__GMP_LIBGMP_DLL
-# error "Dead man"
-error
-#endif
-     ]], [[]])],[AC_MSG_RESULT(DLL)],[
-  AC_MSG_RESULT(static)
-  AC_MSG_ERROR([gmp.h isn't a DLL: use --enable-static --disable-shared]) ])
-   else
-     AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[
-#include "gmp.h"
-#if __GMP_LIBGMP_DLL
-# error "Dead man"
-error
-#endif
-     ]], [[]])],[AC_MSG_RESULT(static)],[
-  AC_MSG_RESULT(DLL)
-  AC_MSG_ERROR([gmp.h is a DLL: use --disable-static --enable-shared]) ])
-  fi
-  ;;
+     MPC_WINDOWS
 esac
+
+
 dnl Finally set up LibTool
 AC_PROG_LIBTOOL
 

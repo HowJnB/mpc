@@ -91,6 +91,7 @@ AC_DEFUN([AX_C_CHECK_FLAG],[
   ])
 ])
 
+
 #
 # SYNOPSIS
 #
@@ -121,4 +122,112 @@ AC_DEFUN([MPC_PROG_CC_WARNINGCFLAGS], [
       AC_SUBST($1)
     fi
   fi
+])
+
+
+#
+# SYNOPSIS
+#
+#
+MPC_GMP_CC_CFLAGS
+#
+# DESCRIPTION
+#
+# Checks if CC and CFLAGS can be extracted from gmp.h
+#
+AC_DEFUN([MPC_GMP_CC_CFLAGS], [
+   AC_MSG_CHECKING(for CC and CFLAGS in gmp.h)
+   # Get CC
+   echo "#include \"gmp.h\"" >  conftest.c
+   echo "MPC_OPTION __GMP_CC"           >> conftest.c
+   GMP_CC=`$CPP $CPPFLAGS conftest.c 2> /dev/null | $EGREP MPC_OPTION | $SED -e 's/MPC_OPTION //g' | $SED -e 's/"//g'`
+   #Get CFLAGS
+   echo "#include \"gmp.h\"" >  conftest.c
+   echo "MPC_OPTION __GMP_CFLAGS"           >> conftest.c
+   GMP_CFLAGS=`$CPP $CPPFLAGS conftest.c 2> /dev/null | $EGREP MPC_OPTION | $SED -e 's/MPC_OPTION //g'| $SED -e 's/"//g'`
+   rm -f conftest.c
+   if test "x$GMP_CFLAGS" = "x__GMP_CFLAGS" -o "x$GMP_CC" = "x__GMP_CC" ; then
+      AC_MSG_RESULT(no)
+      GMP_CFLAGS=
+      GMP_CC=
+   else
+      AC_MSG_RESULT(yes [CC=$GMP_CC CFLAGS=$GMP_CFLAGS])
+   fi
+
+   dnl Check for validity of CC and CFLAGS obtained from gmp.h
+   if test -n "$GMP_CFLAGS" ; then
+      old_cflags=$CFLAGS
+      old_cc=$CC
+      CFLAGS=$GMP_CFLAGS
+      CC=$GMP_CC
+      AC_MSG_CHECKING(for CC=$GMP_CC and CFLAGS=$GMP_CFLAGS)
+      AC_COMPILE_IFELSE(AC_LANG_PROGRAM([[/*hello*/]],[[/*world*/]]), [
+         AC_MSG_RESULT(yes)
+         ], [
+         AC_MSG_RESULT(no)
+         CFLAGS=$old_cflags
+         CC=$old_cc
+      ])
+      dnl CC may have changed. Recheck for GCC.
+      AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[
+   #ifndef __GNUC__
+   #error "GCC Not Found"
+   error
+   #endif
+      ]])], [
+      GCC=yes
+      ], [
+      GCC=no
+      ])
+   fi
+
+])
+
+
+#
+# SYNOPSIS
+#
+#
+MPC_WINDOWS
+#
+# DESCRIPTION
+#
+# Additional checks on windows
+# libtool requires "-no-undefined" for win32 dll
+# It also disables the tests involving the linking with LIBGMP if DLL
+#
+AC_DEFUN([MPC_WINDOWS], [
+   AC_MSG_CHECKING(for DLL/static GMP)
+   if test "$enable_shared" = yes; then
+     LDFLAGS="$LDFLAGS -no-undefined"
+     AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[
+#include "gmp.h"
+#if !__GMP_LIBGMP_DLL
+#error
+error
+#endif
+     ]], [[]])],[AC_MSG_RESULT(DLL)],[
+  AC_MSG_RESULT(static)
+  AC_MSG_ERROR([gmp.h isn't a DLL: use --enable-static --disable-shared]) ])
+     AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[
+#include "mpfr.h"
+#if !__GMP_LIBGMP_DLL
+#error
+error
+#endif
+     ]], [[]])],[AC_MSG_RESULT(DLL)],[
+  AC_MSG_RESULT(static)
+  AC_MSG_ERROR([gmp.h isn't a DLL: use --enable-static --disable-shared]) ])
+   else
+     AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[
+#include "gmp.h"
+#if __GMP_LIBGMP_DLL
+#error
+error
+#endif
+     ]], [[]])],[AC_MSG_RESULT(static)],[
+  AC_MSG_RESULT(DLL)
+  AC_MSG_ERROR([gmp.h is a DLL: use --disable-static --enable-shared]) ])
+  fi
+  ;;
 ])
