@@ -343,16 +343,18 @@ read_mpfr_mantissa (FILE *fp, mpfr_ptr x)
 void
 read_mpfr (FILE *fp, mpfr_ptr x, int *known_sign)
 {
+   int sign;
    mpfr_set_prec (x, read_mpfr_prec (fp));
+   sign = nextchar;
    read_mpfr_mantissa (fp, x);
 
    /* the sign always matters for regular values ('+' is implicit),
       but when no sign appears before 0 or Inf in the data file, it means
       that only absolute value must be checked. */
    if (known_sign != NULL)
-      *known_sign =
-         (!mpfr_zero_p (x) && !mpfr_inf_p (x))
-          || nextchar == '+' || nextchar == '-';
+     *known_sign =
+       (!mpfr_zero_p (x) && !mpfr_inf_p (x))
+       || sign == '+' || sign == '-';
 }
 
 void
