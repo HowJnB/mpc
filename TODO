@@ -1,3 +1,8 @@
+Bench:
+- from Andreas Enge 9 June 2009:
+  Scripts and web page comparing timings with different systems,
+  as done for mpfr at http://www.mpfr.org/mpfr-2.4.0/timings.html
+
 Efficiency:
 - from Andreas Enge 16 September 2008:
   Once mpc_sin_cos exists, improve mpc_tan to use it
