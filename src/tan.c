@@ -172,9 +172,6 @@ mpc_tan (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
      see proof in algorithms.tex.
   */
 
-  MPC_LOG_VAR (op);
-  MPC_LOG_RND (rnd);
-
   prec = MPC_MAX_PREC(rop);
 
   mpc_init2 (x, 2);
@@ -193,8 +190,6 @@ mpc_tan (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
       prec += mpc_ceil_log2 (prec) + err;
       mpc_set_prec (x, prec);
       mpc_set_prec (y, prec);
-
-      MPC_LOG_MSG (("loop prec=%ld", prec));
 
       /* rounding away from zero: except in the cases x=0 or y=0 (processed
          above), sin x and cos y are never exact, so rounding away from 0 is
@@ -252,14 +247,10 @@ mpc_tan (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
             || mpfr_can_round (MPC_IM(x), prec - 6, GMP_RNDN, GMP_RNDZ,
                       MPFR_PREC(MPC_IM(rop)) + (MPC_RND_IM(rnd) == GMP_RNDN));
         }
-      MPC_LOG_MSG (("err: %ld", err));
-      MPC_LOG_VAR (x);
     }
   while (ok == 0);
 
   inex = mpc_set (rop, x, rnd);
-
-  MPC_LOG_VAR (rop);
 
   mpc_clear (x);
   mpc_clear (y);

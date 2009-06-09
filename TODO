@@ -24,13 +24,6 @@ New functions to implement:
        mpc_fma: d=a*b+c
      - from Andreas Enge 9 April 2008:
        mpc_pow_ui
-     - from Andreas Enge 9 April 2008:
-       depending on a preprocessor variable (DEBUG or MPC_LOG), add
-       logging: For each function call, output arguments and precision, and
-       the successive precisions in the main loop; allows to test with
-       real world data whether we hit corner cases
-       possibly: mpc_write and mpc_read that serialises mpc objects (output in
-       base 16 together with the precision of the variable)
      - from Andreas Enge and Philippe Théveny 17 July 2008
        agm (and complex logarithm with agm ?)
 
