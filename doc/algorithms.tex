@@ -551,32 +551,62 @@ The analogous bound for the second error term yields
 The values $\epsilon_{X, 1}^+$ may be estimated as explained at the end
 of \S\ref {sssec:propmul}.
 
-Alternatively, one might write
-$|\corr {x_1}^2 - \appro {x_1}^2|
-= \appro {x_1}^2 \cdot
-\left| 1 - \left( \frac {|\corr {x_1}|}{|\appro {x_1}|} \right)^2 \right|$
-and estimate the both-sided relative error as in \S\ref {sssec:proprealdiv}
-to obtain, under the assumption that $\epsilon_{R, 1}^- < 2$,
+We also need the relative lower error in the following. This can be obtained
+by writing
 \[
-| \corr {x_1}^2 - \appro {x_1}^2 |
+\appro {x_1}^2 - \corr {x_1}^2
+=
+\left( 1 - \left| \frac {\corr {x_1}}{\appro {x_1}} \right|^2 \right)
+\cdot \appro {x_1}^2
+\leq
+\big( 1 - (1 - \epsilon_{R, 1}^-)^2 \big) \appro {x_1}^2
+=
+\big( \epsilon_{R, 1}^- (2 - \epsilon_{R, 1}^-) \big) \appro {x_1}^2.
+\]
+Adding the corresponding expression for the second term
+$\appro {x_1}^2 - \corr {x_1}^2$ yields
+\begin {equation}
+\label {eq:propnormepsminus}
+\frac {\appro x - \corr x}{\appro x}
+\leq
+\max \big(
+   \epsilon_{R, 1}^- (2 - \epsilon_{R, 1}^-),
+   \epsilon_{I, 1}^- (2 - \epsilon_{I, 1}^-)
+\big)
+=: \epsilon^-,
+\end {equation}
+and under the assumption that $\epsilon^- \geq 0$, inspection of
+Definition~\ref {def:relerror} shows that
+$\epsilon^- \geq \relerror^- (\appro x)$ since
+$\appro x$ and $\corr x$ are positive.
+
+The converse estimation yields
+\begin {equation}
+\label {eq:propnormepsplus}
+\relerror^+ (\appro x)
+\leq
+\epsilon^+
+:=
+\frac {\appro x - \corr x}{\appro x}
 \leq
 \max \big(
    \epsilon_{R, 1}^+ (2 + \epsilon_{R, 1}^+),
-   \epsilon_{R, 1}^- (2 - \epsilon_{R, 1}^-)
+   \epsilon_{I, 1}^+ (2 + \epsilon_{I, 1}^+)
 \big)
-\appro {x_1}^2
-\]
-Adding the corresponding bound on the second term, using
-Proposition~\ref {prop:relerror} and letting
-$k_1 = \max ( k_{R, 1}, k_{I, 1})$ and
+\end {equation}
+and $\relerror (\appro x) \leq \epsilon := \max (\epsilon^-, \epsilon^+)$.
+Letting
 $\epsilon_1 = \max ( \epsilon_{R, 1}^-, \epsilon_{R, 1}^+,
-                     \epsilon_{I, 1}^-, \epsilon_{I, 1}^+ )$
-leads to
+                     \epsilon_{I, 1}^-, \epsilon_{I, 1}^+ )
+            = \max ( \epsilon_{R, 1},   \epsilon_{I, 1} )$
+and $k_1 = \max ( k_{R, 1}, k_{I, 1})$,
+we have
+$\epsilon \leq \epsilon_1 (2 + \epsilon_1) \leq 2 k_1 (2 + \epsilon_1) 2^{-p}$
+by Proposition~\ref {prop:relerror}.
+We obtain an alternative expression for the absolute error as
 \begin {equation}
 \label {eq:propnormalt}
-\error (\appro x)
-\leq
-\epsilon_1 (2 + \epsilon_1) 2^{\Exp (\appro x)}
+\error (\appro x) \leq \epsilon \appro x
 \leq
 2 k_1 (2 + \epsilon_1) 2^{\Exp (\appro x) - p}
 \end {equation}
@@ -594,7 +624,7 @@ Then the propagated error may be derived by cumulating the errors obtained
 for multiplication in \S\ref {sssec:propmul}, the norm in
 \S\ref {sssec:propnorm} and the division by a real in
 \S\ref {sssec:proprealdiv}.
-We note
+We write
 \begin{align*}
 \corr a &= \Re (\corr {z_1} \overline {\corr {z_2}}) &
 \corr b &= \Im (\corr {z_1} \overline {\corr {z_2}}) &
