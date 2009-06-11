@@ -4,6 +4,7 @@
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
 \usepackage{amsmath,amssymb}
+\usepackage{url}
 \usepackage[notref,notcite]{showkeys}
 
 \newcommand {\corr}[1]{\widetilde {#1}}
@@ -16,6 +17,8 @@
 \newcommand {\atantwo}{\operatorname {atan2}}
 \newcommand{\error}{\operatorname {error}}
 \newcommand{\relerror}{\operatorname {relerror}}
+\newcommand{\Norm}{\operatorname {N}}
+\newcommand {\round}{\operatorname {\circ}}
 \DeclareMathOperator{\pinf}{\bigtriangleup}
 \DeclareMathOperator{\minf}{\bigtriangledown}
 \DeclareMathOperator{\N}{\mathcal N}
@@ -41,7 +44,7 @@
 
 \title {MPC: Algorithms and Error Analysis}
 \author {Andreas Enge \and Philippe Th\'eveny \and Paul Zimmermann}
-\date {June 10, 2009}
+\date {June 11, 2009}
 
 \begin {document}
 \maketitle
@@ -69,21 +72,24 @@ several elementary arithmetic operations.
 Let $x$ be a real number, which can be written uniquely as
 $x = m \cdot 2^e$ with $\frac{1}{2} \le |m| < 1$.
 The {\em exponent} of $x$ is
-$\Exp(x) = e = \lfloor \log |x| \rfloor + 1$.
+$\Exp(x) = e = \lfloor \log_2 |x| \rfloor + 1$.
 The number is {\em representable at precision~$p$} if
 $2^p m$ is an integer.
 We denote the rounding of $x$ to one of the at most two representable
 numbers in the open interval $(x - 2^{-p}, x + 2^{-p})$ by
-$\circ (x) = \circ_p (x)$, with rounding being to nearest, up, down,
+$\round (x) = \round_p (x)$, with rounding being to nearest, up, down,
 towards zero or away from zero if there is a choice.
 \end {definition}
 
 \begin {prop}
-\label {prop:expmul}
+\label {prop:expmuldiv}
 If $x_1$ and $x_2$ are two real numbers, then
-\[
-\Exp (x_1) + \Exp (x_2) - 1 \leq \Exp (x_1 x_2) \leq \Exp (x_1) \Exp (x_2).
-\]
+\begin {gather*}
+\Exp (x_1) + \Exp (x_2) - 1 \leq \Exp (x_1 x_2) \leq \Exp (x_1) + \Exp (x_2),
+\\
+\Exp (x_1) - \Exp (x_2) \leq \Exp \left( \frac {x_1}{x_2} \right)
+\leq \Exp (x_1) - \Exp (x_2) + 1.
+\end {gather*}
 \end {prop}
 
 \begin {proof}
@@ -92,7 +98,9 @@ $x = x_1 x_2 = m 2^{\Exp x} = m_1 m_2 2^{\Exp (x_1) + \Exp (x_2)}$
 with $\frac {1}{2} \leq m_n, m < 1$.
 Then $m = m_1 m_2$ if the product is at least $\frac {1}{2}$ and
 $m = 2 m_1 m_2$ if the product is less than $\frac {1}{2}$, which
-yields the desired result on the exponents.
+yields the first line of inequalities.
+The other inequalities are derived in the same way from
+$\frac {1}{2} < \frac {m_1}{m_2} < 2$.
 \end {proof}
 
 
@@ -100,15 +108,15 @@ yields the desired result on the exponents.
 \label {prop:expround}
 For any real number $x$,
 \[
-\Exp (x) \leq \Exp (\circ (x)) \leq \Exp (x) + 1,
+\Exp (x) \leq \Exp (\round (x)) \leq \Exp (x) + 1,
 \]
 with equality occurring on the right if and only if
-$x$ has been rounded up to $\circ (x) = 2^{\Exp (x)}$.
+$|x|$ has been rounded up to $|\round (x)| = 2^{\Exp (x)}$.
 \end {prop}
 
 \begin {proof}
 Letting $x = m 2^{\Exp (x)}$, we have
-$\frac {1}{2} \cdot 2^{\Exp (x)} \leq \circ (c) \leq 1 \cdot 2^{\Exp (x)}$,
+$\frac {1}{2} \cdot 2^{\Exp (x)} \leq \round (x) \leq 1 \cdot 2^{\Exp (x)}$,
 since these two numbers are representable (independently of the precision).
 \end {proof}
 
@@ -124,18 +132,12 @@ corresponds to adding $1$ to the integer $2^p m$.
 
 \subsubsection {Absolute error}
 
-In the remainder of this section, we assume that the real and imaginary parts of
-all complex numbers have the same precision $p$.
-An argument $\appro z$ of a complex function is supposed to be an
-approximation of some unknown correct number $\corr z$; for instance,
-$\corr z$ may be the exact result of some formula, whereas
-$\appro z$ is the outcome of the corresponding computation and affected
-by rounding errors.
-
-We assume that $\corr z$ and $\appro z$ are decomposed in Cartesian
-coordinates as $\corr z = \corr x + i \corr y$ and
-$\appro z = \appro x + i \appro y$, and apply the following error
-definition of real numbers separately to the two coordinates.
+In the remainder of this chapter, all complex numbers are denoted by
+the letter $z$ with subscripts and mathematical accents, decomposed in
+Cartesian coordinates as $z = x + i y$ with the same diacritics applied
+to $x$ and $y$ as to $z$. All representable real numbers are supposed
+to have the same precision~$p$. We apply the following error definition
+of real numbers separately to the two coordinates of a complex number.
 
 \begin {definition}
 \label {def:error}
@@ -146,40 +148,51 @@ $\error (\appro x) = | \corr x - \appro x |$.
 
 Notice that in the following, the absolute error is usually expressed in terms
 of $\Ulp$, which is itself a relative measure with respect to the exponent of
-the number. Given arguments $\appro {z_n}$ to some complex function
-with $\appro {x_n} = \Re (\appro {z_n})$ and $\appro {y_n} = \Im (\appro {z_n})$,
-we assume that $\error (\appro {x_n}) \leq k_{R, n} \Ulp (\appro {x_n})$
-and $\error (\appro {y_n}) \leq k_{I, n} \Ulp (\appro {y_n})$ for known
-$k_{R, n}$ and $k_{I, n}$.
+the number.
 
 Let $\corr z = f (\corr {z_1}, \ldots) = \corr x + i \corr y$ be the correct
-result of a complex function applied to the correct arguments $\corr {z_n}$;
-our aim is to determine the cumulated error in the value
-$\appro z = \appro x + i \appro y$, obtained by applying $f$ to the approximated
-arguments $\appro {z_n}$ and rounding according to the target precision $p$;
-we write
-\[
-\appro z = \circ (f (\appro {z_1}, \ldots).
-\]
-The error in the real part can be decomposed as
+result of a complex function applied to the correct arguments $\corr {z_n}$.
+We assume that the $\corr {z_n}$ themselves are not known, but only
+approximate input values $\appro {z_n} = \appro {x_n} + i \appro {y_n}$;
+for instance, the $\corr {z_n}$ may be the exact results of some formul\ae,
+whereas the $\appro {z_n}$ are the outcome of the corresponding computation
+and affected by rounding errors. We suppose that error bounds
+$\error (\appro {x_n}) \leq k_{R, n} 2^{\Exp (\appro {x_n}) - p}$
+and $\error (\appro {y_n}) \leq k_{I, n} 2^{\Exp (\appro {y_n}) - p}$ for
+some $k_{R, n}$ and $k_{I, n}$ are known. (This particular notation
+becomes more comprehensible when $\appro {x_n}$ and $\appro {y_n}$ are
+representable at precision~$p$, since then the units of the error measure
+become $\Ulp (\appro {x_n})$ and $\Ulp (\appro {y_n})$, respectively;
+however, there is no need to restrict the results of this chapter to
+representable numbers.)
+Our aim is to determine the propagated error in the output value
+$\appro z = \appro x + i \appro y = f (\appro {z_1}, \ldots)$, which is given by
 \begin {equation}
-\label {eq:error}
-\begin {array}{rcl}
+\label {eq:properror}
 \error (\appro x)
-& \leq & | \Re (f (\corr {z_1}, \ldots)) - \Re (f (\appro {z_1}, \ldots)) |
-+ | \Re (f (\appro {z_1}, \ldots)) - \circ (\Re (f (\appro {z_1}, \ldots))) | \\
-& \leq &
-| \Re (f (\corr {z_1}, \ldots)) - \Re (f (\appro {z_1}, \ldots)) |
-+ c_R \Ulp (\appro x),
-\end {array}
+\leq | \Re (f (\corr {z_1}, \ldots)) - \Re (f (\appro {z_1}, \ldots)) |
 \end {equation}
-where the first term corresponds to the error induced by the fact that $f$
-is evaluated only in approximated arguments, and the second term accounts
-for the final rounding error. We have $c_R \leq 1$ when $\circ$ is rounding up,
-down, to zero or to infinity, and $c_R \leq \frac {1}{2}$ when $\circ$ is
+and an analogous formula for $\error (\appro y)$. In general,
+we are looking for $k_R$ and $k_I$ such that
+\[
+\error (\appro x) \leq k_R 2^{\Exp (\appro x) - p}
+\text { and }
+\error (\appro y) \leq k_I 2^{\Exp (\appro y) - p}.
+\]
+Moreover, we are interested in the cumulated error if additionally
+$\appro z$ is rounded coordinatewise at the target precision~$p$
+to $\round (\appro z)$. This operation adds an error of
+$c_R \Ulp (\round (\appro x))$ to the real and of
+$c_I \Ulp (\round (\appro y))$ to the imaginary part, where
+$c_X \leq 1$ when $\round$ stands for rounding up, down, to zero or
+to infinity, and $c_X \leq \frac {1}{2}$ when $\round$ stands for
 rounding to nearest.
-Similarly, we denote by $c_I$ the error in units of $\Ulp (\appro y)$
-occurring when rounding the imaginary part.
+Then, via Proposition~\ref {prop:expround},
+\[
+\error (\round (\appro x)) \leq (k_R + c_R) \Ulp (\appro x)
+\text { and }
+\error (\round (\appro y)) \leq (k_I + c_I) \Ulp (\appro y).
+\]
 
 
 \subsubsection {Relative error}
@@ -225,7 +238,7 @@ it is easy to switch back and forth between absolute and relative errors.
 
 \begin {prop}
 \label {prop:relerror}
-\quad \\
+Let $\appro x$ be representable at precision $p$.
 \begin {enumerate}
 \item
 If $\error (\appro x) \leq k \Ulp (\appro x)$,
@@ -234,6 +247,8 @@ then $\relerror (\appro x) \leq k 2^{1 - p}$.
 If $\relerror (\appro x) \leq k 2^{-p}$,
 then $\error (\appro x) \leq k \Ulp (\appro x)$.
 \end {enumerate}
+These assertions remain valid if $\appro x$ is not representable at
+precision~$p$ and $\Ulp (\appro x)$ is replaced by $2^{\Exp (\appro x) - p}$.
 \end {prop}
 
 \begin {proof}
@@ -251,29 +266,50 @@ $|\appro x| \leq 2^{\Exp (\appro x)}$.
 \end {proof}
 
 
+\subsection {Real functions}
+
+In this section, we derive for later use results on error propagation for
+functions with real arguments and values. Those already contained in
+\cite{MPFRAlgorithms} are simply quoted for the sake of self-containedness.
+
+
+
+\subsubsection {Division}
+\label {sssec:realpropdiv}
+
+If
+\[
+\appro x = \round \left( \frac {\appro {x_1}}{\appro {x_2}} \right),
+\]
+then by \cite[\S1.6]{MPFRAlgorithms}
+\[
+\error (\appro x) \leq \left(
+2 \left( (1 + \epsilon_1^+) (1 + \epsilon_2^+) k_2 + k_1 \right)
++ c
+\right) \Ulp (\appro x).
+\]
+
+
 \subsection {Complex functions}
 
 \subsubsection {Addition/subtraction}
 
-Using the notation introduced above, we consider the function
-$\corr z = f (\corr {z_1}, \corr {z_2}) = \corr {z_1} + \corr {z_2}$, so that
+Using the notation introduced above, we consider
 \[
-\appro z = \circ(\appro {z_1} + \appro {z_2})
+\appro z = \appro {z_1} + \appro {z_2}.
 \]
-and decompose $\corr z = \corr x + i \corr y$ and so on.
-By \eqref {eq:error}, we obtain
+By \eqref {eq:properror}, we obtain
 \begin{align*}
 \error (\appro x)
 & \leq | (\corr {x_1} + \corr {x_2}) - (\appro {x_1} + \appro {x_2})|
-+ c_R \Ulp (\appro x)
 \\
 & \leq | \corr {x_1} - \appro {x_1} | + | \corr {x_2} - \appro {x_2}|
-+ c_R \Ulp (\appro x)
 \\
-& \leq k_{R,1} \Ulp(\appro {x_1}) + k_{R,2} \Ulp(\appro {x_2})
-+ c_R \Ulp (\appro x) \\
-& \leq \left( k_{R,1} 2^{d_{R,1}} + k_{R,2} 2^{d_{R,2}} + c_R \right)
-\Ulp (\appro x)
+& \leq k_{R,1} 2^{\Exp (\appro {x_1}) - p}
++ k_{R,2} 2^{\Exp (\appro {x_2}) - p}
+\\
+& \leq \left( k_{R,1} 2^{d_{R,1}} + k_{R,2} 2^{d_{R,2}} \right)
+2^{\Exp (\appro x) - p},
 \end{align*}
 where $d_{R,n}=\Exp(\appro {x_n})-\Exp(\appro x)$.
 Otherwise said, the absolute errors add up, but their relative expression
@@ -283,10 +319,10 @@ exponent than the operands, that is, if cancellation occurs.
 If $\appro {x_1}$ and $\appro {x_2}$, have the same sign, then there
 is no cancellation, $d_{R, n} \leq 0$ and
 \[
-\error (\appro x) \leq (k_{R,1} + k_{R,2} + c_R) \Ulp(\appro x).
+\error (\appro x) \leq (k_{R,1} + k_{R,2} + c_R) 2^{\Exp (\appro x) - p}.
 \]
 
-The analogous error bound holds for the imaginary part.
+An analogous error bound holds for the imaginary part.
 
 For subtraction, the same bounds are obtained, except that the simpler bound
 now holds whenever $\appro {x_1}$ and $\appro {x_2}$ resp.
@@ -294,31 +330,29 @@ $\appro {y_1}$ and $\appro {y_2}$ have different signs.
 
 
 \subsubsection {Multiplication}
+\label {sssec:propmul}
 
 Let
 \[
-\appro z = \circ (\appro {z_1} \times \appro {z_2}),
+\appro z = \appro {z_1} \times \appro {z_2},
 \]
 so that
 \begin {align*}
-\appro x & = \circ (\appro {x_1} \appro {x_2} - \appro {y_1} \appro {y_2}), \\
-\appro y & = \circ (\appro {x_1} \appro {y_2} + \appro {x_2} \appro {y_1}).
+\appro x & = \appro {x_1} \appro {x_2} - \appro {y_1} \appro {y_2}, \\
+\appro y & = \appro {x_1} \appro {y_2} + \appro {x_2} \appro {y_1}.
 \end {align*}
-
-By \eqref {eq:error}, we have
-\begin {align*}
+Then
+\[
 \error (\appro x)
-& \leq | \Re (\corr {z_1} \times \corr {z_2})
+\leq | \Re (\corr {z_1} \times \corr {z_2})
 - \Re (\appro {z_1} \times \appro {z_2})|
-+ c_R \Ulp (\appro x) \\
-& \leq
+\leq
 | \corr {x_1} \corr {x_2} - \appro {x_1} \appro {x_2}|
-+ | \corr {y_1} \corr {y_2} - \appro {y_1} \appro {y_2}|
-+ c_R \Ulp (\appro x).
-\end {align*}
++ | \corr {y_1} \corr {y_2} - \appro {y_1} \appro {y_2}|.
+\]
 The first term on the right hand side can be bounded as follows,
 where we use the short-hand notation $\epsilon_{R, 1}^+$ for
-$\relerror^+ (\appro {x_1})$, and anlogously for other relative errors:
+$\relerror^+ (\appro {x_1})$, and analogously for other relative errors:
 \begin{align*}
 | \corr {x_1} \corr {x_2} - \appro {x_1} \appro {x_2}|
 & \leq
@@ -362,23 +396,23 @@ a bound in terms of $\Ulp (\appro x)$. This becomes problematic when, due
 to the subtraction, cancellation occurs. In all generality, let
 $d = \Exp (\appro {x_1} \appro {x_2}) - \Exp (\appro x)
 \leq \Exp (\appro {x_1}) + \Exp (\appro {x_2}) - \Exp (\appro x)$
-by Proposition~\ref {prop:expmul} and
+by Proposition~\ref {prop:expmuldiv} and
 $d' = \Exp( \appro {y_1} \appro {y_2}) - \Exp (\appro x)
 \leq \Exp (\appro {y_1}) + \Exp (\appro {y_2}) - \Exp (\appro x)$.
 Then
-\[
+\begin {equation}
+\label {eq:propmulre}
 \error( \appro x) \leq \left(
    \left( k_{R, 1} (2 + \epsilon_{R, 2}^+)
    + k_{R, 2} (2 + \epsilon_{R, 1}^+) \right) 2^d
    + \left( k_{I, 1} (2 + \epsilon_{I, 2}^+)
    + k_{I, 2} (2 + \epsilon_{I, 1}^+) \right) 2^{d'}
    + c_R
-   \right) \Ulp (\appro x).
-\]
+   \right) 2^{\Exp (\appro x) - p}.
+\end {equation}
 If $\appro {x_1} \appro {x_2}$ and $\appro {y_1} \appro {y_2}$ have different
-signs, then there is no cancellation, and,
-using Proposition~\ref {prop:expround} and the monotonicity of the exponent
-with respect to the absolute value, we obtain
+signs, then there is no cancellation, and, using the monotonicity of the
+exponent with respect to the absolute value, we obtain
 \[
 \Exp (\appro x) = \Exp (\appro {x_1} \appro {x_2} - \appro {y_1} \appro {y_2})
 = \Exp (|\appro {x_1} \appro {x_2}| + |\appro {y_1} \appro {y_2}|)
@@ -389,27 +423,28 @@ so that $d$, $d' \leq 0$ and the error bound simplifies as
 \error( \appro x) \leq \left(
    k_{R, 1} (2 + \epsilon_{R, 2}^+)
    + k_{R, 2} (2 + \epsilon_{R, 1}^+)
-   k_{I, 1} (2 + \epsilon_{I, 2}^+)
+   + k_{I, 1} (2 + \epsilon_{I, 2}^+)
    + k_{I, 2} (2 + \epsilon_{I, 1}^+)
    + c_R
-   \right) \Ulp (\appro x).
+   \right) 2^{\Exp (\appro x) - p}.
 \]
 
 The same approach yields the error of the imaginary part. Letting
 $\delta = \Exp (\appro {x_1} \appro {y_2}) - \Exp (\appro y)
 \leq \Exp( \appro {x_1}) + \Exp (\appro {y_2}) - \Exp (\appro y)$ and
-$\delta' = \Exp (\appro {y_1} \appro {x_2}) - \Exp (\frac {y})
-\leq \Exp (\frac {y_1}) + \Exp (\frac {x_2}) - \Exp (\appro y)$,
+$\delta' = \Exp (\appro {x_2} \appro {y_1}) - \Exp (\appro {y})
+\leq \Exp (\appro {x_2}) + \Exp (\appro {y_1}) - \Exp (\appro y)$,
 it becomes
-\[
+\begin {equation}
+\label {eq:propmulim}
 \error( \appro y) \leq \left(
    \left( k_{R, 1} (2 + \epsilon_{I, 2}^+)
    + k_{I, 2} (2 + \epsilon_{R, 1}^+) \right) 2^{\delta}
    + \left( k_{I, 1} (2 + \epsilon_{R, 2}^+)
    + k_{R, 2} (2 + \epsilon_{I, 1}^+) \right) 2^{\delta'}
    + c_I
-   \right) \Ulp (\appro y).
-\]
+   \right) 2^{\Exp (\appro y) - p}.
+\end {equation}
 If $\appro {x_1} \appro {y_2}$ and $\appro {x_2} \appro {y_1}$ have
 the same sign, then $\delta$, $\delta' \leq 0$ and
 \[
@@ -419,99 +454,115 @@ the same sign, then $\delta$, $\delta' \leq 0$ and
    + k_{I, 1} (2 + \epsilon_{R, 2}^+)
    + k_{R, 2} (2 + \epsilon_{I, 1}^+)
    + c_I
-   \right) \Ulp (\appro y).
+   \right) 2^{\Exp (\appro y) - p}.
 \]
+
+The different values $\epsilon_{X, n}^+$ for $X \in \{ R, I \}$ and
+$n \in \{ 1, 2 \}$ in the formul{\ae} above may be bounded by
+$k_{X, n} 2^{1 - p}$ according to Proposition~\ref {prop:relerror}.
+If some $|\appro {x_n}| \geq |\corr {x_n}|$ resp.
+$|\appro {y_n}| \geq |\corr {y_n}|$ (for instance, because they have been
+computed by rounding away from zero), then the corresponding
+$\epsilon_{X, n}^+$ are zero.
+
+
+\subsubsection {Norm}
+\label {sssec:propnorm}
+
+Let
+\[
+\appro x = \Norm (\appro {z_1}) = |\appro {z_1}|^2
+= \appro {x_1}^2 + \appro {y_1}^2.
+\]
+Then
+\[
+\error (\appro x) \leq
+| \Norm (\corr {z_1}) - \Norm (\appro {z_1}) |
+\leq | \corr {x_1}^2 - \appro {x_1}^2 | + | \corr {y_1}^2 - \appro {y_1}^2 |.
+\]
+The first term can be bounded by
+\begin {align*}
+| \corr {x_1}^2 - \appro {x_1}^2 |
+& = |\appro {x_1}| \left| 1 + \frac {|\corr {x_1}|}{|\appro {x_1}|} \right|
+    |\corr {x_1} - \appro {x_1}| \\
+& \leq 2^{\Exp (\appro {x_1})} (2 + \epsilon_{R, 1}^+) k_{R, 1}
+2^{\Exp (\appro {x_1}) - p} \\
+& \leq k_{R, 1} (2 + \epsilon_{R, 1}^+) 2^{\Exp (\appro {x_1}^2) + 1 - p}
+\text { by Proposition~\ref {prop:expmuldiv}} \\
+& \leq 2 k_{R, 1} (2 + \epsilon_{R, 1}^+) 2^{\Exp (\appro x) - p}
+\text { by the monotonicity of the exponent.}
+\end {align*}
+The analogous bound for the second error term yields
+\begin {equation}
+\label {eq:propnorm}
+\error (\appro x) \leq
+  2 \left(
+       k_{R, 1} (2 + \epsilon_{R, 1}^+)
+     + k_{I, 1} (2 + \epsilon_{I, 1}^+)
+\right)
+2^{\Exp (\appro x) - p}
+\end {equation}
+The values $\epsilon_{X, 1}^+$ may be estimated as explained at the end
+pf \S\ref {sssec:propmul}.
 
 
 \subsubsection {Division}
-\label{generic:div}
+\label{sssec:propdiv}
 
-Using the notations of the introductory paragraphs above, let
+Let
 \[
-z=\circ(\frac{z_1}{z_2}).
+\appro z = \frac {\appro {z_1}}{\appro {z_2}}
+= \frac {\appro {z_1} \overline {\appro {z_2}}}{\Norm (\appro {z_2})}.
 \]
-
+Then the propagated error may be derived by cumulating the errors obtained
+for multiplication in \S\ref {sssec:propmul}, the norm in
+\S\ref {sssec:propnorm} and the division by a real in
+\S\ref {sssec:realpropdiv}.
 We note
 \begin{align*}
-A&=\corr{x_1}\corr{x_2}+\corr{y_1}\corr{y_2}&
-B&=\corr{y_1}\corr{x_2}-\corr{x_1}\corr{y_2}&
-C&=\corr{x_2}^2+\corr{y_2}^2\\
-a&=x_1x_2+y_1y_2&
-b&=y_1x_2-x_1y_2&
-c&=x_2^2+y_2^2
+\corr a &= \Re (\corr {z_1} \overline {\corr {z_2}}) &
+\corr b &= \Im (\corr {z_1} \overline {\corr {z_2}}) &
+\corr c &= \Norm (\corr {z_2}) \\
+\appro a &= \Re (\appro {z_1} \overline {\appro {z_2}}) &
+\appro b &= \Im (\appro {z_1} \overline {\appro {z_2}}) &
+\appro c &= \Norm (\appro {z_2})
 \end{align*}
-then the error of the real part is
+Then
+\begin {align*}
+\error (\appro x)
+& \leq \left| \frac {\corr a}{\corr c} - \frac {\appro a}{\appro c} \right| \\
+& \leq \frac {1}{\appro c} \left(
+\frac {\corr a}{\corr c} |\appro c - \corr c| + |\corr a - \appro a|
+\right) \\
+& =
+\frac {\corr a}{\corr c} \frac {\error (\appro c)}{\appro c}
++ \frac {\error (\appro a)}{\appro c}
+\end {align*}
+Letting $d = \Exp (\appro {x_1} \appro {x_2}) - \Exp (a)$
+and $d' = \Exp (\appro {y_1} \appro {y_2}) - \Exp (a)$, we may apply bound
+\eqref {eq:propmulre} to $\appro a$ by replacing $c_R$ by~$0$ since no final
+rounding occurs for $\appro a$, and $\Ulp (\appro a)$ by
+$2^{\Exp (\appro a) - p}$ since $\appro a$ need not be representable.
+Using $\appro x = \round \left( \frac {\appro a}{\appro c} \right)$
+and Propositions~\ref {prop:expround} and~\ref {prop:expmuldiv} shows that
+$\Exp (\appro a) \leq \Exp (\appro x) + \Exp (\appro c)$; from
+$\appro c \geq 2^{\Exp (\appro c) - 1}$ we finally deduce the bound
 \[
-\error(x) = \left|x-\frac{A}{C}\right| \leq \left|x-\frac{a}{c}\right| +
-\left|\frac{a}{c}-\frac{A}{C}\right|.
+\frac {\error( \appro a)}{\appro c} \leq \left(
+   \left( k_{R, 1} (2 + \epsilon_{R, 2}^+)
+   + k_{R, 2} (2 + \epsilon_{R, 1}^+) \right) 2^{d + 1}
+   + \left( k_{I, 1} (2 + \epsilon_{I, 2}^+)
+   + k_{I, 2} (2 + \epsilon_{I, 1}^+) \right) 2^{d' + 1}
+   \right) \Ulp (\appro x).
 \]
-The first term of the right hand side is the rounding error:
+By \eqref {eq:propnorm} and the previous bound on $\appro c$ we have
 \[
-\left|x-\frac{a}{c}\right|\leq c_R \Ulp(x).
+\frac {\error (\appro c)}{\appro c} \leq
+2 \left (  k_{R,2} (2 + \epsilon^+_{R,2})
+  + k_{I,2} (2 + \epsilon^+_{I,2}) \right) 2^{1 - p}.
 \]
-The second term can be bounded as follows:
-\[
-\left|\frac{a}{c}-\frac{A}{C}\right| \leq \frac{1}{c} |a-A|
-+\left|\frac{A}{C}\right|\frac{1}{c}|c-C|.
-\]
-We have
-\[
-|a-A| \leq |x_1x_2-\corr{x_1}\corr{x_2}|
-+|y_1y_2-\corr{y_1}\corr{y_2}|,
-\]
-with
-\begin{align*}
-|x_1x_2-\corr{x_1}\corr{x_2}| &\leq \frac{1}{2} \left(
-|x_1||x_2-\corr{x_2}|+|\corr{x_2}||x_1-\corr{x_1}|
-+|x_2||x_1-\corr{x_1}|+|\corr{x_1}||x_2-\corr{x_2}| \right)\\
-&\leq \left[ (1+c_{R,1})k_{R,2}+(1+c_{R,2})k_{R,1} \right] \Ulp(x_1x_2),
-\end{align*}
-where $c_{R,n}$ is such that $|\corr{x_n}| \leq c_{R,n} |x_n|$ (see the
-introductory paragraphs above) and using the following general rule
-\[
-|u|\cdot\Ulp(v) \leq 2\Ulp(uv);
-\]
-let $d=\Exp(x_1x_2)-\Exp(a)$, we have
-\[
-|x_1x_2-\corr{x_1}\corr{x_2}| \leq
-\left((1+c_{R,1})k_{R,2}+(1+c_{R,2})k_{R,1}\right)2^d \Ulp(a),
-\]
-and we can show in a similar way that
-\[
-|y_1y_2-\corr{y_1}\corr{y_2}| \leq \left( (1+c_{I,1})k_{I,2}
-+(1+c_{I,2})k_{I,1} \right)2^{d'} \Ulp(a),
-\]
-where $d'=\Exp(y_1y_2)-\Exp(a)$. Because $x$ is $a/c$ rounded to the working
-precision, we have $\Ulp(a/c) \leq \Ulp(x)$ and, as $c$ is positive,
-$\Ulp(a)/c \leq 2\Ulp(a/c)$. Thus $\Ulp(a)/c \leq 2\Ulp(x)$. Using the
-preceding inequalities we have
-\[
-\frac{1}{c}|a-A| \leq \left[
-\left((1+c_{R,1})k_{R,2}+(1+c_{R,2})k_{R,1}\right)2^{1+d}
-+\left((1+c_{I,1})k_{I,2}+(1+c_{I,2})k_{I,1}\right)2^{1+d'}
-\right] \Ulp(x).
-\]
-In addition, we have
-\[
-|c-C| \leq \left|x_2^2-\corr{x_2}^2\right| +
-\left|y_2^2-\corr{y_2}^2\right|,
-\]
-with
-\begin{align*}
-\left|x_2^2-\corr{x_2}^2\right| &= \left|x_2+\corr{x_2}\right|
-\left|x_2-\corr{x_2}\right|\\ &\leq (1+c_{R,2})|x_2|k_{R,2}
-\Ulp(x_2)\\ &\leq 2(1+c_{R,2})k_{R,2}\Ulp(x_2^2),
-\end{align*}
-we can show in a similar way that
-\[
-\left|y_2^2-\corr{y_2}^2\right| \leq 2(1+c_{I,2})k_{I,2}\Ulp(y_2^2).
-\]
-But $\Ulp(x_2^2) \leq \Ulp(x_2^2+y_2^2) = \Ulp(c)$, and the same relation
-holds for $\Ulp(y_2^2)$, thus
-\[
-|c-C| \leq 2\left[(1+c_{R,2})k_{R,2}+(1+c_{I,2})k_{I,2}\right]\Ulp(c);
-\]
-let $c_{R,2}^-$ and $c_{I,2}^-$ two positive numbers such that $c_{R,2}^-|x_2|
+
+Let $c_{R,2}^-$ and $c_{I,2}^-$ two positive numbers such that $c_{R,2}^-|x_2|
 \leq \left|\corr{x_2}\right|$ and $c_{I,2}^-|y_2| \leq
 \left|\corr{y_2}\right|$, then
 \[
@@ -576,6 +627,10 @@ always a cancellation sometimes in real part, sometimes in imaginary
 part of the division.
 
 
+\subsubsection {Logarithm}
+
+
+
 \section {Algorithms}
 
 This section describes in detail the algorithms used in \mpc, together with the error analysis that allows to prove that the results are correct in the {\mpc} semantics: The input numbers are assumed to be exact, and the output corresponds to the exact result rounded in the desired direction.
@@ -634,7 +689,7 @@ of $\tan z=\frac{\sin x\cosh y+i\cos x\sinh y}{\cos x\cosh y-i\sin x\sinh y}$,
 we have $abcd < 0$ which means that there might be a cancellation in the
 computation of the real part while it does never happen in the one of the
 imaginary part.  Then, using the generic error of the division (see
-\ref{generic:div}), we have
+\ref{sssec:propdiv}), we have
 \begin{align*}
 \error(\Re(t)) &\leq [1+2^{3+e_1}+2^{3+e_2}+2^6] \Ulp(\Re(t)),
 \\
@@ -674,14 +729,14 @@ After computing an integer $q$ such that $|y \log x| \leq 2^q$, we first
 approximate $y \log x$ with precision $p + q$, and then
 $\exp(y \log x)$ with precision $p \geq 4$, all with rounding
 to nearest.
-Let $\tilde{s} = \circ_{p+q}(\log x)$,
+Let $\tilde{s} = \round_{p+q}(\log x)$,
 we have $\tilde{s} = (\log x) (1 + \theta_1)$
 with $\theta_1$ a complex number of norm $\leq 2^{-p-q}$.
-Let $\tilde{t} = \circ_{p+q}(y \tilde{s})$, then
+Let $\tilde{t} = \round_{p+q}(y \tilde{s})$, then
 $\tilde{t} = y \tilde{s} (1 + \theta_2) = (y \log x) (1 + \theta_3)^2$,
 where $\theta_2, \theta_3$ are complex numbers of norm $\leq 2^{-p-q}$,
 thus $|\tilde{t} - y \log x| \leq 2.5 \cdot 2^{-p}$ for $q \geq -3$.
-Now $\tilde{u} = \circ_p(\exp(\tilde{t})) =
+Now $\tilde{u} = \round_p(\exp(\tilde{t})) =
 x^y \exp(2.5 \cdot 2^{-p}) (1 + \theta_4) = x^y (1 + 4 \theta_5)$,
 with $\theta_4, \theta_5$ complex numbers of norm $\leq 2^{-p}$.
 
