@@ -277,17 +277,63 @@ functions with real arguments and values. Those already contained in
 \subsubsection {Division}
 \label {sssec:realpropdiv}
 
-If
+Let
 \[
-\appro x = \round \left( \frac {\appro {x_1}}{\appro {x_2}} \right),
+\appro x = \frac {\appro {x_1}}{\appro {x_2}}.
 \]
-then by \cite[\S1.6]{MPFRAlgorithms}
+Then
 \[
-\error (\appro x) \leq \left(
-2 \left( (1 + \epsilon_1^+) (1 + \epsilon_2^+) k_2 + k_1 \right)
-+ c
-\right) \Ulp (\appro x).
+\error (\appro x) = \left|
+\frac {\corr {x_1}}{\corr {x_2}} - \frac {\appro {x_1}}{\appro {x_2}} \right|
+= \left| \frac {\appro {x_1}}{\appro {x_2}} \right|
+\cdot \left|
+1 - \left| \frac {\corr {x_1}}{\appro {x_1}} \right|
+   \cdot \left| \frac {\appro {x_2}}{\corr {x_2}} \right|
+\right|
+= | \appro x |
+\cdot \left|
+1 - \left| \frac {\corr {x_1}}{\appro {x_1}} \right|
+   \cdot \left| \frac {\appro {x_2}}{\corr {x_2}} \right|
+\right|
 \]
+Using the notation introduced in Definition~\ref {def:relerror} together
+with the obvious subscripts to the $\epsilon$, we obtain the bounds
+\[
+- \frac {\epsilon_1^+ + \epsilon_2^-}{1 - \epsilon_2^-}
+=
+1 - \frac {1 + \epsilon_1^+}{1 - \epsilon_2^-}
+\leq
+1 - \left| \frac {\corr {x_1}}{\appro {x_1}} \right|
+   \cdot \left| \frac {\appro {x_2}}{\corr {x_2}} \right|
+\leq
+1 - \frac {1 - \epsilon_1^-}{1 + \epsilon_2^+}
+=
+\frac {\epsilon_1^- + \epsilon_2^+}{1 + \epsilon_2^+}
+\]
+We need to make the assumption that $\epsilon_2^- < 1$, which is reasonable
+since otherwise the absolute error on $\appro {x_2}$ would exceed the number
+itself. Then
+\[
+\error (\appro x)
+\leq
+\max \left(
+   \frac {\epsilon_1^+ + \epsilon_2^-}{1 - \epsilon_2^-},
+   \frac {\epsilon_1^- + \epsilon_2^+}{1 + \epsilon_2^+}
+\right) |\appro x|
+\leq
+\frac {\epsilon_1 + \epsilon_2}{1 - \epsilon_2^-} 2^{\Exp (\appro x)}
+\]
+Using the estimation of the relative in terms of the absolute error of
+Proposition~\ref {prop:relerror}, this bound can be translated into
+\begin {equation}
+\label {eq:proprealdiv}
+\error (\appro x)
+\leq
+\frac {2 (k_1 + k_2)}{1 - \epsilon_2^-} 2^{\Exp (\appro x) - p}
+\leq
+\frac {2 (k_1 + k_2)}{1 - k_2 2^{1 - p}} 2^{\Exp (\appro x) - p}
+\end {equation}
+
 
 
 \subsection {Complex functions}
