@@ -351,29 +351,45 @@ mpc_pow (mpc_ptr z, mpc_srcptr x, mpc_srcptr y, mpc_rnd_t rnd)
   long Q;
 
   if (mpfr_nan_p (MPC_RE (x)) || mpfr_nan_p (MPC_IM (x)) ||
-      mpfr_nan_p (MPC_RE (y)) || mpfr_nan_p (MPC_IM (y)))
-    {
-      /* either x or y has a NaN real or imaginary part */
-      fprintf (stderr, "NaN case not yet implemented in mpc_pow\n");
-      abort ();
-    }
-
-  if (mpfr_inf_p (MPC_RE (x)) || mpfr_inf_p (MPC_IM (x)) ||
+      mpfr_nan_p (MPC_RE (y)) || mpfr_nan_p (MPC_IM (y)) ||
+      mpfr_inf_p (MPC_RE (x)) || mpfr_inf_p (MPC_IM (x)) ||
       mpfr_inf_p (MPC_RE (y)) || mpfr_inf_p (MPC_IM (y)))
     {
-      /* either x or y has a infinite real or imaginary part */
-      fprintf (stderr, "Inf case not yet implemented in mpc_pow\n");
-      abort ();
+      /* special values: exp(y*log(x)) */
+      mpc_init2 (u, 2);
+      mpc_log (u, x, MPC_RNDNN);
+      mpc_mul (u, u, y, MPC_RNDNN);
+      ret = mpc_exp (z, u, rnd);
+      mpc_clear (u);
+      goto end;
     }
 
   x_real = mpfr_zero_p (MPC_IM (x));
   y_real = mpfr_zero_p (MPC_IM (y));
+
+  if (y_real && mpfr_zero_p (MPC_RE (y))) /* case y zero */
+    {
+      if (x_real && mpfr_zero_p (MPC_RE (x))) /* 0^0 = NaN +i*NaN */
+        {
+          mpfr_set_nan (MPC_RE (z));
+          mpfr_set_nan (MPC_IM (z));
+          return 0;
+        }
+      else /* x^0 = 1 +i*0 even for NaN */
+        return mpc_set_ui_ui (z, 1, 0, rnd);
+    }
+
   if (x_real) /* case x real */
     {
       if (mpfr_zero_p (MPC_RE (x))) /* x is zero */
         {
-          fprintf (stderr, "Zero case not yet implemented in mpc_pow\n");
-          abort ();
+          /* special values: exp(y*log(x)) */
+          mpc_init2 (u, 2);
+          mpc_log (u, x, MPC_RNDNN);
+          mpc_mul (u, u, y, MPC_RNDNN);
+          ret = mpc_exp (z, u, rnd);
+          mpc_clear (u);
+          goto end;
         }
 
       /* Special case 1^y = 1 */
