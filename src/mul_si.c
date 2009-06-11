@@ -24,28 +24,10 @@ MA 02111-1307, USA. */
 int
 mpc_mul_si (mpc_ptr a, mpc_srcptr b, long int c, mpc_rnd_t rnd)
 {
-  int inex_re, inex_im;
+   int inex_re, inex_im;
 
-  /* We could use mpfr_mul_si with newer versions of mpfr (2.1.0), but 
-     not with the version contained in gmp-4.1.4. So copy and paste for 
-     the time being                                                     */
-  if (c >= 0)
-  /* inlining by copy and paste */
-  {
-     inex_re = mpfr_mul_ui (MPC_RE(a), MPC_RE(b), (unsigned long int) c,
-           MPC_RND_RE(rnd));
-     inex_im = mpfr_mul_ui (MPC_IM(a), MPC_IM(b), (unsigned long int) c,
-           MPC_RND_IM(rnd));
-  }
-  else
-  {
-     inex_re = -mpfr_mul_ui (MPC_RE(a), MPC_RE(b), (unsigned long int) (-c),
-           INV_RND (MPC_RND_RE(rnd)));
-     MPFR_CHANGE_SIGN (MPC_RE (a));
-     inex_im = -mpfr_mul_ui (MPC_IM(a), MPC_IM(b), (unsigned long int) (-c),
-           INV_RND (MPC_RND_IM(rnd)));
-     MPFR_CHANGE_SIGN (MPC_IM (a));
-  }
-  
-  return MPC_INEX(inex_re, inex_im);
+   inex_re = mpfr_mul_si (MPC_RE(a), MPC_RE(b), c, MPC_RND_RE(rnd));
+   inex_im = mpfr_mul_si (MPC_IM(a), MPC_IM(b), c, MPC_RND_IM(rnd));
+
+   return MPC_INEX(inex_re, inex_im);
 }
