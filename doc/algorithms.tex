@@ -275,7 +275,7 @@ functions with real arguments and values. Those already contained in
 
 
 \subsubsection {Division}
-\label {sssec:realpropdiv}
+\label {sssec:proprealdiv}
 
 Let
 \[
@@ -549,7 +549,37 @@ The analogous bound for the second error term yields
 2^{\Exp (\appro x) - p}
 \end {equation}
 The values $\epsilon_{X, 1}^+$ may be estimated as explained at the end
-pf \S\ref {sssec:propmul}.
+of \S\ref {sssec:propmul}.
+
+Alternatively, one might write
+$|\corr {x_1}^2 - \appro {x_1}^2|
+= \appro {x_1}^2 \cdot
+\left| 1 - \left( \frac {|\corr {x_1}|}{|\appro {x_1}|} \right)^2 \right|$
+and estimate the both-sided relative error as in \S\ref {sssec:proprealdiv}
+to obtain, under the assumption that $\epsilon_{R, 1}^- < 2$,
+\[
+| \corr {x_1}^2 - \appro {x_1}^2 |
+\leq
+\max \big(
+   \epsilon_{R, 1}^+ (2 + \epsilon_{R, 1}^+),
+   \epsilon_{R, 1}^- (2 - \epsilon_{R, 1}^-)
+\big)
+\appro {x_1}^2
+\]
+Adding the corresponding bound on the second term, using
+Proposition~\ref {prop:relerror} and letting
+$k_1 = \max ( k_{R, 1}, k_{I, 1})$ and
+$\epsilon_1 = \max ( \epsilon_{R, 1}^-, \epsilon_{R, 1}^+,
+                     \epsilon_{I, 1}^-, \epsilon_{I, 1}^+ )$
+leads to
+\begin {equation}
+\label {eq:propnormalt}
+\error (\appro x)
+\leq
+\epsilon_1 (2 + \epsilon_1) 2^{\Exp (\appro x)}
+\leq
+2 k_1 (2 + \epsilon_1) 2^{\Exp (\appro x) - p}
+\end {equation}
 
 
 \subsubsection {Division}
@@ -563,7 +593,7 @@ Let
 Then the propagated error may be derived by cumulating the errors obtained
 for multiplication in \S\ref {sssec:propmul}, the norm in
 \S\ref {sssec:propnorm} and the division by a real in
-\S\ref {sssec:realpropdiv}.
+\S\ref {sssec:proprealdiv}.
 We note
 \begin{align*}
 \corr a &= \Re (\corr {z_1} \overline {\corr {z_2}}) &
