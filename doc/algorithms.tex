@@ -227,8 +227,8 @@ The {\em relative error} of $\appro x$ is
 \]
 \end {definition}
 
-Notice that $\epsilon^- = 0$ whenever $|\corr x| \geq |\appro x|$
-and $\epsilon^+ = 0$ whenever $|\corr x| \leq |\appro x|$, so that
+Notice that $\epsilon^- = 0$ whenever $|\appro x| \leq |\corr x|$
+and $\epsilon^+ = 0$ whenever $|\appro x| \geq |\corr x|$, so that
 at least one of $\epsilon^+$ and $\epsilon^-$ is zero.
 The definition of relative error carries over immediately to complex numbers,
 see \S\ref {sssec:comrelerror}.
@@ -417,6 +417,22 @@ Proposition~\ref {prop:relerror}, this bound can be translated into
 \frac {2 (k_1 + k_2)}{1 - \epsilon_2^-} 2^{\Exp (\appro x) - p}
 \leq
 \frac {2 (k_1 + k_2)}{1 - k_2 2^{1 - p}} 2^{\Exp (\appro x) - p}
+\end {equation}
+
+
+\subsubsection {Square root}
+\label {sssec:proprealsqrt}
+
+Let
+\[
+\appro x = \sqrt {\appro {x_1}}.
+\]
+Then by \cite[\S1.7]{MPFRAlgorithms},
+\begin {equation}
+\label {eq:proprealsqrt}
+\error (\appro x)
+\leq
+\frac {2 k_1}{1 + \sqrt {1 + \epsilon_1^-}} 2^{\Exp (\appro x) - p}.
 \end {equation}
 
 
@@ -847,7 +863,10 @@ also for the case of division.
 
 \section {Algorithms}
 
-This section describes in detail the algorithms used in \mpc, together with the error analysis that allows to prove that the results are correct in the {\mpc} semantics: The input numbers are assumed to be exact, and the output corresponds to the exact result rounded in the desired direction.
+This section describes in detail the algorithms used in \mpc, together with
+the error analysis that allows to prove that the results are correct in the
+{\mpc} semantics: The input numbers are assumed to be exact, and the output
+corresponds to the exact result rounded in the desired direction.
 
 
 \subsection {\texttt {mpc\_sqrt}}
@@ -867,9 +886,20 @@ t + i w & \text {if } x < 0, y > 0 \\
 \right.
 \]
 
-$w$ is rounded down. $\sqrt {x^2 + y^2}$ is computed with an error of \ulp{1}; $|x|$ is added with an error of \ulp{1}, since both terms are positive. The generic error of the real square root in the special case that the argument was rounded down is \ulp{1}, so that the total error in computing $w$ is \ulp{3}.
+We compute $w$ rounded down and thus round down all intermediate results.
+$\sqrt {x^2 + y^2}$ is computed with an error of \ulp{1}
+by a call to \texttt {mpc\_abs}; $|x|$ is added with an error of \ulp{1},
+since both terms are positive; division by~$2$ is free of error. So
+$w^2$ is computed with a cumulated error of \ulp{2}.
+This error of \ulp{2} propagates as is through the real square root:
+since we rounded down the argument, we have $\epsilon_1^- = 0$ in
+\eqref {eq:proprealsqrt}; an error of \ulp{1} needs to be added for the
+rounding of $w$, so that the total error is \ulp{3}.
 
-$t$ is rounded up. The generic error of real division, applied to an error of \ulp{3} for $w$ and \ulp{0} for $y$ implies an error of \ulp{7}.
+$t$ is rounded up. Plugging the error of \ulp{3} for $w$ and \ulp{0} for $y$ into
+\eqref {eq:proprealdiv} shows that the propagated error of real division is
+\ulp{6}, to which an additional rounding error of \ulp{1} has to be added
+for a total error of \ulp{7}.
 
 
 \subsection {\texttt {mpc\_log}}
