@@ -203,8 +203,6 @@ __MPC_DECLSPEC void mpc_init3 __MPC_PROTO ((mpc_ptr, mp_prec_t, mp_prec_t));
 __MPC_DECLSPEC mp_prec_t mpc_get_prec __MPC_PROTO((mpc_t x));
 __MPC_DECLSPEC void mpc_get_prec2 __MPC_PROTO((mp_prec_t *pr, mp_prec_t *pi, mpc_t x));
 __MPC_DECLSPEC void mpc_set_prec  __MPC_PROTO ((mpc_ptr, mp_prec_t));
-__MPC_DECLSPEC void mpc_set_default_prec __MPC_PROTO ((mp_prec_t));
-__MPC_DECLSPEC mp_prec_t mpc_get_default_prec __MPC_PROTO ((void));
 __MPC_DECLSPEC __gmp_const char * mpc_get_version __MPC_PROTO ((void));
 
 __MPC_DECLSPEC int  mpc_strtoc    _MPFR_PROTO ((mpc_ptr, char *, char **, int, mpc_rnd_t));
