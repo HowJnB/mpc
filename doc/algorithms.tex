@@ -295,19 +295,23 @@ Then the {\em relative error} of $\appro z$ is
 Notice that this definition coincides with Definition~\ref {def:relerror}
 for real numbers of the same sign. The following result gives a coarse
 estimate of the relative errors of the real and imaginary parts in terms of
-the complex relative error.
+the complex relative error, and vice versa.
 
 \begin {prop}
 \label {prop:comrelerror}
-Let $\corr z = \corr x + i \corr y$, $\appro z = \appro x + i \appro y$ and
+Let $\corr z = \corr x + i \corr y$, $\appro z = \appro x + i \appro y$,
 $\epsilon = \relerror (\appro z)$,
+$\epsilon_R = \relerror (\appro x)$ and
+$\epsilon_I = \relerror (\appro y)$,
 and assume that the closed circle around $\appro z$ of radius
 $\epsilon |\appro z|$ is contained in one quadrant of the complex plane. Then
 \begin {align*}
-\relerror (\appro x)
+\epsilon_R
 &\leq 2^{\max (\Exp (\appro y) - \Exp (\appro x) + 1.5, 0.5)} \epsilon \\
-\relerror (\appro y)
-&\leq 2^{\max (\Exp (\appro x) - \Exp (\appro y) + 1.5, 0.5)} \epsilon
+\epsilon_I
+&\leq 2^{\max (\Exp (\appro x) - \Exp (\appro y) + 1.5, 0.5)} \epsilon \\
+\epsilon
+&\leq \sqrt 2 (\epsilon_R + \epsilon_I)
 \end {align*}
 \end {prop}
 
@@ -319,7 +323,7 @@ have the same sign. Write $\theta = \frac {\corr z - \appro z}{\appro z}
 $\corr x - \appro x = \Re (\appro z \theta)
 = \appro x \theta_R - \appro y \theta_I$, and
 \begin {align*}
-\relerror (\appro x)
+\epsilon_R
 &= \left| \frac {\corr x - \appro x}{\appro x} \right|
 \leq |\theta_R| + \left| \frac {\appro y}{\appro x} \right| |\theta_I|
 \leq \max \left( \left| \frac {\appro y}{\appro x} \right|, 1 \right)
@@ -328,7 +332,21 @@ $\corr x - \appro x = \Re (\appro z \theta)
 \cdot \sqrt 2 |\theta|
 \end {align*}
 by Proposition~\ref {prop:expmuldiv}. The second inequality is proved
-in the same way.
+in the same way. For the converse direction, write
+\[
+|\theta_I|
+= \left| \Re \left(
+\frac {(\corr z - \appro z) \overline z}{\appro x^2 + \appro y^2}
+\right) \right|
+\leq \left|
+\frac {- (\corr x - \appro x) \appro y + (\corr y - \appro y) \appro y}
+      {\appro x \appro y} \right|
+\leq
+  \left| \frac {\corr x - \appro x}{\appro x} \right|
++ \left| \frac {\corr y - \appro y}{\appro y} \right|
+\leq \epsilon_R + \epsilon_I,
+\]
+and similarly for $\theta_R$, which finishes the proof.
 \end {proof}
 
 
