@@ -307,9 +307,9 @@ and assume that the closed circle around $\appro z$ of radius
 $\epsilon |\appro z|$ is contained in one quadrant of the complex plane. Then
 \begin {align*}
 \epsilon_R
-&\leq 2^{\max (\Exp (\appro y) - \Exp (\appro x) + 1.5, 0.5)} \epsilon \\
+&\leq 2^{\max (0.5, \Exp (\appro y) - \Exp (\appro x) + 1.5)} \epsilon \\
 \epsilon_I
-&\leq 2^{\max (\Exp (\appro x) - \Exp (\appro y) + 1.5, 0.5)} \epsilon \\
+&\leq 2^{\max (0.5, \Exp (\appro x) - \Exp (\appro y) + 1.5)} \epsilon \\
 \epsilon
 &\leq \sqrt 2 (\epsilon_R + \epsilon_I)
 \end {align*}
@@ -317,7 +317,7 @@ $\epsilon |\appro z|$ is contained in one quadrant of the complex plane. Then
 
 \begin {proof}
 By assumption, the correct value $\corr z$ lies in the same quadrant as
-$\appro x$, so that $\corr x$ and $\appro x$ resp. $\corr y$ and $\appro y$
+$\appro z$, so that $\corr x$ and $\appro x$ resp. $\corr y$ and $\appro y$
 have the same sign. Write $\theta = \frac {\corr z - \appro z}{\appro z}
 = \theta_R + i \theta_I$. Then
 $\corr x - \appro x = \Re (\appro z \theta)
@@ -326,9 +326,9 @@ $\corr x - \appro x = \Re (\appro z \theta)
 \epsilon_R
 &= \left| \frac {\corr x - \appro x}{\appro x} \right|
 \leq |\theta_R| + \left| \frac {\appro y}{\appro x} \right| |\theta_I|
-\leq \max \left( \left| \frac {\appro y}{\appro x} \right|, 1 \right)
+\leq \max \left( 1, \left| \frac {\appro y}{\appro x} \right| \right)
 (|\theta_R| + |\theta_I|) \\
-&\leq 2^{\max \left( \Exp (\appro y) - \Exp (\appro x) + 1, 0 \right)}
+&\leq 2^{\max \left( 0, \Exp (\appro y) - \Exp (\appro x) + 1 \right)}
 \cdot \sqrt 2 |\theta|
 \end {align*}
 by Proposition~\ref {prop:expmuldiv}. The second inequality is proved
@@ -538,7 +538,6 @@ Then
    + k_{R, 2} (2 + \epsilon_{R, 1}^+) \right) 2^d
    + \left( k_{I, 1} (2 + \epsilon_{I, 2}^+)
    + k_{I, 2} (2 + \epsilon_{I, 1}^+) \right) 2^{d'}
-   + c_R
    \right) 2^{\Exp (\appro x) - p}.
 \end {equation}
 If $\appro {x_1} \appro {x_2}$ and $\appro {y_1} \appro {y_2}$ have different
@@ -556,7 +555,6 @@ so that $d$, $d' \leq 0$ and the error bound simplifies as
    + k_{R, 2} (2 + \epsilon_{R, 1}^+)
    + k_{I, 1} (2 + \epsilon_{I, 2}^+)
    + k_{I, 2} (2 + \epsilon_{I, 1}^+)
-   + c_R
    \right) 2^{\Exp (\appro x) - p}.
 \]
 
@@ -573,7 +571,6 @@ it becomes
    + k_{I, 2} (2 + \epsilon_{R, 1}^+) \right) 2^{\delta}
    + \left( k_{I, 1} (2 + \epsilon_{R, 2}^+)
    + k_{R, 2} (2 + \epsilon_{I, 1}^+) \right) 2^{\delta'}
-   + c_I
    \right) 2^{\Exp (\appro y) - p}.
 \end {equation}
 If $\appro {x_1} \appro {y_2}$ and $\appro {x_2} \appro {y_1}$ have
@@ -584,7 +581,6 @@ the same sign, then $\delta$, $\delta' \leq 0$ and
    + k_{I, 2} (2 + \epsilon_{R, 1}^+)
    + k_{I, 1} (2 + \epsilon_{R, 2}^+)
    + k_{R, 2} (2 + \epsilon_{I, 1}^+)
-   + c_I
    \right) 2^{\Exp (\appro y) - p}.
 \]
 
@@ -596,7 +592,34 @@ $|\appro {y_n}| \geq |\corr {y_n}|$ (for instance, because they have been
 computed by rounding away from zero), then the corresponding
 $\epsilon_{X, n}^+$ are zero.
 
-
+A coarser bound may be obtained more easily by considering complex
+relative errors. Write $\corr {z_n} = (1 + \theta_n) \appro {z_n}$
+with $\epsilon_n = | \theta_n |$. Then $\corr z = (1 + \theta) \appro z$
+with $\theta = \theta_1 + \theta_2 + \theta_1 \theta_2$ and
+$\epsilon = |\theta| \leq \epsilon_1 + \epsilon_2 + \epsilon_1 \epsilon_2$.
+By Proposition~\ref {prop:relerror},
+we have $\epsilon_{X, n} \leq k_{X, n} 2^{1-p}$ for $X \in \{ R, I \}$,
+and by Proposition~\ref {prop:comrelerror},
+$\epsilon_n \leq  (k_{R, n} + k_{I, n}) 2^{1.5 - p}$.
+Under normal circumstances, $\epsilon_1 \epsilon_2$ should be negligible,
+that is, $\epsilon_1 \epsilon_2
+\leq (k_{R, 1} + k_{I, 1}) (k_{R, 2} + k_{I, 2}) 2^{3 - 2 p}
+\leq 2^{1.5 - p}$, so that
+$\epsilon \leq (k_{R, 1} + k_{I, 1} + k_{R, 2} + k_{I, 2} + 1)
+2^{1.5 - p}$.
+Applying Propositions~\ref {prop:comrelerror} and~\ref {prop:relerror}
+in the converse direction yields, under the assumption that $\corr z$
+and $\appro z$ lie in the same quadrant of the complex plane,
+\begin {align*}
+\error (\appro x)
+&\leq (k_{R, 1} + k_{I, 1} + k_{R, 2} + k_{I, 2} + 1)
+2^{\max (2, \Exp (\appro y) - \Exp (\appro x) + 3)}
+\cdot 2^{\Exp (\appro x) - p} \\
+\error (\appro y)
+&\leq (k_{R, 1} + k_{I, 1} + k_{R, 2} + k_{I, 2} + 1)
+2^{\max (2, \Exp (\appro x) - \Exp (\appro y) + 3)}
+\cdot 2^{\Exp (\appro y) - p}
+\end {align*}
 \subsubsection {Norm}
 \label {sssec:propnorm}
 
