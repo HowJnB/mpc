@@ -27,6 +27,7 @@
 \newcommand {\Q}{\mathbb Q}
 \newcommand {\R}{\mathbb R}
 \renewcommand {\epsilon}{\varepsilon}
+\renewcommand {\theta}{\vartheta}
 \renewcommand {\leq}{\leqslant}
 \renewcommand {\geq}{\geqslant}
 
@@ -44,7 +45,7 @@
 
 \title {MPC: Algorithms and Error Analysis}
 \author {Andreas Enge \and Philippe Th\'eveny \and Paul Zimmermann}
-\date {June 11, 2009}
+\date {June 17, 2009}
 
 \begin {document}
 \maketitle
@@ -195,9 +196,10 @@ Then, via Proposition~\ref {prop:expround},
 \]
 
 
-\subsubsection {Relative error}
+\subsubsection {Real relative error}
 
-It can sometimes be useful to determine errors not absolutely as differences,
+It can sometimes be useful to determine errors not absolutely as differences
+(close to~$0$),
 but relatively as multiplicative factors (close to~$1$).
 
 \begin {definition}
@@ -228,7 +230,8 @@ The {\em relative error} of $\appro x$ is
 Notice that $\epsilon^- = 0$ whenever $|\corr x| \geq |\appro x|$
 and $\epsilon^+ = 0$ whenever $|\corr x| \leq |\appro x|$, so that
 at least one of $\epsilon^+$ and $\epsilon^-$ is zero.
-The definition of relative error carries over immediately to complex numbers.
+The definition of relative error carries over immediately to complex numbers,
+see \S\ref {sssec:comrelerror}.
 However, in the following we usually argument separately for the two coordinates,
 so we use corresponding $\epsilon$-values with subscript $R$ and $I$ for the
 real and imaginary part, respectively.
@@ -264,6 +267,70 @@ $|\appro x| \geq 2^{\Exp (\appro x) - 1}$ finishes the proof.
 The second assertion is proved in the same manner, using
 $|\appro x| \leq 2^{\Exp (\appro x)}$.
 \end {proof}
+
+
+\subsubsection {Complex relative error}
+\label {sssec:comrelerror}
+
+Some care must be taken when generalising the real relative error to complex
+approximations; by keeping the absolute values in
+Definition~\ref {def:relerror}, all information is lost.
+
+\begin {definition}
+\label {def:comrelerror}
+Given a correct complex number $\corr z$ and its non-zero approximation
+$\appro z$, let
+\[
+\theta = \frac {\corr z - \appro z}{\appro z},
+\text { or }
+\corr z = (1 + \theta) \appro z.
+\]
+Then the {\em relative error} of $\appro z$ is
+\[
+\relerror (\appro z) = \epsilon = | \theta |
+= \left| \frac {\corr z - \appro z}{\appro z} \right|.
+\]
+\end {definition}
+
+Notice that this definition coincides with Definition~\ref {def:relerror}
+for real numbers of the same sign. The following result gives a coarse
+estimate of the relative errors of the real and imaginary parts in terms of
+the complex relative error.
+
+\begin {prop}
+\label {prop:comrelerror}
+Let $\corr z = \corr x + i \corr y$, $\appro z = \appro x + i \appro y$ and
+$\epsilon = \relerror (\appro z)$,
+and assume that the closed circle around $\appro z$ of radius
+$\epsilon |\appro z|$ is contained in one quadrant of the complex plane. Then
+\begin {align*}
+\relerror (\appro x)
+&\leq 2^{\max (\Exp (\appro y) - \Exp (\appro x) + 1.5, 0.5)} \epsilon \\
+\relerror (\appro y)
+&\leq 2^{\max (\Exp (\appro x) - \Exp (\appro y) + 1.5, 0.5)} \epsilon
+\end {align*}
+\end {prop}
+
+\begin {proof}
+By assumption, the correct value $\corr z$ lies in the same quadrant as
+$\appro x$, so that $\corr x$ and $\appro x$ resp. $\corr y$ and $\appro y$
+have the same sign. Write $\theta = \frac {\corr z - \appro z}{\appro z}
+= \theta_R + i \theta_I$. Then
+$\corr x - \appro x = \Re (\appro z \theta)
+= \appro x \theta_R - \appro y \theta_I$, and
+\begin {align*}
+\relerror (\appro x)
+&= \left| \frac {\corr x - \appro x}{\appro x} \right|
+\leq |\theta_R| + \left| \frac {\appro y}{\appro x} \right| |\theta_I|
+\leq \max \left( \left| \frac {\appro y}{\appro x} \right|, 1 \right)
+(|\theta_R| + |\theta_I|) \\
+&\leq 2^{\max \left( \Exp (\appro y) - \Exp (\appro x) + 1, 0 \right)}
+\cdot \sqrt 2 |\theta|
+\end {align*}
+by Proposition~\ref {prop:expmuldiv}. The second inequality is proved
+in the same way.
+\end {proof}
+
 
 
 \subsection {Real functions}
