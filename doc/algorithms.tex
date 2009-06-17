@@ -584,6 +584,10 @@ the same sign, then $\delta$, $\delta' \leq 0$ and
    \right) 2^{\Exp (\appro y) - p}.
 \]
 
+Notice that $x_1 x_2$ and $y_1 y_2$ have the same sign
+if and only if $y_1 x_2$ and $x_1 y_2$ do. So there is
+always cancellation in precisely one of the real or the imaginary part.
+
 The different values $\epsilon_{X, n}^+$ for $X \in \{ R, I \}$ and
 $n \in \{ 1, 2 \}$ in the formul{\ae} above may be bounded by
 $k_{X, n} 2^{1 - p}$ according to Proposition~\ref {prop:relerror}.
@@ -610,7 +614,9 @@ $\epsilon \leq (k_{R, 1} + k_{I, 1} + k_{R, 2} + k_{I, 2} + 1)
 Applying Propositions~\ref {prop:comrelerror} and~\ref {prop:relerror}
 in the converse direction yields, under the assumption that $\corr z$
 and $\appro z$ lie in the same quadrant of the complex plane,
-\begin {align*}
+\begin {equation}
+\label {eq:propmulcomrel}
+\begin {array}{rl}
 \error (\appro x)
 &\leq (k_{R, 1} + k_{I, 1} + k_{R, 2} + k_{I, 2} + 1)
 2^{\max (2, \Exp (\appro y) - \Exp (\appro x) + 3)}
@@ -619,7 +625,10 @@ and $\appro z$ lie in the same quadrant of the complex plane,
 &\leq (k_{R, 1} + k_{I, 1} + k_{R, 2} + k_{I, 2} + 1)
 2^{\max (2, \Exp (\appro x) - \Exp (\appro y) + 3)}
 \cdot 2^{\Exp (\appro y) - p}
-\end {align*}
+\end {array}
+\end {equation}
+
+
 \subsubsection {Norm}
 \label {sssec:propnorm}
 
@@ -732,113 +741,104 @@ Then the propagated error may be derived by cumulating the errors obtained
 for multiplication in \S\ref {sssec:propmul}, the norm in
 \S\ref {sssec:propnorm} and the division by a real in
 \S\ref {sssec:proprealdiv}.
-We write
-\begin{align*}
-\corr a &= \Re (\corr {z_1} \overline {\corr {z_2}}) &
-\corr b &= \Im (\corr {z_1} \overline {\corr {z_2}}) &
-\corr c &= \Norm (\corr {z_2}) \\
-\appro a &= \Re (\appro {z_1} \overline {\appro {z_2}}) &
-\appro b &= \Im (\appro {z_1} \overline {\appro {z_2}}) &
-\appro c &= \Norm (\appro {z_2})
-\end{align*}
-Then
-\begin {align*}
-\error (\appro x)
-& \leq \left| \frac {\corr a}{\corr c} - \frac {\appro a}{\appro c} \right| \\
-& \leq \frac {1}{\appro c} \left(
-\frac {\corr a}{\corr c} |\appro c - \corr c| + |\corr a - \appro a|
-\right) \\
-& =
-\frac {\corr a}{\corr c} \frac {\error (\appro c)}{\appro c}
-+ \frac {\error (\appro a)}{\appro c}
-\end {align*}
-Letting $d = \Exp (\appro {x_1} \appro {x_2}) - \Exp (a)$
-and $d' = \Exp (\appro {y_1} \appro {y_2}) - \Exp (a)$, we may apply bound
-\eqref {eq:propmulre} to $\appro a$ by replacing $c_R$ by~$0$ since no final
-rounding occurs for $\appro a$, and $\Ulp (\appro a)$ by
-$2^{\Exp (\appro a) - p}$ since $\appro a$ need not be representable.
-Using $\appro x = \round \left( \frac {\appro a}{\appro c} \right)$
-and Propositions~\ref {prop:expround} and~\ref {prop:expmuldiv} shows that
-$\Exp (\appro a) \leq \Exp (\appro x) + \Exp (\appro c)$; from
-$\appro c \geq 2^{\Exp (\appro c) - 1}$ we finally deduce the bound
+
+Let $\appro {z_3} = \appro {z_1} \overline {\appro {z_2}}
+= \appro {x_3} + i \appro {y_3}$,
+$d = \Exp (\appro {x_1} \appro {x_2}) - \Exp (\appro {x_3})$
+and $d' = \Exp (\appro {y_1} \appro {y_2}) - \Exp (\appro {x_3})$.
+Then \eqref {eq:propmulre} applies and yields
+$\error (\appro {x_3}) \leq k_{R, 3} 2^{\Exp (\appro {x_3}) - p}$
+with
 \[
-\frac {\error( \appro a)}{\appro c} \leq \left(
-   \left( k_{R, 1} (2 + \epsilon_{R, 2}^+)
-   + k_{R, 2} (2 + \epsilon_{R, 1}^+) \right) 2^{d + 1}
+k_{R, 3} = \left( k_{R, 1} (2 + \epsilon_{R, 2}^+)
+   + k_{R, 2} (2 + \epsilon_{R, 1}^+) \right) 2^d
    + \left( k_{I, 1} (2 + \epsilon_{I, 2}^+)
-   + k_{I, 2} (2 + \epsilon_{I, 1}^+) \right) 2^{d' + 1}
-   \right) \Ulp (\appro x).
+   + k_{I, 2} (2 + \epsilon_{I, 1}^+) \right) 2^{d'}.
 \]
-By \eqref {eq:propnorm} and the previous bound on $\appro c$ we have
+We then apply \eqref {eq:propnorm} and \eqref {eq:propnormepsminus}
+to $\appro {x_4} = \Norm (\appro {z_2})$ to  obtain
+$\error (\appro {x_4}) \leq k_4 2^{\Exp (\appro {x_4}) - p}$ with
 \[
-\frac {\error (\appro c)}{\appro c} \leq
-2 \left (  k_{R,2} (2 + \epsilon^+_{R,2})
-  + k_{I,2} (2 + \epsilon^+_{I,2}) \right) 2^{1 - p}.
+k_4 =   2 \left(
+       k_{R, 2} (2 + \epsilon_{R, 2}^+)
+     + k_{I, 2} (2 + \epsilon_{I, 2}^+)
+\right)
 \]
-
-Let $c_{R,2}^-$ and $c_{I,2}^-$ two positive numbers such that $c_{R,2}^-|x_2|
-\leq \left|\corr{x_2}\right|$ and $c_{I,2}^-|y_2| \leq
-\left|\corr{y_2}\right|$, then
+and
 \[
-\left|\frac{A}{C}\right| \leq
-\frac{c_{R,1}c_{R,2}+c_{I,1}c_{I,2}}{(c_{R,2}^-)^2+(c_{I,2}^-)^2}
-\left|\frac{a}{c}\right|,
+\relerror (\appro {x_4}) = \epsilon_4^-
+\leq
+\max \big(
+   \epsilon_{R, 2}^- (2 - \epsilon_{R, 2}^-),
+   \epsilon_{I, 2}^- (2 - \epsilon_{I, 2}^-)
+\big).
 \]
-and, noticing that $\left|\frac{a}{c}\right|\frac{1}{c}\Ulp(c) \leq 2\Ulp(x)$,
-we have
+Now \eqref {eq:proprealdiv} shows that
+\begin {equation}
+\label {eq:propdivre}
+\error (\appro x)
+\leq
+\frac {2 (k_{R, 3} + k_4)}{1 - \epsilon_4^-} 2^{\Exp (\appro x) - p}.
+\end {equation}
+As written above, $d$ and $d'$ depend not only on the input and output, but
+also on the intermediate value $\appro {x_3}$. But noting that
+$
+\appro {x_3} = \appro x \Norm (\appro {z_2})
+\geq
+\appro x 2^{2 \max (\Exp (\appro {x_2}, \Exp (\appro {y_2})) - 2},
+$
+so that
+\begin {align*}
+d &\leq
+\Exp (\appro {x_1} \appro {x_2}) - \Exp (\appro x)
+- 2 \max (\Exp (\appro {x_2}, \Exp (\appro {y_2})) + 2, \\
+d' &\leq
+\Exp (\appro {y_1} \appro {y_2}) - \Exp (\appro x)
+- 2 \max (\Exp (\appro {x_2}, \Exp (\appro {y_2})) + 2,
+\end {align*}
+yields a bound \eqref {eq:propdivre} that is independent of
+intermediate values of the computation.
+
+The error in the imaginary part is computed in the same way as
+\begin {equation}
+\label {eq:propdivim}
+\error (\appro y)
+\leq
+\frac {2 (k_{I, 3} + k_4)}{1 - \epsilon_4^-} 2^{\Exp (\appro y) - p}.
+\end {equation}
+with
+\begin {align*}
+k_{I, 3}
+&= \left( k_{R, 1} (2 + \epsilon_{I, 2}^+)
+   + k_{I, 2} (2 + \epsilon_{R, 1}^+) \right) 2^\delta
+   + \left( k_{I, 1} (2 + \epsilon_{R, 2}^+)
+   + k_{R, 2} (2 + \epsilon_{I, 1}^+) \right) 2^{\delta'} \\
+\delta &\leq
+\Exp (\appro {x_1} \appro {y_2}) - \Exp (\appro y)
+- 2 \max (\Exp (\appro {x_2}, \Exp (\appro {y_2})) + 2 \\
+\delta' &\leq
+\Exp (\appro {x_2} \appro {y_1}) - \Exp (\appro y)
+- 2 \max (\Exp (\appro {x_2}, \Exp (\appro {y_2})) + 2
+\end {align*}
+
+As for the multiplication, a coarser
+bound may be obtained more easily using complex relative errors.
+Let $\corr {z_n} = (1 + \theta_n) \appro {z_n}$ with
+$\epsilon_n = | \theta_n |$. Then $\corr z = (1 + \theta_n) \appro z$
+with
 \[
-\left|\frac{A}{C}\right|\frac{1}{c}|c-C| \leq
-4\frac{c_{R,1}c_{R,2}+c_{I,1}c_{I,2}}{(c_{R,2}^-)^2+(c_{I,2}^-)^2}
-\left((1+c_{R,2})k_{R,2}+(1+c_{I,2})k_{I,2}\right)\Ulp(x).
+\theta = \frac {1 + \theta_1}{1 + \theta_2} - 1
+= (\theta_1 - \theta_2) \sum_{k = 0}^\infty (- \theta_2)^k
+\text { and }
+\epsilon \leq (|\theta_1| + |\theta_2|) \sum_{k = 0}^\infty |\theta_2|^k.
 \]
-Gathering the relevant inequalities, we show that the error on the real part
-is bounded in the following way
-\begin{equation*}
-  \begin{split}
-    \error(x) &\leq [c_R\\
-    &\quad+\left((1+c_{R,1})k_{R,2}+(1+c_{R,2})k_{R,1}\right)2^{1+d}
-    +\left((1+c_{I,1})k_{I,2}+(1+c_{I,2})k_{I,1}\right)2^{1+d'}\\
-    &\quad+4\frac{c_{R,1}c_{R,2}+c_{I,1}c_{I,2}}{(c_{R,2}^-)^2+(c_{I,2}^-)^2}
-    \left((1+c_{R,2})k_{R,2}+(1+c_{I,2})k_{I,2}\right)]
-    \Ulp(x).
-  \end{split}
-\end{equation*}
-
-An analog process gives
-\begin{equation*}
-  \begin{split}
-    \error(y) &\leq [c_I\\
-    &\quad+\left((1+c_{I,1})k_{R,2}+(1+c_{R,2})k_{I,1}\right)2^{1+\delta}
-    +\left((1+c_{R,1})k_{I,2}+(1+c_{I,2})k_{R,1}\right)2^{1+\delta'}\\
-    &\quad+4\frac{c_{R,1}c_{R,2}+c_{I,1}c_{I,2}}{(c_{R,2}^-)^2+(c_{I,2}^-)^2}
-    \left((1+c_{R,2})k_{R,2}+(1+c_{I,2})k_{I,2}\right)]
-    \Ulp(y),
-  \end{split}
-\end{equation*}
-with $\delta=\Exp(y_1x_2)-\Exp(b)$ and $\delta'=\Exp(x_1y_2)-\Exp(b)$.
-
-Note that, when $z_1$ and $z_2$ are the rounded values of $\corr{z_1}$
-and $\corr{z_2}$ respectively, with rounding away from zero, then we can
-substitute 1 for $k_{R,n}$, $c_{R,n}$, $k_{I,n}$, $c_{I,n}$ (with $n=1,2$),
-$\frac{1}{2}$ for $c_{R,2}^-$, $c_{I,2}^-$, giving the much simpler
-inequalities:
-\begin{align*}
-\error(x) &\leq [c_R + 2^{3+d} + 2^{3+d'} + 2^6] \Ulp(x)\\
-\error(y) &\leq [c_I + 2^{3+\delta} + 2^{3+\delta'} + 2^6] \Ulp(y).
-\end{align*}
-If the rounding mode is rounding to nearest, then we can substitute
-$\frac{1}{2}$ for $k_{R,n}$, $k_{I,n}$, $c_{R,2}^-$, $c_{I,2}^-$, 2 for
-$c_{R,n}$, $c_{I,n}$ and we have:
-\begin{align*}
-\error(x) &\leq [c_R + 3\times 2^{1+d} +3\times 2^{1+d'} + 192] \Ulp(x)\\
-\error(y) &\leq [c_I + 3\times 2^{1+\delta} +3\times 2^{1+\delta'} + 192]
-\Ulp(y).
-\end{align*}
-
-At last, let us remark that $x_1x_2$ and $y_1y_2$ cannot have the same
-sign if $y_1x_2$ and $-x_1y_2$ do have the same sign, thus there is
-always a cancellation sometimes in real part, sometimes in imaginary
-part of the division.
+Using the same notation and assumptions as at the end of
+\S\ref {sssec:propmul}, in particular that $\corr z$ and $\appro z$
+lie in the same quadrant and that all higher order error terms
+(involving $\epsilon_1^2$, $\epsilon_2^2$, $\epsilon_1 \epsilon_2$
+or higher powers) are absorbed by $2^{\Exp (\appro x) - p}$,
+we find the exact same error estimate \eqref {eq:propmulcomrel}
+also for the case of division.
 
 
 \subsubsection {Logarithm}
