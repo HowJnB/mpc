@@ -892,11 +892,11 @@ by a call to \texttt {mpc\_abs}; $|x|$ is added with an error of \ulp{1},
 since both terms are positive; division by~$2$ is free of error. So
 $w^2$ is computed with a cumulated error of \ulp{2}.
 This error of \ulp{2} propagates as is through the real square root:
-since we rounded down the argument, we have $\epsilon_1^- = 0$ in
+Since we rounded down the argument, we have $\epsilon_1^- = 0$ in
 \eqref {eq:proprealsqrt}; an error of \ulp{1} needs to be added for the
 rounding of $w$, so that the total error is \ulp{3}.
 
-$t$ is rounded up. Plugging the error of \ulp{3} for $w$ and \ulp{0} for $y$ into
+$t$ is rounded away. Plugging the error of \ulp{3} for $w$ and \ulp{0} for $y$ into
 \eqref {eq:proprealdiv} shows that the propagated error of real division is
 \ulp{6}, to which an additional rounding error of \ulp{1} has to be added
 for a total error of \ulp{7}.
