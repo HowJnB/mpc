@@ -231,7 +231,7 @@ mpc_pow_exact (mpc_ptr z, mpc_srcptr x, mpfr_srcptr y, mpc_rnd_t rnd)
             }
           /* replace (c,d) by (c/(c^2-d^2), -d/(c^2-d^2)) */
           mpz_neg (d, d);
-          ec -= t;
+          ec = -ec - t;
         }
       mpz_neg (my, my);
     }
@@ -414,25 +414,30 @@ mpc_pow (mpc_ptr z, mpc_srcptr x, mpc_srcptr y, mpc_rnd_t rnd)
       if (mpfr_cmp_si (MPC_RE(x), -1) == 0 && mpfr_integer_p (MPC_RE(y)))
         z_real = 1;
 
-      /* x^y is imaginary when:
+      /* for x real, x^y is imaginary when:
          (a) x is negative and y is half-an-integer
-         (b) x = -1 and Re(y) is half-an-integer */
+         (b) x = -1 and Re(y) is half-an-integer
+      */
       if (mpfr_cmp_ui (MPC_RE(x), 0) < 0 && is_odd (MPC_RE(y), 1) &&
           (y_real || mpfr_cmp_si (MPC_RE(x), -1) == 0))
         z_imag = 1;
     }
-
-  /* I^(t*I) and (-I)^(t*I) are real for t real,
-     I^(n+t*I) and (-I)^(n+t*I) are real for n even and t real, and
-     I^(n+t*I) and (-I)^(n+t*I) are imaginary for n odd and t real */
-  if ((mpc_cmp_si_si (x, 0, 1) == 0 || mpc_cmp_si_si (x, 0, -1) == 0) &&
-      mpfr_integer_p (MPC_RE(y)))
-    { /* x is I or -I, and Re(y) is an integer */
-      if (is_odd (MPC_RE(y), 0))
-        z_imag = 1; /* Re(y) odd: z is imaginary */
-      else
-        z_real = 1; /* Re(y) even: z is real */
-    }
+  else /* x non real */
+    /* I^(t*I) and (-I)^(t*I) are real for t real,
+       I^(n+t*I) and (-I)^(n+t*I) are real for n even and t real, and
+       I^(n+t*I) and (-I)^(n+t*I) are imaginary for n odd and t real */
+    if ((mpc_cmp_si_si (x, 0, 1) == 0 || mpc_cmp_si_si (x, 0, -1) == 0) &&
+        mpfr_integer_p (MPC_RE(y)))
+      { /* x is I or -I, and Re(y) is an integer */
+        if (is_odd (MPC_RE(y), 0))
+          z_imag = 1; /* Re(y) odd: z is imaginary */
+        else
+          z_real = 1; /* Re(y) even: z is real */
+      }
+    else /* x^y is imaginary x is imaginary and y = -1 */
+      if (mpfr_cmp_ui (MPC_RE(x), 0) == 0 && y_real &&
+          mpfr_cmp_si (MPC_RE(y), -1) == 0)
+        z_imag = 1;
 
   /* first bound |Re(y log(x))|, |Im(y log(x)| < 2^q */
   mpc_init2 (t, 64);
