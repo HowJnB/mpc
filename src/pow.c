@@ -425,8 +425,10 @@ mpc_pow (mpc_ptr z, mpc_srcptr x, mpc_srcptr y, mpc_rnd_t rnd)
   else /* x non real */
     /* I^(t*I) and (-I)^(t*I) are real for t real,
        I^(n+t*I) and (-I)^(n+t*I) are real for n even and t real, and
-       I^(n+t*I) and (-I)^(n+t*I) are imaginary for n odd and t real */
-    if ((mpc_cmp_si_si (x, 0, 1) == 0 || mpc_cmp_si_si (x, 0, -1) == 0) &&
+       I^(n+t*I) and (-I)^(n+t*I) are imaginary for n odd and t real
+       (s*I)^n is real for n even and imaginary for n odd */
+    if ((mpc_cmp_si_si (x, 0, 1) == 0 || mpc_cmp_si_si (x, 0, -1) == 0 ||
+         (mpfr_cmp_ui (MPC_RE(x), 0) == 0 && y_real)) &&
         mpfr_integer_p (MPC_RE(y)))
       { /* x is I or -I, and Re(y) is an integer */
         if (is_odd (MPC_RE(y), 0))
@@ -434,10 +436,6 @@ mpc_pow (mpc_ptr z, mpc_srcptr x, mpc_srcptr y, mpc_rnd_t rnd)
         else
           z_real = 1; /* Re(y) even: z is real */
       }
-    else /* x^y is imaginary x is imaginary and y = -1 */
-      if (mpfr_cmp_ui (MPC_RE(x), 0) == 0 && y_real &&
-          mpfr_cmp_si (MPC_RE(y), -1) == 0)
-        z_imag = 1;
 
   /* first bound |Re(y log(x))|, |Im(y log(x)| < 2^q */
   mpc_init2 (t, 64);
