@@ -189,50 +189,28 @@ mpc_pow_exact (mpc_ptr z, mpc_srcptr x, mpfr_srcptr y, mpc_rnd_t rnd)
   */
   if (mpz_cmp_ui (my, 0) < 0)
     {
-      /* If my < 0, 1 / (c + I*d) =
-         (c - I*d)/(c^2 - d^2), thus a sufficient condition is that
-         c^2 - d^2 is a power of two, assuming |c| <> |d|.
-         Assume a prime p <> 2 divides c^2 - d^2,
+      /* If my < 0, 1 / (c + I*d) = (c - I*d)/(c^2 + d^2), thus a sufficient
+         condition is that c^2 + d^2 is a power of two, assuming |c| <> |d|.
+         Assume a prime p <> 2 divides c^2 + d^2,
          then if p does not divide c or d, 1 / (c + I*d) cannot be exact.
          If p divides both c and d, then we can write c = p*c', d = p*d',
          and 1 / (c + I*d) = 1/p * 1/(c' + I*d'). This shows that if 1/(c+I*d)
          is exact, then 1/(c' + I*d') is exact too, and we are back to the
          previous case. In conclusion, a necessary and sufficient condition
-         is that c^2 - d^2 is a power of two.
-
-         If |c| = |d|, then 1/(c + I*c) = 1/c *  (1/2 - 1/2*I),
-         and 1/(c - I*c) = 1/c *  (1/2 + 1/2*I), thus a sufficient
-         condition is that c is a power of two.
+         is that c^2 + d^2 is a power of two.
       */
-      if (mpz_cmpabs (c, d) == 0)
+      /* FIXME: we could first compute c^2+d^2 mod a limb for example */
+      mpz_mul (a, c, c);
+      mpz_addmul (a, d, d);
+      t = mpz_scan1 (a, 0);
+      if (mpz_sizeinbase (a, 2) != 1 + t) /* a is not a power of two */
         {
-          t = mpz_scan1 (c, 0);
-          if (mpz_sizeinbase (c, 2) != 1 + t) /* c is not a power of two */
-            {
-              ret = -1; /* not representable */
-              goto end;
-            }
-          /* replace (c,d) by (1/c/2, -/+1/c/2) */
-          mpz_div_2exp (c, c, t); /* now c = sign(c0) */
-          mpz_div_2exp (d, d, t); /* now d = sign(d0) */
-          mpz_neg (d, d);         /* now d = -sign(d0) */
-          ec = -ec - (t + 1);
+          ret = -1; /* not representable */
+          goto end;
         }
-      else
-        {
-          /* FIXME: we could first compute c^2-d^2 mod a limb for example */
-          mpz_mul (a, c, c);
-          mpz_submul (a, d, d);
-          t = mpz_scan1 (a, 0);
-          if (mpz_sizeinbase (a, 2) != 1 + t) /* a is not a power of two */
-            {
-              ret = -1; /* not representable */
-              goto end;
-            }
-          /* replace (c,d) by (c/(c^2-d^2), -d/(c^2-d^2)) */
-          mpz_neg (d, d);
-          ec = -ec - t;
-        }
+      /* replace (c,d) by (c/(c^2+d^2), -d/(c^2+d^2)) */
+      mpz_neg (d, d);
+      ec = -ec - t;
       mpz_neg (my, my);
     }
 
@@ -294,8 +272,9 @@ mpc_pow_exact (mpc_ptr z, mpc_srcptr x, mpfr_srcptr y, mpc_rnd_t rnd)
 /* Return 1 if y*2^k is an odd integer, 0 otherwise.
    Adapted from MPFR, file pow.c.
    
-   Example: with k=0, check if y is an odd integer.
-            with k=1, check if y is half-an-integer.
+   Examples: with k=0, check if y is an odd integer,
+             with k=1, check if y is half-an-integer,
+             with k=-1, check if y/2 is an odd integer.
 */
 #define MPFR_LIMB_HIGHBIT ((mp_limb_t) 1 << (BITS_PER_MP_LIMB - 1))
 static int
@@ -435,6 +414,15 @@ mpc_pow (mpc_ptr z, mpc_srcptr x, mpc_srcptr y, mpc_rnd_t rnd)
           z_imag = 1; /* Re(y) odd: z is imaginary */
         else
           z_real = 1; /* Re(y) even: z is real */
+      }
+    else /* (t+/-t*I)^(2n) is imaginary for n odd and real for n even */
+      if (mpfr_cmpabs (MPC_RE(x), MPC_IM(x)) == 0 && y_real &&
+          mpfr_integer_p (MPC_RE(y)) && is_odd (MPC_RE(y), 0) == 0)
+      {
+        if (is_odd (MPC_RE(y), -1)) /* y/2 is odd */
+          z_imag = 1;
+        else
+          z_real = 1;
       }
 
   /* first bound |Re(y log(x))|, |Im(y log(x)| < 2^q */
