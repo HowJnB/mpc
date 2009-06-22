@@ -109,7 +109,7 @@ mpc_perfect_square_p (mpz_t a, mpz_t b, mpz_t c, mpz_t d)
 static int
 mpc_pow_exact (mpc_ptr z, mpc_srcptr x, mpfr_srcptr y, mpc_rnd_t rnd)
 {
-  mp_exp_t ec, ed, ey;
+  mp_exp_t ec, ed, ey, emin, emax;
   mpz_t my, a, b, c, d, u;
   unsigned long int t;
   int ret;
@@ -253,10 +253,18 @@ mpc_pow_exact (mpc_ptr z, mpc_srcptr x, mpfr_srcptr y, mpc_rnd_t rnd)
       ed *= 2;
     }
 
+  /* save emin, emax */
+  emin = mpfr_get_emin ();
+  emax = mpfr_get_emax ();
+  mpfr_set_emin (mpfr_get_emin_min ());
+  mpfr_set_emax (mpfr_get_emax_max ());
   ret = mpfr_set_z (MPC_RE(z), a, MPC_RND_RE(rnd));
   ret = MPC_INEX(ret, mpfr_set_z (MPC_IM(z), b, MPC_RND_IM(rnd)));
   mpfr_mul_2si (MPC_RE(z), MPC_RE(z), ed, MPC_RND_RE(rnd));
   mpfr_mul_2si (MPC_IM(z), MPC_IM(z), ed, MPC_RND_IM(rnd));
+  /* restore emin, emax */
+  mpfr_set_emin (emin);
+  mpfr_set_emax (emax);
 
  end:
   mpz_clear (my);
@@ -480,6 +488,12 @@ mpc_pow (mpc_ptr z, mpc_srcptr x, mpc_srcptr y, mpc_rnd_t rnd)
       if ((z_imag || mpfr_can_round (MPC_RE(u), p - 3 - dr, GMP_RNDN, GMP_RNDZ, pr)) &&
           (z_real || mpfr_can_round (MPC_IM(u), p - 3 - di, GMP_RNDN, GMP_RNDZ, pi)))
         break;
+      
+      /* if Re(u) is not known to be zero, assume it is a normal number, i.e.,
+         neither zero, Inf or NaN, otherwise we might enter an infinite loop */
+      MPC_ASSERT (z_imag || mpfr_number_p (MPC_RE(u)));
+      /* idem for Im(u) */
+      MPC_ASSERT (z_real || mpfr_number_p (MPC_IM(u)));
 
       if (loop == 0) /* first iteration of Ziv's algorithm */
         {
