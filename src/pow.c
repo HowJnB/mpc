@@ -356,14 +356,31 @@ mpc_pow (mpc_ptr z, mpc_srcptr x, mpc_srcptr y, mpc_rnd_t rnd)
 
   if (y_real && mpfr_zero_p (MPC_RE (y))) /* case y zero */
     {
-      if (x_real && mpfr_zero_p (MPC_RE (x))) /* 0^0 = NaN +i*NaN */
+      if (x_real && mpfr_zero_p (MPC_RE(x))) /* 0^0 = NaN +i*NaN */
         {
-          mpfr_set_nan (MPC_RE (z));
-          mpfr_set_nan (MPC_IM (z));
+          mpfr_set_nan (MPC_RE(z));
+          mpfr_set_nan (MPC_IM(z));
           return 0;
         }
-      else /* x^0 = 1 +i*0 even for NaN */
-        return mpc_set_ui_ui (z, 1, 0, rnd);
+      else /* x^0 = 1 +/- i*0 even for x=NaN */
+        {
+          int sa, sb, sc, sd;
+          mpc_init2 (u, 2);
+          mpc_log (u, x, MPC_RNDNN);
+          /* sa = sign(Re(log(x))), sb = sign(Im(log(x))) */
+          sa = mpfr_signbit (MPC_RE(u)) ? -2 : 2;
+          if (mpfr_cmp_ui (MPC_RE(x), 1) == 0)
+            sa = 1;
+          sb = mpfr_signbit (MPC_IM(u)) ? -2 : 2;
+          /* sc = sign(Re(y)), sd = sign(Im(y)) */
+          sc = mpfr_signbit (MPC_RE(y)) ? -2 : 2;
+          sd = mpfr_signbit (MPC_IM(y)) ? -2 : 2;
+          ret = mpc_set_ui_ui (z, 1, 0, rnd);
+          if (sa * sd + sb * sc < 0)
+            mpfr_neg (MPC_IM(z), MPC_IM(z), MPC_RND_IM(rnd));
+          mpc_clear (u);
+          return ret;
+        }
     }
 
   if (x_real) /* case x real */
