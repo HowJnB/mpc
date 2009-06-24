@@ -168,6 +168,33 @@ mpc_pow_exact (mpc_ptr z, mpc_srcptr x, mpfr_srcptr y, mpc_rnd_t rnd,
     }
   /* now ec=ed and x = (c + I * d) * 2^ec */
 
+  /* divide by two if possible */
+  if (mpz_cmp_ui (c, 0) == 0)
+    {
+      t = mpz_scan1 (d, 0);
+      mpz_div_2exp (d, d, t);
+      ec += t;
+    }
+  else if (mpz_cmp_ui (d, 0) == 0)
+    {
+      t = mpz_scan1 (c, 0);
+      mpz_div_2exp (c, c, t);
+      ec += t;
+    }
+  else /* neither c nor d is zero */
+    {
+      unsigned long u;
+      t = mpz_scan1 (c, 0);
+      u = mpz_scan1 (d, 0);
+      if (u < t)
+        t = u;
+      mpz_div_2exp (c, c, t);
+      mpz_div_2exp (d, d, t);
+      ec += t;
+    }
+
+  /* now either one of c, d is odd */
+
   while (ey < 0)
     {
       /* check if x is a square */
@@ -234,6 +261,7 @@ mpc_pow_exact (mpc_ptr z, mpc_srcptr x, mpfr_srcptr y, mpc_rnd_t rnd,
   /* invariant: (a + I*b) * 2^ed = ((c + I*d) * 2^ec)^trunc(my/2^t) */
   while (t-- > 0)
     {
+      unsigned long v, w;
       /* square a + I*b */
       mpz_mul (u, a, b);
       mpz_mul (a, a, a);
@@ -248,6 +276,29 @@ mpc_pow_exact (mpc_ptr z, mpc_srcptr x, mpfr_srcptr y, mpc_rnd_t rnd,
           mpz_addmul (b, a, d); /* bc+ad */
           mpz_swap (a, u);
           ed += ec;
+        }
+      /* remove powers of two in (a,b) */
+      if (mpz_cmp_ui (a, 0) == 0)
+        {
+          w = mpz_scan1 (b, 0);
+          mpz_div_2exp (b, b, w);
+          ed += w;
+        }
+      else if (mpz_cmp_ui (b, 0) == 0)
+        {
+          w = mpz_scan1 (a, 0);
+          mpz_div_2exp (a, a, w);
+          ed += w;
+        }
+      else
+        {
+          w = mpz_scan1 (a, 0);
+          v = mpz_scan1 (b, 0);
+          if (v < w)
+            w = v;
+          mpz_div_2exp (a, a, w);
+          mpz_div_2exp (b, b, w);
+          ed += w;
         }
       if (mpz_sizeinbase (a, 2) > maxprec || mpz_sizeinbase (b, 2) > maxprec)
         goto end;
@@ -497,6 +548,7 @@ mpc_pow (mpc_ptr z, mpc_srcptr x, mpc_srcptr y, mpc_rnd_t rnd)
   for (loop = 0;; loop++)
     {
       mp_exp_t dr, di;
+
       if (p + q > 64) /* otherwise we reuse the initial approximation
                          t of y*log(x), avoiding two computations */
         {
