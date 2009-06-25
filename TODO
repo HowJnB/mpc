@@ -28,6 +28,8 @@ New functions to implement:
        What about the mpc_foo_pow functions?
      - from Andreas Enge and Philippe Théveny 17 July 2008
        agm (and complex logarithm with agm ?)
+     - from Andreas Enge 25 June 2009:
+       correctly rounded roots of unity zeta_n^i
 
 New tests to add:
 - from Andreas Enge and Philippe Théveny 9 April 2008
