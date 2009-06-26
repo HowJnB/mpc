@@ -8,7 +8,7 @@ check_PROGRAMS = tabs tadd tadd_fr tadd_ui targ tconj tcos tcosh tdiv         \
 tdiv_2exp tdiv_fr tdiv_ui texp tfr_div tfr_sub tget_version timag tio_str     \
 tlog tmul tmul_2exp tmul_fr tmul_i tmul_si tmul_ui tneg tnorm tpow tprec      \
 tproj treal treimref tset tsin tsinh tsqr tsqrt tstrtoc tsub tsub_fr tsub_ui  \
-ttan ttanh tui_div tui_ui_sub 
+ttan ttanh tui_div tui_ui_sub
 
 check_LTLIBRARIES=libmpc-tests.la
 libmpc_tests_la_SOURCES=mpc-tests.h random.c tgeneric.c read_data.c           \

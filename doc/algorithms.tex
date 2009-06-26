@@ -1175,6 +1175,35 @@ A relevant reference is \cite{BrDiJeLeMeMuReStTo09}, especially Section 4.5
 which discusses complex floating-point numbers, and gives error bounds for
 multiplication, division and square root.
 
+\paragraph{Sign of zeroes.}
+When the output value has a zero real or imaginary part, its sign should be
+decided. When the inputs also have a zero real or imaginary part, we
+consider all possible limits, and if all those limits give the same sign,
+we take this as the sign of the zero part.
+Otherwise, we round to $+0$, except for rounding toward $-\infty$, where we
+round to $-0$.
+
+Example~: consider $x = 1 + 0 i$ and $y = -0 + 0 i$, we consider that $x$
+is the limit of $1 + \epsilon i$ for $\epsilon > 0$ tending to zero.
+Similarly, $y = -\delta + \gamma i$ with $\delta, \gamma > 0$.
+Now $\log x \approx \epsilon^2/2 + \epsilon i$, thus
+$y \log x \approx (-\epsilon^2 \delta/2 - \epsilon \gamma)
++ i (\epsilon^2 \gamma/2 - epsilon \delta)$.
+Thus if we neglect terms of order $3$ or more, 
+whatever the relative growth of $\epsilon, \delta, \gamma$, the real and
+imaginary parts of $y \log x$ are negative, thus we decide $x^y$ is rounded
+to $1 - 0 i$.
+
+For $x = 1 - 0 i$ and $y = 0 + 0 i$, we write
+$x = 1 - \epsilon i$ and $y = \delta + \gamma i$,
+which gives $\log x \approx \epsilon^2/2 - \epsilon i$
+and $y \log x \approx \epsilon \gamma - i \epsilon \delta + O(\epsilon^2)$,
+thus we also round $x^y$ to $1 - 0 i$.
+
+% (1 -0)^(-0 -0):
+% x = 1 - epsilon i, y = -delta-gamma*i
+% y log(x) = -epsilon gamma + i epsilon delta + O(epsilon^2)
+
 \bibliographystyle{acm}
 \bibliography{algorithms}
 
