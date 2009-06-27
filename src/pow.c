@@ -478,15 +478,16 @@ mpc_pow (mpc_ptr z, mpc_srcptr x, mpc_srcptr y, mpc_rnd_t rnd)
              log(x) ~ log(x) + eps/x*i thus
              y*log(x) ~ y*log(x) + [y/x*eps + log(x)*delta]*i
              For x < 0 and y integer:
-             log(x) ~ log|x| + [Pi + eps/x]*i thus
-             y*log(x) ~ y*log|x| + [y*Pi + y/x*eps + log|x|*delta]*i
+             log(x) ~ log|x| + sign(eps)*[Pi - |eps/x|]*i thus
+             y*log(x) ~ y*log|x| + [sign(eps)*y*Pi-y/|x|*eps+log|x|*delta]*i
              thus if y is even we get the same term as for x > 0 for the
              imaginary part, otherwise its opposite. */
-          s1 = mpfr_signbit (MPC_RE(x)) ? -1 : 1;
-          s1 *= mpfr_signbit (MPC_RE(y)) ? -1 : 1; /* sign of y/x */
-          s1 *= MPFR_SIGN(MPC_IM(x));              /* sign of y/x*eps */
+          s1 = mpfr_signbit (MPC_RE(x)) ? 1 : -1; /* sign of x */
+          s1 *= mpfr_signbit (MPC_RE(y)) ? 1 : -1; /* sign of y/x for x > 0
+                                                      or -y/|x| for x < 0 */
+          s1 *= MPFR_SIGN(MPC_IM(x));              /* sign of -y*eps */
           s2 = mpfr_get_exp (MPC_RE(x)) >= 1 ? 1 : -1; /* sign of log|x| */
-          s2 *= MPFR_SIGN(MPC_IM(y));                /* sign of log(x)*delta */
+          s2 *= MPFR_SIGN(MPC_IM(y));                /* sign of log|x|*delta */
           if (s1 != s2)
             {
               if (MPC_RND_IM(rnd) == GMP_RNDD)
@@ -494,7 +495,7 @@ mpc_pow (mpc_ptr z, mpc_srcptr x, mpc_srcptr y, mpc_rnd_t rnd)
               else
                 s1 = 1; /* take +0 as arbitrary sign */
             }
-          if (MPFR_SIGN(MPC_RE(x)) < 0 && is_odd (MPC_RE(y), 0))
+          else if (MPFR_SIGN(MPC_RE(x)) < 0 && is_odd (MPC_RE(y), 0))
             s1 = -s1;
           ret = mpfr_pow (MPC_RE(z), MPC_RE(x), MPC_RE(y), MPC_RND_RE(rnd));
           ret = MPC_INEX(ret, mpfr_set_ui (MPC_IM(z), 0, MPC_RND_IM(rnd)));

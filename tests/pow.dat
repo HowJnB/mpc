@@ -186,6 +186,16 @@
 # log(x) = log(2) + epsilon/2*i + O(epsilon^2)
 # y*log(x) = [-3*log(2) + o(1)] + [-3*epsilon/2-delta*log(2)]*i
 0 0    2 0x1p-3 2 -0    2 2 2 +0    2 -3 2 -0    N N
+# (-2 -0)^(3 +0) -> (-8 -0)
+# x = -2 - epsilon*i, y = 3 + delta*i
+# log(x) = log(2) - [Pi-epsilon/2]*i + O(epsilon^2)
+# y*log(x) ~ 3*log(2) + [-3*Pi+3*epsilon/2+delta*log(2)]*i
+0 0    2 -8 2 -0    2 -2 2 -0    2 3 2 +0    N N
+# (-2 -0)^(-3 -0) -> (-1/8 +0)
+# x = -2 - epsilon*i, y = -3 - delta*i
+# log(x) = log(2) - [Pi-epsilon/2]*i + O(epsilon^2)
+# y*log(x) ~ -3*log(2) + [3*Pi-3*epsilon/2-delta*log(2)]*i
+0 0    2 -0x1p-3 2 +0    2 -2 2 -0    2 -3 2 -0    N N
 0 0 2 +0 2 -2    2 +0 2 0x1p-1    2 -1 2 -0    N N
 0 - 2 +0 3 -5    2 +0 53 0xCCCCCCCCCCCCDp-54    2 -1 2 -0    N N
 - 0 5 -25 2 +0   2 +0 53 0xCCCCCCCCCCCCDp-54    2 -2 2 -0    N N
