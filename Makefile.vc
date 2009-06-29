@@ -102,6 +102,7 @@ $(DIRMPC)\mul_ui.obj \
 $(DIRMPC)\neg.obj \
 $(DIRMPC)\norm.obj \
 $(DIRMPC)\out_str.obj \
+$(DIRMPC)\pow.obj \
 $(DIRMPC)\proj.obj \
 $(DIRMPC)\random.obj \
 $(DIRMPC)\random2.obj \
@@ -165,6 +166,7 @@ mul_ui.obj \
 neg.obj \
 norm.obj \
 out_str.obj \
+pow.obj \
 proj.obj \
 random.obj \
 random2.obj \
@@ -289,6 +291,8 @@ test :
         cd $(DIRMPCTESTS) && tneg.exe && cd ..
         $(TESTCOMPILE)tnorm.c  $(MIDTESTCOMPILE)tnorm.exe $(ENDTESTCOMPILE)
         cd $(DIRMPCTESTS) && tnorm.exe && cd ..
+        $(TESTCOMPILE)tpow.c  $(MIDTESTCOMPILE)tpow.exe $(ENDTESTCOMPILE)
+        cd $(DIRMPCTESTS) && tpow.exe && cd ..
         $(TESTCOMPILE)tprec.c  $(MIDTESTCOMPILE)tprec.exe $(ENDTESTCOMPILE)
         cd $(DIRMPCTESTS) && tprec.exe && cd ..
         $(TESTCOMPILE)tproj.c  $(MIDTESTCOMPILE)tproj.exe $(ENDTESTCOMPILE)
