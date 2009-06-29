@@ -180,6 +180,8 @@ __MPC_DECLSPEC int  mpc_set_sj_sj __MPC_PROTO ((mpc_ptr, intmax_t, intmax_t, mpc
 __MPC_DECLSPEC int  mpc_set_uj_uj __MPC_PROTO ((mpc_ptr, uintmax_t, uintmax_t, mpc_rnd_t));
 #endif
 
+__MPC_DECLSPEC void mpc_set_nan     __MPC_PROTO ((mpc_ptr));
+
 __MPC_DECLSPEC int  mpc_real __MPC_PROTO ((mpfr_ptr, mpc_srcptr, mpfr_rnd_t));
 __MPC_DECLSPEC int  mpc_imag __MPC_PROTO ((mpfr_ptr, mpc_srcptr, mpfr_rnd_t));
 __MPC_DECLSPEC int  mpc_arg  __MPC_PROTO ((mpfr_ptr, mpc_srcptr, mpfr_rnd_t));

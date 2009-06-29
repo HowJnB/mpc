@@ -81,3 +81,9 @@ int
 mpc_set_sj (mpc_ptr a, intmax_t b, mpc_rnd_t rnd)
    MPC_SET_X (sj, a, b, rnd)
 #endif
+
+void
+mpc_set_nan (mpc_ptr a) {
+   mpfr_set_nan (mpc_realref (a));
+   mpfr_set_nan (mpc_imagref (a));
+}

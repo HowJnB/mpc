@@ -616,6 +616,10 @@ Set the real part of @var{rop} from @var{op1}, and its imaginary part from
 For functions assigning complex variables from strings or input streams,
 @pxref{string-io,,String and Stream Input and Output}.
 
+@deftypefun void mpc_set_nan (mpc_t @var{rop})
+Set @var{rop} to Nan+i*NaN.
+@end deftypefun
+
 
 @node String and Stream Input and Output, Complex Comparison, Assigning Complex Numbers, Complex Functions
 @comment  node-name,  next,  previous,  up
