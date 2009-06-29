@@ -170,16 +170,16 @@ static char *
 get_pretty_str (const int base, const size_t n, mpfr_srcptr x, mpfr_rnd_t rnd)
 {
   mp_exp_t expo;
-  char *uggly;
+  char *ugly;
   char *pretty;
 
   if (mpfr_zero_p (x))
     return pretty_zero (x);
 
-  uggly = mpfr_get_str (NULL, &expo, base, n, x, rnd);
-  MPC_ASSERT (uggly != NULL);
-  pretty = prettify (uggly, expo, base, !mpfr_number_p (x));
-  mpfr_free_str (uggly);
+  ugly = mpfr_get_str (NULL, &expo, base, n, x, rnd);
+  MPC_ASSERT (ugly != NULL);
+  pretty = prettify (ugly, expo, base, !mpfr_number_p (x));
+  mpfr_free_str (ugly);
 
   return pretty;
 }
