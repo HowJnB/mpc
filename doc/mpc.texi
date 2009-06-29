@@ -988,27 +988,6 @@ structure which should be created using the GMP @code{rand_init} function, see
 the GMP manual.
 @end deftypefun
 
-@deftypefun void mpc_random (mpc_t @var{rop})
-Generate a random complex, with real and imaginary parts uniformly
-distributed in the interval -1 < X < 1.
-
-This function is deprecated and will be suppressed in the next release.
-@end deftypefun
-
-@deftypefun void mpc_random2 (mpc_t @var{rop}, mp_size_t @var{max_size}, mp_exp_t @var{max_exp})
-Generate a random complex, with real and imaginary part
-of at most @var{max_size} limbs, with long strings of
-zeros and ones in the binary representation. The exponent of the
-real (resp. imaginary) part is in
-the interval @minus{}@var{exp} to @var{exp}.
-This function is useful for
-testing functions and algorithms, since this kind of random numbers have
-proven to be more likely to trigger corner-case bugs.
-Negative parts are generated when @var{max_size} is negative.
-
-This function is deprecated and will be suppressed in the next release.
-@end deftypefun
-
 @deftypefun {const char *} mpc_get_version (void)
 Return the MPC version, as a null-terminated string.
 @end deftypefun
