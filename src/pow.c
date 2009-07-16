@@ -463,7 +463,10 @@ mpc_pow (mpc_ptr z, mpc_srcptr x, mpc_srcptr y, mpc_rnd_t rnd)
       /* Special case 1^y = 1 */
       if (mpfr_cmp_ui (MPC_RE(x), 1) == 0)
         {
-          ret = mpc_set_ui (z, 1, rnd);
+          ret = mpc_set_ui (z, +1, rnd);
+          if (mpfr_signbit (MPC_IM (y))
+              &&  mpfr_signbit (MPC_RE (y)) != mpfr_signbit (MPC_IM (x)))
+            mpc_conj (z, z, MPC_RNDNN);
           goto end;
         }
 
@@ -635,8 +638,12 @@ mpc_pow (mpc_ptr z, mpc_srcptr x, mpc_srcptr y, mpc_rnd_t rnd)
 
   if (z_real)
     {
+      int s = mpfr_signbit (MPC_IM (y))
+        && mpfr_signbit (MPC_RE (y)) != mpfr_signbit (MPC_IM (x));
       ret = mpfr_set (MPC_RE(z), MPC_RE(u), MPC_RND_RE(rnd));
       ret = MPC_INEX(ret, mpfr_set_ui (MPC_IM(z), 0, MPC_RND_IM(rnd)));
+      if (s)
+        mpc_conj (z, z, MPC_RNDNN);
     }
   else if (z_imag)
     {
