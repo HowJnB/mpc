@@ -1177,216 +1177,401 @@ multiplication, division and square root.
 
 \paragraph{Sign of zeroes.}
 When the output value has a zero real or imaginary part, its sign should be
-decided. When the inputs also have a zero real or imaginary part, we
-consider all possible limits, and if all those limits give the same sign,
-we take this as the sign of the zero part.
-Otherwise, we round to $+0$, except for rounding toward $-\infty$, where we
-round to $-0$.
+decided, which is not always possible if we want it to be consistent with the
+formula $x^y = \exp(y\log x)$ (in the following, we exclude $0^y$).
 
-Example~: consider $x = 1 + 0 i$ and $y = -0 + 0 i$, we consider that $x$
-is the limit of $1 + \epsilon i$ for $\epsilon > 0$ tending to zero.
-Similarly, $y = -\delta + \gamma i$ with $\delta, \gamma > 0$.
-Now $\log x \approx \epsilon^2/2 + \epsilon i$, thus
-$y \log x \approx (-\epsilon^2 \delta/2 - \epsilon \gamma)
-+ i (\epsilon^2 \gamma/2 - \epsilon \delta)$.
-Thus if we neglect terms of order $3$ or more, 
-whatever the relative growth of $\epsilon, \delta, \gamma$, the real and
-imaginary parts of $y \log x$ are negative, thus we decide $x^y$ is rounded
-to $1 - 0 i$.
-
-For $x = 1 - 0 i$ and $y = 0 + 0 i$, we write
-$x = 1 - \epsilon i$ and $y = \delta + \gamma i$,
-which gives $\log x \approx \epsilon^2/2 - \epsilon i$
-and $y \log x \approx \epsilon \gamma - i \epsilon \delta + O(\epsilon^2)$,
-thus we also round $x^y$ to $1 - 0 i$.
-
-% (1 -0)^(-0 -0):
-% x = 1 - epsilon i, y = -delta-gamma*i
-% y log(x) = -epsilon gamma + i epsilon delta + O(epsilon^2)
-
-
-
-
-The sign of zero parts are chosen so that they are consistent with the formula
-$x^y = \exp(y\log x)$.
-Let $\phi \in [-\pi, +\pi]$ the argument of $x = |x| e^{i\phi}$, $y_1$
-(resp. $y_2$) the real (resp. imaginary) part of $y = y_1 + y_2 i$.
-Then 
+Let $x_1$, $x_2$, $y_1$, and $y_2$ real numbers so that $x = x_1 + x_2 i$ and
+$y = y_1 + y_2 i$.
+Let $\phi \in [-\pi, +\pi]$ the argument of $x = |x| e^{i\phi}$, with the
+convention that when $x_1 < 0$ the argument of $x$ is $+\pi$ if $x_2 = +0$ and
+$-\pi$ if $x_2 = -0$.
+Then
 \[
-x^y=\exp(A(x,y)) (\cos B(x,y)+\sin B(x,y) i)
+x^y=\exp\left(A(x,y)\right) \left(\cos B(x,y)+\sin B(x,y) i\right)
 \] where
-\begin {eqnarray*}
-A(x,y) & = & y_1\log|x|-y_2\phi,\\
-B(x,y) & = & y_2\log|x|+y_1\phi.
-\end {eqnarray*}
-As $|x^y| = \exp(A(x,y))$ is positive, the value of $B(x,y)$ determines the
-sign of each part of $x^y$.
-Special study is needed around $B(x, y)$ values of the form $k \pi/2$ to
-determine the sign of the zero part: let $Q_{x_0}$ (resp. $Q_{y_0}$) the
-quadrant where $x_0$ (resp. $y_0$) lies, when $B(x_0,y_0)$ lies around zero,
-if $B(x,y)$ stays non negative for $x$ and $y$ in an open domain of $Q_{x_0}
-\times Q_{y_0}$ containing $(x_0, y_0)$ then $\sin B(x_0, y_0) = \sin(+0) =
-+0$, if it stays non positive then $\sin B(x_0, y_0) = \sin (-0) = -0$.
-If $B(x,y)$ tends to $+\pi$ (resp. $-\pi$) staying lesser (resp. greater) than
-it when $(x,y)$ tends to $(x_0, y_0)$, then $\sin B(x_0,y_0) = +0$.
-Conversely, if $B(x,y)$ tend to $+\pi$ (resp. $-\pi$) remaining greater (resp.
-lesser) than it, then $\sin B(x_0,y_0) = -0$.
-The same applies to the real part when $B(x,y)$ lies around $\pm \pi/2$.
+\begin {align*}
+  A(x,y) & =  y_1\log|x|-y_2\phi,\\
+  B(x,y) & =  y_2\log|x|+y_1\phi.
+\end {align*}
+As $|x^y| = \exp\left(A(x,y)\right)$ is positive, the value of $B(x,y)$
+determines the sign of each part of $x^y$.
+Note that $A(\overline{x},y) = A(x,\overline{y})$ and $B(\overline{x},
+y)=-B(x,\overline{y})$, so $\overline{x}^y = \overline{x^{\overline{y}}}$ and
+we can restrict the study below to $x$ with nonnegative imaginary value
+(i.e. $x_2 \geq 0$ and $\pi \geq \phi \geq 0$).
 
-First, let us solve $B(x,y) = 0$.
+To determine the sign of the zero part of $x^y$ when it is pure real or pure
+imaginary, special study is needed around points $(x, y)$ where $B(x, y)$ is a
+multiple of $\pi/2$.
+Let
+\begin {equation}
+  \label {eqn:Bk}
+  B_k(x, y) = y_2 \log|x| +y_1\phi -k\frac{\pi}{2}
+\end {equation}
+where $k$ is an integer and let $S_k$ the set of points $(x, y)$ where $B_k(x,
+y) = 0$.
+
+For any integer $k$, we assume that the surface $S_k$ is orientable and not
+reduced to a single point, then each neighborhood of a point $(x_0, y_0)$ of
+$S_k$ intersects the region where $B(x, y) > k\pi$ and the region where $B(x,
+y) < k\pi$.
+Thus for an even $k$, we can make $(x, y)$ tend continuously to $(x_0, y_0)$
+so that $\Re(x^y) > 0$ or we can make it tend to $(x_0, y_0)$ so that
+$\Re(x^y) < 0$ (the same applies with $k$ odd and $\Im(x^y)$).
+In such cases, the sign of the zero part of $x_0^{y_0}$ is not determined.
+
+However, when $S_k$ intersects an axis, for example when $\Re(x_0) = 0$, we
+have to distinguish two cases: $\Re(x_0) = +0$ and $\Re(x_0) = -0$.
+Then, if $Q_{x_0}$ (resp. $Q_{y_0}$) denotes the quadrant where $x_0$
+(resp. $y_0$) lies, it is possible that the sign of $B_k(x,y)$ remains
+constant for $(x,y)$ in the intersection $I$ of a neighborhood of $(x_0, y_0)$
+with $Q_{x_0}\times Q_{y_0}$, determining the sign of the zero part of $x^y$.
+Let $dB_k(x,y)$ the derivative of $B_k(x, y)$, we have
+\begin {equation}
+  \label {eqn:BkDerivative}
+  dB_k(x, y)\cdot(\delta_1, \delta_2, \epsilon_1, \epsilon_2) =
+  \frac{x_1y_2-x_2y_1}{x_1^2+x_2^2}\delta_1 +
+  \frac{x_1y_1+x_2y_2}{x_1^2+x_2^2}\delta_2 +
+  \phi\epsilon_1 +
+  \log(|x|) \epsilon_2
+\end {equation}
+If $dB_k(x_0, y_0)\cdot(\delta_1, \delta_2, \epsilon_1, \epsilon_2)$ is not
+null and if its sign remains constant for all real numbers $\delta_1$,
+$\delta_2$, $\epsilon_1$, and $\epsilon_2$ so that $x = x_0 + \delta_1 +
+\delta_2i$, $y = y_0 +\epsilon_1 + \epsilon_2i$, and $(x,y)$ is in the given
+neighborhood $I$ of $(x_0, y_0)$ defined above, then the sign of $dB_k(x_0,
+y_0)\cdot(\delta_1, \delta_2, \epsilon_1, \epsilon_2)$ determines the sign of
+the zero part of $x^y$.
+
+In following discussion, we write $B_k$ as a function of four real arguments,
+so that $B_k(x_1, x_2, y_1, y_2) = B_k(x_1+x_2i, y_1+y_2i)$.
+Let $\sigma_1 = -1,+1$ (resp. $\sigma_2$, $\rho_1$, $\rho_2$) denote the sign
+of $x_1$ (resp. $x_2$, $y_1$, $y_2$).
 \begin {enumerate}
-\item
-If
-\[
-y_2 \log |x| = y_1 \phi = +0,
-\]
-then
-\[
-x^y = +\exp(A(x,y)) +0i,
-\]
-the solutions are summarized in the following table:
-\[
-\begin {array}{l c r c l l l l}
-(x_1 -0i)^{y_1 -0i} & = & x_1^{y_1} +0i 
-& \text {with} & 0 < x_1 < 1 & & y_1 <0 \\
+\item If $B_k(\sigma_1 0, x_2, y_1, y_2)=0$ for $x_2 > 0$.
+  Here $\phi = +\frac{\pi}{2}$.
+  \begin {enumerate}
+  \item if $y_2=\rho_2 0$, then replacing $x_1$ and $y_2$ by their value in
+    \ref {eqn:Bk}, we have $y_1= k$ and \ref {eqn:BkDerivative} gives
+    \[
+    dB_k(\sigma_1 0, x_2, k, \rho_2 0)\cdot(\delta_1, \delta_2, \epsilon_1,
+    \epsilon_2) = - \frac{k}{x_2} \delta_1 + 0 \delta_2 + \frac{\pi}{2}
+    \epsilon_1 + \log(x_2) \epsilon_2
+    \]
+    where $\sigma_1 \delta_1 > 0$, and $\rho_2 \epsilon_2 > 0$ so that
+    $\delta_1 + (x_2 + \delta_2)i$ (resp. $k+\epsilon_1 + \epsilon_2 i$) is in
+    the same quadrant $Q_{x_0}$ (resp.  $Q_{y_0}$) as $x_0=\sigma_1 0 +x_2 i$
+    (resp. $y_0=k +\rho_2 0i$).
 
-(x_1 -0i)^{-0 -0i}  & = & +1 +0i
-& \text {with} & |x_1| < 1 \\
+    We have to eliminate the case $k \neq 0$, because, in last expression,
+    $\epsilon_1$ would take positive as well as negative values if $k \neq 0$,
+    so the sign of $\frac{\pi}{2} \epsilon_1$, and therefore the sign of
+    $dB_k(x, y)\cdot (\delta_1, \delta_2, \epsilon_1, \epsilon_2)$, would not
+    be constant.
 
-x^{-0 -0i} & = & +1 +0i
-& \text {with} & |x| < 1 & x_2 < 0 \\
+    If $k=0$, then $y_1=\rho_1 0$ and $\rho_1 \epsilon_1 > 0$ .
+    In this case,
+    \begin {align*}
+      dB_0(\pm 0, x_2, +0, +0)\cdot(\delta_1, \delta_2, \epsilon_1,
+      \epsilon_2) &> 0 \;\text{if}\; x_2 \geq 1 \\
+      dB_0(\pm 0, x_2, +0, -0)\cdot(\delta_1, \delta_2, \epsilon_1,
+      \epsilon_2) &> 0 \;\text{if}\; 1 \geq x_2 > 0 \\
+      dB_0(\pm 0, x_2, -0, -0)\cdot(\delta_1, \delta_2, \epsilon_1,
+      \epsilon_2) &< 0 \;\text{if}\;  x_2 \geq 1 \\
+      dB_0(\pm 0, x_2, -0, +0)\cdot(\delta_1, \delta_2, \epsilon_1,
+      \epsilon_2) &< 0 \;\text{if}\; 1 \geq x_2 > 0
+    \end {align*}
+    and the sign of $dB_k(\sigma_1 0, x_2, \rho_1 0, \rho_2 0)\cdot(\delta_1,
+    \delta_2, \epsilon_1, \epsilon_2)$ is not constant in all other
+    combinations of $k$, $\sigma_1$, $x_2>0$, $\rho_1$, and $\rho_2$.
 
-x^{+0 -0i} & = & +1 +0i
-& \text {with} & |x| < 1 & x_2 > 0 \\
+  \item if $y_2\neq 0$, then from \ref {eqn:Bk}
+    \[
+    x_2 = \exp\left(\frac{k-y_1}{2y_2}\pi\right)
+    \]
+    But the number in the right hand side of the last equation is
+    known to be transcendental unless $k-y_1=0$.
+    As $x_2$ is dyadic, we have $y_1= k$ and $x_2=+1$.
+    Using \ref {eqn:BkDerivative}, we write
+    \[
+    dB_k(\sigma_1 0, +1, k, y_2)\cdot(\delta_1, \delta_2, \epsilon_1,
+    \epsilon_2) = - k \delta_1 + y_2 \delta_2 + \frac{\pi}{2} \epsilon_1 + 0
+    \epsilon_2
+    \]
+    where $\sigma_1 \delta_1 > 0$.
 
-(x_1 +0i)^{+0 -0i} & = & +1 +0i
-& \text {with} & |x_1| < 1\\
+    Here, $\delta_2$ can take negative and positive values preventing the sign
+    of $dB_k(\sigma_1 0, +1, k, y_2)\cdot (\delta_1, \delta_2, \epsilon_1,
+    \epsilon_2)$ from being constant.
+  \end {enumerate}
 
-(x_1 +0i)^{y_1 -0i} & = & x_1^{y_1} +0i
-& \text {with} & 0 < x_1 < 1 & & y_1 > 0 \\
+\item If $B_k(x_1, +0, y_1, y_2)=0$.
+  \begin {enumerate}
+  \item if $x_1 >0$, then $\phi = +0$.
+    From \ref {eqn:Bk}, we have
+    \[
+    y_2 \log x_1 = k \frac{\pi}{2}
+    \]
+    \begin {enumerate}
+    \item if $y_2 = \rho_2 0$, the last equation implies $k = 0$, and from
+      \ref {eqn:BkDerivative} we have
+      \[
+      dB_0(x_1, +0, y_1, \rho_2 0)\cdot(\delta_1, \delta_2, \epsilon_1,
+      \epsilon_2) = 0 \delta_1 + \frac{y_1}{x_1} \delta_2 + 0 \epsilon_1 +
+      \log(x_1) \epsilon_2
+      \]
+      with $\delta_2 > 0$ and $\rho_2 \epsilon_2 > 0$.
 
-\hline
+      Then the sign of the last expression in constant only in the following
+      cases,
+      \begin {align*}
+        dB_0(x_1, +0, y_1, +0)\cdot(\delta_1, \delta_2, \epsilon_1,
+        \epsilon_2) &> 0 \;\text{if}\; y_1 \geq 0 \;\text{and}\; x_1 > 1\\
+        dB_0(+1, +0, y_1, \pm 0)\cdot(\delta_1, \delta_2, \epsilon_1,
+        \epsilon_2) &> 0 \;\text{if}\; y_1 > 0\\
+        dB_0(x_1, +0, y_1, -0)\cdot(\delta_1, \delta_2, \epsilon_1,
+        \epsilon_2) &> 0 \;\text{if}\; y_1 \geq 0 \;\text{and}\; 1 > x_1 > 0 \\
+        dB_0(x_1, +0, y_1, -0)\cdot(\delta_1, \delta_2, \epsilon_1,
+        \epsilon_2) &< 0 \;\text{if}\; y_1 \leq 0 \;\text{and}\; x_1 > 1\\
+        dB_0(+1, +0, y_1, \pm 0)\cdot(\delta_1, \delta_2, \epsilon_1,
+        \epsilon_2) &< 0 \;\text{if}\; y_1 < 0\\
+        dB_0(x_1, +0, y_1, +0)\cdot(\delta_1, \delta_2, \epsilon_1,
+        \epsilon_2) &< 0 \;\text{if}\; y_1 \leq 0 \;\text{and}\; 1 > x_1 > 0\\
+      \end {align*}
+      Notice that we cannot conclude when $dB_0(x,y)$ is identically null,
+      so the cases $x=+1+0i$, $y=y_1 \pm0i$ cannot be determined by this
+      means.
 
-(x_1 -0i)^{y_1 +0i} & = & x_1^{y_1} +0i
-& \text {with} & x_1 \geq 1 & & y_1 <0 \\
+    \item If $y_2 \neq 0$, then $x_1 = \exp\left(\frac{k}{2y_2}\pi\right)$
+      is a dyadic number only if $k=0$ and then $x_1=1$.
+      We have, using \ref {eqn:BkDerivative},
+      \[
+      dB_0(+1, +0, y_1, y_2)\cdot(\delta_1, \delta_2, \epsilon_1,
+      \epsilon_2) = y_2 \delta_1 + y_1 \delta_2 + 0 \epsilon_1 + 0
+      \epsilon_2
+      \]
+      with $\delta_2 > 0$.
 
-(x_1 -0i)^{-0 +0i} & = & +1 +0i
-& \text {with} & |x_1| \geq 1 \\
+      But here $y_2 \delta_1$ can take negative as well as positive values
+      preventing the sign of $dB_0(+1, +0, y_1, y_2)\cdot(\delta_1,
+      \delta_2, \epsilon_1, \epsilon_2)$ from being constant.
+    \end {enumerate}
 
-x^{-0 +0i} & = & +1 +0i
-& \text {with} & |x| \geq 1 & x_2 < 0 \\
+  \item if $x_1 < 0$, then $\phi = \pi$.
+    Using \ref {eqn:BkDerivative}, we have
+    \[
+    dB_k(x_1, +0, y_1, y_2)\cdot(\delta_1, \delta_2, \epsilon_1, \epsilon_2)
+    = \frac{y_2}{x_1} \delta_1 + \frac{y_1}{x_1} \delta_2 + \pi \epsilon_1 +
+    \log(-x_1) \epsilon_2
+    \]
+    with $\delta_2 > 0$.
 
-x^{+0 +0i} & = & +1 +0i
-& \text {with} & |x| \geq 1 & x_2 > 0 \\
+    If $y_1 \neq 0$, then $\epsilon_1$ can take negative as well as positive
+    values, preventing $dB_k$ from having a constant sign.
+    Thus $y_1 = 0$.
+    As $x_1 \neq 0$, $\delta_1$ can also take negative and positive values,
+    and $-y_2 \delta_1$ does not have a constant sign unless $y_2 = 0$.
+    But from \ref {eqn:Bk}, we know that $B_k(x, 0)=0$ implies $k = 0$.
 
-(x_1 +0i)^{+0 +0i} & = & +1 +0i
-& \text {with} & |x_1| \geq 1\\
+    When $y = 0$, the derivative of $B_k$ is
+    \[
+    dB_0(x_1, +0, \rho_1 0, \rho_2 0)\cdot(\delta_1, \delta_2, \epsilon_1,
+    \epsilon_2) = 0 \delta_1 + 0 \delta_2 + \pi \epsilon_1 + \log(-x_1)
+    \epsilon_2
+    \]
+    with $\delta_2 >0$, $\rho_1 \epsilon_1 >0$, and $\rho_2 \epsilon_2 >0$.
 
-(x_1 +0i)^{y_1 +0i} & = & x_1^{y_1} +0i
-& \text {with} & x_1 \geq 1 & & y_1 > 0 \\
+    Then,
+    \begin {align*}
+      dB_0(x_1, +0, +0, +0)\cdot(\delta_1, \delta_2, \epsilon_1,
+      \epsilon_2) &> 0 \;\text{if}\; x_1 \leq -1 \\
+      dB_0(x_1, +0, +0, -0)\cdot(\delta_1, \delta_2, \epsilon_1,
+      \epsilon_2) &> 0 \;\text{if}\; 1 \leq x_1 < 0 \\
+      dB_0(x_1, +0, -0, -0)\cdot(\delta_1, \delta_2, \epsilon_1,
+      \epsilon_2) &< 0 \;\text{if}\; x_1 \leq -1\\
+      dB_0(x_1, +0, -0, +0)\cdot(\delta_1, \delta_2, \epsilon_1,
+      \epsilon_2) &< 0 \;\text{if}\; 1 \leq x_1 < 0
+    \end {align*}
+    and the sign of $dB_k(x_1, +0, \rho_1 0, \rho_2 0)\cdot(\delta_1,
+    \delta_2, \epsilon_1, \epsilon_2)$ is not constant in all other
+    combinations of $k$, $x_1<0$, $\rho_1$, and $\rho_2$.
+  \end {enumerate}
 
-\hline
+\item If $B_k(x_1, x_2, \rho_1 0, y_2)=0$ for $x_2 \geq 0$.
+  Here, we have
+  \[
+  y_2\log|x|-k\frac{\pi}{2} = 0
+  \]
+  \begin{enumerate}
+  \item If $y_2=0$, then from the last equation $k=0$.
+    Using \ref {eqn:BkDerivative}
+    \[
+    dB_0(x_1,x_2,\rho_10,\rho_20)\cdot(\delta_1, \delta_2, \epsilon_1, \epsilon_2) =
+    0\delta_1 + 0\delta_2 + \phi \epsilon_1 +\log|x| \epsilon_2
+    \]
+    where $\rho_1 \epsilon_1 > 0$ and $\rho_2 \epsilon_2 > 0$.
 
-(+1 -0i)^{y_1 +y_2i} & = & +1 +0i
-& \text {with} & & & y_1 <0 & y_2 > 0\\
+    The case $\phi = 0$, that is $x_1 > 0$ and $x_2 = 0$, has already been
+    processed above.
+    Let $\phi > 0$, then $x_2$ is not null or $x_1 < 0$.
+    Using the expression of the derivative given above, we have
+    \begin{align*}
+      dB_0(x_1, x_2, +0, +0)\cdot(\delta_1, \delta_2, \epsilon_1,
+      \epsilon_2) &> 0 \;\text{if}\; |x| \geq 1 \;\text{and}\; x \neq +1+0i\\
+      dB_0(x_1, x_2, -0, -0)\cdot(\delta_1, \delta_2, \epsilon_1,
+      \epsilon_2) &< 0 \;\text{if}\; |x| \geq 1 \;\text{and}\; x \neq +1+0i\\
+      dB_0(x_1, x_2, +0, -0)\cdot(\delta_1, \delta_2, \epsilon_1,
+      \epsilon_2) &> 0 \;\text{if}\; 1 \geq |x| > 0 \;\text{and}\; x \neq +1+0i\\
+      dB_0(x_1, x_2, -0, +0)\cdot(\delta_1, \delta_2, \epsilon_1,
+      \epsilon_2) &< 0 \;\text{if}\; 1 \geq |x| > 0 \;\text{and}\; x
+      \neq +1+0i
+    \end{align*}
+  \item If $y_2 \neq 0$, from \ref {eqn:Bk}, we have
+    \[
+    |x|^2=\exp\left(\frac{k}{y_2}\pi\right)
+    \]
+    The right hand side member of the equation is known to be transcendental
+    unless $k=0$.
+    As the left hand side member is dyadic, we have $k=0$, and then $|x|=1$.
+    Here, \ref {eqn:BkDerivative} gives
+    \[
+    dB_0(x_1,x_2,\rho_10,y_2)\cdot(\delta_1, \delta_2, \epsilon_1, \epsilon_2)
+    = x_1y_2\delta_1 + x_2y_2\delta_2 + \phi \epsilon_1 + 0\epsilon_2
+    \]
+    with $\rho_1 \epsilon_1 > 0$.
 
-(\pm 1 -0i)^{-0 +y_2i} & = & \exp (y_2 \phi) +0i
-& \text {with} & & & & y_2 > 0\\
+    If $x_2 \neq 0$, then $x_2y_2\delta_2$ can take negative as well as
+    positive values and the sign of the derivative is not constant.
+    Thus $x_2 = 0$.
+    Then, $x_1=\pm 1$ because $|x|=1$, and $x_1y_2\delta_1$ can take negative
+    and positive values.
 
-x^{-0 +y_2i} & = & \exp (y_2 \phi) +0i
-& \text {with} & |x| = 1 & x_2 < 0 & & y_2 > 0 \\
+    So, the sign of the null part of $B_k(x_1, x_2, \pm 0, y_2)$ (if any)
+    cannot be determined for all integers $k$ and for all dyadic real numbers
+    $x_1$, $x_2$, and $y_2 \neq 0$.
+  \end{enumerate}
 
-x^{+0 +y_2i} & = & \exp (y_2 \phi) +0i
-& \text {with} & |x| = 1 & x_2 > 0 & & y_2 > 0\\
+\item If $B_k(x_1, x_2, y_1, \rho_2 0)=0$ for $x_2 \geq 0$.
+  The case $y_1=0$, $y_2=0$ has already been precessed above.
+  Let $y_1 \neq 0$, then from \ref {eqn:Bk} we have
+  \[
+  \phi = \frac{k}{2y_1}\pi
+  \]
+  which implies that the argument $\phi$ of $x$ can be written as $r \pi$ for
+  some rational number $r$ and, in the same time, $\cos^2 \phi$ ($=
+  |x|^2/x_1^2$ if $x_1 \neq 0$, else $=0$) and $\sin^2 \phi$ ($= |x|^2/x_2^2$
+  if $x_2 \neq 0$, else $=0$) are rationnal.
 
-(\pm1 +0i)^{+0 +y_2i} & = & \exp (y_2 \phi) +0i
-& \text {with} & & & & y_2 > 0\\
+  The five only possibilities (with $x_2 \geq 0$) are:
+  \begin{enumerate}
+  \item $\phi = 0$, but then $x_2=0$.
+    This case has been processed above.
+  \item $\phi = \frac{\pi}{4}$, then $x_1 = x_2 > 0$.
+    From \ref {eqn:Bk}, we have $y_1 = 2k \neq 0$, and from \ref
+    {eqn:BkDerivative}
+    \[
+    dB_k(x_1, x_1, 2k, \rho_2 0)\cdot(\delta_1, \delta_2, \epsilon_1,
+    \epsilon_2) = -\frac{k}{x_1}\delta_1 + \frac{k}{x_1}\delta_2 +
+    \frac{\pi}{4}\epsilon_1 + \log(\sqrt{2}x_1)\epsilon_2
+    \]
+    with $\rho_2\epsilon_2>0$.
 
-(+1 +0i)^{y_1 +y_2i} & = & +1 +0i
-& \text {with} & & & y_1 > 0 & y_2 > 0
-\end {array}
-\]
+    As $x_1 \neq 0$ and $k \neq 0$, the term $\frac{k}{x_1}\delta_1$, and
+    $dB_k(x_1, x_1, 2k, \rho_2 0)\cdot(\delta_1, \delta_2, \epsilon_1,
+    \epsilon_2)$ as well, has no constant sign.
+  \item $\phi = \frac{\pi}{2}$, then $x_1 = 0$.
+    This case has been processed above.
+  \item $\phi = \frac{3\pi}{4}$, then $x_1 = -x_2$, $x_1 < 0$ and \ref
+    {eqn:Bk} gives $k \neq 0$ and $y_1 = \frac{2k}{3}$.
+    As $y_1$ is a dyadic number, the only compatible values for $k$ are
+    multiple of 3.
+    Let $n$ be a nonzero integer so that $k = 3n$ and $y_1 = 2n$.
+    From \ref {eqn:BkDerivative}, we have
+    \[
+    dB_{3n}(-x_2, x_2, 2n, \rho_2 0)\cdot(\delta_1, \delta_2, \epsilon_1,
+    \epsilon_2) = -\frac{n}{x_2}\delta_1 - \frac{n}{x_2}\delta_2 +
+    \frac{3\pi}{4}\epsilon_1 + \log(\sqrt{2}x_2)\epsilon_2
+    \]
+    with $\rho_2\epsilon_2 >0$.
 
-\item
-If
-\[
-y_2 \log |x| = y_1 \phi = -0,
-\]
-then
-\[
-x^y = +\exp(A(x,y)) -0i,
-\]
-the solutions are summarized in the following table:
-\[
-\begin {array}{l c r c l l l l}
-(+1 +0i)^{y_1 +y_2i} & = & +1 -0i
-& \text {with} & & & y_1 < 0 & y_2 < 0\\
-
-(\pm 1 +0i)^{-0 +y_2i} & = & \exp(y_2 \phi) -0i
-& \text {with} & & & & y_2 <0 \\
-
-x^{-0 +y_2i} & = & \exp(y_2 \phi) -0i
-& \text {with} & |x| = 1 & x_2 > 0 & & y_2 <0 \\
-
-x^{+0 +y_2i} & = & \exp(y_2 \phi) -0i
-& \text {with} & |x| = 1 & x_2 < 0 & & y_2 <0 \\
-
-(\pm 1 -0i)^{+0 +y_2i} & = & \exp(y_2 \phi) -0i
-& \text {with} & & & & y_2 < 0\\
-
-(+1 -0i)^{y_1 +y_2i} & = & +1 -0i
-& \text {with} & & & y_1 > 0 & y_2 < 0\\
-
-\hline
-
-(x_1 +0i)^{y_1 -0i} & = & x^{y_1} -0i
-& \text {with} & x_1 \geq 1 & & y_1 <0 \\
-
-(x_1 +0i)^{-0 -0i} & = & +1 -0i
-& \text {with} & |x_1| \geq 1 \\
-
-x^{-0 -0i} & = & +1 -0i
-& \text {with} & |x| \geq 1 & x_2 > 0 \\
-
-x^{+0 -0i} & = & +1 -0i
-& \text {with} & |x| \geq 1 & x_2 < 0 \\
-
-(x_1 -0i)^{+0 -0i} & = & +1 -0i
-& \text {with} & |x_1| \geq 1\\
-
-(x_1 -0i)^{y_1 -0i} & = & x_1^{y_1} -0i
-& \text {with} & x_1 \geq 1 & & y_1 > 0 \\
-
-\hline
-
-(x_1 +0i)^{y_1 +0i} & = & x_1^{y_1} -0i
-& \text {with} & 0 < x_1 < 1 & & y_1 <0 \\
-
-(x_1 +0i)^{-0 +0i} & = & +1 -0i
-& \text {with} & |x_1| < 1 \\
-
-x^{-0 +0i} & = & +1 -0i
-& \text {with} & |x| < 1 & x_2 > 0 \\
-
-x^{+0 +0i} & = & +1 -0i
-& \text {with} & |x| < 1 & x_2 < 0 \\
-
-(x_1 -0i)^{+0 +0i} & = & +1 -0i
-& \text {with} & |x_1| < 1 \\
-
-(x_1 -0i)^{y_1 +0i} & = & x_1^{y_1} -0i
-& \text {with} & 0 < x_1 < 1 & & y_1 > 0 \\
-\end {array}
-\]
-
-\item
-Is it possible that 
-\[
-\frac{\log |x|}{\phi} = -\frac{y_1}{y_2} \neq 0?
-\]
-In other words, can $\frac{\log |x|}{\arg (x)}$ be a rational number when $x$
-is a dyadic complex?
+    As $n \neq 0$, $\epsilon_1$ can take negative and positive values and
+    the term $\frac{3\pi}{4}\epsilon_1$ has not a constant sign.
+  \item $\phi = \pi$, then $x_1<0$ and $x_2 = 0$.
+    This case has been processed above.
+  \end{enumerate}
 \end {enumerate}
+
+To sum up using the inequalities above and deriving those with negative $x_2$
+from them and from the relation $\overline{x}^y =
+\overline{x^{\overline{y}}}$, we can give the almost complete list of complex
+powers of numbers (for dyadic complex) that have a determined signed zero
+part, the only exception being $x=+1 \pm 0i$ raised to a pure real power which
+cannot be treated as we have done here.
+
+\begin{tabular}{rlcrlrl}
+  $x^{+0 +0i}$ & $=1 +0i$ &and&
+  $x^{-0 -0i}$ & $= 1 -0i$ &
+  if $|x| \geq 1$ &and $x \neq +1 \pm 0i$ \\
+  $(x_1 +0i)^{y_1 +0i}$ & $= x_1^{y_1} +0i$ &and&
+  $(x_1 -0i)^{y_1 -0i}$ & $= x_1^{y_1} -0i$ &
+  if $x_1 > 1$ &and $y_1 > 0$\\
+  $(x_1 \pm 0i)^{\pm0 +0i}$ & $= 1 +0i$ &and&
+  $(x_1 \pm 0i)^{\pm0 -0i}$ & $= 1 -0i$ &
+  if $x_1 > 1$\\
+  $(x_1 \pm 0i)^{-0 +0i}$ & $= 1 +0i$ &and&
+  $(x_1 \pm 0i)^{+0 -0i}$ & $= 1 -0i$ &
+  if $|x_1| > 1$\\
+  $(x_1 -0i)^{y_1 +0i}$ & $= x_1^{y_1} +0i$ &and&
+  $(x_1 +0i)^{y_1 -0i}$ & $= x_1^{y_1} -0i$ &
+  if $x_1 > 1$ &and $y_1 < 0$ \\
+  $(+1 +\sigma_20i)^{y_1 \pm0}$ &
+  \multicolumn{4}{l}{$=1 +\sigma_2\rho_1 0i$} &
+  if $x_1=+1$ &and $y_1 \neq 0$ \\
+  $x^{+0 -0i}$ & $= 1 +0i$ &and&
+  $x^{-0 +0i}$ & $= 1 -0i$ &
+  if $1 \geq |x| > 0$ &and $x \neq +1 \pm 0i$ \\
+  $(x_1 +0i)^{y_1 -0i}$ & $= x_1^{y_1} +0i$ &and&
+  $(x_1 -0i)^{y_1 +0i}$ & $= x_1^{y_1} -0i$ &
+  if $1 > x_1 > 0$ &and $y_1 > 0$ \\
+  $(x_1 +0i)^{+0 -0i}$ & $= 1 +0i$ &and&
+  $(x_1 -0i)^{+0 +0i}$ & $= 1 -0i$ &
+  if $1 > |x_1| > 0$ \\
+  $(x_1 -0i)^{-0 -0i}$ & $= 1 +0i$  &and&
+  $(x_1 +0i)^{-0 +0i}$ & $= 1 -0i$ &
+  if $1 > |x_1| > 0$ \\
+  $(x_1 \pm0i)^{\pm0 -0i}$ & $= 1 +0i$ &and&
+  $(x_1 \pm0i)^{\pm0 +0i}$ & $= 1 -0i$ &
+  if $1 > x_1 > 0$ \\
+  $(x_1 -0i)^{y_1 -0i}$ & $= x_1^{y_1} +0i$ &and&
+  $(x_1 +0i)^{y_1 +0i}$ & $= x_1^{y_1} -0i$ &
+  if $1 > x_1 > 0$ &and $y_1 < 0$ \\
+  $(\pm 0 +x_2i)^{+0 +0i}$ & $= 1 +0i$ &and&
+  $(\pm 0 +x_2i)^{-0 -0i}$ & $= 1 -0i$ &
+  if $x_2 \geq 1$ \\
+  $(\pm 0 +x_2i)^{+0 -0i}$ & $= 1 +0i$ &and&
+  $(\pm 0 +x_2i)^{-0 +0i}$ & $= 1 -0i$ &
+  if $1 \geq x_2 > 0$ \\
+  $(\pm 0 +x_2i)^{-0 -0i}$ & $= 1 +0i$ &and&
+  $(\pm 0 +x_2i)^{+0 +0i}$ & $= 1 -0i$ &
+  if $ 0 > x_2 \geq -1$ \\
+  $(\pm 0 +x_2i)^{-0 +0i}$ & $= 1 +0i$ &and&
+  $(\pm 0 +x_2i)^{+0 -0i}$ & $= 1 -0i$ &
+  if $-1 \geq x_2$ \\
+  $(-1 +\sigma_2 0i)^{\rho_1 0 \pm0i}$ & 
+  \multicolumn{4}{l}{$= 1 + \sigma_2 \rho_1 0i$} &
+  if $x_1=-1$ &and $y_1 = \rho_1 0$
+\end{tabular}
+
+So when $x^y$ is a pure real number, a compatible pattern is:
+
+\begin{tabular}{ll}
+  $x^y = x_1^{y_1} + \rho_2 0$ & if $|x| > 1$\\
+  $x^y = 1 + \sigma_2 \rho_1 0$ & if $|x| = 1$\\
+  $x^y = x_1^{y_1} - \rho_2 0$ & if $|x| < 1$
+\end{tabular}
+
+where $\sigma_2$ (resp $\rho_1$, $\rho_2$) is the sign of $x_2$ (resp. $y_1$,
+$y_2$).
 
 \bibliographystyle{acm}
 \bibliography{algorithms}
