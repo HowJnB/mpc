@@ -23,7 +23,7 @@ MA 02111-1307, USA. */
 #include "mpc-impl.h"
 
 void
-mpc_get_prec2 (mp_prec_t *pr, mp_prec_t *pi, mpc_t x)
+mpc_get_prec2 (mp_prec_t *pr, mp_prec_t *pi, mpc_srcptr x)
 {
    *pr = MPFR_PREC (MPC_RE (x));
    *pi = MPFR_PREC (MPC_IM (x));
