@@ -157,6 +157,13 @@ typedef struct
 void tgeneric (mpc_function, mpfr_prec_t, mpfr_prec_t, mpfr_prec_t, mp_exp_t);
 
 
+/* GMP_RND_MAX is used is tgeneric.c.
+   It was renamed MPFR_RND_MAX in mpfr-3.0 */
+#if MPFR_VERSION_MAJOR > 2
+#  define GMP_RND_MAX MPFR_RND_MAX
+#endif
+
+
 /** READ FILE WITH TEST DATA SET **/
 /* data_check (function, "data_file_name") checks function results against
    precomputed data in a file.*/
