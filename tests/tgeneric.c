@@ -913,11 +913,11 @@ tgeneric (mpc_function function, mpfr_prec_t prec_min,
             }
         }
 
-      for (rnd_re = 0; rnd_re < 4; rnd_re ++)
+      for (rnd_re = GMP_RNDN; rnd_re < GMP_RND_MAX; ++rnd_re)
         switch (function.type)
           {
           case CCC:
-            for (rnd_im = 0; rnd_im < 4; rnd_im ++)
+            for (rnd_im = GMP_RNDN; rnd_im < GMP_RND_MAX; ++rnd_im)
               tgeneric_ccc (&function, z1, z2, z3, zzzz, z4,
                             RNDC (rnd_re, rnd_im));
             reuse_ccc (&function, z1, z2, z3, z4);
@@ -927,49 +927,49 @@ tgeneric (mpc_function function, mpfr_prec_t prec_min,
             reuse_fc (&function, z1, z2, x1);
             break;
           case CC:
-            for (rnd_im = 0; rnd_im < 4; rnd_im ++)
+            for (rnd_im = GMP_RNDN; rnd_im < GMP_RND_MAX; ++rnd_im)
               tgeneric_cc (&function, z1, z2, zzzz, z3,
                            RNDC (rnd_re, rnd_im));
             reuse_cc (&function, z1, z2, z3);
             break;
           case CFC:
-            for (rnd_im = 0; rnd_im < 4; rnd_im ++)
+            for (rnd_im = GMP_RNDN; rnd_im < GMP_RND_MAX; ++rnd_im)
               tgeneric_cfc (&function, x1, z1, z2, zzzz, z3,
                             RNDC (rnd_re, rnd_im));
             reuse_cfc (&function, z1, x1, z2, z3);
             break;
           case CCF:
-            for (rnd_im = 0; rnd_im < 4; rnd_im ++)
+            for (rnd_im = GMP_RNDN; rnd_im < GMP_RND_MAX; ++rnd_im)
               tgeneric_ccf (&function, z1, x1, z2, zzzz, z3,
                             RNDC (rnd_re, rnd_im));
             reuse_ccf (&function, z1, x1, z2, z3);
             break;
           case CCU:
-            for (rnd_im = 0; rnd_im < 4; rnd_im ++)
+            for (rnd_im = GMP_RNDN; rnd_im < GMP_RND_MAX; ++rnd_im)
               tgeneric_ccu (&function, z1, ul1, z2, zzzz, z3,
                             RNDC (rnd_re, rnd_im));
             reuse_ccu (&function, z1, ul1, z2, z3);
             break;
           case CUC:
-            for (rnd_im = 0; rnd_im < 4; rnd_im ++)
+            for (rnd_im = GMP_RNDN; rnd_im < GMP_RND_MAX; ++rnd_im)
               tgeneric_cuc (&function, ul1, z1, z2, zzzz, z3,
                             RNDC (rnd_re, rnd_im));
             reuse_cuc (&function, ul1, z1, z2, z3);
             break;
           case CCS:
-            for (rnd_im = 0; rnd_im < 4; rnd_im ++)
+            for (rnd_im = GMP_RNDN; rnd_im < GMP_RND_MAX; ++rnd_im)
               tgeneric_ccs (&function, z1, lo, z2, zzzz, z3,
                             RNDC (rnd_re, rnd_im));
             reuse_ccs (&function, z1, lo, z2, z3);
             break;
           case CCI:
-            for (rnd_im = 0; rnd_im < 4; rnd_im ++)
+            for (rnd_im = GMP_RNDN; rnd_im < GMP_RND_MAX; ++rnd_im)
               tgeneric_cci (&function, z1, i, z2, zzzz, z3,
                             RNDC (rnd_re, rnd_im));
             reuse_cci (&function, z1, i, z2, z3);
             break;
           case CUUC:
-            for (rnd_im = 0; rnd_im < 4; rnd_im ++)
+            for (rnd_im = GMP_RNDN; rnd_im < GMP_RND_MAX; ++rnd_im)
               tgeneric_cuuc (&function, ul1, ul2, z1, z2, zzzz, z3,
                              RNDC (rnd_re, rnd_im));
             reuse_cuuc (&function, ul1, ul2, z1, z2, z3);

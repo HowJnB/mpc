@@ -67,12 +67,13 @@ open_data_file (const char *file_name)
 {
   FILE *fp;
   char *src_dir;
+  char default_srcdir[] = ".";
 
   src_dir = getenv ("srcdir");
   if (src_dir == NULL)
-    src_dir = ".";
+    src_dir = default_srcdir;
 
-  pathname = malloc ((strlen (src_dir)) + strlen (file_name) + 2);
+  pathname = (char *) malloc ((strlen (src_dir)) + strlen (file_name) + 2);
   if (pathname == NULL)
     {
       printf ("Cannot allocate memory\n");
@@ -155,7 +156,7 @@ read_string (FILE *fp, char **buffer_ptr, size_t buffer_length, const char *name
         line_number++;
       if (pos + 1 > buffer_length)
         {
-          buffer = realloc (buffer, 2 * buffer_length);
+          buffer = (char *) realloc (buffer, 2 * buffer_length);
           if (buffer == NULL)
             {
               printf ("Cannot allocate memory\n");
@@ -172,7 +173,7 @@ read_string (FILE *fp, char **buffer_ptr, size_t buffer_length, const char *name
 
   if (pos + 1 > buffer_length)
     {
-      buffer = realloc (buffer, buffer_length + 1);
+      buffer = (char *) realloc (buffer, buffer_length + 1);
       if (buffer == NULL)
         {
           printf ("Cannot allocate memory\n");

@@ -3,6 +3,7 @@ Recent Changes:
   - Bug fixes:
     - log: along branch cut
     - norm: infinite loop in case of overflow
+    - compilation with g++
   - Makefile.vc updated (thanks to Mickael Gastineau)
   - Minimal gmp version is 4.2
   - Changed MPC_SET_X_Y macro

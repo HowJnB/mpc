@@ -92,6 +92,15 @@ do {                                                            \
   printf ("\n");                                                \
 } while (0)
 
+/* C++ iterator on mpfr_rnd_t */
+#if defined (__cplusplus)
+inline
+mpfr_rnd_t & operator++(mpfr_rnd_t &rnd)
+{
+  return rnd = mpfr_rnd_t(rnd + 1);
+}
+#endif
+
 
 /*
  * ASSERT macros
