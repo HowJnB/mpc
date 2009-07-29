@@ -1386,11 +1386,11 @@ of $x_1$ (resp. $x_2$, $y_1$, $y_2$).
       dB_0(x_1, +0, +0, +0)\cdot(\delta_1, \delta_2, \epsilon_1,
       \epsilon_2) &> 0 \;\text{if}\; x_1 \leq -1 \\
       dB_0(x_1, +0, +0, -0)\cdot(\delta_1, \delta_2, \epsilon_1,
-      \epsilon_2) &> 0 \;\text{if}\; 1 \leq x_1 < 0 \\
+      \epsilon_2) &> 0 \;\text{if}\; -1 \leq x_1 < 0 \\
       dB_0(x_1, +0, -0, -0)\cdot(\delta_1, \delta_2, \epsilon_1,
       \epsilon_2) &< 0 \;\text{if}\; x_1 \leq -1\\
       dB_0(x_1, +0, -0, +0)\cdot(\delta_1, \delta_2, \epsilon_1,
-      \epsilon_2) &< 0 \;\text{if}\; 1 \leq x_1 < 0
+      \epsilon_2) &< 0 \;\text{if}\; -1 \leq x_1 < 0
     \end {align*}
     and the sign of $dB_k(x_1, +0, \rho_1 0, \rho_2 0)\cdot(\delta_1,
     \delta_2, \epsilon_1, \epsilon_2)$ is not constant in all other
@@ -1416,15 +1416,14 @@ of $x_1$ (resp. $x_2$, $y_1$, $y_2$).
     Let $\phi > 0$, then $x_2$ is not null or $x_1 < 0$.
     Using the expression of the derivative given above, we have
     \begin{align*}
-      dB_0(x_1, x_2, +0, +0)\cdot(\delta_1, \delta_2, \epsilon_1,
-      \epsilon_2) &> 0 \;\text{if}\; |x| \geq 1 \;\text{and}\; x \neq +1+0i\\
-      dB_0(x_1, x_2, -0, -0)\cdot(\delta_1, \delta_2, \epsilon_1,
-      \epsilon_2) &< 0 \;\text{if}\; |x| \geq 1 \;\text{and}\; x \neq +1+0i\\
-      dB_0(x_1, x_2, +0, -0)\cdot(\delta_1, \delta_2, \epsilon_1,
-      \epsilon_2) &> 0 \;\text{if}\; 1 \geq |x| > 0 \;\text{and}\; x \neq +1+0i\\
-      dB_0(x_1, x_2, -0, +0)\cdot(\delta_1, \delta_2, \epsilon_1,
-      \epsilon_2) &< 0 \;\text{if}\; 1 \geq |x| > 0 \;\text{and}\; x
-      \neq +1+0i
+      dB_0(x_1, x_2, +0, +0)\cdot(\delta_1, \delta_2, \epsilon_1, \epsilon_2)
+      &> 0 \;\text{if}\; |x| \geq 1 \;\text{and}\; \pi \geq \phi > 0\\
+      dB_0(x_1, x_2, -0, -0)\cdot(\delta_1, \delta_2, \epsilon_1, \epsilon_2)
+      &< 0 \;\text{if}\; |x| \geq 1 \;\text{and}\; \pi \geq \phi > 0\\
+      dB_0(x_1, x_2, +0, -0)\cdot(\delta_1, \delta_2, \epsilon_1, \epsilon_2)
+      &> 0 \;\text{if}\; 1 \geq |x| > 0 \;\text{and}\; \pi \geq \phi > 0\\
+      dB_0(x_1, x_2, -0, +0)\cdot(\delta_1, \delta_2, \epsilon_1, \epsilon_2)
+      &< 0 \;\text{if}\; 1 \geq |x| > 0 \;\text{and}\; \pi \geq \phi > 0
     \end{align*}
   \item If $y_2 \neq 0$, from \ref {eqn:Bk}, we have
     \[
@@ -1505,73 +1504,98 @@ To sum up using the inequalities above and deriving those with negative $x_2$
 from them and from the relation $\overline{x}^y =
 \overline{x^{\overline{y}}}$, we can give the almost complete list of complex
 powers of numbers (for dyadic complex) that have a determined signed zero
-part, the only exception being $x=+1 \pm 0i$ raised to a pure real power which
-cannot be treated as we have done here.
+part, the only exception being $x=+1 \pm 0i$ raised to zero power which cannot
+be treated as we have done here.
 
-\begin{tabular}{rlcrlrl}
-  $x^{+0 +0i}$ & $=1 +0i$ &and&
-  $x^{-0 -0i}$ & $= 1 -0i$ &
-  if $|x| \geq 1$ &and $x \neq +1 \pm 0i$ \\
-  $(x_1 +0i)^{y_1 +0i}$ & $= x_1^{y_1} +0i$ &and&
-  $(x_1 -0i)^{y_1 -0i}$ & $= x_1^{y_1} -0i$ &
-  if $x_1 > 1$ &and $y_1 > 0$\\
-  $(x_1 \pm 0i)^{\pm0 +0i}$ & $= 1 +0i$ &and&
-  $(x_1 \pm 0i)^{\pm0 -0i}$ & $= 1 -0i$ &
-  if $x_1 > 1$\\
-  $(x_1 \pm 0i)^{-0 +0i}$ & $= 1 +0i$ &and&
-  $(x_1 \pm 0i)^{+0 -0i}$ & $= 1 -0i$ &
-  if $|x_1| > 1$\\
-  $(x_1 -0i)^{y_1 +0i}$ & $= x_1^{y_1} +0i$ &and&
-  $(x_1 +0i)^{y_1 -0i}$ & $= x_1^{y_1} -0i$ &
-  if $x_1 > 1$ &and $y_1 < 0$ \\
-  $(+1 +\sigma_20i)^{y_1 \pm0}$ &
-  \multicolumn{4}{l}{$=1 +\sigma_2\rho_1 0i$} &
-  if $x_1=+1$ &and $y_1 \neq 0$ \\
-  $x^{+0 -0i}$ & $= 1 +0i$ &and&
-  $x^{-0 +0i}$ & $= 1 -0i$ &
-  if $1 \geq |x| > 0$ &and $x \neq +1 \pm 0i$ \\
-  $(x_1 +0i)^{y_1 -0i}$ & $= x_1^{y_1} +0i$ &and&
-  $(x_1 -0i)^{y_1 +0i}$ & $= x_1^{y_1} -0i$ &
-  if $1 > x_1 > 0$ &and $y_1 > 0$ \\
-  $(x_1 +0i)^{+0 -0i}$ & $= 1 +0i$ &and&
-  $(x_1 -0i)^{+0 +0i}$ & $= 1 -0i$ &
-  if $1 > |x_1| > 0$ \\
-  $(x_1 -0i)^{-0 -0i}$ & $= 1 +0i$  &and&
-  $(x_1 +0i)^{-0 +0i}$ & $= 1 -0i$ &
-  if $1 > |x_1| > 0$ \\
-  $(x_1 \pm0i)^{\pm0 -0i}$ & $= 1 +0i$ &and&
-  $(x_1 \pm0i)^{\pm0 +0i}$ & $= 1 -0i$ &
+\begin{tabular}{r@{ $=$ }lr@{ $=$ }ll}
+  $x^{+0 +0i}$ & $1 +0i$,&
+  $x^{-0 -0i}$ & $1 -0i$ &
+  if $|x|>1$ and $x_2>0$\\
+  $x^{-0 +0i}$ & $1 +0i$,&
+  $x^{+0 -0i}$ & $1 -0i$ &
+  if $|x|>1$ and $x_2<0$\\
+
+  $(x_1 \pm 0i)^{\pm0 +0i}$ & $1 +0i$,&
+  $(x_1 \pm 0i)^{\pm0 -0i}$ & $1 -0i$ &
+  if $x_1>1$\\
+
+  $(x_1 +0i)^{+0 +0i}$ & $1 +0i$, &
+  $(x_1 +0i)^{-0 -0i}$ & $1 -0i$ &
+  if $|x_1|>1$\\
+  $(x_1 -0i)^{-0 +0i}$ & $1 +0i$, &
+  $(x_1 -0i)^{+0 -0i}$ & $1 -0i$ &
+  if $|x_1|>1$\\
+
+  $(x_1 +0i)^{y_1 +0i}$ & $x_1^{y_1} +0i$, &
+  $(x_1 -0i)^{y_1 -0i}$ & $x_1^{y_1} -0i$ &
+  if $x_1>1$ and $y_1>0$\\
+  $(x_1 -0i)^{y_1 +0i}$ & $x_1^{y_1} +0i$, &
+  $(x_1 +0i)^{y_1 -0i}$ & $x_1^{y_1} -0i$ &
+  if $x_1>1$ and $y_1<0$\\
+
+  $(+1 +0i)^{y_1 \pm0i}$ & $1 +0i$, &
+  $(+1 -0i)^{y_1 \pm0i}$ & $1 -0i$ &
+  if $y_1>0$\\
+  $(+1 -0i)^{y_1 \pm0i}$ & $1 +0i$, &
+  $(+1 +0i)^{y_1 \pm0i}$ & $1 -0i$ &
+  if $y_1<0$\\
+
+  $x^{+0 -0i}$ & $1 +0i$, &
+  $x^{-0 +0i}$ & $1 -0i$ &
+  if $1>|x|>0$ and $x_2>0$\\
+  $x^{-0 -0i}$ & $1 +0i$, &
+  $x^{+0 +0i}$ & $1 -0i$ &
+  if $1>|x|>0$ and $x_2<0$\\
+
+  $(x_1 \pm0i)^{\pm0 -0i}$ & $1 +0i$, &
+  $(x_1 \pm0i)^{\pm0 +0i}$ & $1 -0i$ &
   if $1 > x_1 > 0$ \\
-  $(x_1 -0i)^{y_1 -0i}$ & $= x_1^{y_1} +0i$ &and&
-  $(x_1 +0i)^{y_1 +0i}$ & $= x_1^{y_1} -0i$ &
-  if $1 > x_1 > 0$ &and $y_1 < 0$ \\
-  $(\pm 0 +x_2i)^{+0 +0i}$ & $= 1 +0i$ &and&
-  $(\pm 0 +x_2i)^{-0 -0i}$ & $= 1 -0i$ &
+
+  $(x_1 +0i)^{+0 -0i}$ & $1 +0i$, &
+  $(x_1 -0i)^{+0 +0i}$ & $1 -0i$ &
+  if $1 > |x_1| > 0$ \\
+  $(x_1 -0i)^{-0 -0i}$ & $1 +0i$, &
+  $(x_1 +0i)^{-0 +0i}$ & $1 -0i$ &
+  if $1 > |x_1| > 0$ \\
+
+  $(x_1 +0i)^{y_1 -0i}$ & $x_1^{y_1} +0i$, &
+  $(x_1 -0i)^{y_1 +0i}$ & $x_1^{y_1} -0i$ &
+  if $1 > x_1 > 0$ and $y_1 > 0$ \\
+  $(x_1 -0i)^{y_1 -0i}$ & $x_1^{y_1} +0i$, &
+  $(x_1 +0i)^{y_1 +0i}$ & $x_1^{y_1} -0i$ &
+  if $1 > x_1 > 0$ and $y_1 < 0$ \\
+
+  $(\pm 0 +x_2i)^{+0 +0i}$ & $1 +0i$, &
+  $(\pm 0 +x_2i)^{-0 -0i}$ & $1 -0i$ &
   if $x_2 \geq 1$ \\
-  $(\pm 0 +x_2i)^{+0 -0i}$ & $= 1 +0i$ &and&
-  $(\pm 0 +x_2i)^{-0 +0i}$ & $= 1 -0i$ &
+  $(\pm 0 +x_2i)^{+0 -0i}$ & $1 +0i$, &
+  $(\pm 0 +x_2i)^{-0 +0i}$ & $1 -0i$ &
   if $1 \geq x_2 > 0$ \\
-  $(\pm 0 +x_2i)^{-0 -0i}$ & $= 1 +0i$ &and&
-  $(\pm 0 +x_2i)^{+0 +0i}$ & $= 1 -0i$ &
+  $(\pm 0 +x_2i)^{-0 -0i}$ & $1 +0i$, &
+  $(\pm 0 +x_2i)^{+0 +0i}$ & $1 -0i$ &
   if $ 0 > x_2 \geq -1$ \\
-  $(\pm 0 +x_2i)^{-0 +0i}$ & $= 1 +0i$ &and&
-  $(\pm 0 +x_2i)^{+0 -0i}$ & $= 1 -0i$ &
+  $(\pm 0 +x_2i)^{-0 +0i}$ & $1 +0i$, &
+  $(\pm 0 +x_2i)^{+0 -0i}$ & $1 -0i$ &
   if $-1 \geq x_2$ \\
-  $(-1 +\sigma_2 0i)^{\rho_1 0 \pm0i}$ & 
-  \multicolumn{4}{l}{$= 1 + \sigma_2 \rho_1 0i$} &
-  if $x_1=-1$ &and $y_1 = \rho_1 0$
+
+  $(-1 +0i)^{+0 \pm0i}$ & $1+0i$, &
+  $(-1 +0i)^{-0 \pm0i}$ & $1-0i$ \\
+  $(-1 -0i)^{-0 \pm0i}$ & $1+0i$, &
+  $(-1 -0i)^{+0 \pm0i}$ & $1-0i$ \\
 \end{tabular}
 
-So when $x^y$ is a pure real number, a compatible pattern is:
+So when $x^y$ is a pure real number, the following pattern is compatible with
+the determined cases:
 
-\begin{tabular}{ll}
-  $x^y = x_1^{y_1} + \rho_2 0$ & if $|x| > 1$\\
-  $x^y = 1 + \sigma_2 \rho_1 0$ & if $|x| = 1$\\
-  $x^y = x_1^{y_1} - \rho_2 0$ & if $|x| < 1$
+\begin{tabular}{rl}
+  $x^y = x_1^{y_1} + \rho_2 0i$ & if $|x| > 1$\\
+  $x^y = 1 + \sigma_2 \rho_1 0i$ & if $|x| = 1$\\
+  $x^y = x_1^{y_1} - \rho_2 0i$ & if $|x| < 1$\\
+  $x^y = x_1^{y_1} + \sigma_2 \rho_1 0i$ & if $y_1 \neq 0$
 \end{tabular}
 
 where $\sigma_2$ (resp $\rho_1$, $\rho_2$) is the sign of $x_2$ (resp. $y_1$,
-$y_2$).
+$y_2$) and with the convention $0^0=+1$.
 
 \bibliographystyle{acm}
 \bibliography{algorithms}
