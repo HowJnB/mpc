@@ -417,9 +417,7 @@ mpc_pow (mpc_ptr z, mpc_srcptr x, mpc_srcptr y, mpc_rnd_t rnd)
         {
           mpfr_t n;
           int inex, cx1;
-          /* warning: mpc_set_ui_ui does not set Im(z) to -0 if Im(rnd)=RNDD */
-          ret = mpc_set_ui_ui (z, 1, 0, rnd);
-
+          int sign_zi;
           /* cx1 < 0 if |x| < 1 
              cx1 = 0 if |x| = 1
              cx1 > 0 if |x| > 1
@@ -430,11 +428,15 @@ mpc_pow (mpc_ptr z, mpc_srcptr x, mpc_srcptr y, mpc_rnd_t rnd)
           if (cx1 == 0 && inex != 0)
             cx1 = -inex;
 
-          if (MPC_RND_IM (rnd) == GMP_RNDD
-              || ((cx1 < 0 && mpfr_signbit (MPC_IM (y)) == 0)
-                  ||(cx1 == 0
-                     && mpfr_signbit (MPC_IM(x)) != mpfr_signbit (MPC_RE(y)))
-                  ||(cx1 > 0 && mpfr_signbit (MPC_IM (y)))))
+          sign_zi = (cx1 < 0 && mpfr_signbit (MPC_IM (y)) == 0)
+            || (cx1 == 0 
+                && mpfr_signbit (MPC_IM (x)) != mpfr_signbit (MPC_RE (y)))
+            || (cx1 > 0 && mpfr_signbit (MPC_IM (y)));
+
+          /* warning: mpc_set_ui_ui does not set Im(z) to -0 if Im(rnd)=RNDD */
+          ret = mpc_set_ui_ui (z, 1, 0, rnd);
+
+          if (MPC_RND_IM (rnd) == GMP_RNDD || sign_zi)
             mpc_conj (z, z, MPC_RNDNN);
 
           mpfr_clear (n);
@@ -656,11 +658,7 @@ mpc_pow (mpc_ptr z, mpc_srcptr x, mpc_srcptr y, mpc_rnd_t rnd)
       */
       mpfr_t n;
       int inex, cx1;
-
-      ret = mpfr_set (MPC_RE(z), MPC_RE(u), MPC_RND_RE(rnd));
-      /* warning: mpfr_set_ui does not set Im(z) to -0 if Im(rnd) = RNDD */
-      ret = MPC_INEX (ret, mpfr_set_ui (MPC_IM (z), 0, MPC_RND_IM (rnd)));
-
+      int sign_zi;
       /* cx1 < 0 if |x| < 1 
          cx1 = 0 if |x| = 1
          cx1 > 0 if |x| > 1
@@ -671,11 +669,16 @@ mpc_pow (mpc_ptr z, mpc_srcptr x, mpc_srcptr y, mpc_rnd_t rnd)
       if (cx1 == 0 && inex != 0)
         cx1 = -inex;
 
-      if (MPC_RND_IM (rnd) == GMP_RNDD
-          || ((cx1 < 0 && mpfr_signbit (MPC_IM (y)) == 0)
-              ||(cx1 == 0
-                 && mpfr_signbit (MPC_IM (x)) != mpfr_signbit (MPC_RE (y)))
-              ||(cx1 > 0 && mpfr_signbit (MPC_IM (y)))))
+      sign_zi = (cx1 < 0 && mpfr_signbit (MPC_IM (y)) == 0)
+        || (cx1 == 0 
+            && mpfr_signbit (MPC_IM (x)) != mpfr_signbit (MPC_RE (y)))
+        || (cx1 > 0 && mpfr_signbit (MPC_IM (y)));
+
+      ret = mpfr_set (MPC_RE(z), MPC_RE(u), MPC_RND_RE(rnd));
+      /* warning: mpfr_set_ui does not set Im(z) to -0 if Im(rnd) = RNDD */
+      ret = MPC_INEX (ret, mpfr_set_ui (MPC_IM (z), 0, MPC_RND_IM (rnd)));
+
+      if (MPC_RND_IM (rnd) == GMP_RNDD || sign_zi)
         mpc_conj (z, z, MPC_RNDNN);
 
       mpfr_clear (n);
