@@ -200,6 +200,12 @@ installed. Alternatively, you can specify directly MPFR include and MPFR lib
 directories with @samp{./configure --with-mpf-lib=<mpfr_lib_dir>
 --with-mpfr-include=<mpfr_include_dir>}.
 
+Another useful parameter is @samp{--prefix}, which can be used to
+specify an alternative installation location instead of
+@file{/usr/local}; see @samp{make install} below.
+
+Use @samp{./configure --help} for an exhaustive list of parameters.
+
 @item
 @samp{make}
 
