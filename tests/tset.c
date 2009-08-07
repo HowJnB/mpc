@@ -227,6 +227,10 @@ check_set (void)
           || mpfr_erangeflag_p ())
         PRINT_ERROR ("mpc_set_f", prec, z);
 
+      mpc_set_nan (z);
+      if (!mpfr_nan_p (MPC_RE(z)) || !mpfr_nan_p (MPC_IM(z)))
+        PRINT_ERROR ("mpc_set_nan", prec, z);
+
 #ifdef _MPC_H_HAVE_INTMAX_T
       {
         uintmax_t uim = prec;
