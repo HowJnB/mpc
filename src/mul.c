@@ -38,9 +38,9 @@ mpc_mul (mpc_ptr a, mpc_srcptr b, mpc_srcptr c, mpc_rnd_t rnd)
   /* Conforming to ISO C99 standard (G.5.1 multiplicative operators),
      infinities have special treatment if both parts are NaN when computed
      naively. */
-  if (MPC_IS_INF (b))
+  if (mpc_inf_p (b))
     return mul_infinite (a, b, c);
-  if (MPC_IS_INF (c))
+  if (mpc_inf_p (c))
     return mul_infinite (a, c, b);
 
   /* NaN contamination of both part in result */
@@ -187,12 +187,12 @@ mul_infinite (mpc_ptr a, mpc_srcptr u, mpc_srcptr v)
         0 : 1;
       int vi = mpfr_zero_p (MPC_IM (v)) || mpfr_nan_p (MPC_IM (v)) ?
         0 : 1;
-      if (MPC_IS_INF (u))
+      if (mpc_inf_p (u))
         {
           ur = mpfr_inf_p (MPC_RE (u)) ? 1 : 0;
           ui = mpfr_inf_p (MPC_IM (u)) ? 1 : 0;
         }
-      if (MPC_IS_INF (v))
+      if (mpc_inf_p (v))
         {
           vr = mpfr_inf_p (MPC_RE (v)) ? 1 : 0;
           vi = mpfr_inf_p (MPC_IM (v)) ? 1 : 0;
@@ -462,7 +462,7 @@ mpc_mul_karatsuba (mpc_ptr rop, mpc_srcptr op1, mpc_srcptr op2, mpc_rnd_t rnd)
       of the inexact flag for u, which was rounded away from ac-bd */
    if (inexact != 0)
      inexact = mpfr_sgn (u);
-        
+
    if (mul_i == 0)
      {
        inex_re = mpfr_set (MPC_RE(result), u, MPC_RND_RE(rnd));

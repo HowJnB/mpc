@@ -79,10 +79,15 @@ MA 02111-1307, USA. */
 
 /* Convention in C99 (G.3): z is regarded as an infinity if at least one of
    its parts is infinite */
-#define MPC_IS_INF(z) (mpfr_inf_p(MPC_RE(z))||mpfr_inf_p(MPC_IM(z)))
+#define mpc_inf_p(z) (mpfr_inf_p(MPC_RE(z))||mpfr_inf_p(MPC_IM(z)))
 /* Convention in C99 (G.3): z is regarded as a zero if each of its parts is
    a zero */
-#define MPC_IS_ZERO(z) (mpfr_zero_p(MPC_RE(z))&&mpfr_zero_p(MPC_IM(z)))
+#define mpc_zero_p(z) (mpfr_zero_p(MPC_RE(z))&&mpfr_zero_p(MPC_IM(z)))
+/* Convention in C99 (G.3): z is regarded as finite if both its parts are */
+#define mpc_fin_p(z) (mpfr_number_p(MPC_RE(z))&&mpfr_number_p(MPC_IM(z)))
+/* Consider as NaN all other numbers */
+#define mpc_nan_p(z) ((mpfr_nan_p(MPC_RE(z)) && !mpfr_inf_p(MPC_IM(z))) || (mpfr_nan_p(MPC_IM(z)) && !mpfr_inf_p(MPC_RE(z))))
+
 
 #define OUT(x)                                                  \
 do {                                                            \

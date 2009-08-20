@@ -1,6 +1,7 @@
 /* mpc_proj -- projection of a complex number onto the Riemann sphere.
 
 Copyright (C) 2008, 2009 Philippe Th\'eveny
+              2009 Andreas Enge
 
 This file is part of the MPC Library.
 
@@ -24,7 +25,7 @@ MA 02111-1307, USA. */
 int
 mpc_proj (mpc_ptr a, mpc_srcptr b, mpc_rnd_t rnd)
 {
-  if (MPC_IS_INF (b))
+  if (mpc_inf_p (b))
     {
       /* infinities projects to +Inf +i* copysign(0.0, cimag(z)) */
       int inex;
@@ -37,8 +38,8 @@ mpc_proj (mpc_ptr a, mpc_srcptr b, mpc_rnd_t rnd)
           inex = -inex;
         }
 
-      return MPC_INEX (0, inex); 
-    } 
+      return MPC_INEX (0, inex);
+    }
   else
     return mpc_set (a, b, rnd);
 }
