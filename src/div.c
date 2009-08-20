@@ -22,6 +22,129 @@ MA 02111-1307, USA. */
 #include <stdio.h>
 #include "mpc-impl.h"
 
+#define SIGN (x)
+static int
+mpc_div_zero (mpc_ptr a, mpc_srcptr z, mpc_srcptr w, mpc_rnd_t rnd)
+{
+   /* Assumes w==0, implementation according to C99 G.5.1.8 */
+   int sign = MPFR_SIGNBIT (MPC_RE (w));
+   mpfr_t infty;
+   mpfr_set_inf (infty, sign);
+   mpfr_mul (MPC_RE (a), infty, MPC_RE (z), MPC_RND_RE (rnd));
+   mpfr_mul (MPC_IM (a), infty, MPC_IM (z), MPC_RND_IM (rnd));
+   return MPC_INEX (0, 0); /* exact */
+}
+
+static int
+mpc_div_inf_fin (mpc_ptr rop, mpc_srcptr z, mpc_srcptr w)
+{
+   /* Assumes w finite and non-zero and z infinite; implementation
+      according to C99 G.5.1.8                                     */
+   int a, b, x, y;
+
+   a = (mpfr_inf_p (MPC_RE (z)) ? MPFR_SIGNBIT (MPC_RE (z)) : 0);
+   b = (mpfr_inf_p (MPC_IM (z)) ? MPFR_SIGNBIT (MPC_IM (z)) : 0);
+
+   /* x = MPC_MPFR_SIGN (a * MPC_RE (w) + b * MPC_IM (w)) */
+   /* y = MPC_MPFR_SIGN (b * MPC_RE (w) - a * MPC_IM (w)) */
+   if (a == 0 || b == 0) {
+      x = a * MPC_MPFR_SIGN (MPC_RE (w)) + b * MPC_MPFR_SIGN (MPC_IM (w));
+      y = b * MPC_MPFR_SIGN (MPC_RE (w)) - a * MPC_MPFR_SIGN (MPC_IM (w));
+   }
+   else {
+      /* Both parts of z are infinite; x could be determined by sign
+         considerations and comparisons. Since operations with non-finite
+         numbers are not considered time-critical, we let mpfr do the work. */
+      mpfr_t sign;
+      mpfr_init2 (sign, 2);
+         /* This is enough to determine the sign of sums and differences. */
+
+      if (a == 1)
+         if (b == 1) {
+            mpfr_add (sign, MPC_RE (z), MPC_IM (z), GMP_RNDN);
+            x = MPC_MPFR_SIGN (sign);
+            mpfr_sub (sign, MPC_RE (z), MPC_IM (z), GMP_RNDN);
+            y = MPC_MPFR_SIGN (sign);
+         }
+         else { /* b == -1 */
+            mpfr_sub (sign, MPC_RE (z), MPC_IM (z), GMP_RNDN);
+            x = MPC_MPFR_SIGN (sign);
+            mpfr_add (sign, MPC_RE (z), MPC_IM (z), GMP_RNDN);
+            y = -MPC_MPFR_SIGN (sign);
+         }
+      else /* a == -1 */
+         if (b == 1) {
+            mpfr_sub (sign, MPC_IM (z), MPC_RE (z), GMP_RNDN);
+            x = MPC_MPFR_SIGN (sign);
+            mpfr_add (sign, MPC_RE (z), MPC_IM (z), GMP_RNDN);
+            y = MPC_MPFR_SIGN (sign);
+         }
+         else { /* b == -1 */
+            mpfr_add (sign, MPC_RE (z), MPC_IM (z), GMP_RNDN);
+            x = -MPC_MPFR_SIGN (sign);
+            mpfr_sub (sign, MPC_IM (z), MPC_RE (z), GMP_RNDN);
+            y = MPC_MPFR_SIGN (sign);
+         }
+      mpfr_clear (sign);
+   }
+
+   if (x == 0)
+      mpfr_set_nan (MPC_RE (rop));
+   else
+      mpfr_set_inf (MPC_RE (rop), x);
+   if (y == 0)
+      mpfr_set_nan (MPC_IM (rop));
+   else
+      mpfr_set_inf (MPC_IM (rop), y);
+
+   return MPC_INEX (0, 0); /* exact */
+}
+
+
+static int
+mpc_div_fin_inf (mpc_ptr rop, mpc_srcptr z, mpc_srcptr w)
+{
+   /* Assumes z finite and w infinite; implementation according to
+      C99 G.5.1.8                                                  */
+   mpfr_t c, d, a, b, x, y, zero;
+
+   mpfr_init2 (c, 2); /* needed to hold a signed zero, +1 or -1 */
+   mpfr_init2 (d, 2);
+   mpfr_init2 (x, 2);
+   mpfr_init2 (y, 2);
+   mpfr_init2 (zero, 2);
+   mpfr_set_ui (zero, 0ul, GMP_RNDN);
+   mpfr_init2 (a, mpfr_get_prec (MPC_RE (z)));
+   mpfr_init2 (b, mpfr_get_prec (MPC_IM (z)));
+
+   mpfr_set_ui (c, (mpfr_inf_p (MPC_RE (w)) ? 1 : 0), GMP_RNDN);
+   mpfr_copysign (c, c, MPC_RE (w), GMP_RNDN);
+   mpfr_set_ui (d, (mpfr_inf_p (MPC_IM (w)) ? 1 : 0), GMP_RNDN);
+   mpfr_copysign (d, d, MPC_IM (w), GMP_RNDN);
+
+   mpfr_mul (a, MPC_RE (z), c, GMP_RNDN); /* exact */
+   mpfr_mul (b, MPC_IM (z), d, GMP_RNDN);
+   mpfr_add (x, a, b, GMP_RNDN);
+
+   mpfr_mul (b, MPC_IM (z), c, GMP_RNDN);
+   mpfr_mul (a, MPC_RE (z), d, GMP_RNDN);
+   mpfr_sub (y, b, a, GMP_RNDN);
+
+   mpfr_copysign (MPC_RE (rop), zero, x, GMP_RNDN);
+   mpfr_copysign (MPC_IM (rop), zero, y, GMP_RNDN);
+
+   mpfr_clear (c);
+   mpfr_clear (d);
+   mpfr_clear (x);
+   mpfr_clear (y);
+   mpfr_clear (zero);
+   mpfr_clear (a);
+   mpfr_clear (b);
+
+   return MPC_INEX (0, 0); /* exact */
+}
+
+
 int
 mpc_div (mpc_ptr a, mpc_srcptr b, mpc_srcptr c, mpc_rnd_t rnd)
 {
@@ -30,6 +153,29 @@ mpc_div (mpc_ptr a, mpc_srcptr b, mpc_srcptr c, mpc_rnd_t rnd)
    mpfr_t q;
    mp_prec_t prec;
    int inexact_prod, inexact_norm, inexact_re, inexact_im, loops = 0;
+
+   /* According to the C standard G.3, there are three types of numbers:   */
+   /* finite (both parts are usual real numbers; contains 0), infinite     */
+   /* (at least one part is a real infinity) and all others; the latter    */
+   /* are numbers containing a nan, but no infinity, and could reasonably  */
+   /* be called nan.                                                       */
+   /* By G.5.1.4, infinite/finite=infinite; finite/infinite=0;             */
+   /* all other divisions that are not finite/finite return nan+i*nan.     */
+   /* Division by 0 could be handled by the following case of division by  */
+   /* a real; we handle it separately instead.                             */
+   if (mpc_zero_p (c))
+      return mpc_div_zero (a, b, c, rnd);
+   else {
+      if (mpc_inf_p (b) && mpc_fin_p (c))
+         return mpc_div_inf_fin (a, b, c);
+      else if (mpc_fin_p (b) && mpc_inf_p (c))
+         return mpc_div_fin_inf (a, b, c);
+      else if (!mpc_fin_p (b) || !mpc_fin_p (c)) {
+         mpfr_set_nan (MPC_RE (a));
+         mpfr_set_nan (MPC_IM (a));
+         return MPC_INEX (0, 0);
+      }
+   }
 
    /* check for real divisor */
    if (mpfr_zero_p(MPC_IM(c))) /* (re_b+i*im_b)/c = re_b/c + i * (im_b/c) */
@@ -61,15 +207,6 @@ mpc_div (mpc_ptr a, mpc_srcptr b, mpc_srcptr c, mpc_rnd_t rnd)
       a [0] = res [0];
       return MPC_INEX(inexact_re, inexact_im);
    }
-
-   /* check for NaN anywhere */
-   if (mpfr_nan_p (MPC_RE (b)) || mpfr_nan_p (MPC_IM (b))
-       || mpfr_nan_p (MPC_RE (c)) || mpfr_nan_p (MPC_IM (c)))
-   {
-      mpfr_set_nan (MPC_RE (a));
-      mpfr_set_nan (MPC_IM (a));
-      return MPC_INEX (0, 0);
-    }
 
    prec = MPC_MAX_PREC(a);
 

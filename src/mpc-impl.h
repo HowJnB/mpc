@@ -60,6 +60,9 @@ MA 02111-1307, USA. */
 #define MPFR_PREC(x) mpfr_get_prec(x)
 #define MPFR_EXP(x)  mpfr_get_exp(x)
 
+#define MPFR_SIGNBIT(x) (mpfr_signbit (x) ? -1 : 1)
+#define MPC_MPFR_SIGN(x) (mpfr_zero_p (x)? 0 : MPFR_SIGNBIT (x))
+   /* should be called MPFR_SIGN, but this is taken in mpfr.h */
 #define MPFR_CHANGE_SIGN(x) mpfr_neg(x,x,GMP_RNDN)
 #define MPFR_IS_SINGULAR(x) (mpfr_nan_p(x) || mpfr_inf_p(x) || mpfr_zero_p(x))
 
