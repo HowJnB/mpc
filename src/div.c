@@ -61,28 +61,28 @@ mpc_div_inf_fin (mpc_ptr rop, mpc_srcptr z, mpc_srcptr w)
 
       if (a == 1)
          if (b == 1) {
-            mpfr_add (sign, MPC_RE (z), MPC_IM (z), GMP_RNDN);
+            mpfr_add (sign, MPC_RE (w), MPC_IM (w), GMP_RNDN);
             x = MPC_MPFR_SIGN (sign);
-            mpfr_sub (sign, MPC_RE (z), MPC_IM (z), GMP_RNDN);
+            mpfr_sub (sign, MPC_RE (w), MPC_IM (w), GMP_RNDN);
             y = MPC_MPFR_SIGN (sign);
          }
          else { /* b == -1 */
-            mpfr_sub (sign, MPC_RE (z), MPC_IM (z), GMP_RNDN);
+            mpfr_sub (sign, MPC_RE (w), MPC_IM (w), GMP_RNDN);
             x = MPC_MPFR_SIGN (sign);
-            mpfr_add (sign, MPC_RE (z), MPC_IM (z), GMP_RNDN);
+            mpfr_add (sign, MPC_RE (w), MPC_IM (w), GMP_RNDN);
             y = -MPC_MPFR_SIGN (sign);
          }
       else /* a == -1 */
          if (b == 1) {
-            mpfr_sub (sign, MPC_IM (z), MPC_RE (z), GMP_RNDN);
+            mpfr_sub (sign, MPC_IM (w), MPC_RE (w), GMP_RNDN);
             x = MPC_MPFR_SIGN (sign);
-            mpfr_add (sign, MPC_RE (z), MPC_IM (z), GMP_RNDN);
+            mpfr_add (sign, MPC_RE (w), MPC_IM (w), GMP_RNDN);
             y = MPC_MPFR_SIGN (sign);
          }
          else { /* b == -1 */
-            mpfr_add (sign, MPC_RE (z), MPC_IM (z), GMP_RNDN);
+            mpfr_add (sign, MPC_RE (w), MPC_IM (w), GMP_RNDN);
             x = -MPC_MPFR_SIGN (sign);
-            mpfr_sub (sign, MPC_IM (z), MPC_RE (z), GMP_RNDN);
+            mpfr_sub (sign, MPC_IM (w), MPC_RE (w), GMP_RNDN);
             y = MPC_MPFR_SIGN (sign);
          }
       mpfr_clear (sign);
