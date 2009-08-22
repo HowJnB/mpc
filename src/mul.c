@@ -53,10 +53,10 @@ mpc_mul (mpc_ptr a, mpc_srcptr b, mpc_srcptr c, mpc_rnd_t rnd)
     }
 
   /* save operands' sign */
-  brs = mpfr_signbit (MPC_RE (b)) ? -1 : 1;
-  bis = mpfr_signbit (MPC_IM(b)) ? -1 : 1;
-  crs = mpfr_signbit (MPC_RE (c)) ? -1 : 1;
-  cis = mpfr_signbit (MPC_IM(c)) ? -1 : 1;
+  brs = MPFR_SIGNBIT (MPC_RE (b));
+  bis = MPFR_SIGNBIT (MPC_IM (b));
+  crs = MPFR_SIGNBIT (MPC_RE (c));
+  cis = MPFR_SIGNBIT (MPC_IM (c));
 
   /* first check for real multiplication */
   if (mpfr_zero_p (MPC_IM (b))) /* b * (x+i*y) = b*x + i *(b*y) */

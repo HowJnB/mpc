@@ -22,7 +22,6 @@ MA 02111-1307, USA. */
 #include <stdio.h>
 #include "mpc-impl.h"
 
-#define SIGN (x)
 static int
 mpc_div_zero (mpc_ptr a, mpc_srcptr z, mpc_srcptr w, mpc_rnd_t rnd)
 {
@@ -118,9 +117,9 @@ mpc_div_fin_inf (mpc_ptr rop, mpc_srcptr z, mpc_srcptr w)
    mpfr_init2 (b, mpfr_get_prec (MPC_IM (z)));
 
    mpfr_set_ui (c, (mpfr_inf_p (MPC_RE (w)) ? 1 : 0), GMP_RNDN);
-   mpfr_copysign (c, c, MPC_RE (w), GMP_RNDN);
+   MPFR_COPYSIGN (c, c, MPC_RE (w), GMP_RNDN);
    mpfr_set_ui (d, (mpfr_inf_p (MPC_IM (w)) ? 1 : 0), GMP_RNDN);
-   mpfr_copysign (d, d, MPC_IM (w), GMP_RNDN);
+   MPFR_COPYSIGN (d, d, MPC_IM (w), GMP_RNDN);
 
    mpfr_mul (a, MPC_RE (z), c, GMP_RNDN); /* exact */
    mpfr_mul (b, MPC_IM (z), d, GMP_RNDN);
@@ -130,8 +129,8 @@ mpc_div_fin_inf (mpc_ptr rop, mpc_srcptr z, mpc_srcptr w)
    mpfr_mul (a, MPC_RE (z), d, GMP_RNDN);
    mpfr_sub (y, b, a, GMP_RNDN);
 
-   mpfr_copysign (MPC_RE (rop), zero, x, GMP_RNDN);
-   mpfr_copysign (MPC_IM (rop), zero, y, GMP_RNDN);
+   MPFR_COPYSIGN (MPC_RE (rop), zero, x, GMP_RNDN);
+   MPFR_COPYSIGN (MPC_IM (rop), zero, y, GMP_RNDN);
 
    mpfr_clear (c);
    mpfr_clear (d);
@@ -153,6 +152,12 @@ mpc_div (mpc_ptr a, mpc_srcptr b, mpc_srcptr c, mpc_rnd_t rnd)
    mpfr_t q;
    mp_prec_t prec;
    int inexact_prod, inexact_norm, inexact_re, inexact_im, loops = 0;
+
+   /* save signs of operands in case there are overlaps */
+   int brs = MPFR_SIGNBIT (MPC_RE (b));
+   int bis = MPFR_SIGNBIT (MPC_IM (b));
+   int crs = MPFR_SIGNBIT (MPC_RE (c));
+   int cis = MPFR_SIGNBIT (MPC_IM (c));
 
    /* According to the C standard G.3, there are three types of numbers:   */
    /* finite (both parts are usual real numbers; contains 0), infinite     */
@@ -183,6 +188,16 @@ mpc_div (mpc_ptr a, mpc_srcptr b, mpc_srcptr c, mpc_rnd_t rnd)
       /* warning: a may overlap with b,c so treat the imaginary part first */
       inexact_im = mpfr_div (MPC_IM(a), MPC_IM(b), MPC_RE(c), MPC_RND_IM(rnd));
       inexact_re = mpfr_div (MPC_RE(a), MPC_RE(b), MPC_RE(c), MPC_RND_RE(rnd));
+
+      /* correct signs of zeroes if necessary, which does not affect the
+         inexact flags                                                    */
+      if (mpfr_zero_p (MPC_RE (a)))
+         mpfr_setsign (MPC_RE (a), MPC_RE (a), (brs != crs && bis != cis),
+            GMP_RNDN); /* exact */
+      if (mpfr_zero_p (MPC_IM (a)))
+         mpfr_setsign (MPC_IM (a), MPC_IM (a), (bis != crs && brs == cis),
+            GMP_RNDN);
+
       return MPC_INEX(inexact_re, inexact_im);
    }
 
@@ -205,6 +220,16 @@ mpc_div (mpc_ptr a, mpc_srcptr b, mpc_srcptr c, mpc_rnd_t rnd)
       if (overlap)
          mpc_clear (a);
       a [0] = res [0];
+
+      /* correct signs of zeroes if necessary, which does not affect the
+         inexact flags                                                    */
+      if (mpfr_zero_p (MPC_RE (a)))
+         mpfr_setsign (MPC_RE (a), MPC_RE (a), (brs != crs && bis != cis),
+            GMP_RNDN); /* exact */
+      if (mpfr_zero_p (MPC_RE (b)))
+         mpfr_setsign (MPC_IM (a), MPC_IM (a), (bis != crs && brs == cis),
+            GMP_RNDN);
+
       return MPC_INEX(inexact_re, inexact_im);
    }
 

@@ -65,8 +65,11 @@ MA 02111-1307, USA. */
    /* should be called MPFR_SIGN, but this is taken in mpfr.h */
 #define MPFR_CHANGE_SIGN(x) mpfr_neg(x,x,GMP_RNDN)
 #define MPFR_IS_SINGULAR(x) (mpfr_nan_p(x) || mpfr_inf_p(x) || mpfr_zero_p(x))
-
-#define MPFR_SWAP(a,b) { mpfr_srcptr tmp; tmp = a; a = b; b = tmp; }
+#define MPFR_COPYSIGN(x,y,z,rnd) (mpfr_nan_p (z) ? \
+   mpfr_setsign (x, y, 0, rnd) : \
+   mpfr_copysign (x, y, z, rnd))
+   /* work around spurious signs in nan */
+#define MPFR_SWAP(a,b) do { mpfr_srcptr tmp; tmp = a; a = b; b = tmp; } while (0)
 
 
 /*
