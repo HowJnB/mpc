@@ -307,12 +307,24 @@ mpc_pow_exact (mpc_ptr z, mpc_srcptr x, mpfr_srcptr y, mpc_rnd_t rnd,
 
   while (ey-- > 0)
     {
+      unsigned long sa, sb;
+
       /* square a + I*b */
       mpz_mul (u, a, b);
       mpz_mul (a, a, a);
       mpz_submul (a, b, b);
       mpz_mul_2exp (b, u, 1);
       ed *= 2;
+
+      /* divide by largest 2^n possible, to avoid many loops for e.g.,
+         (2+2*I)^16777216 */
+      sa = mpz_scan1 (a, 0);
+      sb = mpz_scan1 (b, 0);
+      sa = (sa <= sb) ? sa : sb;
+      mpz_div_2exp (a, a, sa);
+      mpz_div_2exp (b, b, sb);
+      ed += sa;
+
       if (mpz_sizeinbase (a, 2) > maxprec || mpz_sizeinbase (b, 2) > maxprec)
         goto end;
     }
@@ -622,7 +634,7 @@ mpc_pow (mpc_ptr z, mpc_srcptr x, mpc_srcptr y, mpc_rnd_t rnd)
       if ((z_imag || mpfr_can_round (MPC_RE(u), p - 3 - dr, GMP_RNDN, GMP_RNDZ, pr)) &&
           (z_real || mpfr_can_round (MPC_IM(u), p - 3 - di, GMP_RNDN, GMP_RNDZ, pi)))
         break;
-      
+
       /* if Re(u) is not known to be zero, assume it is a normal number, i.e.,
          neither zero, Inf or NaN, otherwise we might enter an infinite loop */
       MPC_ASSERT (z_imag || mpfr_number_p (MPC_RE(u)));
