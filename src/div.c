@@ -206,6 +206,7 @@ mpc_div (mpc_ptr a, mpc_srcptr b, mpc_srcptr c, mpc_rnd_t rnd)
    {
       /* (re_b+i*im_b)/(i*c) = im_b/c - i * (re_b/c) */
       int overlap = (a == b) || (a == c);
+      int imag_b = mpfr_zero_p (MPC_RE (b));
       mpfr_t cloc;
 
       if (overlap)
@@ -226,7 +227,7 @@ mpc_div (mpc_ptr a, mpc_srcptr b, mpc_srcptr c, mpc_rnd_t rnd)
       if (mpfr_zero_p (MPC_RE (a)))
          mpfr_setsign (MPC_RE (a), MPC_RE (a), (brs != crs && bis != cis),
             GMP_RNDN); /* exact */
-      if (mpfr_zero_p (MPC_RE (b)))
+      if (imag_b)
          mpfr_setsign (MPC_IM (a), MPC_IM (a), (bis != crs && brs == cis),
             GMP_RNDN);
 
