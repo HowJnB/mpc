@@ -5,7 +5,7 @@
 \usepackage[T1]{fontenc}
 \usepackage{amsmath,amssymb}
 \usepackage{url}
-\usepackage[notref,notcite]{showkeys}
+%\usepackage[notref,notcite]{showkeys}
 
 \newcommand {\corr}[1]{\widetilde {#1}}
 \newcommand {\appro}[1]{\overline {#1}}
@@ -1198,7 +1198,7 @@ determines the sign of each part of $x^y$.
 Note that $A(\overline{x},y) = A(x,\overline{y})$ and $B(\overline{x},
 y)=-B(x,\overline{y})$, so $\overline{x}^y = \overline{x^{\overline{y}}}$ and
 we can restrict the study below to $x$ with nonnegative imaginary value
-(i.e. $x_2 \geq 0$ and $\pi \geq \phi \geq 0$).
+(i.e., $x_2 \geq 0$ and $\pi \geq \phi \geq 0$).
 
 To determine the sign of the zero part of $x^y$ when it is pure real or pure
 imaginary, special study is needed around points $(x, y)$ where $B(x, y)$ is a
@@ -1213,8 +1213,8 @@ y) = 0$.
 
 For any integer $k$, we assume that the surface $S_k$ is orientable and not
 reduced to a single point, then each neighborhood of a point $(x_0, y_0)$ of
-$S_k$ intersects the region where $B(x, y) > k\pi$ and the region where $B(x,
-y) < k\pi$.
+$S_k$ intersects the region where $B(x, y) > k\pi/2$ and the region where $B(x,
+y) < k\pi/2$.
 Thus for an even $k$, we can make $(x, y)$ tend continuously to $(x_0, y_0)$
 so that $\Re(x^y) > 0$ or we can make it tend to $(x_0, y_0)$ so that
 $\Re(x^y) < 0$ (the same applies with $k$ odd and $\Im(x^y)$).
@@ -1226,33 +1226,34 @@ Then, if $Q_{x_0}$ (resp. $Q_{y_0}$) denotes the quadrant where $x_0$
 (resp. $y_0$) lies, it is possible that the sign of $B_k(x,y)$ remains
 constant for $(x,y)$ in the intersection $I$ of a neighborhood of $(x_0, y_0)$
 with $Q_{x_0}\times Q_{y_0}$, determining the sign of the zero part of $x^y$.
-Let $dB_k(x,y)$ the derivative of $B_k(x, y)$, we have
+Let $dB_k(x,y)$ be the derivative of $B_k(x, y)$, we have
 \begin {equation}
   \label {eqn:BkDerivative}
   dB_k(x, y)\cdot(\delta_1, \delta_2, \epsilon_1, \epsilon_2) =
   \frac{x_1y_2-x_2y_1}{x_1^2+x_2^2}\delta_1 +
   \frac{x_1y_1+x_2y_2}{x_1^2+x_2^2}\delta_2 +
   \phi\epsilon_1 +
-  \log(|x|) \epsilon_2
+  \log|x| \epsilon_2
 \end {equation}
 If $dB_k(x_0, y_0)\cdot(\delta_1, \delta_2, \epsilon_1, \epsilon_2)$ is not
-null and if its sign remains constant for all real numbers $\delta_1$,
+zero and if its sign remains constant for all real numbers $\delta_1$,
 $\delta_2$, $\epsilon_1$, and $\epsilon_2$ so that $x = x_0 + \delta_1 +
 \delta_2i$, $y = y_0 +\epsilon_1 + \epsilon_2i$, and $(x,y)$ is in the given
 neighborhood $I$ of $(x_0, y_0)$ defined above, then the sign of $dB_k(x_0,
 y_0)\cdot(\delta_1, \delta_2, \epsilon_1, \epsilon_2)$ determines the sign of
 the zero part of $x^y$.
 
-In following discussion, we write $B_k$ as a function of four real arguments,
-so that $B_k(x_1, x_2, y_1, y_2) = B_k(x_1+x_2i, y_1+y_2i)$.
+In following discussion, we write 
+$B_k(x_1, x_2, y_1, y_2) := B_k(x_1+x_2i, y_1+y_2i)$,
+as a function of four real arguments.
 Let $\sigma_1 = -1,+1$ (resp. $\sigma_2$, $\rho_1$, $\rho_2$) denote the sign
 of $x_1$ (resp. $x_2$, $y_1$, $y_2$).
 \begin {enumerate}
-\item If $B_k(\sigma_1 0, x_2, y_1, y_2)=0$ for $x_2 > 0$.
+\item Case $B_k(\sigma_1 0, x_2, y_1, y_2)=0$ for $x_2 > 0$.
   Here $\phi = +\frac{\pi}{2}$.
   \begin {enumerate}
-  \item if $y_2=\rho_2 0$, then replacing $x_1$ and $y_2$ by their value in
-    \ref {eqn:Bk}, we have $y_1= k$ and \ref {eqn:BkDerivative} gives
+  \item if $y_2=\rho_2 0$, then replacing $\phi$ and $y_2$ by their value in
+    (\ref{eqn:Bk}), we have $y_1= k$ and (\ref{eqn:BkDerivative}) gives
     \[
     dB_k(\sigma_1 0, x_2, k, \rho_2 0)\cdot(\delta_1, \delta_2, \epsilon_1,
     \epsilon_2) = - \frac{k}{x_2} \delta_1 + 0 \delta_2 + \frac{\pi}{2}
@@ -1263,13 +1264,13 @@ of $x_1$ (resp. $x_2$, $y_1$, $y_2$).
     the same quadrant $Q_{x_0}$ (resp.  $Q_{y_0}$) as $x_0=\sigma_1 0 +x_2 i$
     (resp. $y_0=k +\rho_2 0i$).
 
-    We have to eliminate the case $k \neq 0$, because, in last expression,
-    $\epsilon_1$ would take positive as well as negative values if $k \neq 0$,
+    When $k \neq 0$, because, in the last expression,
+    $\epsilon_1$ would take positive as well as negative values,
     so the sign of $\frac{\pi}{2} \epsilon_1$, and therefore the sign of
-    $dB_k(x, y)\cdot (\delta_1, \delta_2, \epsilon_1, \epsilon_2)$, would not
-    be constant.
+    $dB_k(x, y)\cdot (\delta_1, \delta_2, \epsilon_1, \epsilon_2)$ is not
+    constant.
 
-    If $k=0$, then $y_1=\rho_1 0$ and $\rho_1 \epsilon_1 > 0$ .
+    If $k=0$, then $y_1=\rho_1 0$ with $\rho_1 \epsilon_1 > 0$.
     In this case,
     \begin {align*}
       dB_0(\pm 0, x_2, +0, +0)\cdot(\delta_1, \delta_2, \epsilon_1,
@@ -1285,14 +1286,14 @@ of $x_1$ (resp. $x_2$, $y_1$, $y_2$).
     \delta_2, \epsilon_1, \epsilon_2)$ is not constant in all other
     combinations of $k$, $\sigma_1$, $x_2>0$, $\rho_1$, and $\rho_2$.
 
-  \item if $y_2\neq 0$, then from \ref {eqn:Bk}
+  \item if $y_2\neq 0$, then from (\ref{eqn:Bk})
     \[
-    x_2 = \exp\left(\frac{k-y_1}{2y_2}\pi\right)
+    x_2 = \exp\left(\frac{k-y_1}{2y_2}\pi\right).
     \]
     But the number in the right hand side of the last equation is
     known to be transcendental unless $k-y_1=0$.
     As $x_2$ is dyadic, we have $y_1= k$ and $x_2=+1$.
-    Using \ref {eqn:BkDerivative}, we write
+    Using (\ref{eqn:BkDerivative}), we write
     \[
     dB_k(\sigma_1 0, +1, k, y_2)\cdot(\delta_1, \delta_2, \epsilon_1,
     \epsilon_2) = - k \delta_1 + y_2 \delta_2 + \frac{\pi}{2} \epsilon_1 + 0
@@ -1305,16 +1306,17 @@ of $x_1$ (resp. $x_2$, $y_1$, $y_2$).
     \epsilon_2)$ from being constant.
   \end {enumerate}
 
-\item If $B_k(x_1, +0, y_1, y_2)=0$.
+\item Case $B_k(x_1, +0, y_1, y_2)=0$ with $x_1 \neq 0$.
+      (Remember we assumed $x_2 \geq 0$.]
   \begin {enumerate}
   \item if $x_1 >0$, then $\phi = +0$.
-    From \ref {eqn:Bk}, we have
+    From (\ref{eqn:Bk}), we have
     \[
-    y_2 \log x_1 = k \frac{\pi}{2}
+    y_2 \log x_1 = k \frac{\pi}{2}.
     \]
     \begin {enumerate}
     \item if $y_2 = \rho_2 0$, the last equation implies $k = 0$, and from
-      \ref {eqn:BkDerivative} we have
+      (\ref{eqn:BkDerivative}) we have
       \[
       dB_0(x_1, +0, y_1, \rho_2 0)\cdot(\delta_1, \delta_2, \epsilon_1,
       \epsilon_2) = 0 \delta_1 + \frac{y_1}{x_1} \delta_2 + 0 \epsilon_1 +
@@ -1322,7 +1324,7 @@ of $x_1$ (resp. $x_2$, $y_1$, $y_2$).
       \]
       with $\delta_2 > 0$ and $\rho_2 \epsilon_2 > 0$.
 
-      Then the sign of the last expression in constant only in the following
+      The sign of the last expression in constant only in the following
       cases,
       \begin {align*}
         dB_0(x_1, +0, y_1, +0)\cdot(\delta_1, \delta_2, \epsilon_1,
@@ -1336,15 +1338,15 @@ of $x_1$ (resp. $x_2$, $y_1$, $y_2$).
         dB_0(+1, +0, y_1, \pm 0)\cdot(\delta_1, \delta_2, \epsilon_1,
         \epsilon_2) &< 0 \;\text{if}\; y_1 < 0\\
         dB_0(x_1, +0, y_1, +0)\cdot(\delta_1, \delta_2, \epsilon_1,
-        \epsilon_2) &< 0 \;\text{if}\; y_1 \leq 0 \;\text{and}\; 1 > x_1 > 0\\
+        \epsilon_2) &< 0 \;\text{if}\; y_1 \leq 0 \;\text{and}\; 1 > x_1 > 0.
       \end {align*}
-      Notice that we cannot conclude when $dB_0(x,y)$ is identically null,
+      Notice that we cannot conclude when $dB_0(x,y)$ is identically zero,
       so the cases $x=+1+0i$, $y=y_1 \pm0i$ cannot be determined by this
       means.
 
     \item If $y_2 \neq 0$, then $x_1 = \exp\left(\frac{k}{2y_2}\pi\right)$
       is a dyadic number only if $k=0$ and then $x_1=1$.
-      We have, using \ref {eqn:BkDerivative},
+      We have, using (\ref{eqn:BkDerivative}),
       \[
       dB_0(+1, +0, y_1, y_2)\cdot(\delta_1, \delta_2, \epsilon_1,
       \epsilon_2) = y_2 \delta_1 + y_1 \delta_2 + 0 \epsilon_1 + 0
@@ -1352,13 +1354,13 @@ of $x_1$ (resp. $x_2$, $y_1$, $y_2$).
       \]
       with $\delta_2 > 0$.
 
-      But here $y_2 \delta_1$ can take negative as well as positive values
+      Here $y_2 \delta_1$ can take negative as well as positive values
       preventing the sign of $dB_0(+1, +0, y_1, y_2)\cdot(\delta_1,
       \delta_2, \epsilon_1, \epsilon_2)$ from being constant.
     \end {enumerate}
 
   \item if $x_1 < 0$, then $\phi = \pi$.
-    Using \ref {eqn:BkDerivative}, we have
+    Using (\ref{eqn:BkDerivative}), we have
     \[
     dB_k(x_1, +0, y_1, y_2)\cdot(\delta_1, \delta_2, \epsilon_1, \epsilon_2)
     = \frac{y_2}{x_1} \delta_1 + \frac{y_1}{x_1} \delta_2 + \pi \epsilon_1 +
@@ -1368,10 +1370,11 @@ of $x_1$ (resp. $x_2$, $y_1$, $y_2$).
 
     If $y_1 \neq 0$, then $\epsilon_1$ can take negative as well as positive
     values, preventing $dB_k$ from having a constant sign.
-    Thus $y_1 = 0$.
+    Assume thus $y_1 = 0$.
     As $x_1 \neq 0$, $\delta_1$ can also take negative and positive values,
     and $-y_2 \delta_1$ does not have a constant sign unless $y_2 = 0$.
-    But from \ref {eqn:Bk}, we know that $B_k(x, 0)=0$ implies $k = 0$.
+    But from \ref {eqn:Bk}, we know that $B_k(x, 0)=0$ implies $k = 0$
+    since $x_1 = - \exp(\frac{k \pi}{2 y_2})$ is dyadic.
 
     When $y = 0$, the derivative of $B_k$ is
     \[
@@ -1379,7 +1382,7 @@ of $x_1$ (resp. $x_2$, $y_1$, $y_2$).
     \epsilon_2) = 0 \delta_1 + 0 \delta_2 + \pi \epsilon_1 + \log(-x_1)
     \epsilon_2
     \]
-    with $\delta_2 >0$, $\rho_1 \epsilon_1 >0$, and $\rho_2 \epsilon_2 >0$.
+    with $\delta_2 >0$, $\rho_1 \epsilon_1 >0$ and $\rho_2 \epsilon_2 >0$.
 
     Then,
     \begin {align*}
@@ -1397,14 +1400,14 @@ of $x_1$ (resp. $x_2$, $y_1$, $y_2$).
     combinations of $k$, $x_1<0$, $\rho_1$, and $\rho_2$.
   \end {enumerate}
 
-\item If $B_k(x_1, x_2, \rho_1 0, y_2)=0$ for $x_2 \geq 0$.
+\item Case $B_k(x_1, x_2, \rho_1 0, y_2)=0$ for $x_2 \geq 0$.
   Here, we have
   \[
-  y_2\log|x|-k\frac{\pi}{2} = 0
+  y_2\log|x|-k\frac{\pi}{2} = 0.
   \]
   \begin{enumerate}
   \item If $y_2=0$, then from the last equation $k=0$.
-    Using \ref {eqn:BkDerivative}
+    Using (\ref{eqn:BkDerivative})
     \[
     dB_0(x_1,x_2,\rho_10,\rho_20)\cdot(\delta_1, \delta_2, \epsilon_1, \epsilon_2) =
     0\delta_1 + 0\delta_2 + \phi \epsilon_1 +\log|x| \epsilon_2
@@ -1412,8 +1415,8 @@ of $x_1$ (resp. $x_2$, $y_1$, $y_2$).
     where $\rho_1 \epsilon_1 > 0$ and $\rho_2 \epsilon_2 > 0$.
 
     The case $\phi = 0$, that is $x_1 > 0$ and $x_2 = 0$, has already been
-    processed above.
-    Let $\phi > 0$, then $x_2$ is not null or $x_1 < 0$.
+    processed above in Case (b)(i).
+    Let $\phi > 0$, then $x_2$ is not zero or $x_1 < 0$.
     Using the expression of the derivative given above, we have
     \begin{align*}
       dB_0(x_1, x_2, +0, +0)\cdot(\delta_1, \delta_2, \epsilon_1, \epsilon_2)
@@ -1425,14 +1428,14 @@ of $x_1$ (resp. $x_2$, $y_1$, $y_2$).
       dB_0(x_1, x_2, -0, +0)\cdot(\delta_1, \delta_2, \epsilon_1, \epsilon_2)
       &< 0 \;\text{if}\; 1 \geq |x| > 0 \;\text{and}\; \pi \geq \phi > 0
     \end{align*}
-  \item If $y_2 \neq 0$, from \ref {eqn:Bk}, we have
+  \item If $y_2 \neq 0$, from (\ref{eqn:Bk}), we have
     \[
-    |x|^2=\exp\left(\frac{k}{y_2}\pi\right)
+    |x|=\exp\left(\frac{k\pi}{2y_2}\right).
     \]
-    The right hand side member of the equation is known to be transcendental
+    The right hand side of the equation is known to be transcendental
     unless $k=0$.
-    As the left hand side member is dyadic, we have $k=0$, and then $|x|=1$.
-    Here, \ref {eqn:BkDerivative} gives
+    As the left hand side is dyadic, we have $k=0$, and then $|x|=1$.
+    Here, (\ref{eqn:BkDerivative}) gives
     \[
     dB_0(x_1,x_2,\rho_10,y_2)\cdot(\delta_1, \delta_2, \epsilon_1, \epsilon_2)
     = x_1y_2\delta_1 + x_2y_2\delta_2 + \phi \epsilon_1 + 0\epsilon_2
@@ -1441,33 +1444,33 @@ of $x_1$ (resp. $x_2$, $y_1$, $y_2$).
 
     If $x_2 \neq 0$, then $x_2y_2\delta_2$ can take negative as well as
     positive values and the sign of the derivative is not constant.
-    Thus $x_2 = 0$.
+    Assume thus $x_2 = 0$.
     Then, $x_1=\pm 1$ because $|x|=1$, and $x_1y_2\delta_1$ can take negative
     and positive values.
 
-    So, the sign of the null part of $B_k(x_1, x_2, \pm 0, y_2)$ (if any)
+    So, the sign of the zero part of $B_k(x_1, x_2, \pm 0, y_2)$ (if any)
     cannot be determined for all integers $k$ and for all dyadic real numbers
     $x_1$, $x_2$, and $y_2 \neq 0$.
   \end{enumerate}
 
 \item If $B_k(x_1, x_2, y_1, \rho_2 0)=0$ for $x_2 \geq 0$.
-  The case $y_1=0$, $y_2=0$ has already been precessed above.
-  Let $y_1 \neq 0$, then from \ref {eqn:Bk} we have
+  The case $y_1=0$ has already been precessed above in Case (c).
+  Let $y_1 \neq 0$, then from (\ref{eqn:Bk}) we have
   \[
   \phi = \frac{k}{2y_1}\pi
   \]
   which implies that the argument $\phi$ of $x$ can be written as $r \pi$ for
-  some rational number $r$ and, in the same time, $\cos^2 \phi$ ($=
-  |x|^2/x_1^2$ if $x_1 \neq 0$, else $=0$) and $\sin^2 \phi$ ($= |x|^2/x_2^2$
-  if $x_2 \neq 0$, else $=0$) are rationnal.
+  some rational number $r$ and, in the same time, $\cos^2 \phi =
+  x_1^2/|x|^2$ and $\sin^2 \phi = x_2^2/|x|^2$ are rational.
 
-  The five only possibilities (with $x_2 \geq 0$) are:
+  The five only possibilities (with $x_2 \geq 0$) are:\footnote{This is wrong:
+ consider $\phi = \pi/3$, with $\cos \phi = 1/2$ and $\sin \phi = \sqrt{3}/2$.}
   \begin{enumerate}
   \item $\phi = 0$, but then $x_2=0$.
     This case has been processed above.
   \item $\phi = \frac{\pi}{4}$, then $x_1 = x_2 > 0$.
-    From \ref {eqn:Bk}, we have $y_1 = 2k \neq 0$, and from \ref
-    {eqn:BkDerivative}
+    From (\ref{eqn:Bk}), we have $y_1 = 2k \neq 0$, and from
+    (\ref{eqn:BkDerivative})
     \[
     dB_k(x_1, x_1, 2k, \rho_2 0)\cdot(\delta_1, \delta_2, \epsilon_1,
     \epsilon_2) = -\frac{k}{x_1}\delta_1 + \frac{k}{x_1}\delta_2 +
@@ -1479,13 +1482,13 @@ of $x_1$ (resp. $x_2$, $y_1$, $y_2$).
     $dB_k(x_1, x_1, 2k, \rho_2 0)\cdot(\delta_1, \delta_2, \epsilon_1,
     \epsilon_2)$ as well, has no constant sign.
   \item $\phi = \frac{\pi}{2}$, then $x_1 = 0$.
-    This case has been processed above.
-  \item $\phi = \frac{3\pi}{4}$, then $x_1 = -x_2$, $x_1 < 0$ and \ref
-    {eqn:Bk} gives $k \neq 0$ and $y_1 = \frac{2k}{3}$.
+    This case has been processed above in Case (a).
+  \item $\phi = \frac{3\pi}{4}$, then $x_1 = -x_2$, $x_1 < 0$ and
+    (\ref{eqn:Bk}) gives $k \neq 0$ and $y_1 = \frac{2k}{3}$.
     As $y_1$ is a dyadic number, the only compatible values for $k$ are
     multiple of 3.
     Let $n$ be a nonzero integer so that $k = 3n$ and $y_1 = 2n$.
-    From \ref {eqn:BkDerivative}, we have
+    From (\ref{eqn:BkDerivative}), we have
     \[
     dB_{3n}(-x_2, x_2, 2n, \rho_2 0)\cdot(\delta_1, \delta_2, \epsilon_1,
     \epsilon_2) = -\frac{n}{x_2}\delta_1 - \frac{n}{x_2}\delta_2 +
@@ -1496,7 +1499,7 @@ of $x_1$ (resp. $x_2$, $y_1$, $y_2$).
     As $n \neq 0$, $\epsilon_1$ can take negative and positive values and
     the term $\frac{3\pi}{4}\epsilon_1$ has not a constant sign.
   \item $\phi = \pi$, then $x_1<0$ and $x_2 = 0$.
-    This case has been processed above.
+    This case has been processed above in Case (b).
   \end{enumerate}
 \end {enumerate}
 
