@@ -322,7 +322,7 @@ mpc_pow_exact (mpc_ptr z, mpc_srcptr x, mpfr_srcptr y, mpc_rnd_t rnd,
       sb = mpz_scan1 (b, 0);
       sa = (sa <= sb) ? sa : sb;
       mpz_div_2exp (a, a, sa);
-      mpz_div_2exp (b, b, sb);
+      mpz_div_2exp (b, b, sa);
       ed += sa;
 
       if (mpz_sizeinbase (a, 2) > maxprec || mpz_sizeinbase (b, 2) > maxprec)
