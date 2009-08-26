@@ -213,14 +213,17 @@ mpc_div (mpc_ptr a, mpc_srcptr b, mpc_srcptr c, mpc_rnd_t rnd)
 
       if (overlap)
          mpc_init3 (tmpa, MPFR_PREC (MPC_RE (a)), MPFR_PREC (MPC_IM (a)));
+
       cloc[0] = MPC_IM(c)[0]; /* copies mpfr struct IM(c) into cloc */
       inexact_re = mpfr_div (MPC_RE(dest), MPC_IM(b), cloc, MPC_RND_RE(rnd));
       mpfr_neg (cloc, cloc, GMP_RNDN);
       /* changes the sign only in cloc, not in c; no need to correct later */
       inexact_im = mpfr_div (MPC_IM(dest), MPC_RE(b), cloc, MPC_RND_IM(rnd));
+
       if (overlap)
         {
-          mpc_set (a, tmpa, MPC_RNDNN); /* exact */
+          mpfr_swap (MPC_RE(a), MPC_RE(tmpa));
+          mpfr_swap (MPC_IM(a), MPC_IM(tmpa));
           mpc_clear (tmpa);
         }
 
