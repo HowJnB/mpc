@@ -148,7 +148,7 @@ int
 mpc_div (mpc_ptr a, mpc_srcptr b, mpc_srcptr c, mpc_rnd_t rnd)
 {
    int ok_re = 0, ok_im = 0;
-   mpc_t  res, c_conj;
+   mpc_t res, c_conj;
    mpfr_t q;
    mp_prec_t prec;
    int inexact_prod, inexact_norm, inexact_re, inexact_im, loops = 0;
@@ -208,19 +208,21 @@ mpc_div (mpc_ptr a, mpc_srcptr b, mpc_srcptr c, mpc_rnd_t rnd)
       int overlap = (a == b) || (a == c);
       int imag_b = mpfr_zero_p (MPC_RE (b));
       mpfr_t cloc;
+      mpc_t tmpa;
+      mpc_ptr dest = (overlap) ? tmpa : a;
 
       if (overlap)
-         mpc_init3 (res, MPFR_PREC (MPC_RE (a)), MPFR_PREC (MPC_IM (a)));
-      else
-         res [0] = *a;
-      cloc [0] = MPC_IM (c) [0];
-      inexact_re = mpfr_div (MPC_RE(res), MPC_IM(b), cloc, MPC_RND_RE(rnd));
+         mpc_init3 (tmpa, MPFR_PREC (MPC_RE (a)), MPFR_PREC (MPC_IM (a)));
+      cloc[0] = MPC_IM(c)[0]; /* copies mpfr struct IM(c) into cloc */
+      inexact_re = mpfr_div (MPC_RE(dest), MPC_IM(b), cloc, MPC_RND_RE(rnd));
       mpfr_neg (cloc, cloc, GMP_RNDN);
       /* changes the sign only in cloc, not in c; no need to correct later */
-      inexact_im = mpfr_div (MPC_IM(res), MPC_RE(b), cloc, MPC_RND_IM(rnd));
+      inexact_im = mpfr_div (MPC_IM(dest), MPC_RE(b), cloc, MPC_RND_IM(rnd));
       if (overlap)
-         mpc_clear (a);
-      a [0] = res [0];
+        {
+          mpc_set (a, tmpa, MPC_RNDNN); /* exact */
+          mpc_clear (tmpa);
+        }
 
       /* correct signs of zeroes if necessary, which does not affect the
          inexact flags                                                    */
