@@ -1,5 +1,5 @@
 Recent Changes:
-  - New functions: mpc_pow, mpc_set_nan
+  - New functions: mpc_pow, mpc_set_nan, mpc_swap
   - Bug fixes:
     - log: along branch cut
     - norm: infinite loop in case of overflow

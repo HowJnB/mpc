@@ -172,6 +172,7 @@ __MPC_DECLSPEC int  mpc_set_ui    __MPC_PROTO ((mpc_ptr, unsigned long int, mpc_
 __MPC_DECLSPEC int  mpc_set_ui_ui __MPC_PROTO ((mpc_ptr, unsigned long int, unsigned long int, mpc_rnd_t));
 __MPC_DECLSPEC int  mpc_set_z     __MPC_PROTO ((mpc_ptr, mpz_srcptr, mpc_rnd_t));
 __MPC_DECLSPEC int  mpc_set_z_z   __MPC_PROTO ((mpc_ptr, mpz_srcptr, mpz_srcptr, mpc_rnd_t));
+__MPC_DECLSPEC void mpc_swap      __MPC_PROTO ((mpc_ptr, mpc_ptr));
 
 #ifdef _MPC_H_HAVE_INTMAX_T
 __MPC_DECLSPEC int  mpc_set_sj __MPC_PROTO ((mpc_ptr, intmax_t, mpc_rnd_t));
