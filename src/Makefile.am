@@ -2,7 +2,7 @@
 AM_CFLAGS=@WARNINGCFLAGS@
 
 lib_LTLIBRARIES = libmpc.la
-libmpc_la_LDFLAGS = -version-info 1:0:0
+libmpc_la_LDFLAGS = -version-info 2:0:0
 libmpc_la_SOURCES = mpc-impl.h abs.c add.c add_fr.c add_ui.c arg.c clear.c	\
   cmp.c cmp_si_si.c conj.c cos.c cosh.c div_2exp.c div.c div_fr.c div_ui.c	\
   exp.c fr_div.c fr_sub.c get_prec2.c get_prec.c get_str.c get_version.c	\

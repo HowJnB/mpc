@@ -1,10 +1,10 @@
-Recent Changes:
+Changes in version 0.7:
   - New functions: mpc_pow, mpc_set_nan, mpc_swap
   - Bug fixes:
     - log: along branch cut
     - norm: infinite loop in case of overflow
-    - ui_div, div: handling of division by 0 and infinities following
-      the example code of the C99 standard
+    - ui_div, div, fr_div: handling of division by 0 and infinities
+      following the example code of the C99 standard
     - compilation with g++
   - Makefile.vc updated (thanks to Mickael Gastineau)
   - Minimal gmp version is 4.2
