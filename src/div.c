@@ -221,8 +221,11 @@ mpc_div (mpc_ptr a, mpc_srcptr b, mpc_srcptr c, mpc_rnd_t rnd)
 
       if (overlap)
         {
-          mpfr_swap (MPC_RE(a), MPC_RE(tmpa));
-          mpfr_swap (MPC_IM(a), MPC_IM(tmpa));
+          /* Note: we could use mpc_swap here, but this might cause problems
+             if a and tmpa have been allocated using different methods, since
+             it will swap the significands of a and tmpa. See http://
+         lists.gforge.inria.fr/pipermail/mpc-discuss/2009-August/000504.html */
+          mpc_set (a, tmpa, MPC_RNDNN); /* exact */
           mpc_clear (tmpa);
         }
 
