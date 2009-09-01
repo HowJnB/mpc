@@ -110,14 +110,14 @@ extract_string (FILE *stream)
 
     /* (n-char-sequence) only after a NaN */
     if ((nread != 3
-         || tolower (str[0]) != 'n'
-         || tolower (str[1]) != 'a'
-         || tolower (str[2]) != 'n')
+         || tolower ((unsigned char) (str[0])) != 'n'
+         || tolower ((unsigned char) (str[1])) != 'a'
+         || tolower ((unsigned char) (str[2])) != 'n')
         && (nread != 5
             || str[0] != '@'
-            || tolower (str[1]) != 'n'
-            || tolower (str[2]) != 'a'
-            || tolower (str[3]) != 'n'
+            || tolower ((unsigned char) (str[1])) != 'n'
+            || tolower ((unsigned char) (str[2])) != 'a'
+            || tolower ((unsigned char) (str[3])) != 'n'
             || str[4] != '@')) {
       ungetc (c, stream);
       return str;
