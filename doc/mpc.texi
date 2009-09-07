@@ -628,7 +628,7 @@ Set @var{rop} to Nan+i*NaN.
 
 @deftypefun void mpc_swap (mpc_t @var{op1}, mpc_t @var{op2})
 Swap the values of @var{op1} and @var{op2} efficiently. Warning: the
-precisions are exchanged too; in case the precisions are different, 
+precisions are exchanged too; in case the precisions are different,
 @code{mpc_swap} is thus not equivalent to three @code{mpc_set} calls using a
 third auxiliary variable.
 @end deftypefun
@@ -1058,7 +1058,7 @@ Value}).
 
 For instance, you can define mpc_set_ui_fr as follows:
 @example
-int mpc_set_ui_d (mpc_t rop, long int re, double im, mpc_rnd_t rnd)
+int mpc_set_ui_fr (mpc_t rop, long int re, double im, mpc_rnd_t rnd)
     MPC_SET_X_Y (ui, fr, rop, re, im, rnd);
 @end example
 @end defmac

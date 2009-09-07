@@ -60,7 +60,7 @@ ENDTESTCOMPILE=/LIBPATH:"$(GMPDIR)\lib" libmpc.lib libmpfr.lib libgmp.lib
 #generate the CPPLINKOBJECTS : goto src and execute
 # ls *.c | sed "s/\.c/\.obj/" | awk ' { printf("%s \\\n",$1); } '
 #generate the list for tests : goto tests and execute
-# ls *.c | sed "s/\.c//" | awk ' { printf("\t$(TESTCOMPILE)%s.c  $(MIDTESTCOMPILE)%s.exe $(ENDTESTCOMPILE)\n\tcd $(DIRMPCTESTS) && %s.exe && cd ..\n",$1,$1,$1,$1); } '
+# ls t*.c | sed "s/\.c//" | awk ' { printf("\t$(TESTCOMPILE)%s.c  $(MIDTESTCOMPILE)%s.exe $(ENDTESTCOMPILE)\n\tcd $(DIRMPCTESTS) && %s.exe && cd ..\n",$1,$1,$1,$1); } '
 
 LIBRARY = libmpc.dll
 LIBRARYLIB = libmpc.lib
@@ -104,8 +104,6 @@ $(DIRMPC)\norm.obj \
 $(DIRMPC)\out_str.obj \
 $(DIRMPC)\pow.obj \
 $(DIRMPC)\proj.obj \
-$(DIRMPC)\random.obj \
-$(DIRMPC)\random2.obj \
 $(DIRMPC)\real.obj \
 $(DIRMPC)\set.obj \
 $(DIRMPC)\set_prec.obj \
@@ -125,7 +123,7 @@ $(DIRMPC)\tanh.obj \
 $(DIRMPC)\uceil_log2.obj \
 $(DIRMPC)\ui_div.obj \
 $(DIRMPC)\ui_ui_sub.obj \
-$(DIRMPC)\urandom.obj 
+$(DIRMPC)\urandom.obj
 
 
 
@@ -168,8 +166,6 @@ norm.obj \
 out_str.obj \
 pow.obj \
 proj.obj \
-random.obj \
-random2.obj \
 real.obj \
 set.obj \
 set_prec.obj \
@@ -189,7 +185,7 @@ tanh.obj \
 uceil_log2.obj \
 ui_div.obj \
 ui_ui_sub.obj \
-urandom.obj 
+urandom.obj
 
 #
 # Link target: automatically builds its object dependencies before
@@ -235,8 +231,6 @@ test :
 	copy $(GMPDIR)\lib\*gmp*.dll $(DIRMPCTESTS)
 	copy $(MPFRDIR)\lib\*mpfr*.dll $(DIRMPCTESTS)
 	copy $(LIBRARY)  $(DIRMPCTESTS)
-        $(TESTCOMPILE)tset.c  $(MIDTESTCOMPILE)tset.exe $(ENDTESTCOMPILE)
-        cd $(DIRMPCTESTS) && tset.exe && cd ..
         $(TESTCOMPILE)tabs.c  $(MIDTESTCOMPILE)tabs.exe $(ENDTESTCOMPILE)
         cd $(DIRMPCTESTS) && tabs.exe && cd ..
         $(TESTCOMPILE)tadd.c  $(MIDTESTCOMPILE)tadd.exe $(ENDTESTCOMPILE)
@@ -269,10 +263,10 @@ test :
         cd $(DIRMPCTESTS) && tfr_sub.exe && cd ..
         $(TESTCOMPILE)tget_version.c  $(MIDTESTCOMPILE)tget_version.exe $(ENDTESTCOMPILE)
         cd $(DIRMPCTESTS) && tget_version.exe && cd ..
-        $(TESTCOMPILE)tio_str.c  $(MIDTESTCOMPILE)tio_str.exe $(ENDTESTCOMPILE)
-        cd $(DIRMPCTESTS) && tio_str.exe && cd ..
         $(TESTCOMPILE)timag.c  $(MIDTESTCOMPILE)timag.exe $(ENDTESTCOMPILE)
         cd $(DIRMPCTESTS) && timag.exe && cd ..
+        $(TESTCOMPILE)tio_str.c  $(MIDTESTCOMPILE)tio_str.exe $(ENDTESTCOMPILE)
+        cd $(DIRMPCTESTS) && tio_str.exe && cd ..
         $(TESTCOMPILE)tlog.c  $(MIDTESTCOMPILE)tlog.exe $(ENDTESTCOMPILE)
         cd $(DIRMPCTESTS) && tlog.exe && cd ..
         $(TESTCOMPILE)tmul.c  $(MIDTESTCOMPILE)tmul.exe $(ENDTESTCOMPILE)
@@ -301,6 +295,8 @@ test :
         cd $(DIRMPCTESTS) && treal.exe && cd ..
         $(TESTCOMPILE)treimref.c  $(MIDTESTCOMPILE)treimref.exe $(ENDTESTCOMPILE)
         cd $(DIRMPCTESTS) && treimref.exe && cd ..
+        $(TESTCOMPILE)tset.c  $(MIDTESTCOMPILE)tset.exe $(ENDTESTCOMPILE)
+        cd $(DIRMPCTESTS) && tset.exe && cd ..
         $(TESTCOMPILE)tsin.c  $(MIDTESTCOMPILE)tsin.exe $(ENDTESTCOMPILE)
         cd $(DIRMPCTESTS) && tsin.exe && cd ..
         $(TESTCOMPILE)tsinh.c  $(MIDTESTCOMPILE)tsinh.exe $(ENDTESTCOMPILE)

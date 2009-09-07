@@ -1,4 +1,4 @@
-/* mpc_mul_si -- Multiply a complex number by plus or minus i.
+/* mpc_mul_i -- Multiply a complex number by plus or minus i.
 
 Copyright (C) 2005, 2009 Andreas Enge, Philippe Th\'eveny
 
@@ -76,6 +76,6 @@ mpc_mul_i (mpc_ptr a, mpc_srcptr b, int sign, mpc_rnd_t rnd)
            inex_im = mpfr_neg (MPC_IM (a), MPC_RE (b), MPC_RND_IM (rnd));
         }
   }
-  
-  return MPC_INEX(inex_re, inex_im);  
+
+  return MPC_INEX(inex_re, inex_im);
 }

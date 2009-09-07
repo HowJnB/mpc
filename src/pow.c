@@ -49,7 +49,7 @@ MA 02111-1307, USA. */
    whether c = -b^2, i.e., if -c is a square.
 
    Case 3: b = 0. Then d is necessarily zero, thus it suffices to check
-   whether c = a^2, i.e., if c is a square.       
+   whether c = a^2, i.e., if c is a square.
 */
 static int
 mpc_perfect_square_p (mpz_t a, mpz_t b, mpz_t c, mpz_t d)
@@ -183,11 +183,11 @@ mpc_pow_exact (mpc_ptr z, mpc_srcptr x, mpfr_srcptr y, mpc_rnd_t rnd,
     }
   else /* neither c nor d is zero */
     {
-      unsigned long u;
+      unsigned long v;
       t = mpz_scan1 (c, 0);
-      u = mpz_scan1 (d, 0);
-      if (u < t)
-        t = u;
+      v = mpz_scan1 (d, 0);
+      if (v < t)
+        t = v;
       mpz_div_2exp (c, c, t);
       mpz_div_2exp (d, d, t);
       ec += t;
@@ -355,7 +355,7 @@ mpc_pow_exact (mpc_ptr z, mpc_srcptr x, mpfr_srcptr y, mpc_rnd_t rnd,
 
 /* Return 1 if y*2^k is an odd integer, 0 otherwise.
    Adapted from MPFR, file pow.c.
-   
+
    Examples: with k=0, check if y is an odd integer,
              with k=1, check if y is half-an-integer,
              with k=-1, check if y/2 is an odd integer.
@@ -430,7 +430,7 @@ mpc_pow (mpc_ptr z, mpc_srcptr x, mpc_srcptr y, mpc_rnd_t rnd)
           mpfr_t n;
           int inex, cx1;
           int sign_zi;
-          /* cx1 < 0 if |x| < 1 
+          /* cx1 < 0 if |x| < 1
              cx1 = 0 if |x| = 1
              cx1 > 0 if |x| > 1
           */
@@ -441,7 +441,7 @@ mpc_pow (mpc_ptr z, mpc_srcptr x, mpc_srcptr y, mpc_rnd_t rnd)
             cx1 = -inex;
 
           sign_zi = (cx1 < 0 && mpfr_signbit (MPC_IM (y)) == 0)
-            || (cx1 == 0 
+            || (cx1 == 0
                 && mpfr_signbit (MPC_IM (x)) != mpfr_signbit (MPC_RE (y)))
             || (cx1 > 0 && mpfr_signbit (MPC_IM (y)));
 
@@ -492,7 +492,7 @@ mpc_pow (mpc_ptr z, mpc_srcptr x, mpc_srcptr y, mpc_rnd_t rnd)
 
           ret = mpc_set_ui (z, +1, rnd);
           /* the sign of the zero imaginary part is known in some cases (see
-             algorithm.tex). In such cases we have 
+             algorithm.tex). In such cases we have
              (x +s*0i)^(y+/-0i) = x^y + s*sign(y)*0i
              where s = +/-1.  We extend here this rule to fix the sign of the
              zero part.
@@ -671,7 +671,7 @@ mpc_pow (mpc_ptr z, mpc_srcptr x, mpc_srcptr y, mpc_rnd_t rnd)
       mpfr_t n;
       int inex, cx1;
       int sign_zi;
-      /* cx1 < 0 if |x| < 1 
+      /* cx1 < 0 if |x| < 1
          cx1 = 0 if |x| = 1
          cx1 > 0 if |x| > 1
       */
@@ -682,7 +682,7 @@ mpc_pow (mpc_ptr z, mpc_srcptr x, mpc_srcptr y, mpc_rnd_t rnd)
         cx1 = -inex;
 
       sign_zi = (cx1 < 0 && mpfr_signbit (MPC_IM (y)) == 0)
-        || (cx1 == 0 
+        || (cx1 == 0
             && mpfr_signbit (MPC_IM (x)) != mpfr_signbit (MPC_RE (y)))
         || (cx1 > 0 && mpfr_signbit (MPC_IM (y)));
 
