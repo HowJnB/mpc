@@ -108,14 +108,11 @@ AC_DEFUN([MPC_PROG_CC_WARNINGCFLAGS], [
   if echo $VERSION | grep -c dev >/dev/null 2>&1 ; then
     if test x$GCC = xyes ; then
       case $host in
-        *-*-cygwin* | *-*-mingw*) ;;
-        *) AX_C_CHECK_FLAG(-ansi,,,$1="$$1 -ansi",) ;;
-      esac
-      case $host in
          *darwin*) ;;
          *) AX_C_CHECK_FLAG(-D_FORTIFY_SOURCE=2,,,$1="$$1 -D_FORTIFY_SOURCE=2",) ;;
       esac
       AX_C_CHECK_FLAG(-pedantic,,,$1="$$1 -pedantic",)
+      AX_C_CHECK_FLAG(-Wno-long-long,,,$1="$$1 -Wno-long-long",)
       AX_C_CHECK_FLAG(-Wall,,,$1="$$1 -Wall",)
       AX_C_CHECK_FLAG(-Wextra,,,$1="$$1 -Wextra",)
       AX_C_CHECK_FLAG(-Werror,,,$1="$$1 -Werror",)
