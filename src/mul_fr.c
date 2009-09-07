@@ -20,26 +20,25 @@ the Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston,
 MA 02111-1307, USA. */
 
 #include "mpc-impl.h"
-#include <stdio.h>
 
 int
 mpc_mul_fr (mpc_ptr a, mpc_srcptr b, mpfr_srcptr c, mpc_rnd_t rnd)
 {
-   int inex_re, inex_im;
-   mpfr_t real;
+  int inex_re, inex_im;
+  mpfr_t real;
 
-   if (c == MPC_RE (a))
-      /* We have to use a temporary variable. */
-      mpfr_init2 (real, MPFR_PREC (MPC_RE (a)));
-   else
-      real [0] = MPC_RE (a) [0];
+  if (c == MPC_RE (a))
+    /* We have to use temporary variable. */
+    mpfr_init2 (real, MPFR_PREC (MPC_RE (a)));
+  else
+    real [0] = MPC_RE (a) [0];
 
-   inex_re = mpfr_mul (real, MPC_RE(b), c, MPC_RND_RE(rnd));
-   inex_im = mpfr_mul (MPC_IM(a), MPC_IM(b), c, MPC_RND_IM(rnd));
-   mpfr_set (MPC_RE (a), real, GMP_RNDN); /* exact */
+  inex_re = mpfr_mul (real, MPC_RE(b), c, MPC_RND_RE(rnd));
+  inex_im = mpfr_mul (MPC_IM(a), MPC_IM(b), c, MPC_RND_IM(rnd));
+  mpfr_set (MPC_RE (a), real, GMP_RNDN); /* exact */
 
-   if (c == MPC_RE (a))
-      mpfr_clear (real);
+  if (c == MPC_RE (a))
+    mpfr_clear (real);
 
-   return MPC_INEX(inex_re, inex_im);
+  return MPC_INEX(inex_re, inex_im);
 }

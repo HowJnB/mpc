@@ -5,7 +5,6 @@ Changes in version 0.7:
     - norm: infinite loop in case of overflow
     - ui_div, div, fr_div: handling of division by 0 and infinities
       following the example code of the C99 standard
-    - mul_ui, mul_si, mul_2exp, div_2exp: signs of zeroes
     - compilation with g++
   - Makefile.vc updated (thanks to Mickael Gastineau)
   - Minimal gmp version is 4.2

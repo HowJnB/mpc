@@ -24,21 +24,10 @@ MA 02111-1307, USA. */
 int
 mpc_mul_ui (mpc_ptr a, mpc_srcptr b, unsigned long int c, mpc_rnd_t rnd)
 {
-   int inex_re, inex_im, inex;
+  int inex_re, inex_im;
 
-   if (mpfr_cmp_ui (MPC_RE (b), 0ul) == 0 || mpfr_cmp_ui (MPC_IM (b), 0ul) == 0
-       || c == 0) {
-      /* Signs of zeroes may pose problems; delegate work to mpc_mul_fr */
-      mpfr_t fr;
-      mpfr_init2 (fr, 2);
-      mpfr_set_ui (fr, c, GMP_RNDN);
-      inex = mpc_mul_fr (a, b, fr, rnd);
-      mpfr_clear (fr);
-      return inex;
-   }
-   else {
-      inex_re = mpfr_mul_ui (MPC_RE(a), MPC_RE(b), c, MPC_RND_RE(rnd));
-      inex_im = mpfr_mul_ui (MPC_IM(a), MPC_IM(b), c, MPC_RND_IM(rnd));
-      return MPC_INEX(inex_re, inex_im);
-   }
+  inex_re = mpfr_mul_ui (MPC_RE(a), MPC_RE(b), c, MPC_RND_RE(rnd));
+  inex_im = mpfr_mul_ui (MPC_IM(a), MPC_IM(b), c, MPC_RND_IM(rnd));
+
+  return MPC_INEX(inex_re, inex_im);
 }
