@@ -83,16 +83,16 @@ MA 02111-1307, USA. */
 #define INV_RND(r) \
    (((r) == GMP_RNDU) ? GMP_RNDD : (((r) == GMP_RNDD) ? GMP_RNDU : (r)))
 
-/* Convention in C99 (G.3): z is regarded as an infinity if at least one of
-   its parts is infinite */
 #define mpc_inf_p(z) (mpfr_inf_p(MPC_RE(z))||mpfr_inf_p(MPC_IM(z)))
-/* Convention in C99 (G.3): z is regarded as a zero if each of its parts is
-   a zero */
+   /* Convention in C99 (G.3): z is regarded as an infinity if at least one of
+      its parts is infinite */
 #define mpc_zero_p(z) (mpfr_zero_p(MPC_RE(z))&&mpfr_zero_p(MPC_IM(z)))
-/* Convention in C99 (G.3): z is regarded as finite if both its parts are */
+   /* Convention in C99 (G.3): z is regarded as a zero if each of its parts is
+      a zero */
 #define mpc_fin_p(z) (mpfr_number_p(MPC_RE(z))&&mpfr_number_p(MPC_IM(z)))
-/* Consider as NaN all other numbers */
+   /* Convention in C99 (G.3): z is regarded as finite if both its parts are */
 #define mpc_nan_p(z) ((mpfr_nan_p(MPC_RE(z)) && !mpfr_inf_p(MPC_IM(z))) || (mpfr_nan_p(MPC_IM(z)) && !mpfr_inf_p(MPC_RE(z))))
+   /* Consider as NaN all other numbers containing at least one NaN */
 
 
 #define OUT(x)                                                  \
