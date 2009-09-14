@@ -45,8 +45,6 @@ special (void)
   mpfr_set_str (MPC_RE(a), "-1", 10, GMP_RNDN);
   mpfr_set_str (MPC_IM(a), "-0", 10, GMP_RNDN);
   mpc_ui_div (b, 0, a, MPC_RNDNN);
-  mpc_out_str (stdout, 10, 0, b, MPC_RNDNN);
-  printf ("\n");
   if ((mpc_cmp_si_si (b, 0, 0) != 0) || (MPFR_SIGN (MPC_RE(b)) > 0)
       || (MPFR_SIGN (MPC_IM(b)) < 0))
     {

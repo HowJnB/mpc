@@ -25,23 +25,12 @@ MA 02111-1307, USA. */
 int
 mpc_ui_div (mpc_ptr a, unsigned long int b, mpc_srcptr c, mpc_rnd_t rnd)
 {
-  int inex, inex_im;
+  int inex;
   mpc_t bb;
 
-  if (mpfr_cmp_ui (MPC_IM(c), 0) == 0) /* c is real */
-    {
-      inex    = mpfr_ui_div (MPC_RE(a), b, MPC_RE(c), MPC_RND_RE(rnd));
-      /* Let mpfr do the work in case c==0. */
-      inex_im = mpfr_ui_div (MPC_IM(a), 0ul, MPC_RE(c), MPC_RND_IM(rnd));
-      return MPC_INEX(inex, inex_im);
-    }
-
   mpc_init2 (bb, sizeof(unsigned long int) * CHAR_BIT);
-
   mpc_set_ui (bb, b, rnd); /* exact */
-
   inex = mpc_div (a, bb, c, rnd);
-
   mpc_clear (bb);
 
   return inex;
