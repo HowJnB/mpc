@@ -32,7 +32,7 @@ mpc_ui_div (mpc_ptr a, unsigned long int b, mpc_srcptr c, mpc_rnd_t rnd)
     {
       inex    = mpfr_ui_div (MPC_RE(a), b, MPC_RE(c), MPC_RND_RE(rnd));
       /* Let mpfr do the work in case c==0. */
-      inex_im = mpfr_ui_div (MPC_IM(a), 0ul, MPC_IM(c), MPC_RND_IM(rnd));
+      inex_im = mpfr_ui_div (MPC_IM(a), 0ul, MPC_RE(c), MPC_RND_IM(rnd));
       return MPC_INEX(inex, inex_im);
     }
 
