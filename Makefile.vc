@@ -24,15 +24,22 @@
 #  nmake /f Makefile.vc clean
 #       clean the temporaries objects
 #
-#  nmake /f Makefile.vc  GMPDIR=gmpdirectory MPFRDIR=mpfrdirectory
+#  nmake /f Makefile.vc  STATIC=0|1 GMPDIR=gmpdirectory MPFRDIR=mpfrdirectory 
 #      compile MPC
 #
-#  nmake /f Makefile.vc  install GMPDIR=gmpdirectory MPFRDIR=mpfrdirectory  DESTDIR=installdirectory
+#  nmake /f Makefile.vc  STATIC=0|1 install GMPDIR=gmpdirectory MPFRDIR=mpfrdirectory  DESTDIR=installdirectory
 #      install MPC to installdirectory
 #
-#  nmake /f Makefile.vc  check GMPDIR=gmpdirectory MPFRDIR=mpfrdirectory
+#  nmake /f Makefile.vc  STATIC=0|1 check GMPDIR=gmpdirectory MPFRDIR=mpfrdirectory
 #      perform tests on MPC
 #
+#  GMPDIR : specify the location where GMP is installed
+#  MPFRDIR : specify the location where MPFR is installed
+#  DESTDIR : specify the location where MPC will be installed
+#  STATIC  : specify if a static or dynamic library of MPC will be created
+#            STATIC=1  : build a static library
+#            STATIC=0  : build a dynamic library (DLL) 
+#            A dynamic library is created by default if STATIC is omitted (STATIC=0)
 
 
 CPP = cl.exe
@@ -46,8 +53,18 @@ VERSION=0.7.1-dev
 DIRMPC=.\src
 DIRMPCTESTS=.\tests\\
 
+!if "$(STATIC)" == "0" 
+LIBRARY = libmpc.dll
+LINKER = link.exe /DLL
+GMPMUSTBEDLL=/D__GMP_LIBGMP_DLL
+!else
+LIBRARY = libmpc.lib
+LINKER = lib.exe
+GMPMUSTBEDLL=
+!endif
+
 INCLUDES = /I$(DIRMPC) /I$(GMPDIR)\include  /I$(MPFR)\include
-CKERNELFLAGS = $(CDEFAULTFLAGS) /D__GMP_LIBGMP_DLL   $(INCLUDES)
+CKERNELFLAGS = $(CDEFAULTFLAGS) $(GMPMUSTBEDLL)   $(INCLUDES)
 CFLAGS = $(CKERNELFLAGS)  /D__MPC_WITHIN_MPC /D_GMP_IEEE_FLOATS /DHAVE_CONFIG_H
 
 TESTCOMPILE=$(CC) $(CKERNELFLAGS) $(DIRMPCTESTS)\tgeneric.c $(DIRMPCTESTS)\comparisons.c $(DIRMPCTESTS)\read_data.c $(DIRMPCTESTS)\random.c $(DIRMPCTESTS)
@@ -62,7 +79,6 @@ ENDTESTCOMPILE=/LIBPATH:"$(GMPDIR)\lib" libmpc.lib libmpfr.lib libgmp.lib
 #generate the list for tests : goto tests and execute
 # ls t*.c | sed "s/\.c//" | awk ' { printf("\t$(TESTCOMPILE)%s.c  $(MIDTESTCOMPILE)%s.exe $(ENDTESTCOMPILE)\n\tcd $(DIRMPCTESTS) && %s.exe && cd ..\n",$1,$1,$1,$1); } '
 
-LIBRARY = libmpc.dll
 LIBRARYLIB = libmpc.lib
 
 CPPOBJECTS = $(DIRMPC)\abs.obj \
@@ -193,7 +209,7 @@ urandom.obj
 #
 
 $(LIBRARY): $(DIRMPC)config.h $(CPPOBJECTS)
-	link.exe /DLL /out:$@ $(CPPLINKOBJECTS) /LIBPATH:"$(GMPDIR)\lib" libmpfr.lib libgmp.lib
+	$(LINKER) /out:$@ $(CPPLINKOBJECTS) /LIBPATH:"$(GMPDIR)\lib" libmpfr.lib libgmp.lib
 
 $(DIRMPC)config.h :
 	echo #define PACKAGE_STRING "mpc"           >$(DIRMPC)\config.h
@@ -228,8 +244,8 @@ install: $(LIBRARY)
 #
 check : test
 test :
-	copy $(GMPDIR)\lib\*gmp*.dll $(DIRMPCTESTS)
-	copy $(MPFRDIR)\lib\*mpfr*.dll $(DIRMPCTESTS)
+	-copy $(GMPDIR)\lib\*gmp*.dll $(DIRMPCTESTS)
+	-copy $(MPFRDIR)\lib\*mpfr*.dll $(DIRMPCTESTS)
 	copy $(LIBRARY)  $(DIRMPCTESTS)
         $(TESTCOMPILE)tabs.c  $(MIDTESTCOMPILE)tabs.exe $(ENDTESTCOMPILE)
         cd $(DIRMPCTESTS) && tabs.exe && cd ..
@@ -324,4 +340,5 @@ test :
         @echo --------------------------------------------------
         @echo All tests passed
         @echo --------------------------------------------------
+
 
