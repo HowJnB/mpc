@@ -197,6 +197,7 @@ __MPC_DECLSPEC int  mpc_tan  __MPC_PROTO ((mpc_ptr, mpc_srcptr, mpc_rnd_t));
 __MPC_DECLSPEC int  mpc_sinh __MPC_PROTO ((mpc_ptr, mpc_srcptr, mpc_rnd_t));
 __MPC_DECLSPEC int  mpc_cosh __MPC_PROTO ((mpc_ptr, mpc_srcptr, mpc_rnd_t));
 __MPC_DECLSPEC int  mpc_tanh __MPC_PROTO ((mpc_ptr, mpc_srcptr, mpc_rnd_t));
+__MPC_DECLSPEC int  mpc_atan  __MPC_PROTO ((mpc_ptr, mpc_srcptr, mpc_rnd_t));
 __MPC_DECLSPEC void mpc_clear   __MPC_PROTO ((mpc_ptr));
 __MPC_DECLSPEC int  mpc_urandom __MPC_PROTO ((mpc_ptr, gmp_randstate_t));
 __MPC_DECLSPEC void mpc_init2 __MPC_PROTO ((mpc_ptr, mp_prec_t));
