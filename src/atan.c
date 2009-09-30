@@ -222,7 +222,6 @@ mpc_atan (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
        f = e/2            exact
     */
 
-    err = 2;
     /* p: working precision */
     p = (op_im_exp > 0 || prec > SAFE_ABS (mp_prec_t, op_im_exp)) ? prec
       : (prec - op_im_exp);
@@ -231,7 +230,7 @@ mpc_atan (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
 
     do
       {
-        p += mpc_ceil_log2 (p) + err;
+        p += mpc_ceil_log2 (p) + 2;
         mpfr_set_prec (a, p);
         mpfr_set_prec (b, p);
         mpfr_set_prec (x, p);
@@ -240,18 +239,36 @@ mpc_atan (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
            need an upper bound on x/(1-y), i.e., a lower bound on 1-y for
            x positive, and an upper bound on 1-y for x negative */
         mpfr_ui_sub (a, 1, MPC_IM (op), rnd1);
-        err = MPFR_EXP (a); /* err = Exp(a) with the notations above */
+        if (mpfr_sgn (a) == 0) /* y is near 1, thus 1+y is near 2, and
+                                  expo will be 1 or 2 below */
+          {
+            if (mpfr_cmp_ui (MPC_IM(op), 1) != 0)
+              continue;
+            err = 2; /* ensures err will be expo below */
+          }
+        else
+          err = MPFR_EXP (a); /* err = Exp(a) with the notations above */
         mpfr_atan2 (x, MPC_RE (op), a, GMP_RNDU);
 
         /* b = lower bound for atan (-x/(1+y)): for x negative, we need a
            lower bound on -x/(1+y), i.e., an upper bound on 1+y */
         mpfr_add_ui (a, MPC_IM(op), 1, rnd2);
-        expo = MPFR_EXP (a); /* expo = Exp(d) with the notations above */
+        /* if a is zero but inexact, try again with a larger precision
+           if a is exactly zero, i.e., Im(op) = -1, then the error on a is 0,
+           and we can simply ignore the terms involving Exp(a) in the error */
+        if (mpfr_sgn (a) == 0)
+          {
+            if (mpfr_cmp_si (MPC_IM(op), -1) != 0)
+              continue;
+            expo = err; /* will leave err unchanged below */
+          }
+        else
+          expo = MPFR_EXP (a); /* expo = Exp(c) with the notations above */
         mpfr_atan2 (b, minus_op_re, a, GMP_RNDD);
 
+        err = err < expo ? err : expo; /* err = min(Exp(a),Exp(c)) */
         mpfr_sub (x, x, b, GMP_RNDU);
 
-        err = err < expo ? err : expo; /* err = min(Exp(a),Exp(c)) */
         err = 5 + op_re_exp - err - MPFR_EXP (x);
         /* error is bounded by [1 + 2^err] ulp(e) */
         err = err < 0 ? 1 : err + 1;
