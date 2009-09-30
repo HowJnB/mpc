@@ -986,8 +986,18 @@ Set @var{rop} to the hyperbolic tangent of @var{op},
 rounded according to @var{rnd} with the precision of @var{rop}.
 @end deftypefun
 
-@deftypefun int mpc_atan (mpc_t @var{rop}, mpc_t @var{op}, mpc_rnd_t @var{rnd})
-Set @var{rop} to the inverse tangent of @var{op},
+@deftypefun int mpc_asin (mpc_t @var{rop}, mpc_t @var{op}, mpc_rnd_t @var{rnd})
+@deftypefunx int mpc_acos (mpc_t @var{rop}, mpc_t @var{op}, mpc_rnd_t @var{rnd})
+@deftypefunx int mpc_atan (mpc_t @var{rop}, mpc_t @var{op}, mpc_rnd_t @var{rnd})
+Set @var{rop} to the inverse sine, inverse cosine, inverse tangent of @var{op},
+rounded according to @var{rnd} with the precision of @var{rop}.
+@end deftypefun
+
+@deftypefun int mpc_asinh (mpc_t @var{rop}, mpc_t @var{op}, mpc_rnd_t @var{rnd})
+@deftypefunx int mpc_acosh (mpc_t @var{rop}, mpc_t @var{op}, mpc_rnd_t @var{rnd})
+@deftypefunx int mpc_atanh (mpc_t @var{rop}, mpc_t @var{op}, mpc_rnd_t @var{rnd})
+Set @var{rop} to the inverse hyperbolic sine, inverse hyperbolic cosine,
+inverse hyperbolic tangent of @var{op},
 rounded according to @var{rnd} with the precision of @var{rop}.
 @end deftypefun
 

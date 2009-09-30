@@ -1,4 +1,6 @@
 Recent changes:
+  - New functions:
+    - mpc_asin, mpc_acos, mpc_atan, mpc_asinh, mpc_acosh, mpc_atanh
   - Bug fixes:
     - ui_div: real divisor
 
