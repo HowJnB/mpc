@@ -1,6 +1,6 @@
 /* test file for mpc_atanh.
 
-Copyright (C) 2009 Philippe Th\'eveny
+Copyright (C) 2009 Philippe Th\'eveny, Paul Zimmermann
 
 This file is part of the MPC Library.
 
@@ -29,7 +29,7 @@ main (void)
   test_start ();
 
   data_check (f, "atanh.dat");
-  tgeneric (f, 2, 1024, 7, 128);
+  tgeneric (f, 2, 512, 5, 128);
 
   test_end ();
 

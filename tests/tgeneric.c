@@ -1,6 +1,6 @@
 /* File for generic tests.
 
-Copyright (C) 2008, 2009 Philippe Th\'eveny, Andreas Enge
+Copyright (C) 2008, 2009 Philippe Th\'eveny, Andreas Enge, Paul Zimmermann
 
 This file is part of the MPC Library.
 
@@ -655,7 +655,7 @@ reuse_cuuc (mpc_function* function, unsigned long ul1, unsigned long ul2,
    numbers:
    - with precision ranging from prec_min to prec_max with an increment of
    step,
-   - with exponent between -prec_max and prec_max.
+   - with exponent between -exp_max and exp_max.
 
    It also checks parameter reuse (it is assumed here that either two mpc_t
    variables are equal or they are different, in the sense that the real part
