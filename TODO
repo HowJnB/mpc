@@ -11,10 +11,7 @@ New functions to implement:
 
   a) needed for C99 support:
 
-     - from Andreas Enge and Philippe Théveny 9 April 2008
-       work plan for completing functionality
-       inverse trigonometric and hyperbolic functions (needed for C99 support)
-       that is mpc_acos, mpc_asin, mpc_atan, mpc_acosh, mpc_asinh, mpc_atanh
+     - none
 
   b) other functions
 
