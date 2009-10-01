@@ -19,6 +19,7 @@ along with the MPC Library; see the file COPYING.LIB.  If not, write to
 the Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston,
 MA 02111-1307, USA. */
 
+#include <stdio.h>    /* for MPC_ASSERT */
 #include "mpc-impl.h"
 
 int
@@ -163,6 +164,8 @@ mpc_sqr (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
       else if (mpfr_sgn (u) * mpfr_sgn (v) > 0)
         {
           inexact |= mpfr_mul (u, u, v, GMP_RNDU); /* error 5 */
+          /* checks that no overflow nor underflow occurs */
+          MPC_ASSERT (mpfr_inf_p (u) == 0 && mpfr_zero_p (u) == 0);
           ok = (!inexact) | mpfr_can_round (u, prec - 3, GMP_RNDU, GMP_RNDZ,
                MPFR_PREC (MPC_RE (rop)) + (MPC_RND_RE (rnd) == GMP_RNDN));
           if (ok)
@@ -176,6 +179,8 @@ mpc_sqr (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
       else
         {
           inexact |= mpfr_mul (u, u, v, GMP_RNDD); /* error 5 */
+          /* checks that no overflow nor underflow occurs */
+          MPC_ASSERT (mpfr_inf_p (u) == 0 && mpfr_zero_p (u) == 0);
           ok = (!inexact) | mpfr_can_round (u, prec - 3, GMP_RNDD, GMP_RNDZ,
                MPFR_PREC (MPC_RE (rop)) + (MPC_RND_RE (rnd) == GMP_RNDN));
           if (ok)
@@ -190,6 +195,9 @@ mpc_sqr (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
 
    /* compute the imaginary part as 2*x*y, which is always possible */
    inex_im = mpfr_mul (MPC_IM (rop), x, MPC_IM (op), MPC_RND_IM (rnd));
+   /* checks that no overflow nor underflow occurs */
+   MPC_ASSERT (mpfr_inf_p (MPC_IM (rop)) == 0 &&
+               mpfr_zero_p (MPC_IM (rop)) == 0);
    mpfr_mul_2ui (MPC_IM (rop), MPC_IM (rop), 1, GMP_RNDN);
 
    mpfr_clear (u);
