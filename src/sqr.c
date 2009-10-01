@@ -31,6 +31,7 @@ mpc_sqr (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
          needed in the case rop==op */
    mp_prec_t prec;
    int inex_re, inex_im, inexact;
+   mp_exp_t emax;
 
    /* special values: NaN and infinities */
    if (!mpfr_number_p (MPC_RE (op)) || !mpfr_number_p (MPC_IM (op))) {
@@ -119,6 +120,10 @@ mpc_sqr (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
    else
       x [0] = op->re [0];
 
+   /* store the maximal exponent */
+   emax = mpfr_get_emax ();
+   mpfr_set_emax (mpfr_get_emax_max ());
+
    do
    {
       prec += mpc_ceil_log2 (prec) + 5;
@@ -192,6 +197,9 @@ mpc_sqr (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
 
    if (rop == op)
       mpfr_clear (x);
+
+   /* restore the exponent range */
+   mpfr_set_emax (emax);
 
    return MPC_INEX (inex_re, inex_im);
 }

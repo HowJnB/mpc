@@ -22,6 +22,9 @@ MA 02111-1307, USA. */
 #include <stdlib.h>
 #include "mpc-tests.h"
 
+/* PZ: disabled check_exp_log since it gives false positives, for example
+   with GMP_CHECK_RANDOMIZE=1254693391 with GMP 4.3.0 on 64-bit computers */
+#if 0
 static void
 check_exp_log (void)
 {
@@ -86,6 +89,7 @@ check_exp_log (void)
    mpc_clear (tmp);
    mpfr_clear (twopi);
 }
+#endif
 
 int
 main (void)
@@ -96,8 +100,6 @@ main (void)
 
   data_check (f, "log.dat");
   tgeneric (f, 2, 512, 7, 128);
-
-  check_exp_log ();
 
   test_end ();
 
