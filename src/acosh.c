@@ -27,7 +27,8 @@ mpc_acosh (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
   /* acosh(z) =
       NaN + i*NaN, if z=0+i*NaN
      -i*acos(z), if sign(Im(z)) = -
-      i*acos(z), if sign(Im(z)) = +  
+      i*acos(z), if sign(Im(z)) = +
+      http://functions.wolfram.com/ElementaryFunctions/ArcCosh/27/02/03/01/01/
   */
   mpfr_t tmp;
   int inex;
