@@ -211,12 +211,28 @@ bug20090930 (void)
   mpc_clear (op);
 }
 
+/* other infinite loop */
+void
+bug20091001 (void)
+{
+  mpc_t rop, op;
+
+  mpc_init2 (rop, 2256);
+  mpc_init2 (op, 564);
+  mpfr_set_str (MPC_RE(op), "c.87999bfd1cb1a64288881e214b7cf1af979863b23c030b79c4a8bebb39177967608388a2e4df527977e7755a25df8af8f72fdd6dd2f42bd00de83088b4e9b59ce85caf2e6b0c0@-184298749", 16, GMP_RNDN);
+  mpfr_set_str (MPC_IM(op), "-2.5109af459d4daf357e09475ec991cdc9b02c8f7dfacdc060d2a24710d09c997f8aea6dbd46f10828c30b583fdcc90d7dcbb895689d594d3813db40784d2309e450d1fb6e38da8@-184298726", 16, GMP_RNDN);
+  mpc_sqr (rop, op, MPC_RNDNN);
+  mpc_clear (rop);
+  mpc_clear (op);
+}
+
 int
 main (void)
 {
   DECL_FUNC (CC, f, mpc_sqr);
   test_start ();
 
+  bug20091001 ();
   bug20090930 ();
 
   special ();

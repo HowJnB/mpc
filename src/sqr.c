@@ -32,7 +32,7 @@ mpc_sqr (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
          needed in the case rop==op */
    mp_prec_t prec;
    int inex_re, inex_im, inexact;
-   mp_exp_t emax;
+   mp_exp_t old_emax, old_emin, emin;
 
    /* special values: NaN and infinities */
    if (!mpfr_number_p (MPC_RE (op)) || !mpfr_number_p (MPC_IM (op))) {
@@ -122,8 +122,10 @@ mpc_sqr (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
       x [0] = op->re [0];
 
    /* store the maximal exponent */
-   emax = mpfr_get_emax ();
+   old_emax = mpfr_get_emax ();
+   old_emin = mpfr_get_emin ();
    mpfr_set_emax (mpfr_get_emax_max ());
+   mpfr_set_emin (emin = mpfr_get_emin_min ());
 
    do
    {
@@ -164,8 +166,10 @@ mpc_sqr (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
       else if (mpfr_sgn (u) * mpfr_sgn (v) > 0)
         {
           inexact |= mpfr_mul (u, u, v, GMP_RNDU); /* error 5 */
-          /* checks that no overflow nor underflow occurs */
-          MPC_ASSERT (mpfr_inf_p (u) == 0 && mpfr_zero_p (u) == 0);
+          /* checks that no overflow nor underflow occurs: since u*v > 0
+             and we round up, an overflow will give +Inf, but an underflow
+             will give 0.5*2^emin */
+          MPC_ASSERT (mpfr_inf_p (u) == 0 && mpfr_get_exp (u) != emin);
           ok = (!inexact) | mpfr_can_round (u, prec - 3, GMP_RNDU, GMP_RNDZ,
                MPFR_PREC (MPC_RE (rop)) + (MPC_RND_RE (rnd) == GMP_RNDN));
           if (ok)
@@ -179,8 +183,10 @@ mpc_sqr (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
       else
         {
           inexact |= mpfr_mul (u, u, v, GMP_RNDD); /* error 5 */
-          /* checks that no overflow nor underflow occurs */
-          MPC_ASSERT (mpfr_inf_p (u) == 0 && mpfr_zero_p (u) == 0);
+          /* checks that no overflow nor underflow occurs: since u*v < 0
+             and we round down, an overflow will give -Inf, but an underflow
+             will give -0.5*2^emin */
+          MPC_ASSERT (mpfr_inf_p (u) == 0 && mpfr_get_exp (u) != emin);
           ok = (!inexact) | mpfr_can_round (u, prec - 3, GMP_RNDD, GMP_RNDZ,
                MPFR_PREC (MPC_RE (rop)) + (MPC_RND_RE (rnd) == GMP_RNDN));
           if (ok)
@@ -207,7 +213,8 @@ mpc_sqr (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
       mpfr_clear (x);
 
    /* restore the exponent range */
-   mpfr_set_emax (emax);
+   mpfr_set_emax (old_emax);
+   mpfr_set_emin (old_emin);
 
    return MPC_INEX (inex_re, inex_im);
 }
