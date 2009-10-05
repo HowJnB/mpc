@@ -176,7 +176,7 @@ mpc_atan (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
               inex_im |= mpfr_atanh (y, y, rnd_away);
 
               ok = inex_im == 0
-                || mpfr_can_round (y, p - 2, GMP_RNDZ, rnd_away,
+                || mpfr_can_round (y, p - 2, rnd_away, GMP_RNDZ,
                                    p_im + (rnd_im == GMP_RNDN));
             } while (ok == 0);
 
