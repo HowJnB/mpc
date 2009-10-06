@@ -1,6 +1,7 @@
 Recent changes:
   - New functions:
-    - mpc_asin, mpc_acos, mpc_atan, mpc_asinh, mpc_acosh, mpc_atanh
+    - mpc_asin, mpc_acos, mpc_atan, mpc_asinh, mpc_acosh, mpc_atanh,
+      mpc_pow_d, mpc_pow_ld, mpc_pow_si, mpc_pow_ui, mpc_pow_z, mpc_pow_fr
   - Bug fixes:
     - ui_div: real divisor
 

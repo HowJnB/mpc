@@ -933,8 +933,17 @@ Set @var{rop} to the square root of @var{op} rounded according to @var{rnd}.
 @end deftypefun
 
 @deftypefun int mpc_pow (mpc_t @var{rop}, mpc_t @var{op1}, mpc_t @var{op2}, mpc_rnd_t @var{rnd})
+@deftypefunx int mpc_pow_d (mpc_t @var{rop}, mpc_t @var{op1}, double @var{op2}, mpc_rnd_t @var{rnd})
+@deftypefunx int mpc_pow_ld (mpc_t @var{rop}, mpc_t @var{op1}, long double @var{op2}, mpc_rnd_t @var{rnd})
+@deftypefunx int mpc_pow_si (mpc_t @var{rop}, mpc_t @var{op1}, long @var{op2}, mpc_rnd_t @var{rnd})
+@deftypefunx int mpc_pow_ui (mpc_t @var{rop}, mpc_t @var{op1}, unsigned long @var{op2}, mpc_rnd_t @var{rnd})
+@deftypefunx int mpc_pow_z (mpc_t @var{rop}, mpc_t @var{op1}, mpz_t @var{op2}, mpc_rnd_t @var{rnd})
+@deftypefunx int mpc_pow_fr (mpc_t @var{rop}, mpc_t @var{op1}, mpfr_t @var{op2}, mpc_rnd_t @var{rnd})
 Set @var{rop} to @var{op1} raised to the power @var{op2}, rounded according
 to @var{rnd}.
+For @code{mpc_pow_d}, @code{mpc_pow_ld}, @code{mpc_pow_si}, @code{mpc_pow_ui},
+@code{mpc_pow_z} and @code{mpc_pow_fr},
+the imaginary part of @var{op2} is considered as +0.
 @end deftypefun
 
 @deftypefun int mpc_exp (mpc_t @var{rop}, mpc_t @var{op}, mpc_rnd_t @var{rnd})

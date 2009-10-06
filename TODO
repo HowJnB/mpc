@@ -19,11 +19,7 @@ New functions to implement:
        mpc_sin_cos (needs mpfr_sinh_cosh)
      - from Mickael Gastineau <gastineau@imcce.fr> 14 Apr 2008:
        mpc_fma: d=a*b+c
-     - from Andreas Enge 9 April 2008:
-       mpc_pow_ui
-       Also add mpc_pow_z, _d, _ld, _si, _fr (K. Ghazi 17 Jun 2009)?
-       What about the mpc_foo_pow functions?
-     - from Kaveh Ghazi, 5 October 2009: mpc_pow_z (for fortran frontend)
+     - What about the mpc_foo_pow functions?
      - from Andreas Enge and Philippe Théveny 17 July 2008
        agm (and complex logarithm with agm ?)
      - from Andreas Enge 25 June 2009:
