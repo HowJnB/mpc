@@ -19,6 +19,8 @@ along with the MPC Library; see the file COPYING.LIB.  If not, write to
 the Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston,
 MA 02111-1307, USA. */
 
+#include <stdio.h>    /* for MPC_ASSERT */
+#include <float.h>    /* for DBL_MANT_DIG */
 #include "mpc-impl.h"
 
 int
@@ -26,8 +28,9 @@ mpc_pow_d (mpc_ptr z, mpc_srcptr x, double y, mpc_rnd_t rnd)
 {
   mpc_t yy;
   int inex;
-
-  mpc_init3 (yy, 53, MPFR_PREC_MIN);
+  
+  MPC_ASSERT(FLT_RADIX == 2);
+  mpc_init3 (yy, DBL_MANT_DIG, MPFR_PREC_MIN);
   mpc_set_d (yy, y, MPC_RNDNN);   /* exact */
   inex = mpc_pow (z, x, yy, rnd);
   mpc_clear (yy);

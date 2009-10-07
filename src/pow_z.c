@@ -26,8 +26,9 @@ mpc_pow_z (mpc_ptr z, mpc_srcptr x, mpz_srcptr y, mpc_rnd_t rnd)
 {
   mpc_t yy;
   int inex;
+  size_t n = mpz_sizeinbase (y, 2);
 
-  mpc_init3 (yy, mpz_sizeinbase (y, 2), MPFR_PREC_MIN);
+  mpc_init3 (yy, (n < MPFR_PREC_MIN) ? MPFR_PREC_MIN : n, MPFR_PREC_MIN);
   mpc_set_z (yy, y, MPC_RNDNN);   /* exact */
   inex = mpc_pow (z, x, yy, rnd);
   mpc_clear (yy);

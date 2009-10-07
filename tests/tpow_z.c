@@ -1,4 +1,4 @@
-/* mpc_pow_ld -- Raise a complex number to a long double power.
+/* test file for mpc_pow_z.
 
 Copyright (C) 2009 Paul Zimmermann
 
@@ -19,21 +19,29 @@ along with the MPC Library; see the file COPYING.LIB.  If not, write to
 the Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston,
 MA 02111-1307, USA. */
 
-#include <stdio.h>    /* for MPC_ASSERT */
-#include <float.h>    /* for LDBL_MANT_DIG */
-#include "mpc-impl.h"
+#include "mpc-tests.h"
 
 int
-mpc_pow_ld (mpc_ptr z, mpc_srcptr x, long double y, mpc_rnd_t rnd)
+main (void)
 {
-  mpc_t yy;
-  int inex;
+  mpc_t z;
+  mpz_t t;
 
-  MPC_ASSERT(FLT_RADIX == 2);
-  mpc_init3 (yy, LDBL_MANT_DIG, MPFR_PREC_MIN);
-  mpc_set_ld (yy, y, MPC_RNDNN);   /* exact */
-  inex = mpc_pow (z, x, yy, rnd);
-  mpc_clear (yy);
-  return inex;
+  test_start ();
+
+  mpc_init2 (z, 5);
+  mpz_init_set_ui (t, 1);
+  mpc_set_ui_ui (z, 17, 42, MPC_RNDNN);
+  mpc_pow_z (z, z, t, MPC_RNDNN);
+  if (mpc_cmp_si_si (z, 17, 42) != 0)
+    {
+      printf ("Error for mpc_pow_z (1)\n");
+      exit (1);
+    }
+  mpc_clear (z);
+  mpz_clear (t);
+
+  test_end ();
+
+  return 0;
 }
-
