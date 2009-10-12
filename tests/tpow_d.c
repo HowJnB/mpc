@@ -28,7 +28,8 @@ main (void)
 
   test_start ();
 
-  mpc_init2 (z, 5);
+  mpc_init2 (z, 11);
+
   mpc_set_ui_ui (z, 2, 3, MPC_RNDNN);
   mpc_pow_d (z, z, 3.0, MPC_RNDNN);
   if (mpc_cmp_si_si (z, -46, 9) != 0)
@@ -36,6 +37,23 @@ main (void)
       printf ("Error for mpc_pow_d (1)\n");
       exit (1);
     }
+
+  mpc_set_si_si (z, -3, 4, MPC_RNDNN);
+  mpc_pow_d (z, z, 0.5, MPC_RNDNN);
+  if (mpc_cmp_si_si (z, 1, 2) != 0)
+    {
+      printf ("Error for mpc_pow_d (2)\n");
+      exit (1);
+    }
+
+  mpc_set_ui_ui (z, 2, 3, MPC_RNDNN);
+  mpc_pow_d (z, z, 6.0, MPC_RNDNN);
+  if (mpc_cmp_si_si (z, 2035, -828) != 0)
+    {
+      printf ("Error for mpc_pow_d (3)\n");
+      exit (1);
+    }
+
   mpc_clear (z);
 
   test_end ();

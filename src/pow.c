@@ -56,21 +56,15 @@ mpc_perfect_square_p (mpz_t a, mpz_t b, mpz_t c, mpz_t d)
 {
   if (mpz_cmp_ui (d, 0) == 0) /* case a = 0 or b = 0 */
     {
-      if (mpz_perfect_square_p (c)) /* case 3 above, also covers c=d=0 */
+      /* necessarily c < 0 here, since we have already considered the case
+         where x is real non-negative and y is real */
+      MPC_ASSERT (mpz_cmp_ui (c, 0) < 0);
+      mpz_neg (b, c);
+      if (mpz_perfect_square_p (b)) /* case 2 above */
         {
-          mpz_sqrt (a, c);
-          mpz_set_ui (b, 0);
-          return 1; /* c + i*d = (a + i*0)^2 */
-        }
-      if (mpz_cmp_ui (c, 0) < 0)
-        {
-          mpz_neg (b, c);
-          if (mpz_perfect_square_p (b)) /* case 2 above */
-            {
-              mpz_sqrt (b, b);
-              mpz_set_ui (a, 0);
-              return 1; /* c + i*d = (0 + i*b)^2 */
-            }
+          mpz_sqrt (b, b);
+          mpz_set_ui (a, 0);
+          return 1; /* c + i*d = (0 + i*b)^2 */
         }
     }
   else /* both a and b are non-zero */
