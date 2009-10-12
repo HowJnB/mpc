@@ -19,6 +19,9 @@ along with the MPC Library; see the file COPYING.LIB.  If not, write to
 the Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston,
 MA 02111-1307, USA. */
 
+#ifndef MPC_TESTS_H
+#define MPC_TESTS_H
+
 #include <stdio.h>
 #include <ctype.h>
 
@@ -187,3 +190,5 @@ void read_mpc (FILE *fp, mpc_ptr z, known_signs_t *ks);
    /* special value to indicate that the ternary value is not checked */
 #define TERNARY_ERROR 254
    /* special value to indicate that an error occurred in an mpc function */
+
+#endif /* MPC_TESTS_H */
