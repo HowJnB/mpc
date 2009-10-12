@@ -29,7 +29,7 @@ extern int nextchar;
 extern char *pathname;
 
 /* names of rounding modes */
-extern char *rnd_mode[];
+extern const char *rnd_mode[];
 
 static void
 check_file (const char* file_name)

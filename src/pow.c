@@ -85,11 +85,11 @@ mpc_perfect_square_p (mpz_t a, mpz_t b, mpz_t c, mpz_t d)
           mpz_add (a, c, a); /* c + sqrt(c^2+d^2) */
           if (mpz_divisible_2exp_p (a, 1))
             {
-              mpz_div_2exp (a, a, 1);
+              mpz_tdiv_q_2exp (a, a, 1);
               if (mpz_perfect_square_p (a))
                 {
                   mpz_sqrt (a, a);
-                  mpz_div_2exp (b, d, 1); /* d/2 */
+                  mpz_tdiv_q_2exp (b, d, 1); /* d/2 */
                   mpz_divexact (b, b, a); /* d/(2a) */
                   return 1;
                 }
@@ -130,7 +130,7 @@ mpc_pow_exact (mpc_ptr z, mpc_srcptr x, mpfr_srcptr y, mpc_rnd_t rnd,
   /* normalize so that my is odd */
   t = mpz_scan1 (my, 0);
   ey += t;
-  mpz_div_2exp (my, my, t);
+  mpz_tdiv_q_2exp (my, my, t);
 
   if (mpfr_zero_p (MPC_RE(x)))
     {
@@ -172,13 +172,13 @@ mpc_pow_exact (mpc_ptr z, mpc_srcptr x, mpfr_srcptr y, mpc_rnd_t rnd,
   if (mpz_cmp_ui (c, 0) == 0)
     {
       t = mpz_scan1 (d, 0);
-      mpz_div_2exp (d, d, t);
+      mpz_tdiv_q_2exp (d, d, t);
       ec += t;
     }
   else if (mpz_cmp_ui (d, 0) == 0)
     {
       t = mpz_scan1 (c, 0);
-      mpz_div_2exp (c, c, t);
+      mpz_tdiv_q_2exp (c, c, t);
       ec += t;
     }
   else /* neither c nor d is zero */
@@ -188,8 +188,8 @@ mpc_pow_exact (mpc_ptr z, mpc_srcptr x, mpfr_srcptr y, mpc_rnd_t rnd,
       v = mpz_scan1 (d, 0);
       if (v < t)
         t = v;
-      mpz_div_2exp (c, c, t);
-      mpz_div_2exp (d, d, t);
+      mpz_tdiv_q_2exp (c, c, t);
+      mpz_tdiv_q_2exp (d, d, t);
       ec += t;
     }
 
@@ -281,13 +281,13 @@ mpc_pow_exact (mpc_ptr z, mpc_srcptr x, mpfr_srcptr y, mpc_rnd_t rnd,
       if (mpz_cmp_ui (a, 0) == 0)
         {
           w = mpz_scan1 (b, 0);
-          mpz_div_2exp (b, b, w);
+          mpz_tdiv_q_2exp (b, b, w);
           ed += w;
         }
       else if (mpz_cmp_ui (b, 0) == 0)
         {
           w = mpz_scan1 (a, 0);
-          mpz_div_2exp (a, a, w);
+          mpz_tdiv_q_2exp (a, a, w);
           ed += w;
         }
       else
@@ -296,8 +296,8 @@ mpc_pow_exact (mpc_ptr z, mpc_srcptr x, mpfr_srcptr y, mpc_rnd_t rnd,
           v = mpz_scan1 (b, 0);
           if (v < w)
             w = v;
-          mpz_div_2exp (a, a, w);
-          mpz_div_2exp (b, b, w);
+          mpz_tdiv_q_2exp (a, a, w);
+          mpz_tdiv_q_2exp (b, b, w);
           ed += w;
         }
       if (mpz_sizeinbase (a, 2) > maxprec || mpz_sizeinbase (b, 2) > maxprec)
@@ -321,8 +321,8 @@ mpc_pow_exact (mpc_ptr z, mpc_srcptr x, mpfr_srcptr y, mpc_rnd_t rnd,
       sa = mpz_scan1 (a, 0);
       sb = mpz_scan1 (b, 0);
       sa = (sa <= sb) ? sa : sb;
-      mpz_div_2exp (a, a, sa);
-      mpz_div_2exp (b, b, sa);
+      mpz_tdiv_q_2exp (a, a, sa);
+      mpz_tdiv_q_2exp (b, b, sa);
       ed += sa;
 
       if (mpz_sizeinbase (a, 2) > maxprec || mpz_sizeinbase (b, 2) > maxprec)
