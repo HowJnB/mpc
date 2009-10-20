@@ -32,7 +32,7 @@ mpc_sqr (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
          needed in the case rop==op */
    mp_prec_t prec;
    int inex_re, inex_im, inexact;
-   mp_exp_t old_emax, old_emin, emin;
+   mp_exp_t old_emax, old_emin, emin, emax;
 
    /* special values: NaN and infinities */
    if (!mpfr_number_p (MPC_RE (op)) || !mpfr_number_p (MPC_IM (op))) {
@@ -124,7 +124,7 @@ mpc_sqr (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
    /* store the maximal exponent */
    old_emax = mpfr_get_emax ();
    old_emin = mpfr_get_emin ();
-   mpfr_set_emax (mpfr_get_emax_max ());
+   mpfr_set_emax (emax = mpfr_get_emax_max ());
    mpfr_set_emin (emin = mpfr_get_emin_min ());
 
    do
@@ -169,7 +169,19 @@ mpc_sqr (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
           /* checks that no overflow nor underflow occurs: since u*v > 0
              and we round up, an overflow will give +Inf, but an underflow
              will give 0.5*2^emin */
-          MPC_ASSERT (mpfr_inf_p (u) == 0 && mpfr_get_exp (u) != emin);
+          MPC_ASSERT (mpfr_get_exp (u) != emin);
+          if (mpfr_inf_p (u))
+            {
+              mp_rnd_t rnd_re = MPC_RND_RE (rnd);
+              if (rnd_re == GMP_RNDZ || rnd_re == GMP_RNDD)
+                {
+                  mpfr_set_ui_2exp (MPC_RE (rop), 1, emax, rnd_re);
+                  inex_re = -1;
+                }
+              else /* round up or away from zero */
+                inex_re = 1;
+              break;
+            }
           ok = (!inexact) | mpfr_can_round (u, prec - 3, GMP_RNDU, GMP_RNDZ,
                MPFR_PREC (MPC_RE (rop)) + (MPC_RND_RE (rnd) == GMP_RNDN));
           if (ok)
@@ -183,10 +195,25 @@ mpc_sqr (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
       else
         {
           inexact |= mpfr_mul (u, u, v, GMP_RNDD); /* error 5 */
-          /* checks that no overflow nor underflow occurs: since u*v < 0
-             and we round down, an overflow will give -Inf, but an underflow
-             will give -0.5*2^emin */
-          MPC_ASSERT (mpfr_inf_p (u) == 0 && mpfr_get_exp (u) != emin);
+          /* checks that no overflow occurs: since u*v < 0 and we round down,
+             an overflow will give -Inf */
+          MPC_ASSERT (mpfr_inf_p (u) == 0);
+          /* if an underflow happens (i.e., u = -0.5*2^emin since we round
+             away from zero), the result will be an underflow */
+          if (mpfr_get_exp (u) == emin)
+            {
+              mp_rnd_t rnd_re = MPC_RND_RE (rnd);
+              if (rnd_re == GMP_RNDZ || rnd_re == GMP_RNDN ||
+                  rnd_re == GMP_RNDU)
+                {
+                  mpfr_set_ui (MPC_RE (rop), 0, rnd_re);
+                  inex_re = 1;
+                  
+                }
+              else /* round down or away from zero */
+                inex_re = -1;
+              break;
+            }
           ok = (!inexact) | mpfr_can_round (u, prec - 3, GMP_RNDD, GMP_RNDZ,
                MPFR_PREC (MPC_RE (rop)) + (MPC_RND_RE (rnd) == GMP_RNDN));
           if (ok)
@@ -200,11 +227,18 @@ mpc_sqr (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
    while (!ok);
 
    /* compute the imaginary part as 2*x*y, which is always possible */
-   inex_im = mpfr_mul (MPC_IM (rop), x, MPC_IM (op), MPC_RND_IM (rnd));
-   /* checks that no overflow nor underflow occurs */
-   MPC_ASSERT (mpfr_inf_p (MPC_IM (rop)) == 0 &&
-               mpfr_zero_p (MPC_IM (rop)) == 0);
-   mpfr_mul_2ui (MPC_IM (rop), MPC_IM (rop), 1, GMP_RNDN);
+   if (mpfr_get_exp (x) + mpfr_get_exp(MPC_IM (op)) <= emin + 1)
+     {
+       mpfr_mul_2ui (x, x, 1, GMP_RNDN);
+       inex_im = mpfr_mul (MPC_IM (rop), x, MPC_IM (op), MPC_RND_IM (rnd));
+     }
+   else
+     {
+       inex_im = mpfr_mul (MPC_IM (rop), x, MPC_IM (op), MPC_RND_IM (rnd));
+       /* checks that no underflow occurs (an overflow can occur here) */
+       MPC_ASSERT (mpfr_zero_p (MPC_IM (rop)) == 0);
+       mpfr_mul_2ui (MPC_IM (rop), MPC_IM (rop), 1, GMP_RNDN);
+     }
 
    mpfr_clear (u);
    mpfr_clear (v);
