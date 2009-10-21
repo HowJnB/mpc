@@ -68,6 +68,20 @@ special (void)
       exit (1);
     }
 
+  /* problem reported by Timo Hartmann with mpc-0.7, 21 Oct 2009 */
+  mpc_set_ui_ui (a, 4, 0, MPC_RNDNN);
+  mpc_ui_div (b, 1, a, MPC_RNDNN);
+  if (mpfr_cmp_ui_2exp (MPC_RE(b), 1, -2) != 0 ||
+      mpfr_cmp_ui (MPC_IM(b), 0) != 0 || mpfr_signbit (MPC_IM(b)) != 0)
+    {
+      printf ("1/(4,0) failed\n");
+      printf ("expected (1/4,0)\n");
+      printf ("got      ");
+      mpc_out_str (stdout, 10, 0, b, MPC_RNDNN);
+      printf ("\n");
+      exit (1);
+    }
+
   mpc_clear (a);
   mpc_clear (b);
 }
