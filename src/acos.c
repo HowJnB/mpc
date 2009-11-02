@@ -81,7 +81,7 @@ mpc_acos (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
                      c = b/4    exact
                      thus 1 bit is lost */
                   mpfr_t x;
-                  mp_prec_t prec, p;
+                  mp_prec_t prec;
                   int ok;
                   mpfr_init (x);
                   prec = mpfr_get_prec (MPC_RE (rop));
