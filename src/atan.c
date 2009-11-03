@@ -157,7 +157,7 @@ mpc_atan (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
 
              As |atanh (1/y)| > |1/y| we have Exp(a)-Exp(b) <=0 so, at most,
              2 bits of precision are lost.
-             
+
              We round atanh(1/y) away from 0.
           */
           do
@@ -166,11 +166,11 @@ mpc_atan (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
               mpfr_set_prec (y, p);
               rnd_away = s_im == 0 ? GMP_RNDU : GMP_RNDD;
               inex_im = mpfr_ui_div (y, 1, MPC_IM (op), rnd_away);
-              if (mpfr_zero_p (y))
-                break; /* underflow. */
               /* FIXME: should we consider the case with unreasonably huge
                  precision prec(y)>3*exp_min, where atanh(1/Im(op)) could be
-                 representable while 1/Im(op) underflows ? */
+                 representable while 1/Im(op) underflows ?
+                 This corresponds to |y| = 0.5*2^emin, in which case the
+                 result may be wrong. */
 
               /* atanh cannot underflow: |atanh(x)| > |x| for |x| < 1 */
               inex_im |= mpfr_atanh (y, y, rnd_away);
@@ -308,7 +308,7 @@ mpc_atan (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
     err = 2;
     p = prec; /* working precision */
     rnd1 = mpfr_cmp_si (MPC_IM (op), -1) > 0 ? GMP_RNDU : GMP_RNDD;
-    
+
     do
       {
         p += mpc_ceil_log2 (p) + err;
