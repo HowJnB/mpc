@@ -24,7 +24,7 @@
 #  nmake /f Makefile.vc clean
 #       clean the temporaries objects
 #
-#  nmake /f Makefile.vc  STATIC=0|1 GMPDIR=gmpdirectory MPFRDIR=mpfrdirectory 
+#  nmake /f Makefile.vc  STATIC=0|1 GMPDIR=gmpdirectory MPFRDIR=mpfrdirectory
 #      compile MPC
 #
 #  nmake /f Makefile.vc  STATIC=0|1 install GMPDIR=gmpdirectory MPFRDIR=mpfrdirectory  DESTDIR=installdirectory
@@ -38,7 +38,7 @@
 #  DESTDIR : specify the location where MPC will be installed
 #  STATIC  : specify if a static or dynamic library of MPC will be created
 #            STATIC=1  : build a static library
-#            STATIC=0  : build a dynamic library (DLL) 
+#            STATIC=0  : build a dynamic library (DLL)
 #            A dynamic library is created by default if STATIC is omitted (STATIC=0)
 
 
@@ -46,14 +46,14 @@ CPP = cl.exe
 CC = cl.exe
 CDEFAULTFLAGS=/O2 /GR- /MD /nologo /EHs
 
-VERSION=0.7.1-dev
+VERSION=0.8-dev
 
 ######################## do not edit below this line ##########################
 
 DIRMPC=.\src
 DIRMPCTESTS=.\tests\\
 
-!if "$(STATIC)" == "0" 
+!if "$(STATIC)" == "0"
 LIBRARY = libmpc.dll
 LINKER = link.exe /DLL
 GMPMUSTBEDLL=/D__GMP_LIBGMP_DLL
@@ -77,15 +77,21 @@ ENDTESTCOMPILE=/LIBPATH:"$(GMPDIR)\lib" libmpc.lib libmpfr.lib libgmp.lib
 #generate the CPPLINKOBJECTS : goto src and execute
 # ls *.c | sed "s/\.c/\.obj/" | awk ' { printf("%s \\\n",$1); } '
 #generate the list for tests : goto tests and execute
-# ls t*.c | sed "s/\.c//" | awk ' { printf("\t$(TESTCOMPILE)%s.c  $(MIDTESTCOMPILE)%s.exe $(ENDTESTCOMPILE)\n\tcd $(DIRMPCTESTS) && %s.exe && cd ..\n",$1,$1,$1,$1); } '
+# ls t*.c | sed "s/\.c//" | grep -v tgeneric| grep -v comparisons | grep -v read_data | grep -v random | awk ' { printf("\t$(TESTCOMPILE)%s.c  $(MIDTESTCOMPILE)%s.exe $(ENDTESTCOMPILE)\n\tcd $(DIRMPCTESTS) && %s.exe && cd ..\n",$1,$1,$1,$1); } '
 
 LIBRARYLIB = libmpc.lib
 
 CPPOBJECTS = $(DIRMPC)\abs.obj \
+$(DIRMPC)\acos.obj \
+$(DIRMPC)\acosh.obj \
 $(DIRMPC)\add.obj \
 $(DIRMPC)\add_fr.obj \
 $(DIRMPC)\add_ui.obj \
 $(DIRMPC)\arg.obj \
+$(DIRMPC)\asin.obj \
+$(DIRMPC)\asinh.obj \
+$(DIRMPC)\atan.obj \
+$(DIRMPC)\atanh.obj \
 $(DIRMPC)\clear.obj \
 $(DIRMPC)\cmp.obj \
 $(DIRMPC)\cmp_si_si.obj \
@@ -119,6 +125,12 @@ $(DIRMPC)\neg.obj \
 $(DIRMPC)\norm.obj \
 $(DIRMPC)\out_str.obj \
 $(DIRMPC)\pow.obj \
+$(DIRMPC)\pow_d.obj \
+$(DIRMPC)\pow_fr.obj \
+$(DIRMPC)\pow_ld.obj \
+$(DIRMPC)\pow_si.obj \
+$(DIRMPC)\pow_ui.obj \
+$(DIRMPC)\pow_z.obj \
 $(DIRMPC)\proj.obj \
 $(DIRMPC)\real.obj \
 $(DIRMPC)\set.obj \
@@ -134,20 +146,27 @@ $(DIRMPC)\strtoc.obj \
 $(DIRMPC)\sub.obj \
 $(DIRMPC)\sub_fr.obj \
 $(DIRMPC)\sub_ui.obj \
+$(DIRMPC)\swap.obj \
 $(DIRMPC)\tan.obj \
 $(DIRMPC)\tanh.obj \
 $(DIRMPC)\uceil_log2.obj \
 $(DIRMPC)\ui_div.obj \
 $(DIRMPC)\ui_ui_sub.obj \
-$(DIRMPC)\urandom.obj
+$(DIRMPC)\urandom.obj 
 
 
 
 CPPLINKOBJECTS = abs.obj \
+acos.obj \
+acosh.obj \
 add.obj \
 add_fr.obj \
 add_ui.obj \
 arg.obj \
+asin.obj \
+asinh.obj \
+atan.obj \
+atanh.obj \
 clear.obj \
 cmp.obj \
 cmp_si_si.obj \
@@ -181,6 +200,12 @@ neg.obj \
 norm.obj \
 out_str.obj \
 pow.obj \
+pow_d.obj \
+pow_fr.obj \
+pow_ld.obj \
+pow_si.obj \
+pow_ui.obj \
+pow_z.obj \
 proj.obj \
 real.obj \
 set.obj \
@@ -196,6 +221,7 @@ strtoc.obj \
 sub.obj \
 sub_fr.obj \
 sub_ui.obj \
+swap.obj \
 tan.obj \
 tanh.obj \
 uceil_log2.obj \
@@ -231,7 +257,7 @@ clean:
 # install target: "nmake /f Makefile.vc install DESTDIR=xxx" to perform the installation.
 #
 
-install: $(LIBRARY) 
+install: $(LIBRARY)
 	-mkdir $(DESTDIR)
 	-mkdir $(DESTDIR)\include
 	copy $(DIRMPC)\mpc.h $(DESTDIR)\include
@@ -249,6 +275,10 @@ test :
 	copy $(LIBRARY)  $(DIRMPCTESTS)
         $(TESTCOMPILE)tabs.c  $(MIDTESTCOMPILE)tabs.exe $(ENDTESTCOMPILE)
         cd $(DIRMPCTESTS) && tabs.exe && cd ..
+        $(TESTCOMPILE)tacos.c  $(MIDTESTCOMPILE)tacos.exe $(ENDTESTCOMPILE)
+        cd $(DIRMPCTESTS) && tacos.exe && cd ..
+        $(TESTCOMPILE)tacosh.c  $(MIDTESTCOMPILE)tacosh.exe $(ENDTESTCOMPILE)
+        cd $(DIRMPCTESTS) && tacosh.exe && cd ..
         $(TESTCOMPILE)tadd.c  $(MIDTESTCOMPILE)tadd.exe $(ENDTESTCOMPILE)
         cd $(DIRMPCTESTS) && tadd.exe && cd ..
         $(TESTCOMPILE)tadd_fr.c  $(MIDTESTCOMPILE)tadd_fr.exe $(ENDTESTCOMPILE)
@@ -257,6 +287,14 @@ test :
         cd $(DIRMPCTESTS) && tadd_ui.exe && cd ..
         $(TESTCOMPILE)targ.c  $(MIDTESTCOMPILE)targ.exe $(ENDTESTCOMPILE)
         cd $(DIRMPCTESTS) && targ.exe && cd ..
+        $(TESTCOMPILE)tasin.c  $(MIDTESTCOMPILE)tasin.exe $(ENDTESTCOMPILE)
+        cd $(DIRMPCTESTS) && tasin.exe && cd ..
+        $(TESTCOMPILE)tasinh.c  $(MIDTESTCOMPILE)tasinh.exe $(ENDTESTCOMPILE)
+        cd $(DIRMPCTESTS) && tasinh.exe && cd ..
+        $(TESTCOMPILE)tatan.c  $(MIDTESTCOMPILE)tatan.exe $(ENDTESTCOMPILE)
+        cd $(DIRMPCTESTS) && tatan.exe && cd ..
+        $(TESTCOMPILE)tatanh.c  $(MIDTESTCOMPILE)tatanh.exe $(ENDTESTCOMPILE)
+        cd $(DIRMPCTESTS) && tatanh.exe && cd ..
         $(TESTCOMPILE)tconj.c  $(MIDTESTCOMPILE)tconj.exe $(ENDTESTCOMPILE)
         cd $(DIRMPCTESTS) && tconj.exe && cd ..
         $(TESTCOMPILE)tcos.c  $(MIDTESTCOMPILE)tcos.exe $(ENDTESTCOMPILE)
@@ -303,6 +341,18 @@ test :
         cd $(DIRMPCTESTS) && tnorm.exe && cd ..
         $(TESTCOMPILE)tpow.c  $(MIDTESTCOMPILE)tpow.exe $(ENDTESTCOMPILE)
         cd $(DIRMPCTESTS) && tpow.exe && cd ..
+        $(TESTCOMPILE)tpow_d.c  $(MIDTESTCOMPILE)tpow_d.exe $(ENDTESTCOMPILE)
+        cd $(DIRMPCTESTS) && tpow_d.exe && cd ..
+        $(TESTCOMPILE)tpow_fr.c  $(MIDTESTCOMPILE)tpow_fr.exe $(ENDTESTCOMPILE)
+        cd $(DIRMPCTESTS) && tpow_fr.exe && cd ..
+        $(TESTCOMPILE)tpow_ld.c  $(MIDTESTCOMPILE)tpow_ld.exe $(ENDTESTCOMPILE)
+        cd $(DIRMPCTESTS) && tpow_ld.exe && cd ..
+        $(TESTCOMPILE)tpow_si.c  $(MIDTESTCOMPILE)tpow_si.exe $(ENDTESTCOMPILE)
+        cd $(DIRMPCTESTS) && tpow_si.exe && cd ..
+        $(TESTCOMPILE)tpow_ui.c  $(MIDTESTCOMPILE)tpow_ui.exe $(ENDTESTCOMPILE)
+        cd $(DIRMPCTESTS) && tpow_ui.exe && cd ..
+        $(TESTCOMPILE)tpow_z.c  $(MIDTESTCOMPILE)tpow_z.exe $(ENDTESTCOMPILE)
+        cd $(DIRMPCTESTS) && tpow_z.exe && cd ..
         $(TESTCOMPILE)tprec.c  $(MIDTESTCOMPILE)tprec.exe $(ENDTESTCOMPILE)
         cd $(DIRMPCTESTS) && tprec.exe && cd ..
         $(TESTCOMPILE)tproj.c  $(MIDTESTCOMPILE)tproj.exe $(ENDTESTCOMPILE)
@@ -340,5 +390,6 @@ test :
         @echo --------------------------------------------------
         @echo All tests passed
         @echo --------------------------------------------------
+
 
 
