@@ -715,6 +715,8 @@ mpc_pow (mpc_ptr z, mpc_srcptr x, mpc_srcptr y, mpc_rnd_t rnd)
   mpfr_const_pi (MPC_RE(u), GMP_RNDN);
   mpfr_div_2exp (MPC_RE(u), MPC_RE(u), 1, GMP_RNDN); /* Pi/2 */
   mpfr_remquo (MPC_RE(u), &Q, MPC_IM(t), MPC_RE(u), GMP_RNDN);
+  if (mpfr_sgn (MPC_RE(u)) < 0)
+    Q--; /* corresponds to positive remainder */
   mpfr_set_ui (MPC_RE(z), 0, GMP_RNDN);
   mpfr_set_ui (MPC_IM(z), 0, GMP_RNDN);
   switch (Q & 3)
@@ -749,28 +751,31 @@ mpc_pow (mpc_ptr z, mpc_srcptr x, mpc_srcptr y, mpc_rnd_t rnd)
   mpc_init2 (u, 64);
   mpfr_const_pi (MPC_RE(u), GMP_RNDN);
   mpfr_div_2exp (MPC_RE(u), MPC_RE(u), 1, GMP_RNDN); /* Pi/2 */
+  /* the quotient is rounded to the nearest integer in mpfr_remquo */
   mpfr_remquo (MPC_RE(u), &Q, MPC_IM(t), MPC_RE(u), GMP_RNDN);
+  if (mpfr_sgn (MPC_RE(u)) < 0)
+    Q--; /* corresponds to positive remainder */
   switch (Q & 3)
     {
-    case 0:
+    case 0: /* first quadrant */
       mpfr_set_inf (MPC_RE(z), 1);
       mpfr_set_inf (MPC_IM(z), 1);
       ret = MPC_INEX(1, 1);
       break;
-    case 1:
+    case 1: /* second quadrant */
       mpfr_set_inf (MPC_RE(z), -1);
       mpfr_set_inf (MPC_IM(z), 1);
       ret = MPC_INEX(-1, 1);
       break;
-    case 2:
-      mpfr_set_inf (MPC_RE(z), 1);
-      mpfr_set_inf (MPC_IM(z), -1);
-      ret = MPC_INEX(1, -1);
-      break;
-    case 3:
+    case 2: /* third quadrant */
       mpfr_set_inf (MPC_RE(z), -1);
       mpfr_set_inf (MPC_IM(z), -1);
       ret = MPC_INEX(-1, -1);
+      break;
+    case 3: /* fourth quadrant */
+      mpfr_set_inf (MPC_RE(z), 1);
+      mpfr_set_inf (MPC_IM(z), -1);
+      ret = MPC_INEX(1, -1);
       break;
     }
 
