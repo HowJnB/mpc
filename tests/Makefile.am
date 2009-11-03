@@ -15,7 +15,8 @@ check_LTLIBRARIES=libmpc-tests.la
 libmpc_tests_la_SOURCES=mpc-tests.h random.c tgeneric.c read_data.c           \
 comparisons.c
 
-EXTRA_DIST = abs.dat add.dat add_fr.dat arg.dat conj.dat cos.dat cosh.dat     \
+EXTRA_DIST = abs.dat acos.dat acosh.dat asin.dat asinh.dat atan.dat atanh.dat \
+add.dat add_fr.dat arg.dat conj.dat cos.dat cosh.dat                          \
 div.dat div_fr.dat exp.dat fr_div.dat fr_sub.dat inp_str.dat log.dat mul.dat  \
 mul_fr.dat neg.dat norm.dat pow.dat proj.dat sin.dat sinh.dat sqr.dat         \
 sqrt.dat strtoc.dat sub.dat sub_fr.dat tan.dat tanh.dat
