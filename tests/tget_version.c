@@ -27,6 +27,15 @@ MA 02111-1307, USA. */
 int
 main (void)
 {
+  printf ("GMP: include %d.%d.%d, lib %s\n",
+          __GNU_MP_VERSION, __GNU_MP_VERSION_MINOR, __GNU_MP_VERSION_PATCHLEVEL,
+          gmp_version);
+  printf ("MPFR: include %s, lib %s\n",
+          MPFR_VERSION_STRING,
+          mpfr_get_version ());
+  printf ("MPC: include %s, lib %s\n", MPC_VERSION_STRING,
+          mpc_get_version ());
+
   if (strcmp (mpc_get_version (), MPC_VERSION_STRING) != 0)
     {
       printf ("Error: header and library do not match\n"
