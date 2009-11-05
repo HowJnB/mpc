@@ -12,7 +12,6 @@ New functions to implement:
   mpc_sin_cos (needs mpfr_sinh_cosh)
 - from Mickael Gastineau <gastineau@imcce.fr> 14 Apr 2008:
   mpc_fma: d=a*b+c
-- What about the mpc_foo_pow functions?
 - from Andreas Enge and Philippe Théveny 17 July 2008
   agm (and complex logarithm with agm ?)
 - from Andreas Enge 25 June 2009:
