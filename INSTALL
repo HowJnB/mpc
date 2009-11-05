@@ -10,8 +10,8 @@ in the Texinfo documentation (type 'info mpc.info').
 
 1. In the directory of the MPC archive, type
 
-      tar xzf mpc-0.8.tar.gz
-      cd mpc-0.8
+      tar xzf mpc-0.8.1.tar.gz
+      cd mpc-0.8.1
       ./configure
       make
 
@@ -20,7 +20,7 @@ in the Texinfo documentation (type 'info mpc.info').
    (see the Texinfo documentation).
 
 2. You can optionally run the test suit, type
-   
+
       make check
 
 3. To install the MPC library, type
@@ -35,7 +35,7 @@ in the Texinfo documentation (type 'info mpc.info').
       make dvi
 
    or
-   
+
       make ps
 
    This requires the Texinfo package (version 4.2 at least).

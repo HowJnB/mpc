@@ -46,7 +46,7 @@ CPP = cl.exe
 CC = cl.exe
 CDEFAULTFLAGS=/O2 /GR- /MD /nologo /EHs
 
-VERSION=0.8
+VERSION=0.8.1-dev
 
 ######################## do not edit below this line ##########################
 
@@ -152,7 +152,7 @@ $(DIRMPC)\tanh.obj \
 $(DIRMPC)\uceil_log2.obj \
 $(DIRMPC)\ui_div.obj \
 $(DIRMPC)\ui_ui_sub.obj \
-$(DIRMPC)\urandom.obj 
+$(DIRMPC)\urandom.obj
 
 
 
