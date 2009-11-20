@@ -198,7 +198,7 @@ mpc_atan (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
     mp_exp_t op_im_exp;
     mp_rnd_t rnd1, rnd2;
 
-    mpfr_inits (a, b, x, y, (mpfr_ptr)0);
+    mpfr_inits (a, b, x, y, (mpfr_ptr) 0);
 
     /* real part: Re(arctan(x+i*y)) = [arctan2(x,1-y) - arctan2(-x,1+y)]/2 */
     minus_op_re[0] = MPC_RE (op)[0];
@@ -286,7 +286,6 @@ mpc_atan (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
     /* Imaginary part
        Im(atan(x+I*y)) = 1/4 * [log(x^2+(1+y)^2) - log (x^2 +(1-y)^2)] */
     prec = mpfr_get_prec (MPC_IM (rop)); /* result precision */
-    mpfr_init (y);
 
     /* a = o(1+y)    error(a) < 1 ulp(a)
        b = o(a^2)    error(b) < 5 ulp(b)
@@ -352,7 +351,7 @@ mpc_atan (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
 
     inex = mpc_set_fr_fr (rop, x, y, rnd);
 
-    mpfr_clears (a, b, x, y, (mpfr_ptr)0);
+    mpfr_clears (a, b, x, y, (mpfr_ptr) 0);
     return inex;
   }
 }
