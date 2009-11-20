@@ -185,6 +185,8 @@ void read_int (FILE *fp, int *n, const char *name);
 size_t read_string (FILE *fp, char **buffer_ptr, size_t buffer_length, const char *name);
 void read_mpfr (FILE *fp, mpfr_ptr x, int *known_sign);
 void read_mpc (FILE *fp, mpc_ptr z, known_signs_t *ks);
+void tests_memory_start (void);
+void tests_memory_end (void);
 
 #define TERNARY_NOT_CHECKED 255
    /* special value to indicate that the ternary value is not checked */

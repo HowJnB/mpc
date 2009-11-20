@@ -213,12 +213,12 @@ main (void)
   mpc_t z, x;
   mp_prec_t prec;
 
+  test_start ();
+
   mpc_init2 (z, 1000);
   mpc_init2 (x, 1000);
 
   check_file ("inp_str.dat");
-
-  test_start();
 
   for (prec = 2; prec <= 1000; prec+=7)
     {
@@ -249,7 +249,7 @@ main (void)
   mpc_clear (z);
   mpc_clear (x);
 
-  test_end();
+  test_end ();
 
   return 0;
 }

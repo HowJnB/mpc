@@ -13,7 +13,7 @@ ttan ttanh tui_div tui_ui_sub tget_version
 
 check_LTLIBRARIES=libmpc-tests.la
 libmpc_tests_la_SOURCES=mpc-tests.h random.c tgeneric.c read_data.c           \
-comparisons.c
+comparisons.c memory.c
 
 EXTRA_DIST = abs.dat acos.dat acosh.dat asin.dat asinh.dat atan.dat atanh.dat \
 add.dat add_fr.dat arg.dat conj.dat cos.dat cosh.dat                          \

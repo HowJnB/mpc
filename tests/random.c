@@ -49,6 +49,8 @@ test_start (void)
   char *environment_seed;
   unsigned long seed;
 
+  tests_memory_start ();
+
   if (rands_initialized)
     {
       fprintf (stderr,
@@ -97,6 +99,7 @@ test_end (void)
       gmp_randclear (rands);
     }
   mpfr_free_cache ();
+  tests_memory_end ();
 }
 
 /* Set z to a non zero value random value with absolute values of Re(z) and
