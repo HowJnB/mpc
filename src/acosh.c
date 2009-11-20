@@ -1,6 +1,6 @@
 /* mpc_acosh -- inverse hyperbolic cosine of a complex number.
 
-Copyright (C) 2009 Philippe Th\'eveny
+Copyright (C) 2009 Philippe Th\'eveny, Paul Zimmermann
 
 This file is part of the MPC Library.
 
@@ -30,6 +30,7 @@ mpc_acosh (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
       i*acos(z), if sign(Im(z)) = +
       http://functions.wolfram.com/ElementaryFunctions/ArcCosh/27/02/03/01/01/
   */
+  mpc_t a;
   mpfr_t tmp;
   int inex;
 
@@ -40,30 +41,37 @@ mpc_acosh (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
       return 0;
     }
   
+  /* Note reversal of precisions due to later multiplication by i or -i */
+  mpc_init3 (a, MPC_PREC_IM(rop), MPC_PREC_RE(rop));
+
   if (mpfr_signbit (MPC_IM (op)))
     {
-      inex = mpc_acos (rop, op,
+      inex = mpc_acos (a, op,
                        RNDC (INV_RND (MPC_RND_IM (rnd)), MPC_RND_RE (rnd)));
 
-      /* change rop to -i*rop */
-      tmp[0] = MPC_RE (rop)[0];
-      MPC_RE (rop)[0] = MPC_IM (rop)[0];
-      MPC_IM (rop)[0] = tmp[0];
-      MPFR_CHANGE_SIGN (MPC_IM (rop));
+      /* change a to -i*a, i.e., -y+i*x to x+i*y */
+      tmp[0] = MPC_RE (a)[0];
+      MPC_RE (a)[0] = MPC_IM (a)[0];
+      MPC_IM (a)[0] = tmp[0];
+      MPFR_CHANGE_SIGN (MPC_IM (a));
       inex = MPC_INEX (MPC_INEX_IM (inex), -MPC_INEX_RE (inex));
     }
   else
     {
-      inex = mpc_acos (rop, op,
+      inex = mpc_acos (a, op,
                        RNDC (MPC_RND_IM (rnd), INV_RND(MPC_RND_RE (rnd))));
 
-      /* change rop to i*rop */
-      tmp[0] = MPC_RE (rop)[0];
-      MPC_RE (rop)[0] = MPC_IM (rop)[0];
-      MPC_IM (rop)[0] = tmp[0];
-      MPFR_CHANGE_SIGN (MPC_RE (rop));
+      /* change a to i*a, i.e., y-i*x to x+i*y */
+      tmp[0] = MPC_RE (a)[0];
+      MPC_RE (a)[0] = MPC_IM (a)[0];
+      MPC_IM (a)[0] = tmp[0];
+      MPFR_CHANGE_SIGN (MPC_RE (a));
       inex = MPC_INEX (-MPC_INEX_IM (inex), MPC_INEX_RE (inex));
     }
+
+  mpc_set (rop, a, rnd);
+
+  mpc_clear (a);
 
   return inex;
 }

@@ -21,12 +21,33 @@ MA 02111-1307, USA. */
 
 #include "mpc-tests.h"
 
+static void
+bug20091120 (void)
+{
+  mpc_t x, y;
+
+  mpc_init2 (x, 53);
+  mpc_init3 (y, 17, 42);
+  mpc_set_ui_ui (x, 1, 1, MPC_RNDNN);
+  mpc_atanh (y, x, MPC_RNDNN);
+  if (mpfr_get_prec (mpc_realref(y)) != 17 ||
+      mpfr_get_prec (mpc_imagref(y)) != 42)
+    {
+      printf ("Error, mpc_atanh changed the precisions!!!\n");
+      exit (1);
+    }
+  mpc_clear (x);
+  mpc_clear (y);
+}
+
 int
 main (void)
 {
   DECL_FUNC (CC, f, mpc_atanh);
 
   test_start ();
+
+  bug20091120 ();
 
   data_check (f, "atanh.dat");
   tgeneric (f, 2, 512, 5, 128);

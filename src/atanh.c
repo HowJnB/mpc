@@ -1,6 +1,6 @@
 /* mpc_atanh -- inverse hyperbolic tangent of a complex number.
 
-Copyright (C) 2009 Philippe Th\'eveny
+Copyright (C) 2009 Philippe Th\'eveny, Paul Zimmermann
 
 This file is part of the MPC Library.
 
@@ -27,20 +27,27 @@ mpc_atanh (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
   /* atanh(op) = -i*atan(i*op) */
   int inex;
   mpfr_t tmp;
-  mpc_t z;
+  mpc_t z, a;
 
   MPC_RE (z)[0] = MPC_IM (op)[0];
   MPC_IM (z)[0] = MPC_RE (op)[0];
   MPFR_CHANGE_SIGN (MPC_RE (z));
 
-  inex = mpc_atan (rop, z,
+  /* Note reversal of precisions due to later multiplication by -i */
+  mpc_init3 (a, MPC_PREC_IM(rop), MPC_PREC_RE(rop));
+
+  inex = mpc_atan (a, z,
                    RNDC (INV_RND (MPC_RND_IM (rnd)), MPC_RND_RE (rnd)));
 
-  /* change rop to -i*rop */
-  tmp[0] = MPC_RE (rop)[0];
-  MPC_RE (rop)[0] = MPC_IM (rop)[0];
-  MPC_IM (rop)[0] = tmp[0];
-  MPFR_CHANGE_SIGN (MPC_IM (rop));
+  /* change a to -i*a, i.e., x+i*y to y-i*x */
+  tmp[0] = MPC_RE (a)[0];
+  MPC_RE (a)[0] = MPC_IM (a)[0];
+  MPC_IM (a)[0] = tmp[0];
+  MPFR_CHANGE_SIGN (MPC_IM (a));
+
+  mpc_set (rop, a, rnd);
+
+  mpc_clear (a);
 
   return MPC_INEX (MPC_INEX_IM (inex), -MPC_INEX_RE (inex));
 }
