@@ -21,8 +21,9 @@ MA 02111-1307, USA. */
 
 #include "mpc-impl.h"
 
+/* the rounding mode is mpfr_rnd_t here since we return an mpfr number */
 int
-mpc_norm (mpfr_ptr a, mpc_srcptr b, mp_rnd_t rnd)
+mpc_norm (mpfr_ptr a, mpc_srcptr b, mpfr_rnd_t rnd)
 {
   mpfr_t u, v;
   mp_prec_t prec;

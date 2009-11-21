@@ -1,6 +1,6 @@
 /* mpc_abs -- Absolute value of a complex number.
 
-Copyright (C) 2008, 2009 Andreas Enge, Philippe Th\'eveny
+Copyright (C) 2008, 2009 Andreas Enge, Philippe Th\'eveny, Paul Zimmermann
 
 This file is part of the MPC Library.
 
@@ -21,8 +21,9 @@ MA 02111-1307, USA. */
 
 #include "mpc-impl.h"
 
+/* the rounding mode is mpfr_rnd_t here since we return an mpfr number */
 int
-mpc_abs (mpfr_ptr a, mpc_srcptr b, mp_rnd_t rnd)
+mpc_abs (mpfr_ptr a, mpc_srcptr b, mpfr_rnd_t rnd)
 {
    return mpfr_hypot (a, MPC_RE(b), MPC_IM(b), rnd);
 }

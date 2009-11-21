@@ -690,7 +690,7 @@ in base @var{base}; otherwise it returns @minus{}1, and @var{rop} is set to
 NaN+i*NaN.
 @end deftypefun
 
-@deftypefun {char *} mpc_get_str (int @var{b}, size_t @var{n}, mpc_t @var{op}, mp_rnd_t @var{rnd})
+@deftypefun {char *} mpc_get_str (int @var{b}, size_t @var{n}, mpc_t @var{op}, mpc_rnd_t @var{rnd})
 Convert @var{op} to a string containing its real and imaginary parts,
 separated by a space and enclosed in a pair of parentheses.
 The numbers are written in base @var{b} (which may vary from 2 to 36) and
@@ -813,7 +813,7 @@ respectively. The @code{mpfr} functions can be used on the result of these
 macros (note that the @code{mpfr_t} type is itself a pointer).
 @end deftypefn
 
-@deftypefn Function int mpc_arg (mpfr_t @var{rop}, mpc_t @var{op}, mpc_rnd_t @var{rnd})
+@deftypefn Function int mpc_arg (mpfr_t @var{rop}, mpc_t @var{op}, mpfr_rnd_t @var{rnd})
 Set @var{rop} to the argument of @var{op}, with a branch cut along the
 negative real axis.
 @end deftypefn
@@ -893,13 +893,13 @@ Just changes the sign of the imaginary part
 if @var{rop} and @var{op} are the same variable.
 @end deftypefun
 
-@deftypefun int mpc_abs (mpfr_t @var{rop}, mpc_t @var{op}, mp_rnd_t @var{rnd})
+@deftypefun int mpc_abs (mpfr_t @var{rop}, mpc_t @var{op}, mpfr_rnd_t @var{rnd})
 Set the floating-point number @var{rop} to the absolute value of @var{op},
 rounded in the direction @var{rnd}.
 The returned value is zero iff the result is exact.
 @end deftypefun
 
-@deftypefun int mpc_norm (mpfr_t @var{rop}, mpc_t @var{op}, mp_rnd_t @var{rnd})
+@deftypefun int mpc_norm (mpfr_t @var{rop}, mpc_t @var{op}, mpfr_rnd_t @var{rnd})
 Set the floating-point number @var{rop} to the norm of @var{op}
 (i.e., the square of its absolute value),
 rounded in the direction @var{rnd}.
