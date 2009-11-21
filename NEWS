@@ -1,3 +1,9 @@
+Changes in version 0.8.1:
+  - Bug fixes:
+    - acosh, asinh, atanh: swap of precisions between real and imaginary part
+    - atan: memory leak
+    - log: wrong ternary value in data file; masked by bug in mpfr-2.4.1
+
 Changes in version 0.8 ("Dianthus deltoides"):
   - New functions:
     - mpc_asin, mpc_acos, mpc_atan, mpc_asinh, mpc_acosh, mpc_atanh,
