@@ -104,11 +104,12 @@ skip_line (FILE *fp)
    /* '\n' is skipped as well                      */
 {
    while (nextchar != EOF && nextchar != '\n')
-      nextchar = getc (fp);
-   if (nextchar != EOF) {
-      line_number++;
-      nextchar = getc (fp);
-   }
+     nextchar = getc (fp);
+   if (nextchar != EOF)
+     {
+       line_number ++;
+       nextchar = getc (fp);
+     }
 }
 
 static void
@@ -116,11 +117,12 @@ skip_whitespace (FILE *fp)
    /* skips over whitespace if any until reaching EOF */
    /* or non-whitespace                               */
 {
-   while (isspace (nextchar)) {
-      if (nextchar == '\n')
-         line_number++;
-      nextchar = getc (fp);
-   }
+   while (isspace (nextchar))
+     {
+       if (nextchar == '\n')
+         line_number ++;
+       nextchar = getc (fp);
+     }
 }
 
 void
@@ -153,7 +155,7 @@ read_string (FILE *fp, char **buffer_ptr, size_t buffer_length, const char *name
   while (nextchar != EOF && nextchar != '"')
     {
       if (nextchar == '\n')
-        line_number++;
+        line_number ++;
       if (pos + 1 > buffer_length)
         {
           buffer = (char *) realloc (buffer, 2 * buffer_length);
@@ -365,6 +367,23 @@ read_mpc (FILE *fp, mpc_ptr z, known_signs_t *ks)
   read_mpfr (fp, MPC_IM (z), ks == NULL ? NULL : &ks->im);
 }
 
+static void
+check_compatible (int inex, mpfr_t expected, mpfr_rnd_t rnd, char *s)
+{
+  if ((rnd == GMP_RNDU && inex == -1) ||
+      (rnd == GMP_RNDD && inex == +1) ||
+      (rnd == GMP_RNDZ && mpfr_signbit (expected) == 0 && inex == +1) ||
+      (rnd == GMP_RNDZ && mpfr_signbit (expected) == 1 && inex == -1))
+    {
+      if (s != NULL)
+        printf ("Incompatible ternary value '%c' (%s part) in file '%s' line %lu\n",
+              (inex == 1) ? '+' : '-', s, pathname, line_number - 1);
+      else
+        printf ("Incompatible ternary value '%c' in file '%s' line %lu\n",
+              (inex == 1) ? '+' : '-', pathname, line_number - 1);
+    }
+}
+
 /* read lines of data */
 static void
 read_cc (FILE *fp, int *inex_re, int *inex_im, mpc_ptr expected,
@@ -375,6 +394,8 @@ read_cc (FILE *fp, int *inex_re, int *inex_im, mpc_ptr expected,
   read_mpc (fp, expected, signs);
   read_mpc (fp, op, NULL);
   read_mpc_rounding_mode (fp, rnd);
+  check_compatible (*inex_re, MPC_RE(expected), MPC_RND_RE(*rnd), "real");
+  check_compatible (*inex_im, MPC_IM(expected), MPC_RND_IM(*rnd), "imag");
 }
 
 static void
@@ -385,6 +406,7 @@ read_fc (FILE *fp, int *inex, mpfr_ptr expected, int *sign, mpc_ptr op,
   read_mpfr (fp, expected, sign);
   read_mpc (fp, op, NULL);
   read_mpfr_rounding_mode (fp, rnd);
+  check_compatible (*inex, expected, *rnd, NULL);
 }
 
 static void
@@ -397,6 +419,8 @@ read_ccc (FILE *fp, int *inex_re, int *inex_im, mpc_ptr expected,
   read_mpc (fp, op1, NULL);
   read_mpc (fp, op2, NULL);
   read_mpc_rounding_mode (fp, rnd);
+  check_compatible (*inex_re, MPC_RE(expected), MPC_RND_RE(*rnd), "real");
+  check_compatible (*inex_im, MPC_IM(expected), MPC_RND_IM(*rnd), "imag");
 }
 
 static void
@@ -410,6 +434,8 @@ read_cfc (FILE *fp, int *inex_re, int *inex_im, mpc_ptr expected,
   read_mpfr (fp, op1, NULL);
   read_mpc (fp, op2, NULL);
   read_mpc_rounding_mode (fp, rnd);
+  check_compatible (*inex_re, MPC_RE(expected), MPC_RND_RE(*rnd), "real");
+  check_compatible (*inex_im, MPC_IM(expected), MPC_RND_IM(*rnd), "imag");
 }
 
 static void
@@ -422,6 +448,8 @@ read_ccf (FILE *fp, int *inex_re, int *inex_im, mpc_ptr expected,
   read_mpc (fp, op1, NULL);
   read_mpfr (fp, op2, NULL);
   read_mpc_rounding_mode (fp, rnd);
+  check_compatible (*inex_re, MPC_RE(expected), MPC_RND_RE(*rnd), "real");
+  check_compatible (*inex_im, MPC_IM(expected), MPC_RND_IM(*rnd), "imag");
 }
 
 /* data_check (function, data_file_name) checks function results against
@@ -481,7 +509,7 @@ data_check (mpc_function function, const char *file_name)
       /* 3.3 compare this result with the expected one */
       switch (function.type)
         {
-        case FC:
+        case FC: /* example mpc_norm */
           read_fc (fp, &inex_re, x1, &sign_real, z1, &mpfr_rnd);
           mpfr_set_prec (x2, MPFR_PREC (x1));
           inex = function.pointer.FC (x2, z1, mpfr_rnd);
@@ -494,7 +522,7 @@ data_check (mpc_function function, const char *file_name)
               got[0] = x2[0];
               expected[0] = x1[0];
               printf ("%s(op) failed (%s:%lu)\nwith rounding mode %s\n",
-                      function.name, file_name, line_number-1,
+                      function.name, file_name, line_number - 1,
                       mpfr_rnd_mode[mpfr_rnd]);
               if (inex_re != TERNARY_NOT_CHECKED && inex_re != inex)
                 printf("ternary value: got %s, expected %s\n",
@@ -508,7 +536,7 @@ data_check (mpc_function function, const char *file_name)
             }
           break;
 
-        case CC:
+        case CC: /* example mpc_log */
           read_cc (fp, &inex_re, &inex_im, z1, &signs, z2, &rnd);
           mpfr_set_prec (MPC_RE (z3), MPC_PREC_RE (z1));
           mpfr_set_prec (MPC_IM (z3), MPC_PREC_IM (z1));
@@ -521,7 +549,7 @@ data_check (mpc_function function, const char *file_name)
               expected[0]= z1[0];
               got[0] = z3[0];
               printf ("%s(op) failed (line %lu)\nwith rounding mode %s\n",
-                      function.name, line_number-1, rnd_mode[rnd]);
+                      function.name, line_number - 1, rnd_mode[rnd]);
               if (!MPC_INEX_CMP (inex_re, inex_im, inex))
                 printf("ternary value: got %s, expected (%s, %s)\n",
                        MPC_INEX_STR (inex),
@@ -535,7 +563,7 @@ data_check (mpc_function function, const char *file_name)
             }
           break;
 
-        case CCC:
+        case CCC: /* example mpc_mul */
           read_ccc (fp, &inex_re, &inex_im, z1, &signs, z2, z3, &rnd);
           mpfr_set_prec (MPC_RE(z4), MPC_PREC_RE (z1));
           mpfr_set_prec (MPC_IM(z4), MPC_PREC_IM (z1));
@@ -550,7 +578,7 @@ data_check (mpc_function function, const char *file_name)
               expected[0]= z1[0];
               got[0] = z4[0];
               printf ("%s(op) failed (line %lu)\nwith rounding mode %s\n",
-                      function.name, line_number-1, rnd_mode[rnd]);
+                      function.name, line_number - 1, rnd_mode[rnd]);
               if (!MPC_INEX_CMP (inex_re, inex_im, inex))
                 printf("ternary value: got %s, expected (%s, %s)\n",
                        MPC_INEX_STR (inex),
@@ -577,7 +605,7 @@ data_check (mpc_function function, const char *file_name)
                   got[0] = z4[0];
                   printf ("%s(op) failed (line %lu/symetric test)\n"
                           "with rounding mode %s\n",
-                          function.name, line_number-1, rnd_mode[rnd]);
+                          function.name, line_number - 1, rnd_mode[rnd]);
                   if (!MPC_INEX_CMP (inex_re, inex_im, inex))
                     printf("ternary value: got %s, expected (%s, %s)\n",
                            MPC_INEX_STR (inex),
@@ -593,7 +621,7 @@ data_check (mpc_function function, const char *file_name)
             }
           break;
 
-        case CFC:
+        case CFC: /* example mpc_fr_div */
           read_cfc (fp, &inex_re, &inex_im, z1, &signs, x1, z2, &rnd);
           mpfr_set_prec (MPC_RE(z3), MPC_PREC_RE (z1));
           mpfr_set_prec (MPC_IM(z3), MPC_PREC_IM (z1));
@@ -609,7 +637,7 @@ data_check (mpc_function function, const char *file_name)
               expected[0]= z1[0];
               got[0] = z3[0];
               printf ("%s(op) failed (line %lu)\nwith rounding mode %s\n",
-                      function.name, line_number-1, rnd_mode[rnd]);
+                      function.name, line_number - 1, rnd_mode[rnd]);
               if (!MPC_INEX_CMP (inex_re, inex_im, inex))
                 printf("ternary value: got %s, expected (%s, %s)\n",
                        MPC_INEX_STR (inex),
@@ -624,7 +652,7 @@ data_check (mpc_function function, const char *file_name)
             }
           break;
 
-        case CCF:
+        case CCF: /* example mpc_mul_fr */
           read_ccf (fp, &inex_re, &inex_im, z1, &signs, z2, x1, &rnd);
           mpfr_set_prec (MPC_RE(z3), MPC_PREC_RE (z1));
           mpfr_set_prec (MPC_IM(z3), MPC_PREC_IM (z1));
@@ -640,7 +668,7 @@ data_check (mpc_function function, const char *file_name)
               expected[0]= z1[0];
               got[0] = z3[0];
               printf ("%s(op) failed (line %lu)\nwith rounding mode %s\n",
-                      function.name, line_number-1, rnd_mode[rnd]);
+                      function.name, line_number - 1, rnd_mode[rnd]);
               if (!MPC_INEX_CMP (inex_re, inex_im, inex))
                 printf("ternary value: got %s, expected (%s, %s)\n",
                        MPC_INEX_STR (inex),
