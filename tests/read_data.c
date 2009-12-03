@@ -27,6 +27,8 @@ char *pathname;
 unsigned long line_number;
    /* file name with complete path and currently read line;
       kept globally to simplify parameter passing */
+unsigned long test_line_number;
+   /* start line of data test (which may extend over several lines) */
 int nextchar;
    /* character appearing next in the file, may be EOF */
 
@@ -377,10 +379,10 @@ check_compatible (int inex, mpfr_t expected, mpfr_rnd_t rnd, char *s)
     {
       if (s != NULL)
         printf ("Incompatible ternary value '%c' (%s part) in file '%s' line %lu\n",
-              (inex == 1) ? '+' : '-', s, pathname, line_number - 1);
+              (inex == 1) ? '+' : '-', s, pathname, test_line_number);
       else
         printf ("Incompatible ternary value '%c' in file '%s' line %lu\n",
-              (inex == 1) ? '+' : '-', pathname, line_number - 1);
+              (inex == 1) ? '+' : '-', pathname, test_line_number);
     }
 }
 
@@ -389,6 +391,7 @@ static void
 read_cc (FILE *fp, int *inex_re, int *inex_im, mpc_ptr expected,
          known_signs_t *signs, mpc_ptr op, mpc_rnd_t *rnd)
 {
+  test_line_number = line_number;
   read_ternary (fp, inex_re);
   read_ternary (fp, inex_im);
   read_mpc (fp, expected, signs);
@@ -402,6 +405,7 @@ static void
 read_fc (FILE *fp, int *inex, mpfr_ptr expected, int *sign, mpc_ptr op,
          mpfr_rnd_t *rnd)
 {
+  test_line_number = line_number;
   read_ternary (fp, inex);
   read_mpfr (fp, expected, sign);
   read_mpc (fp, op, NULL);
@@ -413,6 +417,7 @@ static void
 read_ccc (FILE *fp, int *inex_re, int *inex_im, mpc_ptr expected,
           known_signs_t *signs, mpc_ptr op1, mpc_ptr op2, mpc_rnd_t *rnd)
 {
+  test_line_number = line_number;
   read_ternary (fp, inex_re);
   read_ternary (fp, inex_im);
   read_mpc (fp, expected, signs);
@@ -427,7 +432,7 @@ static void
 read_cfc (FILE *fp, int *inex_re, int *inex_im, mpc_ptr expected,
           known_signs_t *signs, mpfr_ptr op1, mpc_ptr op2, mpc_rnd_t *rnd)
 {
-
+  test_line_number = line_number;
   read_ternary (fp, inex_re);
   read_ternary (fp, inex_im);
   read_mpc (fp, expected, signs);
@@ -442,6 +447,7 @@ static void
 read_ccf (FILE *fp, int *inex_re, int *inex_im, mpc_ptr expected,
           known_signs_t *signs, mpc_ptr op1, mpfr_ptr op2, mpc_rnd_t *rnd)
 {
+  test_line_number = line_number;
   read_ternary (fp, inex_re);
   read_ternary (fp, inex_im);
   read_mpc (fp, expected, signs);
@@ -522,7 +528,7 @@ data_check (mpc_function function, const char *file_name)
               got[0] = x2[0];
               expected[0] = x1[0];
               printf ("%s(op) failed (%s:%lu)\nwith rounding mode %s\n",
-                      function.name, file_name, line_number - 1,
+                      function.name, file_name, test_line_number,
                       mpfr_rnd_mode[mpfr_rnd]);
               if (inex_re != TERNARY_NOT_CHECKED && inex_re != inex)
                 printf("ternary value: got %s, expected %s\n",
@@ -549,7 +555,7 @@ data_check (mpc_function function, const char *file_name)
               expected[0]= z1[0];
               got[0] = z3[0];
               printf ("%s(op) failed (line %lu)\nwith rounding mode %s\n",
-                      function.name, line_number - 1, rnd_mode[rnd]);
+                      function.name, test_line_number, rnd_mode[rnd]);
               if (!MPC_INEX_CMP (inex_re, inex_im, inex))
                 printf("ternary value: got %s, expected (%s, %s)\n",
                        MPC_INEX_STR (inex),
@@ -578,7 +584,7 @@ data_check (mpc_function function, const char *file_name)
               expected[0]= z1[0];
               got[0] = z4[0];
               printf ("%s(op) failed (line %lu)\nwith rounding mode %s\n",
-                      function.name, line_number - 1, rnd_mode[rnd]);
+                      function.name, test_line_number, rnd_mode[rnd]);
               if (!MPC_INEX_CMP (inex_re, inex_im, inex))
                 printf("ternary value: got %s, expected (%s, %s)\n",
                        MPC_INEX_STR (inex),
@@ -605,7 +611,7 @@ data_check (mpc_function function, const char *file_name)
                   got[0] = z4[0];
                   printf ("%s(op) failed (line %lu/symetric test)\n"
                           "with rounding mode %s\n",
-                          function.name, line_number - 1, rnd_mode[rnd]);
+                          function.name, test_line_number, rnd_mode[rnd]);
                   if (!MPC_INEX_CMP (inex_re, inex_im, inex))
                     printf("ternary value: got %s, expected (%s, %s)\n",
                            MPC_INEX_STR (inex),
@@ -637,7 +643,7 @@ data_check (mpc_function function, const char *file_name)
               expected[0]= z1[0];
               got[0] = z3[0];
               printf ("%s(op) failed (line %lu)\nwith rounding mode %s\n",
-                      function.name, line_number - 1, rnd_mode[rnd]);
+                      function.name, test_line_number, rnd_mode[rnd]);
               if (!MPC_INEX_CMP (inex_re, inex_im, inex))
                 printf("ternary value: got %s, expected (%s, %s)\n",
                        MPC_INEX_STR (inex),
@@ -668,7 +674,7 @@ data_check (mpc_function function, const char *file_name)
               expected[0]= z1[0];
               got[0] = z3[0];
               printf ("%s(op) failed (line %lu)\nwith rounding mode %s\n",
-                      function.name, line_number - 1, rnd_mode[rnd]);
+                      function.name, test_line_number, rnd_mode[rnd]);
               if (!MPC_INEX_CMP (inex_re, inex_im, inex))
                 printf("ternary value: got %s, expected (%s, %s)\n",
                        MPC_INEX_STR (inex),

@@ -35,6 +35,7 @@ static void
 check_file (const char* file_name)
 {
   FILE *fp;
+  unsigned long test_line_number;
 
   size_t str_len = 255;
   char *str = NULL;
@@ -77,6 +78,7 @@ check_file (const char* file_name)
       skip_whitespace_comments (fp);
 
       /* 1. read a line of data: expected result, base, rounding mode */
+      test_line_number = line_number;
       read_ternary (fp, &inex_re);
       read_ternary (fp, &inex_im);
       read_mpc (fp, expected, NULL);
@@ -101,7 +103,8 @@ check_file (const char* file_name)
           || strcmp (end, rstr) != 0)
         {
           printf ("mpc_strtoc(str) failed (line %lu)\nwith base=%d and "
-                  "rounding mode %s\n", line_number-1, base, rnd_mode[rnd]);
+                  "rounding mode %s\n", test_line_number, base,
+                  rnd_mode[rnd]);
           if (inex != MPC_INEX (inex_re, inex_im))
             printf ("ternary value: got %s, expected (%s, %s)\n",
                     MPC_INEX_STR (inex),
