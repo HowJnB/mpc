@@ -1,6 +1,6 @@
 Changes in version 0.8.1:
   - Bug fixes:
-    - acosh, asinh, atanh: swap of precisions between real and imaginary part
+    - acosh, asinh, atanh: swap of precisions between real and imaginary parts
     - atan: memory leak
     - log: wrong ternary value in data file; masked by bug in mpfr-2.4.1
 
