@@ -14,7 +14,9 @@ Required versions:
 Creating a new release
 ----------------------
 
- 0) Run all tests with valgrind and check no memory leak remains.
+ 0) Run all tests with valgrind and check no memory leak remains:
+       for f in .libs/lt-t*; do valgrind $f; done
+ 0b) Disable test in line 35 of log.dat.
  1) Check the version number in configure.ac ("AC_INIT (mpc, _version_...)"),
     INSTALL, src/get_version.c, src/mpc.h (remove suffix "-dev" in
     MPC_VERSION_STRING) and Makefile.vc.
@@ -37,4 +39,5 @@ Creating a new release
  7) After the release, update the version number in configure.ac, INSTALL,
     src/get_version.c, src/mpc.h and Makefile.vc.
  9) Potentially increase the API version in src/Makefile.am.
+ 9b) Reenable test in line 35 of log.dat.
 10) Commit the changes to svn.
