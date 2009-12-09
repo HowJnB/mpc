@@ -188,10 +188,7 @@ mpc_acos (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
   else
     rnd_im = rnd_im == GMP_RNDU ? GMP_RNDD
       : rnd_im == GMP_RNDD ? GMP_RNDU
-#if MPFR_VERSION_MAJOR >= 3
-      : rnd_im == GMP_RNDA ? GMP_RNDZ
-#endif
-      : rnd_im;
+      : rnd_im; /* both RNDZ and RNDA map to themselves for -asin(z) */
   rnd1 = RNDC(GMP_RNDN, rnd_im);
   mpfr_init2 (pi_over_2, p);
   for (;;)
