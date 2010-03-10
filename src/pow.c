@@ -584,7 +584,7 @@ mpc_pow (mpc_ptr z, mpc_srcptr x, mpc_srcptr y, mpc_rnd_t rnd)
   pr = mpfr_get_prec (MPC_RE(z));
   pi = mpfr_get_prec (MPC_IM(z));
   p = (pr > pi) ? pr : pi;
-  p += 11; /* experimentally, seems to give less than 10% of failures in
+  p += 12; /* experimentally, seems to give less than 10% of failures in
               Ziv's strategy */
   mpc_init2 (u, p);
   pr += MPC_RND_RE(rnd) == GMP_RNDN;
