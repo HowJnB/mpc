@@ -6,9 +6,9 @@ Bench:
 Efficiency:
 - from Andreas Enge 16 September 2008:
   Once mpc_sin_cos exists, improve mpc_tan to use it
+- from Andreas Enge 10 March 2010:
+  binary algorithm for mpc_pow_ui
 - in mpc_pow, try to avoid the initial mpc_log computation to detect overflow
-- implement binary exponentiation in mpc_pow_ui
-  (cf http://trac.sagemath.org/sage_trac/ticket/4446)
 
 New functions to implement:
 - from Andreas Enge 16 September 2008:
