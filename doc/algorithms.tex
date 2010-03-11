@@ -1600,6 +1600,35 @@ the determined cases:
 where $\sigma_2$ (resp $\rho_1$, $\rho_2$) is the sign of $x_2$ (resp. $y_1$,
 $y_2$) and with the convention $0^0=+1$.
 
+\subsection {\texttt {mpc\_pow\_ui}}
+
+In the case of a non-negative integer exponent $n$, it might be faster to use
+binary exponentiation to compute $x^n$. This corresponds to a sequence of
+values $v_0 = x$, $v_1 \approx x^2$, \ldots, $v_k \approx x^n$,
+where $k$ is bounded
+by the length of $n$ in binary minus 1, plus the number of set bits in the
+binary representation of $n$ (except the leading one), or simply
+$k \leq 2 \lfloor \log_2 n \rfloor$.
+Each iteration computes either $v_{i+1} = \circ(v_i^2)$, or $v_{i+1} = \circ(x v_i)$.
+Since each such product is correctly rounded, if we work with precision $p$,
+the relative error on the real and imaginary parts of $v_{i+1}$ is bounded
+by $2^{-p}$ for rounding to nearest (with respect to $v_i^2$ or $x v_i$).
+It follows that the relative error in rounding $v_{i+1}$ is bounded by a
+complex value of norm $2^{-p}$. Indeed, if $\tilde{u} = u (1 + \theta_u)$
+and $\tilde{v} = v (1 + \theta_v)$ with $|\theta_u|, |\theta_v| \leq 2^{-p}$,
+then
+\[ \frac{\tilde{u} + i \tilde{v}}{u+iv} = 
+   \frac{u (1 + \theta_u) + i v (1 + \theta_v)}{u+iv} =
+   1 + \theta_z, \]
+where $|\theta_z|^2 = (u^2 \theta_u^2 + v^2 \theta_v^2)/(u^2+v^2) \leq
+2^{-2p}$.
+It is easy to see (for example by induction) that, if $v_i = x^{\ell}$,
+it accumulates exactly $\ell-1$ rounding errors. Thus we can write
+$v_k = x^n (1 + \theta)^{n-1}$, where $\theta$ is a complex number of norm
+at most $2^{-p}$. From this we deduce a bound on the absolute error on the
+real and imaginary parts of $v_k$, for example
+$|x|^n (|1 + 2^{-p}|^{n-1} - 1)$.
+
 \bibliographystyle{acm}
 \bibliography{algorithms}
 
