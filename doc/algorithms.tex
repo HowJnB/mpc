@@ -5,6 +5,7 @@
 \usepackage[T1]{fontenc}
 \usepackage{amsmath,amssymb}
 \usepackage{url}
+\usepackage{comment}
 %\usepackage[notref,notcite]{showkeys}
 
 \newcommand {\corr}[1]{\widetilde {#1}}
@@ -1622,6 +1623,26 @@ then
    1 + \theta_z, \]
 where $|\theta_z|^2 = (u^2 \theta_u^2 + v^2 \theta_v^2)/(u^2+v^2) \leq
 2^{-2p}$.
+% the following Maple code supports the bound $|\theta_z| \leq 2^{-p}$
+\begin{comment}
+N := 100:
+eps := 1e-5:
+die := proc() 2*rand()/1e12-1 end:
+l := []:
+for x from 1 to N do
+   for y from 1 to N do
+      ex := die()*x*eps;
+      ey := die()*y*eps;
+      z := x+I*y;
+      zz := (x+ex)+I*(y+ey);
+      err := zz/z-1;
+      l := [op(l), [Re(err),Im(err)]];
+   od:
+od:
+p1:=plot(l,style=point):
+p2:=plot([eps*cos(t),eps*sin(t),t=0..2*Pi]):
+plots[display]({p1,p2});
+\end{comment}
 It is easy to see (for example by induction) that, if $v_i = x^{\ell}$,
 it accumulates exactly $\ell-1$ rounding errors. Thus we can write
 $v_k = x^n (1 + \theta)^{n-1}$, where $\theta$ is a complex number of norm
