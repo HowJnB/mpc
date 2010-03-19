@@ -1,6 +1,6 @@
 /* mpc.h -- Include file for mpc.
 
-Copyright (C) 2002, 2003, 2004, 2005, 2007, 2008, 2009 Andreas Enge, Paul Zimmermann, Philippe Th\'eveny
+Copyright (C) 2002, 2003, 2004, 2005, 2007, 2008, 2009, 2010 Andreas Enge, Paul Zimmermann, Philippe Th\'eveny
 
 This file is part of the MPC Library.
 
@@ -218,8 +218,8 @@ __MPC_DECLSPEC void mpc_get_prec2 __MPC_PROTO((mp_prec_t *pr, mp_prec_t *pi, mpc
 __MPC_DECLSPEC void mpc_set_prec  __MPC_PROTO ((mpc_ptr, mp_prec_t));
 __MPC_DECLSPEC __gmp_const char * mpc_get_version __MPC_PROTO ((void));
 
-__MPC_DECLSPEC int  mpc_strtoc    _MPFR_PROTO ((mpc_ptr, char *, char **, int, mpc_rnd_t));
-__MPC_DECLSPEC int  mpc_set_str   _MPFR_PROTO ((mpc_ptr, char *, int, mpc_rnd_t));
+__MPC_DECLSPEC int  mpc_strtoc    _MPFR_PROTO ((mpc_ptr, const char *, char **, int, mpc_rnd_t));
+__MPC_DECLSPEC int  mpc_set_str   _MPFR_PROTO ((mpc_ptr, const char *, int, mpc_rnd_t));
 __MPC_DECLSPEC char * mpc_get_str _MPFR_PROTO ((int, size_t, mpc_srcptr, mpc_rnd_t));
 __MPC_DECLSPEC void mpc_free_str  _MPFR_PROTO ((char *));
 #ifdef _MPC_H_HAVE_FILE

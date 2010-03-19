@@ -1,7 +1,6 @@
 \input texinfo
 @ignore
-Copyright (C) 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009
-Andreas Enge, Philippe Th\'eveny, Paul Zimmermann
+Copyright (C) 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010 Andreas Enge, Philippe Th\'eveny, Paul Zimmermann
 
 This file is part of the MPC Library.
 
@@ -640,7 +639,7 @@ third auxiliary variable.
 @anchor{string-io}
 @section String and Stream Input and Output
 
-@deftypefun int mpc_strtoc (mpc_t @var{rop}, char *@var{nptr}, char **@var{endptr}, int @var{base}, mpc_rnd_t @var{rnd})
+@deftypefun int mpc_strtoc (mpc_t @var{rop}, const char *@var{nptr}, char **@var{endptr}, int @var{base}, mpc_rnd_t @var{rnd})
 Read a complex number from a string @var{nptr} in base @var{base}, rounded to
 the precision of @var{rop} with the given rounding mode @var{rnd}.
 The @var{base} must be either 0 or a number from 2 to 36 (otherwise the
@@ -676,7 +675,7 @@ For instance, @code{"(1.024e+3 +2.05e+3)"} and @code{"(0b1p+10 +0x802)"} are
 valid strings for @code{base}=0 and represent the same value.
 @end deftypefun
 
-@deftypefun int mpc_set_str (mpc_t @var{rop}, char *@var{s}, int @var{base}, mpc_rnd_t rnd)
+@deftypefun int mpc_set_str (mpc_t @var{rop}, const char *@var{s}, int @var{base}, mpc_rnd_t rnd)
 Set @var{rop} to the value of the string @var{s} in base @var{base}, rounded
 to the precision of @var{rop} with the given rounding mode @var{rnd}.
 See the documentation of @code{mpc_strtoc} for a detailed description of the
