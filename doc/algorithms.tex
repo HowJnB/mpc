@@ -3,10 +3,11 @@
 \usepackage[a4paper]{geometry}
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
+\usepackage{ae}
 \usepackage{amsmath,amssymb}
-\usepackage{url}
+\usepackage{hyperref}
 \usepackage{comment}
-%\usepackage[notref,notcite]{showkeys}
+\usepackage[notref,notcite]{showkeys}
 
 \newcommand {\corr}[1]{\widetilde {#1}}
 \newcommand {\appro}[1]{\overline {#1}}
@@ -46,7 +47,7 @@
 
 \title {MPC: Algorithms and Error Analysis}
 \author {Andreas Enge \and Philippe Th\'eveny \and Paul Zimmermann}
-\date {June 17, 2009}
+\date {Draft; March 26, 2010}
 
 \begin {document}
 \maketitle
@@ -128,7 +129,7 @@ since these two numbers are representable (independently of the precision).
 Let $x$ be a real number which is representable at precision~$p$.
 Its associated {\em unit in the last place} is
 $\Ulp(x) = \Ulp_p (x) = 2^{\Exp(x) - p}$, so that adding $\Ulp(x)$ to $x$
-corresponds to adding $1$ to the integer $2^p m$.
+corresponds to adding~$1$ to the integer $2^p m$.
 \end {definition}
 
 
@@ -304,21 +305,22 @@ Let $\corr z = \corr x + i \corr y$, $\appro z = \appro x + i \appro y$,
 $\epsilon = \relerror (\appro z)$,
 $\epsilon_R = \relerror (\appro x)$ and
 $\epsilon_I = \relerror (\appro y)$,
-and assume that the closed circle around $\appro z$ of radius
-$\epsilon |\appro z|$ is contained in one quadrant of the complex plane. Then
+and assume that $\appro z$ and $\corr z$ lie in the same quadrant of the
+complex plane (for instance, because the closed circle around $\appro z$ of radius
+$\epsilon |\appro z|$ is contained in one quadrant). Then
 \begin {align*}
 \epsilon_R
-&\leq 2^{\max (0.5, \Exp (\appro y) - \Exp (\appro x) + 1.5)} \epsilon \\
+&\leq \left( 1 + 2^{\Exp (\appro y) - \Exp (\appro x) + 1} \right) \epsilon, \\
 \epsilon_I
-&\leq 2^{\max (0.5, \Exp (\appro x) - \Exp (\appro y) + 1.5)} \epsilon \\
+&\leq \left( 1 + 2^{\Exp (\appro x) - \Exp (\appro y) + 1} \right) \epsilon, \\
 \epsilon
-&\leq \sqrt 2 (\epsilon_R + \epsilon_I)
+&\leq \max \left( \epsilon_R, \epsilon_I \right).
 \end {align*}
 \end {prop}
 
 \begin {proof}
-By assumption, the correct value $\corr z$ lies in the same quadrant as
-$\appro z$, so that $\corr x$ and $\appro x$ resp. $\corr y$ and $\appro y$
+Since $\corr z$ and $\appro z$ lie in the same quadrant,
+$\corr x$ and $\appro x$ resp. $\corr y$ and $\appro y$
 have the same sign. Write $\theta = \frac {\corr z - \appro z}{\appro z}
 = \theta_R + i \theta_I$. Then
 $\corr x - \appro x = \Re (\appro z \theta)
@@ -327,29 +329,22 @@ $\corr x - \appro x = \Re (\appro z \theta)
 \epsilon_R
 &= \left| \frac {\corr x - \appro x}{\appro x} \right|
 \leq |\theta_R| + \left| \frac {\appro y}{\appro x} \right| |\theta_I|
-\leq \max \left( 1, \left| \frac {\appro y}{\appro x} \right| \right)
-(|\theta_R| + |\theta_I|) \\
-&\leq 2^{\max \left( 0, \Exp (\appro y) - \Exp (\appro x) + 1 \right)}
-\cdot \sqrt 2 |\theta|
+\leq \left( 1 + \left| \frac {\appro y}{\appro x} \right| \right)
+\max (|\theta_R|, |\theta_I|) \\
+&\leq \left( 1 + 2^{\Exp (\appro y) - \Exp (\appro x) + 1} \right)
+|\theta|
 \end {align*}
 by Proposition~\ref {prop:expmuldiv}. The second inequality is proved
-in the same way. For the converse direction, write
-\[
-|\theta_I|
-= \left| \Re \left(
-\frac {(\corr z - \appro z) \overline z}{\appro x^2 + \appro y^2}
-\right) \right|
-\leq \left|
-\frac {- (\corr x - \appro x) \appro y + (\corr y - \appro y) \appro y}
-      {\appro x \appro y} \right|
-\leq
-  \left| \frac {\corr x - \appro x}{\appro x} \right|
-+ \left| \frac {\corr y - \appro y}{\appro y} \right|
-\leq \epsilon_R + \epsilon_I,
-\]
-and similarly for $\theta_R$, which finishes the proof.
-\end {proof}
+in the same way.
 
+For the converse direction, write
+\[
+|\theta|^2
+= \frac {(\corr x - \appro x)^2 + (\corr y - \appro y)^2}{\appro x^2 + \appro y^2}
+= \frac {\epsilon_R^2 \appro x^2 + \epsilon_I^2 \appro y^2}{\appro x^2 + \appro y^2}
+\leq \max \left( \epsilon_R^2, \epsilon_I^2 \right).
+\]
+\end {proof}
 
 
 \subsection {Real functions}
@@ -539,7 +534,7 @@ In the same way, we obtain
 \]
 
 It remains to estimate $\Exp (\appro {x_1} \appro {x_2})$ and
-$\Exp (\appro {y_1} \appro {y_2})$ with respect to $\Exp (x)$ to obtain
+$\Exp (\appro {y_1} \appro {y_2})$ with respect to $\Exp (\appro x)$ to obtain
 a bound in terms of $\Ulp (\appro x)$. This becomes problematic when, due
 to the subtraction, cancellation occurs. In all generality, let
 $d = \Exp (\appro {x_1} \appro {x_2}) - \Exp (\appro x)
@@ -613,6 +608,7 @@ $|\appro {y_n}| \geq |\corr {y_n}|$ (for instance, because they have been
 computed by rounding away from zero), then the corresponding
 $\epsilon_{X, n}^+$ are zero.
 
+
 A coarser bound may be obtained more easily by considering complex
 relative errors. Write $\corr {z_n} = (1 + \theta_n) \appro {z_n}$
 with $\epsilon_n = | \theta_n |$. Then $\corr z = (1 + \theta) \appro z$
@@ -621,13 +617,13 @@ $\epsilon = |\theta| \leq \epsilon_1 + \epsilon_2 + \epsilon_1 \epsilon_2$.
 By Proposition~\ref {prop:relerror},
 we have $\epsilon_{X, n} \leq k_{X, n} 2^{1-p}$ for $X \in \{ R, I \}$,
 and by Proposition~\ref {prop:comrelerror},
-$\epsilon_n \leq  (k_{R, n} + k_{I, n}) 2^{1.5 - p}$.
-Under normal circumstances, $\epsilon_1 \epsilon_2$ should be negligible,
-that is, $\epsilon_1 \epsilon_2
-\leq (k_{R, 1} + k_{I, 1}) (k_{R, 2} + k_{I, 2}) 2^{3 - 2 p}
-\leq 2^{1.5 - p}$, so that
-$\epsilon \leq (k_{R, 1} + k_{I, 1} + k_{R, 2} + k_{I, 2} + 1)
-2^{1.5 - p}$.
+$\epsilon_n \leq  \max (k_{R, n}, k_{I, n}) 2^{1 - p}$.
+Under normal circumstances, $\epsilon_1 \epsilon_2$ should be negligible;
+for instance, if we assume that
+$\max (k_{R, 1}, k_{I, 1}) \max (k_{R, 2}, k_{I, 2}) \leq 2^{p - 1}$,
+then $\epsilon_1 \epsilon_2 \leq 2^{1-p}$ and
+$\epsilon \leq \big( \max (k_{R, 1}, k_{I, 1}) + \max (k_{R, 2}, k_{I, 2}) + 1
+\big) 2^{1 - p}$.
 Applying Propositions~\ref {prop:comrelerror} and~\ref {prop:relerror}
 in the converse direction yields, under the assumption that $\corr z$
 and $\appro z$ lie in the same quadrant of the complex plane,
@@ -635,13 +631,13 @@ and $\appro z$ lie in the same quadrant of the complex plane,
 \label {eq:propmulcomrel}
 \begin {array}{rl}
 \error (\appro x)
-&\leq (k_{R, 1} + k_{I, 1} + k_{R, 2} + k_{I, 2} + 1)
-2^{\max (2, \Exp (\appro y) - \Exp (\appro x) + 3)}
-\cdot 2^{\Exp (\appro x) - p} \\
+&\leq \big( \max (k_{R, 1}, k_{I, 1}) + \max (k_{R, 2}, k_{I, 2}) + 1 \big)
+\left( 2 + 2^{\Exp (\appro y) - \Exp (\appro x) + 2} \right)
+2^{\Exp (\appro x) - p} \\
 \error (\appro y)
-&\leq (k_{R, 1} + k_{I, 1} + k_{R, 2} + k_{I, 2} + 1)
-2^{\max (2, \Exp (\appro x) - \Exp (\appro y) + 3)}
-\cdot 2^{\Exp (\appro y) - p}
+&\leq \big( \max (k_{R, 1}, k_{I, 1}) + \max (k_{R, 2}, k_{I, 2}) + 1 \big)
+\left( 2 + 2^{\Exp (\appro x) - \Exp (\appro y) + 2} \right)
+2^{\Exp (\appro y) - p} \\
 \end {array}
 \end {equation}
 
@@ -1028,6 +1024,7 @@ For instance, $i^y$ is real for $y$ purely imaginary, so that
 also $x^y$ is real for $x \in \Z [i]^\ast$ and $y$ purely imaginary.
 
 \begin {conj}
+\label{conj}
 If $\Im y \neq 0$ and $x$ is not a unit of $\Z [i]$, then
 the real and the imaginary part of $x^y$ are transcendental.
 Or, more weakly, then neither the real nor the imaginary
@@ -1124,7 +1121,7 @@ $e \equiv 2 \pmod 4$, $-m$ is a fourth power, and, in case $y < 0$, $-m = 1$.
 \end {enumerate}
 \item
 $y$ not real;
-see Conjecture
+see Conjecture~\ref {conj}
 \item
 $y > 0$ real, $x$ not real;
 see above
@@ -1244,7 +1241,7 @@ neighborhood $I$ of $(x_0, y_0)$ defined above, then the sign of $dB_k(x_0,
 y_0)\cdot(\delta_1, \delta_2, \epsilon_1, \epsilon_2)$ determines the sign of
 the zero part of $x^y$.
 
-In following discussion, we write 
+In following discussion, we write
 $B_k(x_1, x_2, y_1, y_2) := B_k(x_1+x_2i, y_1+y_2i)$,
 as a function of four real arguments.
 Let $\sigma_1 = -1,+1$ (resp. $\sigma_2$, $\rho_1$, $\rho_2$) denote the sign
@@ -1618,7 +1615,7 @@ It follows that the relative error in rounding $v_{i+1}$ is bounded by a
 complex value of norm $2^{-p}$. Indeed, if $\tilde{u} = u (1 + \theta_u)$
 and $\tilde{v} = v (1 + \theta_v)$ with $|\theta_u|, |\theta_v| \leq 2^{-p}$,
 then
-\[ \frac{\tilde{u} + i \tilde{v}}{u+iv} = 
+\[ \frac{\tilde{u} + i \tilde{v}}{u+iv} =
    \frac{u (1 + \theta_u) + i v (1 + \theta_v)}{u+iv} =
    1 + \theta_z, \]
 where $|\theta_z|^2 = (u^2 \theta_u^2 + v^2 \theta_v^2)/(u^2+v^2) \leq
