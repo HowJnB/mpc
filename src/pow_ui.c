@@ -26,10 +26,10 @@ int
 mpc_pow_ui (mpc_ptr z, mpc_srcptr x, unsigned long y, mpc_rnd_t rnd)
 {
   int inex;
-  mpc_t t;
 
   if (y == 0) /* let mpc_pow deal with that special case */
     {
+      mpc_t t;
       mpc_init3 (t, sizeof (unsigned long) * CHAR_BIT, MPFR_PREC_MIN);
       mpc_set_ui (t, y, MPC_RNDNN);   /* exact */
       inex = mpc_pow (z, x, t, rnd);
@@ -93,7 +93,7 @@ mpc_pow_ui (mpc_ptr z, mpc_srcptr x, unsigned long y, mpc_rnd_t rnd)
           mpfr_set_prec (MPC_IM(t), MPFR_PREC_MIN);
           mpc_set_ui (t, y, MPC_RNDNN);   /* exact */
           inex = mpc_pow (z, x, t, rnd);
-        } 
+        }
       mpc_clear (t);
     }
 
