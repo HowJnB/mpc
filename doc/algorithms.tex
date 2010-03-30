@@ -8,8 +8,8 @@
 \usepackage{comment}
 \usepackage[notref,notcite]{showkeys}
 
-\newcommand {\corr}[1]{\widetilde {#1}}
-\newcommand {\appro}[1]{\overline {#1}}
+\newcommand {\corr}[1]{{#1}}
+\newcommand {\appro}[1]{\widetilde {#1}}
 \newcommand {\mpc}{{\tt mpc}}
 \newcommand {\mpfr}{{\tt mpfr}}
 \newcommand {\ulp}[1]{#1~ulp}
@@ -46,7 +46,7 @@
 
 \title {MPC: Algorithms and Error Analysis}
 \author {Andreas Enge \and Philippe Th\'eveny \and Paul Zimmermann}
-\date {Draft; March 29, 2010}
+\date {Draft; March 30, 2010}
 
 \begin {document}
 \maketitle
@@ -143,7 +143,7 @@ of real numbers separately to the two coordinates of a complex number.
 
 \begin {definition}
 \label {def:error}
-Given a correct real number $\corr x$ and its approximation $\appro x$,
+Given a real number $\corr x$ and its approximation $\appro x$,
 we define the {\em absolute error} of $\appro x$ as
 $\error (\appro x) = | \corr x - \appro x |$.
 \end {definition}
@@ -205,7 +205,7 @@ but relatively as multiplicative factors (close to~$1$).
 
 \begin {definition}
 \label {def:relerror}
-Given a correct real number $\corr x$ and its approximation $\appro x$,
+Given a real number $\corr x$ and its approximation $\appro x$,
 we define the {\em upper relative error} of $\appro x$ by
 \[
 \relerror^+ (\appro x) = \epsilon^+
@@ -278,7 +278,7 @@ only the notion of total relative error carries over.
 
 \begin {definition}
 \label {def:comrelerror}
-Given a correct complex number $\corr z$ and its non-zero approximation
+Given a complex number $\corr z$ and its non-zero approximation
 $\appro z$, let
 \[
 \theta = \frac {\corr z - \appro z}{\appro z},
