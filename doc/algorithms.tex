@@ -1645,6 +1645,23 @@ on the real part and of
 \]
 on the imaginary part of the result.
 
+If we further assume that $(n-1) 2^{-p} \leq 1$, then
+$\left( (1 + 2^{-p})^{n-1} - 1 \right) \leq 2 (n-1) 2^{-p}$,
+because $(1+\varepsilon)^m-1 = \exp(m \log(1+\varepsilon)) - 1
+\leq \exp(\varepsilon m) - 1 \leq 2 \varepsilon m$ as long as
+$\varepsilon m \leq 1$. This gives the simplified bounds
+\[
+\left( 2 + 2^{\Exp (\Im \appro x_k) - \Exp (\Re \appro x_k) + 2} \right)
+(n-1) \Ulp (\Re \appro x_k)
+\]
+on the real part and of
+\[
+\left( 2 + 2^{\Exp (\Re \appro x_k) - \Exp (\Im \appro x_k) + 2} \right)
+(n-1) \Ulp (\Im \appro x_k)
+\]
+on the imaginary part.
+
+
 
 \bibliographystyle{acm}
 \bibliography{algorithms}
