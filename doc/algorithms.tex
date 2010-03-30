@@ -1,9 +1,8 @@
-\documentclass {article}
+\documentclass [12pt]{article}
 
 \usepackage[a4paper]{geometry}
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
-\usepackage{ae}
 \usepackage{amsmath,amssymb}
 \usepackage{hyperref}
 \usepackage{comment}
@@ -47,7 +46,7 @@
 
 \title {MPC: Algorithms and Error Analysis}
 \author {Andreas Enge \and Philippe Th\'eveny \and Paul Zimmermann}
-\date {Draft; March 26, 2010}
+\date {Draft; March 29, 2010}
 
 \begin {document}
 \maketitle
@@ -206,21 +205,16 @@ but relatively as multiplicative factors (close to~$1$).
 
 \begin {definition}
 \label {def:relerror}
-Given a correct real number $\corr x$ and its approximation $\appro x$
-of the same sign,
-we define the {\em lower and upper relative errors} of $\appro x$
-as the smallest non-negative real numbers
-$\relerror^- (\appro x) = \epsilon^-$ and
-$\relerror^+ (\appro x) = \epsilon^+$
-such that
+Given a correct real number $\corr x$ and its approximation $\appro x$,
+we define the {\em upper relative error} of $\appro x$ by
 \[
-1 - \epsilon^- \leq \frac {|\corr x|}{|\appro x|} \leq
-1 + \epsilon^+
+\relerror^+ (\appro x) = \epsilon^+
+= \frac {\max (0, \corr x - \appro x)}{|\appro x|}.
 \]
-or, equivalently,
+and its {\em lower relative error} by
 \[
-- \epsilon^- \leq \frac {|\corr x| - |\appro x|}{| \appro x| } \leq
-\epsilon^+.
+\relerror^- (\appro x) = \epsilon^-
+= \frac {\max (0, \appro x - \corr x)}{|\appro x|}.
 \]
 The {\em relative error} of $\appro x$ is
 \[
@@ -229,10 +223,15 @@ The {\em relative error} of $\appro x$ is
 \]
 \end {definition}
 
-Notice that $\epsilon^- = 0$ whenever $|\appro x| \leq |\corr x|$
-and $\epsilon^+ = 0$ whenever $|\appro x| \geq |\corr x|$, so that
-at least one of $\epsilon^+$ and $\epsilon^-$ is zero.
-The definition of relative error carries over immediately to complex numbers,
+Notice that $\epsilon^- = 0$ whenever $\appro x \leq \corr x$ and
+$\epsilon^+ = 0$ whenever $\appro x \geq \corr x$, so that at least one of
+$\epsilon^+$ and $\epsilon^-$ is zero. We express relative errors with
+respect to the approximate value; thus, they define an interval around
+the approximate value containing the correct one. Precisely,
+$\corr x = \appro x (1 + \vartheta)$ for some number $\theta$ with
+$|\theta| \leq \epsilon$.
+
+The definition of relative error carries over to complex numbers,
 see \S\ref {sssec:comrelerror}.
 However, in the following we usually argument separately for the two coordinates,
 so we use corresponding $\epsilon$-values with subscript $R$ and $I$ for the
@@ -274,9 +273,8 @@ $|\appro x| \leq 2^{\Exp (\appro x)}$.
 \subsubsection {Complex relative error}
 \label {sssec:comrelerror}
 
-Some care must be taken when generalising the real relative error to complex
-approximations; by keeping the absolute values in
-Definition~\ref {def:relerror}, all information is lost.
+The sign of errors is not meaningful any more in the complex case, and
+only the notion of total relative error carries over.
 
 \begin {definition}
 \label {def:comrelerror}
@@ -294,8 +292,7 @@ Then the {\em relative error} of $\appro z$ is
 \]
 \end {definition}
 
-Notice that this definition coincides with Definition~\ref {def:relerror}
-for real numbers of the same sign. The following result gives a coarse
+The following result gives a coarse
 estimate of the relative errors of the real and imaginary parts in terms of
 the complex relative error, and vice versa.
 
@@ -304,10 +301,7 @@ the complex relative error, and vice versa.
 Let $\corr z = \corr x + i \corr y$, $\appro z = \appro x + i \appro y$,
 $\epsilon = \relerror (\appro z)$,
 $\epsilon_R = \relerror (\appro x)$ and
-$\epsilon_I = \relerror (\appro y)$,
-and assume that $\appro z$ and $\corr z$ lie in the same quadrant of the
-complex plane (for instance, because the closed circle around $\appro z$ of radius
-$\epsilon |\appro z|$ is contained in one quadrant). Then
+$\epsilon_I = \relerror (\appro y)$. Then
 \begin {align*}
 \epsilon_R
 &\leq \left( 1 + 2^{\Exp (\appro y) - \Exp (\appro x) + 1} \right) \epsilon, \\
@@ -319,9 +313,7 @@ $\epsilon |\appro z|$ is contained in one quadrant). Then
 \end {prop}
 
 \begin {proof}
-Since $\corr z$ and $\appro z$ lie in the same quadrant,
-$\corr x$ and $\appro x$ resp. $\corr y$ and $\appro y$
-have the same sign. Write $\theta = \frac {\corr z - \appro z}{\appro z}
+Write $\theta = \frac {\corr z - \appro z}{\appro z}
 = \theta_R + i \theta_I$. Then
 $\corr x - \appro x = \Re (\appro z \theta)
 = \appro x \theta_R - \appro y \theta_I$, and
@@ -1169,10 +1161,6 @@ and thus a primitive $16$-th root of unity, which is impossible.
 \end {enumerate}
 \end {proof}
 
-A relevant reference is \cite{BrDiJeLeMeMuReStTo09}, especially Section 4.5
-which discusses complex floating-point numbers, and gives error bounds for
-multiplication, division and square root.
-
 \paragraph{Sign of zeroes.}
 When the output value has a zero real or imaginary part, its sign should be
 decided, which is not always possible if we want it to be consistent with the
@@ -1600,52 +1588,63 @@ $y_2$) and with the convention $0^0=+1$.
 
 \subsection {\texttt {mpc\_pow\_ui}}
 
-In the case of a non-negative integer exponent $n$, it might be faster to use
-binary exponentiation to compute $x^n$. This corresponds to a sequence of
-values $v_0 = x$, $v_1 \approx x^2$, \ldots, $v_k \approx x^n$,
-where $k$ is bounded
-by the length of $n$ in binary minus 1, plus the number of set bits in the
-binary representation of $n$ (except the leading one), or simply
-$k \leq 2 \lfloor \log_2 n \rfloor$.
-Each iteration computes either $v_{i+1} = \circ(v_i^2)$, or $v_{i+1} = \circ(x v_i)$.
-Since each such product is correctly rounded, if we work with precision $p$,
-the relative error on the real and imaginary parts of $v_{i+1}$ is bounded
-by $2^{-p}$ for rounding to nearest (with respect to $v_i^2$ or $x v_i$).
-It follows that the relative error in rounding $v_{i+1}$ is bounded by a
-complex value of norm $2^{-p}$. Indeed, if $\tilde{u} = u (1 + \theta_u)$
-and $\tilde{v} = v (1 + \theta_v)$ with $|\theta_u|, |\theta_v| \leq 2^{-p}$,
-then
-\[ \frac{\tilde{u} + i \tilde{v}}{u+iv} =
-   \frac{u (1 + \theta_u) + i v (1 + \theta_v)}{u+iv} =
-   1 + \theta_z, \]
-where $|\theta_z|^2 = (u^2 \theta_u^2 + v^2 \theta_v^2)/(u^2+v^2) \leq
-2^{-2p}$.
-% the following Maple code supports the bound $|\theta_z| \leq 2^{-p}$
-\begin{comment}
-N := 100:
-eps := 1e-5:
-die := proc() 2*rand()/1e12-1 end:
-l := []:
-for x from 1 to N do
-   for y from 1 to N do
-      ex := die()*x*eps;
-      ey := die()*y*eps;
-      z := x+I*y;
-      zz := (x+ex)+I*(y+ey);
-      err := zz/z-1;
-      l := [op(l), [Re(err),Im(err)]];
-   od:
-od:
-p1:=plot(l,style=point):
-p2:=plot([eps*cos(t),eps*sin(t),t=0..2*Pi]):
-plots[display]({p1,p2});
-\end{comment}
-It is easy to see (for example by induction) that, if $v_i = x^{\ell}$,
-it accumulates exactly $\ell-1$ rounding errors. Thus we can write
-$v_k = x^n (1 + \theta)^{n-1}$, where $\theta$ is a complex number of norm
-at most $2^{-p}$. From this we deduce a bound on the absolute error on the
-real and imaginary parts of $v_k$, for example
-$|x|^n (|1 + 2^{-p}|^{n-1} - 1)$.
+In the case of a positive integer exponent $n$, it may be faster to use
+binary exponentiation to compute $x^n$. More generally, let
+$n_1, \ldots, n_k$ be an addition chain for $n$, that is, $n_1 = 1$,
+$n_k = n$, and for any index $2 \leq r \leq k$, there are indices
+$1 \leq s, t \leq r-1$ such that $n_r = n_s + n_t$. Define the corresponding
+powers of $x$ as $\corr x_r = x^{n_r}$, so that $\corr x_1 = x$,
+$\corr x_k = x^n$ and $\corr x_r = \corr x_s \corr x_t$.
+The special case of left-to-right binary exponentiation
+satisfies that $n_{r+1} = 2 n_r$ (which occurs $\lfloor \log_2 n \rfloor$
+times) or $n_{r+1} = n_r + 1$ (which occurs once less than the number of
+$1$ in the binary expansion of $n$, or equivalently, once less than the
+Hamming weight of $n$); so $k \leq 2 \lfloor \log_2 n \rfloor$.
+
+Instead of the correct sequence $\corr x_r$, we compute during the algorithm
+approximations $\appro x_1 = x = \corr x_1$ and
+$\appro x_r = \round (\appro x_s \appro x_t)$
+at some precision~$p$.
+Let $\theta_r$ be such that $\corr x_r = \appro x_r (1 + \theta_r)$, so that
+the relative error of $\appro x_r$ is given by $\epsilon_r = |\theta_r|$,
+and write $z_r = \appro x_s \appro x_t$.
+Then $\corr x_r = z_r (1 + \theta_s)(1 + \theta_t)$.
+
+Assuming rounding to nearest, the absolute real error attributable to
+rounding $\Re z_r$ to $\Re \appro x_r$ is bounded by
+$\frac {1}{2} \cdot 2^{\Exp (\Re z_r) - p}
+\leq \frac {1}{2} \cdot 2^{\Exp (\Re \appro x_r) - p}$
+by Proposition~\ref {prop:expround}, and the corresponding
+relative real error is bounded by $2^{-p}$ according to
+Proposition~\ref {prop:relerror}. The same holds for the imagimary part,
+and Proposition~\ref {prop:comrelerror} implies that the complex
+relative error is also bounded by $2^{-p}$. Otherwise said,
+$z_r = \appro x_r (1 + \eta_r)$ with
+some complex number $\eta_r$ such that $|\eta_r| \leq 2^{-p}$.
+Putting the equations together, we obtain
+$1 + \theta_r = (1 + \theta_s)(1 + \theta_t)(1 + \eta_r)$.
+We can thus rewrite $1 + \theta_r$ as a product of factors of the
+form $1 + \eta$ with $|\eta| \leq 2^{-p}$. Denoting by $u_r$ the
+number of such factors, we thus have $u_r = u_s + u_t + 1$, from which
+we deduce by induction, using $u_1 = 0 = n_1 - 1$,
+that $u_r \leq n_r - 1$.
+
+So the relative error of $\appro x_k$, compared to $x^n$, is bounded above by
+$(1 + 2^{-p})^{n-1} - 1$. Using Propositions~\ref {prop:comrelerror}
+and~\ref {prop:relerror}, this translates into an absolute error of
+\[
+\left( 1 + 2^{\Exp (\Im \appro x_k) - \Exp (\Re \appro x_k) + 1} \right)
+\left( (1 + 2^{-p})^{n-1} - 1 \right)
+2^p \Ulp (\Re \appro x_k)
+\]
+on the real part and of
+\[
+\left( 1 + 2^{\Exp (\Re \appro x_k) - \Exp (\Im \appro x_k) + 1} \right)
+\left( (1 + 2^{-p})^{n-1} - 1 \right)
+2^p \Ulp (\Im \appro x_k)
+\]
+on the imaginary part of the result.
+
 
 \bibliographystyle{acm}
 \bibliography{algorithms}
