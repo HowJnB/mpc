@@ -45,31 +45,30 @@ mpc_pow_ui (mpc_ptr z, mpc_srcptr x, unsigned long y, mpc_rnd_t rnd)
       mp_prec_t p, er, ei;
       unsigned long l, l0, u;
       mp_exp_t diff;
-      int init3;
+      int has3; /* non-zero if y has '11' in its binary representation */
 
-      for (l = 0, u = y; u > 3; l ++, u >>= 1);
+      for (l = 0, u = y, has3 = u&3; u > 3; l ++, u >>= 1, has3 |= u&3);
       /* l>0 is the number of bits of y, minus 2, thus y has bits:
          y_{l+1} y_l y_{l-1} ... y_1 y_0 */
       l0 = l + 2;
       p = MPC_MAX_PREC(z) + l0 + 32; /* ensures that 2^{-p} (y-1) <= 1 below */
       mpc_init2 (t, p);
+      if (has3)
+        mpc_init2 (x3, p);
 
       mpc_sqr (t, x, MPC_RNDNN);
-      if ((init3 = ((y >> l) & 1)))
+      if (has3)
         {
-          mpc_mul (t, t, x, MPC_RNDNN);
-          /* if the two most significant bits of y are '11', we save the
-             computed value x^3 for further use, if two consecutive bits
-             are '11' again (kind of sliding window trick) */
-          mpc_init2 (x3, p);
-          mpc_set (x3, t, MPC_RNDNN);
+          mpc_mul (x3, t, x, MPC_RNDNN);
+          if ((y >> l) & 1) /* y starts with 11... */
+            mpc_set (t, x3, MPC_RNDNN);
         }
       while (l-- > 0)
         {
           mpc_sqr (t, t, MPC_RNDNN);
           if ((y >> l) & 1)
             {
-              if (init3 && (l > 0) && ((y >> (l-1)) & 1))
+              if ((l > 0) && ((y >> (l-1)) & 1)) /* implies has3 <> 0 */
                 {
                   l --;
                   mpc_sqr (t, t, MPC_RNDNN);
@@ -79,7 +78,7 @@ mpc_pow_ui (mpc_ptr z, mpc_srcptr x, unsigned long y, mpc_rnd_t rnd)
                 mpc_mul (t, t, x, MPC_RNDNN);
             }
         }
-      if (init3)
+      if (has3)
         mpc_clear (x3);
 
       /* the absolute error on the real and imaginary parts is bounded

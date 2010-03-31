@@ -78,9 +78,34 @@ compare_mpc_pow (mp_prec_t pmax, int iter, unsigned long nbits)
 }
 
 int
-main (void)
+main (int argc, char *argv[])
 {
   mpc_t z;
+
+  if (argc != 1)
+    {
+      mp_prec_t p;
+      unsigned long n, k;
+      mpc_t res;
+      if (argc != 3 && argc != 4)
+        {
+          printf ("Usage: tpow_ui precision exponent [k]\n");
+          exit (1);
+        }
+      p = atoi (argv[1]);
+      n = atoi (argv[2]);
+      k = (argc > 3) ? atoi (argv[3]) : 1;
+      mpc_init2 (z, p);
+      mpc_init2 (res, p);
+      mpfr_const_pi (mpc_realref (z), GMP_RNDN);
+      mpfr_div_2exp (mpc_realref (z), mpc_realref (z), 2, GMP_RNDN);
+      mpfr_const_log2 (mpc_imagref (z), GMP_RNDN);
+      while (k--)
+        mpc_pow_ui (res, z, n, MPC_RNDNN);
+      mpc_clear (z);
+      mpc_clear (res);
+      return 0;
+    }
 
   test_start ();
 
@@ -90,6 +115,10 @@ main (void)
   if (mpc_cmp_si_si (z, -9, 46) != 0)
     {
       printf ("Error for mpc_pow_ui (1)\n");
+      printf ("expected (-9,46)\n");
+      printf ("got ");
+      mpc_out_str (stdout, 10, 0, z, MPC_RNDNN);
+      printf ("\n");
       exit (1);
     }
   mpc_clear (z);
