@@ -41,10 +41,11 @@ mpc_pow_ui (mpc_ptr z, mpc_srcptr x, unsigned long y, mpc_rnd_t rnd)
     inex = mpc_sqr (z, x, rnd);
   else /* case y >= 3 */
     {
-      mpc_t t;
+      mpc_t t, x3;
       mp_prec_t p, er, ei;
       unsigned long l, l0, u;
       mp_exp_t diff;
+      int init3;
 
       for (l = 0, u = y; u > 3; l ++, u >>= 1);
       /* l>0 is the number of bits of y, minus 2, thus y has bits:
@@ -54,14 +55,32 @@ mpc_pow_ui (mpc_ptr z, mpc_srcptr x, unsigned long y, mpc_rnd_t rnd)
       mpc_init2 (t, p);
 
       mpc_sqr (t, x, MPC_RNDNN);
-      if ((y >> l) & 1)
-        mpc_mul (t, t, x, MPC_RNDNN);
+      if ((init3 = ((y >> l) & 1)))
+        {
+          mpc_mul (t, t, x, MPC_RNDNN);
+          /* if the two most significant bits of y are '11', we save the
+             computed value x^3 for further use, if two consecutive bits
+             are '11' again (kind of sliding window trick) */
+          mpc_init2 (x3, p);
+          mpc_set (x3, t, MPC_RNDNN);
+        }
       while (l-- > 0)
         {
           mpc_sqr (t, t, MPC_RNDNN);
           if ((y >> l) & 1)
-            mpc_mul (t, t, x, MPC_RNDNN);
+            {
+              if (init3 && (l > 0) && ((y >> (l-1)) & 1))
+                {
+                  l --;
+                  mpc_sqr (t, t, MPC_RNDNN);
+                  mpc_mul (t, t, x3, MPC_RNDNN);
+                }
+              else
+                mpc_mul (t, t, x, MPC_RNDNN);
+            }
         }
+      if (init3)
+        mpc_clear (x3);
 
       /* the absolute error on the real and imaginary parts is bounded
          by |x|^y (|1+2^{-p}|^{y-1}-1) [see algorithms.tex].
