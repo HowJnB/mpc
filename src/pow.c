@@ -450,10 +450,7 @@ mpc_pow (mpc_ptr z, mpc_srcptr x, mpc_srcptr y, mpc_rnd_t rnd)
         }
     }
 
-  if (mpfr_nan_p (MPC_RE(x)) || mpfr_nan_p (MPC_IM(x)) ||
-      mpfr_nan_p (MPC_RE(y)) || mpfr_nan_p (MPC_IM(y)) ||
-      mpfr_inf_p (MPC_RE(x)) || mpfr_inf_p (MPC_IM(x)) ||
-      mpfr_inf_p (MPC_RE(y)) || mpfr_inf_p (MPC_IM(y)))
+  if (!mpc_fin_p (x) || !mpc_fin_p (y))
     {
       /* special values: exp(y*log(x)) */
       mpc_init2 (u, 2);
