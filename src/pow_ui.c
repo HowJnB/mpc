@@ -47,13 +47,20 @@ mpc_pow_ui (mpc_ptr z, mpc_srcptr x, unsigned long y, mpc_rnd_t rnd)
    mp_exp_t diff;
    int has3; /* non-zero if y has '11' in its binary representation */
 
-   if (y == 1)
+   mp_prec_t exp_r = mpfr_get_exp (MPC_RE (x)),
+             exp_i = mpfr_get_exp (MPC_IM (x));
+   if (!mpc_fin_p (x) || mpfr_zero_p (MPC_IM(x)) || y == 0
+          || MPC_MAX (exp_r, exp_i) > mpfr_get_emax () / y
+            /* heuristic for overflow */
+          || MPC_MAX (-exp_r, -exp_i) > (-mpfr_get_emin ()) / y
+            /* heuristic for underflow */
+      )
+      /* let mpc_pow deal with special cases */
+      return mpc_pow_ui_naive (z, x, y, rnd);
+   else if (y == 1)
       return mpc_set (z, x, rnd);
    else if (y == 2)
       return mpc_sqr (z, x, rnd);
-   else if (!mpc_fin_p (x) || mpfr_zero_p (MPC_IM(x)) || y == 0)
-      /* let mpc_pow deal with special cases */
-      return mpc_pow_ui_naive (z, x, y, rnd);
 
    for (l = 0, u = y, has3 = u&3; u > 3; l ++, u >>= 1, has3 |= u&3);
       /* l>0 is the number of bits of y, minus 2, thus y has bits:

@@ -208,7 +208,6 @@ mpc_sqr (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
                 {
                   mpfr_set_ui (MPC_RE (rop), 0, rnd_re);
                   inex_re = 1;
-                  
                 }
               else /* round down or away from zero */
                 inex_re = -1;

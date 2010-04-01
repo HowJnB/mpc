@@ -1,6 +1,6 @@
 /* test file for mpc_pow_ui.
 
-Copyright (C) 2009 Paul Zimmermann
+Copyright (C) 2009, 2010 Paul Zimmermann, Andreas Enge
 
 This file is part of the MPC Library.
 
@@ -31,7 +31,7 @@ compare_mpc_pow (mp_prec_t pmax, int iter, unsigned long nbits)
   int i, inex_pow, inex_pow_ui;
   gmp_randstate_t state;
   mpc_rnd_t rnd;
-  
+
   gmp_randinit_default (state);
   mpc_init3 (y, sizeof (unsigned long) * CHAR_BIT, MPFR_PREC_MIN);
   for (p = MPFR_PREC_MIN; p <= pmax; p++)
@@ -107,7 +107,9 @@ main (int argc, char *argv[])
       return 0;
     }
 
+  DECL_FUNC (CCU, f, mpc_pow_ui);
   test_start ();
+  data_check (f, "pow_ui.dat");
 
   mpc_init2 (z, 5);
   mpc_set_ui_ui (z, 3, 2, MPC_RNDNN);

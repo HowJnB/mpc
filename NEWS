@@ -1,3 +1,6 @@
+Changes in version 0.8.2:
+  - Speed-up of mpc_pow_ui through binary exponentiation
+
 Changes in version 0.8.1:
   - Bug fixes:
     - acosh, asinh, atanh: swap of precisions between real and imaginary parts
