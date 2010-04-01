@@ -47,17 +47,22 @@ mpc_pow_ui (mpc_ptr z, mpc_srcptr x, unsigned long y, mpc_rnd_t rnd)
    mp_exp_t diff;
    int has3; /* non-zero if y has '11' in its binary representation */
 
-   mp_exp_t exp_r = mpfr_get_exp (MPC_RE (x)),
-             exp_i = mpfr_get_exp (MPC_IM (x));
-   if (!mpc_fin_p (x) || mpfr_zero_p (MPC_IM(x)) || y == 0
-       || MPC_MAX (exp_r, exp_i) > mpfr_get_emax () / (mp_exp_t) y
-            /* heuristic for overflow */
-       || MPC_MAX (-exp_r, -exp_i) > (-mpfr_get_emin ()) / (mp_exp_t) y
-            /* heuristic for underflow */
-      )
+   if (!mpc_fin_p (x) || mpfr_zero_p (MPC_RE (x)) || mpfr_zero_p (MPC_IM(x))
+       || y == 0)
       /* let mpc_pow deal with special cases */
       return mpc_pow_ui_naive (z, x, y, rnd);
-   else if (y == 1)
+   else {
+      mp_exp_t exp_r = mpfr_get_exp (MPC_RE (x)),
+               exp_i = mpfr_get_exp (MPC_IM (x));
+      if (   MPC_MAX (exp_r, exp_i) > mpfr_get_emax () / (mp_exp_t) y
+             /* heuristic for overflow */
+          || MPC_MAX (-exp_r, -exp_i) > (-mpfr_get_emin ()) / (mp_exp_t) y
+             /* heuristic for underflow */
+         )
+         return mpc_pow_ui_naive (z, x, y, rnd);
+   }
+
+   if (y == 1)
       return mpc_set (z, x, rnd);
    else if (y == 2)
       return mpc_sqr (z, x, rnd);
