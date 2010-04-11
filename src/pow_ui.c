@@ -127,7 +127,7 @@ mpc_pow_ui (mpc_ptr z, mpc_srcptr x, unsigned long y, mpc_rnd_t rnd)
             inex = mpc_set (z, t, rnd);
             done = 1;
          }
-         else if (loop == 1 && SAFE_ABS(mp_prec_t, diff) < MPC_MAX_PREC(x)) {
+         else if (loop == 1 && SAFE_ABS(mp_prec_t, diff) < MPC_MAX_PREC(z)) {
             /* common case, make a second trial at higher precision */
             p += MPC_MAX_PREC(x);
             mpc_set_prec (t, p);
