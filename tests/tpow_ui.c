@@ -82,6 +82,8 @@ main (int argc, char *argv[])
 {
   mpc_t z;
 
+  DECL_FUNC (CCU, f, mpc_pow_ui);
+
   if (argc != 1)
     {
       mp_prec_t p;
@@ -107,7 +109,6 @@ main (int argc, char *argv[])
       return 0;
     }
 
-  DECL_FUNC (CCU, f, mpc_pow_ui);
   test_start ();
   data_check (f, "pow_ui.dat");
 
