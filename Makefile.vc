@@ -1,7 +1,7 @@
 
 # Makefile for the MPC library (Windows version).
 #
-# Copyright (C) 2002, 2004, 2005, 2007, 2008, 2009 Andreas Enge, Mickael Gastineau, Paul Zimmermann
+# Copyright (C) 2002, 2004, 2005, 2007, 2008, 2009, 2010 Andreas Enge, Mickael Gastineau, Paul Zimmermann
 #
 # This file is part of the MPC Library.
 #
@@ -68,7 +68,7 @@ INCLUDES = /I$(DIRMPC) /I$(GMPDIR)\include  /I$(MPFR)\include
 CKERNELFLAGS = $(CDEFAULTFLAGS) $(GMPMUSTBEDLL)   $(INCLUDES)
 CFLAGS = $(CKERNELFLAGS)  /D__MPC_WITHIN_MPC /D_GMP_IEEE_FLOATS /DHAVE_CONFIG_H
 
-TESTCOMPILE=$(CC) $(CKERNELFLAGS) $(DIRMPCTESTS)\tgeneric.c $(DIRMPCTESTS)\comparisons.c $(DIRMPCTESTS)\read_data.c $(DIRMPCTESTS)\random.c $(DIRMPCTESTS)
+TESTCOMPILE=$(CC) $(CKERNELFLAGS) $(DIRMPCTESTS)\tgeneric.c $(DIRMPCTESTS)\comparisons.c $(DIRMPCTESTS)\memory.c $(DIRMPCTESTS)\read_data.c $(DIRMPCTESTS)\random.c $(DIRMPCTESTS)
 MIDTESTCOMPILE=/link  /out:$(DIRMPCTESTS)
 ENDTESTCOMPILE=/LIBPATH:"$(GMPDIR)\lib" libmpc.lib libmpfr.lib libgmp.lib
 
@@ -391,6 +391,3 @@ test :
         @echo --------------------------------------------------
         @echo All tests passed
         @echo --------------------------------------------------
-
-
-
