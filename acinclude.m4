@@ -111,6 +111,7 @@ AC_DEFUN([MPC_PROG_CC_WARNINGCFLAGS], [
          *darwin*) ;;
          *) AX_C_CHECK_FLAG(-D_FORTIFY_SOURCE=2,,,$1="$$1 -D_FORTIFY_SOURCE=2",) ;;
       esac
+      AX_C_CHECK_FLAG(-ansi,,,$1="$$1 -ansi",)
       AX_C_CHECK_FLAG(-pedantic,,,$1="$$1 -pedantic",)
       AX_C_CHECK_FLAG(-Wno-long-long,,,$1="$$1 -Wno-long-long",)
       AX_C_CHECK_FLAG(-Wall,,,$1="$$1 -Wall",)
