@@ -1,6 +1,6 @@
 /* configure.ac
 
-Copyright (C) 2008, 2009 Andreas Enge, Philippe Th\'eveny
+Copyright (C) 2008, 2009, 2010 Andreas Enge, Philippe Th\'eveny
 
 This file is part of the MPC Library.
 
@@ -23,7 +23,7 @@ MA 02111-1307, USA. */
 # Process this file with autoconf to produce a configure script.
 
 AC_PREREQ(2.61)
-AC_INIT(mpc, 0.8.2, mpc-discuss@lists.gforge.inria.fr)
+AC_INIT(mpc, 0.8.3-dev, mpc-discuss@lists.gforge.inria.fr)
 AC_CONFIG_SRCDIR([src/mpc-impl.h])
 AC_CONFIG_HEADER([config.h])
 

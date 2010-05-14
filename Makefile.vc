@@ -47,7 +47,7 @@ CPP = cl.exe
 CC = cl.exe
 CDEFAULTFLAGS=/O2 /GR- /MD /nologo /EHs
 
-VERSION=0.8.2
+VERSION=0.8.3-dev
 
 ######################## do not edit below this line ##########################
 
