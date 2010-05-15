@@ -1,3 +1,6 @@
+Changes in version 0.8.3:
+  - Speed-up of mpc_pow_z when the exponent fits in an unsigned long
+
 Changes in version 0.8.2:
   - Speed-up of mpc_pow_ui through binary exponentiation
 

@@ -1,6 +1,6 @@
 /* mpc_pow_z -- Raise a complex number to an integer power.
 
-Copyright (C) 2009 Paul Zimmermann
+Copyright (C) 2009, 2010 Paul Zimmermann
 
 This file is part of the MPC Library.
 
@@ -27,6 +27,13 @@ mpc_pow_z (mpc_ptr z, mpc_srcptr x, mpz_srcptr y, mpc_rnd_t rnd)
   mpc_t yy;
   int inex;
   size_t n = mpz_sizeinbase (y, 2);
+
+  /* if y fits in an unsigned long or long, call the corresponding functions,
+     which are supposed to be more efficient */
+  if (mpz_fits_ulong_p (y))
+    return mpc_pow_ui (z, x, mpz_get_ui (y), rnd);
+  else if (mpz_fits_slong_p (y))
+    return mpc_pow_si (z, x, mpz_get_si (y), rnd);
 
   mpc_init3 (yy, (n < MPFR_PREC_MIN) ? MPFR_PREC_MIN : n, MPFR_PREC_MIN);
   mpc_set_z (yy, y, MPC_RNDNN);   /* exact */
