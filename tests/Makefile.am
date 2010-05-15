@@ -2,7 +2,10 @@
 AM_CFLAGS=@WARNINGCFLAGS@
 AM_CPPFLAGS = -I$(top_srcdir)/src
 LDADD = libmpc-tests.la $(top_builddir)/src/libmpc.la
-LOADLIBES=$(DEFS) -I$(top_srcdir)/src $(CPPFLAGS) $(CFLAGS) $(top_builddir)/src/.libs/libmpc.a $(LIBS)
+# LOADLIBES (documented in the "GNU make" manual and equivalent to LDLIBS)
+# enables to compile a program foo.c in the test directory by simply doing
+# "make foo".
+LOADLIBES=$(DEFS) -I$(top_srcdir)/src -I$(top_builddir) $(CPPFLAGS) $(CFLAGS) $(top_builddir)/tests/.libs/libmpc-tests.a $(top_builddir)/src/.libs/libmpc.a $(LIBS)
 
 check_PROGRAMS = tabs tacos tacosh tadd tadd_fr tadd_ui targ tasin tasinh     \
 tatan tatanh tconj tcos tcosh tdiv tdiv_2exp tdiv_fr tdiv_ui texp tfr_div     \
