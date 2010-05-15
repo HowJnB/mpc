@@ -1,6 +1,6 @@
 /* mpc_pow_si -- Raise a complex number to an integer power.
 
-Copyright (C) 2009 Paul Zimmermann
+Copyright (C) 2009, 2010 Paul Zimmermann, Andreas Enge
 
 This file is part of the MPC Library.
 
@@ -25,13 +25,16 @@ MA 02111-1307, USA. */
 int
 mpc_pow_si (mpc_ptr z, mpc_srcptr x, long y, mpc_rnd_t rnd)
 {
-  mpc_t yy;
-  int inex;
+   if (y >= 0)
+     return mpc_pow_ui (z, x, (unsigned long) y, rnd);
+   else {
+      mpc_t yy;
+      int inex;
 
-  mpc_init3 (yy, sizeof (unsigned long) * CHAR_BIT, MPFR_PREC_MIN);
-  mpc_set_si (yy, y, MPC_RNDNN);   /* exact */
-  inex = mpc_pow (z, x, yy, rnd);
-  mpc_clear (yy);
-  return inex;
+      mpc_init3 (yy, sizeof (unsigned long) * CHAR_BIT, MPFR_PREC_MIN);
+      mpc_set_si (yy, y, MPC_RNDNN);   /* exact */
+      inex = mpc_pow (z, x, yy, rnd);
+      mpc_clear (yy);
+      return inex;
+   }
 }
-

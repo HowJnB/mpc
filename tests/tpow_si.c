@@ -1,6 +1,6 @@
 /* test file for mpc_pow_si.
 
-Copyright (C) 2009 Paul Zimmermann
+Copyright (C) 2009, 2010 Paul Zimmermann, Andreas Enge
 
 This file is part of the MPC Library.
 
@@ -30,7 +30,10 @@ main (void)
 
   mpc_init2 (z, 5);
   mpc_set_ui_ui (z, 3, 2, MPC_RNDNN);
-  mpc_pow_si (z, z, 3, MPC_RNDNN);
+  if (mpc_pow_si (z, z, 3, MPC_RNDNN) != MPC_INEX (0, 0)) {
+     printf ("Error for mpc_pow_si: Result should be exact\n");
+     exit (1);
+  }
   if (mpc_cmp_si_si (z, -9, 46) != 0)
     {
       printf ("Error for mpc_pow_si (1)\n");
