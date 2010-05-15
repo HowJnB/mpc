@@ -31,6 +31,7 @@ AM_INIT_AUTOMAKE([1.9 -Wall -Werror])
 AM_MAINTAINER_MODE
 
 AC_CANONICAL_HOST
+AC_CONFIG_MACRO_DIR([m4])
 
 dnl Extra arguments to configure
 AC_ARG_WITH([mpfr_include],
