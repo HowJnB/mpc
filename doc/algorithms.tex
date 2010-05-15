@@ -1650,18 +1650,26 @@ $\left( (1 + 2^{-p})^{n-1} - 1 \right) \leq 2 (n-1) 2^{-p}$,
 because $(1+\varepsilon)^m-1 = \exp(m \log(1+\varepsilon)) - 1
 \leq \exp(\varepsilon m) - 1 \leq 2 \varepsilon m$ as long as
 $\varepsilon m \leq 1$. This gives the simplified bounds
-\[
+\begin{equation} \label{eq:powui_re}
 \left( 2 + 2^{\Exp (\Im \appro x_k) - \Exp (\Re \appro x_k) + 2} \right)
 (n-1) \Ulp (\Re \appro x_k)
-\]
+\end{equation}
 on the real part and of
-\[
+\begin{equation} \label{eq:powui_im}
 \left( 2 + 2^{\Exp (\Re \appro x_k) - \Exp (\Im \appro x_k) + 2} \right)
 (n-1) \Ulp (\Im \appro x_k)
-\]
+\end{equation}
 on the imaginary part.
 
+\subsection {\texttt {mpc\_pow\_si}}
 
+Assume we want to round correctly $z^{-n}$ for $n > 0$. We proceed as follows.
+First compute $t = \round(z^n)$ using \texttt {mpc\_pow\_ui}, then
+compute $u = \round(1/t)$ using \texttt {mpc\_ui\_div}.
+The error analysis is the same as for $z^3$ in \texttt {mpc\_pow\_ui},
+indeed we accumulate two multiplicative rounding errors.
+Thus it suffices to replace $n$ by $3$ in (\ref{eq:powui_re}) and
+(\ref{eq:powui_im}).
 
 \bibliographystyle{acm}
 \bibliography{algorithms}
