@@ -87,6 +87,15 @@ AC_PROG_EGREP
 AC_PROG_SED
 AC_LANG(C)
 
+dnl Check GMP Header
+AC_MSG_CHECKING(for gmp.h)
+AC_COMPILE_IFELSE([AC_LANG_SOURCE([[
+#include "gmp.h"
+]])],[AC_MSG_RESULT(yes)],[
+ AC_MSG_RESULT(no)
+ AC_MSG_ERROR([gmp.h can't be found, or is unusable.])
+])
+
 dnl Check for GMP CFLAGS in gmp.h
 if test -z "$user_redefine_cc" ; then
    MPC_GMP_CC_CFLAGS
