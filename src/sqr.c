@@ -30,7 +30,7 @@ mpc_sqr (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
    mpfr_t x;
       /* rop temporary variable to hold the real part of op,
          needed in the case rop==op */
-   mp_prec_t prec;
+   mpfr_prec_t prec;
    int inex_re, inex_im, inexact;
    mp_exp_t old_emax, old_emin, emin, emax;
 

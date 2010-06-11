@@ -355,11 +355,11 @@ arbitrary precision floating-point numbers (for the real and imaginary parts).
 The C data type for such objects is @code{mpc_t}.
 
 @cindex Precision
-@tindex @code{mp_prec_t}
+@tindex @code{mpfr_prec_t}
 @noindent
 The @dfn{Precision} is the number of bits used to represent the mantissa
 of the real and imaginary parts;
-the corresponding C data type is @code{mp_prec_t}.
+the corresponding C data type is @code{mpfr_prec_t}.
 For more details on the allowed precision range,
 @ifinfo
 @pxref{Nomenclature and Types,,, mpfr.info,MPFR}.
@@ -508,14 +508,14 @@ An @code{mpc_t} object must be initialized before storing the first value in
 it.  The functions @code{mpc_init2} and @code{mpc_init3}
 are used for that purpose.
 
-@deftypefun void mpc_init2 (mpc_t @var{z}, mp_prec_t @var{prec})
+@deftypefun void mpc_init2 (mpc_t @var{z}, mpfr_prec_t @var{prec})
 Initialize @var{z} to precision @var{prec} bits
 and set its real and imaginary parts to NaN.
 Normally, a variable should be initialized once only
 or at least be cleared, using @code{mpc_clear}, between initializations.
 @end deftypefun
 
-@deftypefun void mpc_init3 (mpc_t @var{z}, mp_prec_t @var{prec_r}, mp_prec_t @var{prec_i})
+@deftypefun void mpc_init3 (mpc_t @var{z}, mpfr_prec_t @var{prec_r}, mpfr_prec_t @var{prec_i})
 Initialize @var{z} with the precision of its real part being
 @var{prec_r} bits and the precision of its imaginary part being
 @var{prec_i} bits, and set the real and imaginary parts to NaN.
@@ -544,7 +544,7 @@ calculation.  A typical use would be for adjusting the precision gradually in
 iterative algorithms like Newton-Raphson, making the computation precision
 closely match the actual accurate part of the numbers.
 
-@deftypefun void mpc_set_prec (mpc_t @var{x}, mp_prec_t @var{prec})
+@deftypefun void mpc_set_prec (mpc_t @var{x}, mpfr_prec_t @var{prec})
 Reset the precision of @var{x} to be @strong{exactly} @var{prec} bits,
 and set its real/imaginary parts to NaN.
 The previous value stored in @var{x} is lost. It is equivalent to
@@ -553,12 +553,12 @@ a call to @code{mpc_clear(x)} followed by a call to
 case the current allocated space for the mantissa of @var{x} is sufficient.
 @end deftypefun
 
-@deftypefun mp_prec_t mpc_get_prec (mpc_t @var{x})
+@deftypefun mpfr_prec_t mpc_get_prec (mpc_t @var{x})
 If the real and imaginary part of @var{x} have the same precision, it is returned,
 otherwise, 0 is returned.
 @end deftypefun
 
-@deftypefun void mpc_get_prec2 (mp_prec_t* @var{pr}, mp_prec_t* @var{pi}, mpc_t @var{x})
+@deftypefun void mpc_get_prec2 (mpfr_prec_t* @var{pr}, mpfr_prec_t* @var{pi}, mpc_t @var{x})
 Returns the precision of the real part of @var{x} via @var{pr} and of its imaginary part
 via @var{pi}.
 @end deftypefun

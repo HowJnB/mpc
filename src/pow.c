@@ -106,7 +106,7 @@ mpc_perfect_square_p (mpz_t a, mpz_t b, mpz_t c, mpz_t d)
 */
 static int
 mpc_pow_exact (mpc_ptr z, mpc_srcptr x, mpfr_srcptr y, mpc_rnd_t rnd,
-               mp_prec_t maxprec)
+               mpfr_prec_t maxprec)
 {
   mp_exp_t ec, ed, ey, emin, emax;
   mpz_t my, a, b, c, d, u;
@@ -149,14 +149,14 @@ mpc_pow_exact (mpc_ptr z, mpc_srcptr x, mpfr_srcptr y, mpc_rnd_t rnd,
   if (ec < ed)
     {
       mpz_mul_2exp (d, d, ed - ec);
-      if ((mp_prec_t) mpz_sizeinbase (d, 2) > maxprec)
+      if ((mpfr_prec_t) mpz_sizeinbase (d, 2) > maxprec)
         goto end;
       ed = ec;
     }
   else if (ed < ec)
     {
       mpz_mul_2exp (c, c, ec - ed);
-      if ((mp_prec_t) mpz_sizeinbase (c, 2) > maxprec)
+      if ((mpfr_prec_t) mpz_sizeinbase (c, 2) > maxprec)
         goto end;
       ec = ed;
     }
@@ -294,8 +294,8 @@ mpc_pow_exact (mpc_ptr z, mpc_srcptr x, mpfr_srcptr y, mpc_rnd_t rnd,
           mpz_tdiv_q_2exp (b, b, w);
           ed += w;
         }
-      if (   (mp_prec_t) mpz_sizeinbase (a, 2) > maxprec
-          || (mp_prec_t) mpz_sizeinbase (b, 2) > maxprec)
+      if (   (mpfr_prec_t) mpz_sizeinbase (a, 2) > maxprec
+          || (mpfr_prec_t) mpz_sizeinbase (b, 2) > maxprec)
         goto end;
     }
   /* now a+I*b = (c+I*d)^my */
@@ -320,8 +320,8 @@ mpc_pow_exact (mpc_ptr z, mpc_srcptr x, mpfr_srcptr y, mpc_rnd_t rnd,
       mpz_tdiv_q_2exp (b, b, sa);
       ed += sa;
 
-      if (   (mp_prec_t) mpz_sizeinbase (a, 2) > maxprec
-          || (mp_prec_t) mpz_sizeinbase (b, 2) > maxprec)
+      if (   (mpfr_prec_t) mpz_sizeinbase (a, 2) > maxprec
+          || (mpfr_prec_t) mpz_sizeinbase (b, 2) > maxprec)
         goto end;
     }
 
@@ -361,7 +361,7 @@ static int
 is_odd (mpfr_srcptr y, mp_exp_t k)
 {
   mp_exp_t expo;
-  mp_prec_t prec;
+  mpfr_prec_t prec;
   mp_size_t yn;
   mp_limb_t *yp;
 
@@ -406,7 +406,7 @@ mpc_pow (mpc_ptr z, mpc_srcptr x, mpc_srcptr y, mpc_rnd_t rnd)
 {
   int ret = -2, loop, x_real, y_real, z_real = 0, z_imag = 0;
   mpc_t t, u;
-  mp_prec_t p, q, pr, pi, maxprec;
+  mpfr_prec_t p, q, pr, pi, maxprec;
   long Q;
 
   x_real = mpfr_zero_p (MPC_IM(x));

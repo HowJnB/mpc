@@ -211,11 +211,11 @@ __MPC_DECLSPEC int  mpc_acosh __MPC_PROTO ((mpc_ptr, mpc_srcptr, mpc_rnd_t));
 __MPC_DECLSPEC int  mpc_atanh __MPC_PROTO ((mpc_ptr, mpc_srcptr, mpc_rnd_t));
 __MPC_DECLSPEC void mpc_clear   __MPC_PROTO ((mpc_ptr));
 __MPC_DECLSPEC int  mpc_urandom __MPC_PROTO ((mpc_ptr, gmp_randstate_t));
-__MPC_DECLSPEC void mpc_init2 __MPC_PROTO ((mpc_ptr, mp_prec_t));
-__MPC_DECLSPEC void mpc_init3 __MPC_PROTO ((mpc_ptr, mp_prec_t, mp_prec_t));
-__MPC_DECLSPEC mp_prec_t mpc_get_prec __MPC_PROTO((mpc_srcptr x));
-__MPC_DECLSPEC void mpc_get_prec2 __MPC_PROTO((mp_prec_t *pr, mp_prec_t *pi, mpc_srcptr x));
-__MPC_DECLSPEC void mpc_set_prec  __MPC_PROTO ((mpc_ptr, mp_prec_t));
+__MPC_DECLSPEC void mpc_init2 __MPC_PROTO ((mpc_ptr, mpfr_prec_t));
+__MPC_DECLSPEC void mpc_init3 __MPC_PROTO ((mpc_ptr, mpfr_prec_t, mpfr_prec_t));
+__MPC_DECLSPEC mpfr_prec_t mpc_get_prec __MPC_PROTO((mpc_srcptr x));
+__MPC_DECLSPEC void mpc_get_prec2 __MPC_PROTO((mpfr_prec_t *pr, mpfr_prec_t *pi, mpc_srcptr x));
+__MPC_DECLSPEC void mpc_set_prec  __MPC_PROTO ((mpc_ptr, mpfr_prec_t));
 __MPC_DECLSPEC __gmp_const char * mpc_get_version __MPC_PROTO ((void));
 
 __MPC_DECLSPEC int  mpc_strtoc    _MPFR_PROTO ((mpc_ptr, const char *, char **, int, mpc_rnd_t));

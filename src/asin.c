@@ -26,7 +26,7 @@ extern int set_pi_over_2 (mpfr_ptr rop, int s, mpfr_rnd_t rnd);
 int
 mpc_asin (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
 {
-  mp_prec_t p, p_re, p_im;
+  mpfr_prec_t p, p_re, p_im;
   mp_rnd_t rnd_re, rnd_im;
   mpc_t z1;
   int inex;
@@ -124,7 +124,7 @@ mpc_asin (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
           inex_re = mpfr_asin (MPC_RE (rop), MPC_RE (op), MPC_RND_RE (rnd));
         }
 
-      return MPC_INEX (inex_re, inex_im);      
+      return MPC_INEX (inex_re, inex_im);
     }
 
   /* pure imaginary argument */
@@ -138,7 +138,7 @@ mpc_asin (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
         mpfr_neg (MPC_RE (rop), MPC_RE (rop), GMP_RNDN);
       inex_im = mpfr_asinh (MPC_IM (rop), MPC_IM (op), MPC_RND_IM (rnd));
 
-      return MPC_INEX (0, inex_im);      
+      return MPC_INEX (0, inex_im);
     }
 
   /* regular complex: asin(z) = -i*log(i*z+sqrt(1-z^2)) */

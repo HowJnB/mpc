@@ -41,7 +41,7 @@ mpc_pow_ui (mpc_ptr z, mpc_srcptr x, unsigned long y, mpc_rnd_t rnd)
 {
    int inex;
    mpc_t t, x3;
-   mp_prec_t p;
+   mpfr_prec_t p;
    unsigned long l, l0, u;
    int has3; /* non-zero if y has '11' in its binary representation */
    int loop, done;
@@ -112,7 +112,7 @@ mpc_pow_ui (mpc_ptr z, mpc_srcptr x, unsigned long y, mpc_rnd_t rnd)
       }
       else {
          mp_exp_t diff;
-         mp_prec_t er, ei;
+         mpfr_prec_t er, ei;
          diff = mpfr_get_exp (MPC_RE(t)) - mpfr_get_exp (MPC_IM(t));
          /* the factor on the real part is 2+2^(-diff+2) <= 4 for diff >= 1
             and <= 2^(-diff+3) for diff <= 0 */
@@ -127,7 +127,7 @@ mpc_pow_ui (mpc_ptr z, mpc_srcptr x, unsigned long y, mpc_rnd_t rnd)
             inex = mpc_set (z, t, rnd);
             done = 1;
          }
-         else if (loop == 1 && SAFE_ABS(mp_prec_t, diff) < MPC_MAX_PREC(z)) {
+         else if (loop == 1 && SAFE_ABS(mpfr_prec_t, diff) < MPC_MAX_PREC(z)) {
             /* common case, make a second trial at higher precision */
             p += MPC_MAX_PREC(x);
             mpc_set_prec (t, p);

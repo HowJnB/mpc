@@ -118,7 +118,7 @@ mpc_mul (mpc_ptr a, mpc_srcptr b, mpc_srcptr c, mpc_rnd_t rnd)
     return mpc_mul_naive (a, b, c, rnd);
   else
     return ((MPC_MAX_PREC(a)
-             <= (mp_prec_t) MUL_KARATSUBA_THRESHOLD * BITS_PER_MP_LIMB)
+             <= (mpfr_prec_t) MUL_KARATSUBA_THRESHOLD * BITS_PER_MP_LIMB)
             ? mpc_mul_naive : mpc_mul_karatsuba) (a, b, c, rnd);
 }
 
@@ -242,7 +242,7 @@ mpc_mul_naive (mpc_ptr a, mpc_srcptr b, mpc_srcptr c, mpc_rnd_t rnd)
 {
   int overlap, inex_re, inex_im;
   mpfr_t u, v, t;
-  mp_prec_t prec;
+  mpfr_prec_t prec;
 
   overlap = (a == b) || (a == c);
 
@@ -295,7 +295,7 @@ mpc_mul_karatsuba (mpc_ptr rop, mpc_srcptr op1, mpc_srcptr op2, mpc_rnd_t rnd)
   mpfr_srcptr a, b, c, d;
   int mul_i, ok, inexact, mul_a, mul_c, inex_re, inex_im, sign_x, sign_u;
   mpfr_t u, v, w, x;
-  mp_prec_t prec, prec_re, prec_u, prec_v, prec_w;
+  mpfr_prec_t prec, prec_re, prec_u, prec_v, prec_w;
   mp_rnd_t rnd_re, rnd_u, rnd_x;
   int overlap;
      /* true if rop == op1 or rop == op2 */
@@ -423,7 +423,7 @@ mpc_mul_karatsuba (mpc_ptr rop, mpc_srcptr op1, mpc_srcptr op2, mpc_rnd_t rnd)
 	    compute v - w exactly */
 	 if (inexact == 0)
 	   {
-	     mp_prec_t prec_x;
+	     mpfr_prec_t prec_x;
              if (mpfr_zero_p(v))
                prec_x = prec_w;
              else if (mpfr_zero_p(w))

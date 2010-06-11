@@ -25,7 +25,7 @@ int
 mpc_tan (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
 {
   mpc_t x, y;
-  mp_prec_t prec;
+  mpfr_prec_t prec;
   mp_exp_t err;
   int ok = 0;
   int inex;

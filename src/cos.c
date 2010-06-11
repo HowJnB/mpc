@@ -25,7 +25,7 @@ int
 mpc_cos (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
 {
   mpfr_t x, y, z;
-  mp_prec_t prec;
+  mpfr_prec_t prec;
   int ok = 0;
   int inex_re, inex_im;
 

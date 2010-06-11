@@ -26,7 +26,7 @@ int
 mpc_norm (mpfr_ptr a, mpc_srcptr b, mpfr_rnd_t rnd)
 {
   mpfr_t u, v;
-  mp_prec_t prec;
+  mpfr_prec_t prec;
   int inexact, overflow;
 
   prec = MPFR_PREC(a);

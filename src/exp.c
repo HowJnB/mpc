@@ -25,7 +25,7 @@ int
 mpc_exp (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
 {
   mpfr_t x, y, z;
-  mp_prec_t prec;
+  mpfr_prec_t prec;
   int ok = 0;
   int inex_re, inex_im;
 
@@ -44,10 +44,10 @@ mpc_exp (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
                          <= ulp(r) + 2 * ulp(x*y) + ulp(x*y) [Rule 4]
                          <= 4 * ulp(r) [Rule 8]
   */
-  
+
   /* special values */
   if (mpfr_nan_p (MPC_RE (op)) || mpfr_nan_p (MPC_IM (op)))
-    /* NaNs 
+    /* NaNs
        exp(nan +i*y) = nan -i*0   if y = -0,
                        nan +i*0   if y = +0,
                        nan +i*nan otherwise
@@ -76,7 +76,7 @@ mpc_exp (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
 
 
   if (mpfr_zero_p (MPC_IM(op)))
-    /* special case when the input is real 
+    /* special case when the input is real
        exp(x-i*0) = exp(x) -i*0, even if x is NaN
        exp(x+i*0) = exp(x) +i*0, even if x is NaN */
     {
@@ -95,7 +95,7 @@ mpc_exp (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
 
 
   if (mpfr_inf_p (MPC_RE (op)))
-    /* real part is an infinity, 
+    /* real part is an infinity,
        exp(-inf +i*y) = 0*(cos y +i*sin y)
        exp(+inf +i*y) = +/-inf +i*nan         if y = +/-inf
                         +inf*(cos y +i*sin y) if 0 < |y| < inf */
@@ -107,7 +107,7 @@ mpc_exp (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
         mpfr_set_ui (n, 0, GMP_RNDN);
       else
         mpfr_set_inf (n, +1);
-      
+
       if (mpfr_inf_p (MPC_IM (op)))
         {
           inex_re = mpfr_set (MPC_RE (rop), n, GMP_RNDN);
@@ -187,6 +187,6 @@ mpc_exp (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
   mpfr_clear (x);
   mpfr_clear (y);
   mpfr_clear (z);
-  
+
   return MPC_INEX(inex_re, inex_im);
 }

@@ -17,6 +17,7 @@ Creating a new release
  0) Run all tests with valgrind and check no memory leak remains:
        for f in .libs/lt-t*; do valgrind $f; done
  0b) Disable test in line 35 of log.dat.
+ 0c) Check compilation with gmp 4.2.2 and mpfr 2.3.1.
  1) Check the version number in configure.ac ("AC_INIT (mpc, _version_...)"),
     INSTALL, src/get_version.c, src/mpc.h (remove suffix "-dev" in
     MPC_VERSION_STRING) and Makefile.vc.

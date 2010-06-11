@@ -28,7 +28,7 @@ int
 mpc_acos (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
 {
   int inex_re, inex_im, inex;
-  mp_prec_t p_re, p_im, p;
+  mpfr_prec_t p_re, p_im, p;
   mpc_t z1;
   mpfr_t pi_over_2;
   mp_exp_t e1, e2;
@@ -74,14 +74,14 @@ mpc_acos (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
                 }
               else
                 {
-                  
+
                   /* the real part of the result is 3*pi/4
                      a = o(pi)  error(a) < 1 ulp(a)
                      b = o(3*a) error(b) < 2 ulp(b)
                      c = b/4    exact
                      thus 1 bit is lost */
                   mpfr_t x;
-                  mp_prec_t prec;
+                  mpfr_prec_t prec;
                   int ok;
                   mpfr_init (x);
                   prec = mpfr_get_prec (MPC_RE (rop));
@@ -159,7 +159,7 @@ mpc_acos (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
       if (!s_im)
         mpc_conj (rop, rop, MPC_RNDNN);
 
-      return MPC_INEX (inex_re, inex_im);      
+      return MPC_INEX (inex_re, inex_im);
     }
 
   /* pure imaginary argument */
@@ -170,7 +170,7 @@ mpc_acos (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
                              INV_RND (MPC_RND_IM (rnd)));
       mpc_conj (rop,rop, MPC_RNDNN);
 
-      return MPC_INEX (inex_re, inex_im);      
+      return MPC_INEX (inex_re, inex_im);
     }
 
   /* regular complex argument: acos(z) = Pi/2 - asin(z) */
@@ -194,7 +194,7 @@ mpc_acos (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
   for (;;)
     {
       p += mpc_ceil_log2 (p) + 3;
-      
+
       mpfr_set_prec (MPC_RE(z1), p);
       mpfr_set_prec (pi_over_2, p);
 

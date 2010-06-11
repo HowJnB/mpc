@@ -149,7 +149,7 @@ mpc_div (mpc_ptr a, mpc_srcptr b, mpc_srcptr c, mpc_rnd_t rnd)
    int ok_re = 0, ok_im = 0;
    mpc_t res, c_conj;
    mpfr_t q;
-   mp_prec_t prec;
+   mpfr_prec_t prec;
    int inexact_prod, inexact_norm, inexact_re, inexact_im, loops = 0;
 
    /* save signs of operands in case there are overlaps */

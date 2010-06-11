@@ -36,7 +36,7 @@ MA 02111-1307, USA. */
 #define MPC_IM(x) ((x)->im)
 
 /*
- * Miscelaneous useful macros
+ * Miscellaneous useful macros
  */
 
 #define MPC_MAX(h,i) ((h) > (i) ? (h) : (i))
@@ -150,7 +150,7 @@ __MPC_DECLSPEC int  mpc_mul_karatsuba __MPC_PROTO ((mpc_ptr, mpc_srcptr, mpc_src
 __MPC_DECLSPEC char* mpc_alloc_str __MPC_PROTO ((size_t));
 __MPC_DECLSPEC char* mpc_realloc_str __MPC_PROTO ((char*, size_t, size_t));
 __MPC_DECLSPEC void mpc_free_str __MPC_PROTO ((char*));
-__MPC_DECLSPEC mp_prec_t mpc_ceil_log2 __MPC_PROTO ((unsigned long));
+__MPC_DECLSPEC mpfr_prec_t mpc_ceil_log2 __MPC_PROTO ((unsigned long));
 
 #if defined (__cplusplus)
 }

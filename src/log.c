@@ -25,7 +25,7 @@ int
 mpc_log (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd){
    int ok=0;
    mpfr_t w;
-   mp_prec_t prec;
+   mpfr_prec_t prec;
    int loops = 0;
    int re_cmp, im_cmp;
    int inex_re, inex_im;

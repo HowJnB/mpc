@@ -27,10 +27,10 @@ mpc_sqrt (mpc_ptr a, mpc_srcptr b, mpc_rnd_t rnd)
   int ok_w, ok_t = 0;
   mpfr_t    w, t;
   mp_rnd_t  rnd_w, rnd_t;
-  mp_prec_t prec_w, prec_t;
+  mpfr_prec_t prec_w, prec_t;
   /* the rounding mode and the precision required for w and t, which can */
   /* be either the real or the imaginary part of a */
-  mp_prec_t prec;
+  mpfr_prec_t prec;
   int inex_w, inex_t = 1, inex, loops = 0;
   /* comparison of the real/imaginary part of b with 0 */
   const int re_cmp = mpfr_cmp_ui (MPC_RE (b), 0);

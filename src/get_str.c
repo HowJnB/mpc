@@ -32,7 +32,7 @@ MA 02111-1307, USA. */
 /* The output format is "(real imag)", the decimal point of the locale is
    used. */
 
-/* mp_prec_t can be either int or long int */
+/* mpfr_prec_t can be either int or long int */
 #if (__GMP_MP_SIZE_T_INT == 1)
 #define MPC_EXP_FORMAT_SPEC "i"
 #elif (__GMP_MP_SIZE_T_INT == 0)

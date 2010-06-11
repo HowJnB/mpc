@@ -144,7 +144,7 @@ mpc_atan (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
              atan(-0+iy) = -pi/2 +i*atanh(1/y), if |y| > 1 */
           mp_rnd_t rnd_im, rnd_away;
           mpfr_t y;
-          mp_prec_t p, p_im;
+          mpfr_prec_t p, p_im;
           int ok;
 
           rnd_im = MPC_RND_IM (rnd);
@@ -190,7 +190,7 @@ mpc_atan (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
   /* regular number argument */
   {
     mpfr_t a, b, x, y;
-    mp_prec_t prec, p;
+    mpfr_prec_t prec, p;
     mp_exp_t err, expo;
     int ok = 0;
     mpfr_t minus_op_re;
@@ -225,7 +225,7 @@ mpc_atan (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
     */
 
     /* p: working precision */
-    p = (op_im_exp > 0 || prec > SAFE_ABS (mp_prec_t, op_im_exp)) ? prec
+    p = (op_im_exp > 0 || prec > SAFE_ABS (mpfr_prec_t, op_im_exp)) ? prec
       : (prec - op_im_exp);
     rnd1 = mpfr_sgn (MPC_RE (op)) > 0 ? GMP_RNDD : GMP_RNDU;
     rnd2 = mpfr_sgn (MPC_RE (op)) < 0 ? GMP_RNDU : GMP_RNDD;
