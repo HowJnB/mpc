@@ -296,7 +296,7 @@ mpc_mul_karatsuba (mpc_ptr rop, mpc_srcptr op1, mpc_srcptr op2, mpc_rnd_t rnd)
   int mul_i, ok, inexact, mul_a, mul_c, inex_re, inex_im, sign_x, sign_u;
   mpfr_t u, v, w, x;
   mpfr_prec_t prec, prec_re, prec_u, prec_v, prec_w;
-  mp_rnd_t rnd_re, rnd_u, rnd_x;
+  mpfr_rnd_t rnd_re, rnd_u, rnd_x;
   int overlap;
      /* true if rop == op1 or rop == op2 */
   mpc_t result;

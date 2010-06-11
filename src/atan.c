@@ -142,7 +142,7 @@ mpc_atan (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
         {
           /* atan(+0+iy) = +pi/2 +i*atanh(1/y), if |y| > 1
              atan(-0+iy) = -pi/2 +i*atanh(1/y), if |y| > 1 */
-          mp_rnd_t rnd_im, rnd_away;
+          mpfr_rnd_t rnd_im, rnd_away;
           mpfr_t y;
           mpfr_prec_t p, p_im;
           int ok;
@@ -195,7 +195,7 @@ mpc_atan (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
     int ok = 0;
     mpfr_t minus_op_re;
     mpfr_exp_t op_re_exp, op_im_exp;
-    mp_rnd_t rnd1, rnd2;
+    mpfr_rnd_t rnd1, rnd2;
 
     mpfr_inits (a, b, x, y, (mpfr_ptr) 0);
 

@@ -172,7 +172,7 @@ mpc_sqr (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
           MPC_ASSERT (mpfr_get_exp (u) != emin);
           if (mpfr_inf_p (u))
             {
-              mp_rnd_t rnd_re = MPC_RND_RE (rnd);
+              mpfr_rnd_t rnd_re = MPC_RND_RE (rnd);
               if (rnd_re == GMP_RNDZ || rnd_re == GMP_RNDD)
                 {
                   mpfr_set_ui_2exp (MPC_RE (rop), 1, emax, rnd_re);
@@ -202,7 +202,7 @@ mpc_sqr (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
              away from zero), the result will be an underflow */
           if (mpfr_get_exp (u) == emin)
             {
-              mp_rnd_t rnd_re = MPC_RND_RE (rnd);
+              mpfr_rnd_t rnd_re = MPC_RND_RE (rnd);
               if (rnd_re == GMP_RNDZ || rnd_re == GMP_RNDN ||
                   rnd_re == GMP_RNDU)
                 {

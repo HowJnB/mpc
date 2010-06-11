@@ -27,7 +27,7 @@ int
 mpc_asin (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
 {
   mpfr_prec_t p, p_re, p_im;
-  mp_rnd_t rnd_re, rnd_im;
+  mpfr_rnd_t rnd_re, rnd_im;
   mpc_t z1;
   int inex;
 

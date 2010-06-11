@@ -32,7 +32,7 @@ mpc_acos (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
   mpc_t z1;
   mpfr_t pi_over_2;
   mpfr_exp_t e1, e2;
-  mp_rnd_t rnd_im;
+  mpfr_rnd_t rnd_im;
   mpc_rnd_t rnd1;
 
   inex_re = 0;

@@ -26,7 +26,7 @@ mpc_sqrt (mpc_ptr a, mpc_srcptr b, mpc_rnd_t rnd)
 {
   int ok_w, ok_t = 0;
   mpfr_t    w, t;
-  mp_rnd_t  rnd_w, rnd_t;
+  mpfr_rnd_t  rnd_w, rnd_t;
   mpfr_prec_t prec_w, prec_t;
   /* the rounding mode and the precision required for w and t, which can */
   /* be either the real or the imaginary part of a */
@@ -206,7 +206,7 @@ mpc_sqrt (mpc_ptr a, mpc_srcptr b, mpc_rnd_t rnd)
         {
           /* t = y / 2w, rounded away */
           /* total error bounded by 7 ulps */
-          const mp_rnd_t r = im_sgn ? GMP_RNDD : GMP_RNDU;
+          const mpfr_rnd_t r = im_sgn ? GMP_RNDD : GMP_RNDU;
           inex_t  = mpfr_div (t, MPC_IM (b), w, r);
           inex_t |= mpfr_div_2ui (t, t, 1, r);
           ok_t = mpfr_can_round (t, prec - 3, r, GMP_RNDZ,
