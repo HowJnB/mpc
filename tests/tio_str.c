@@ -211,7 +211,7 @@ int
 main (void)
 {
   mpc_t z, x;
-  mp_prec_t prec;
+  mpfr_prec_t prec;
 
   test_start ();
 

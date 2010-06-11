@@ -67,7 +67,7 @@ check_set (void)
   mpf_t mpf;
   mpfr_t fr;
   mpc_t x, z;
-  mp_prec_t prec;
+  mpfr_prec_t prec;
 
   mpz_init (mpz);
   mpq_init (mpq);
@@ -282,14 +282,14 @@ check_set (void)
 }
 
 static void
-check_set_str (mp_exp_t exp_max)
+check_set_str (mpfr_exp_t exp_max)
 {
   mpc_t expected;
   mpc_t got;
   char *str;
 
   mpfr_prec_t prec;
-  mp_exp_t exp_min;
+  mpfr_exp_t exp_min;
   unsigned int base;
 
   mpc_init2 (expected, 1024);

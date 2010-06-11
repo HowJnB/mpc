@@ -24,7 +24,7 @@ MA 02111-1307, USA. */
 #include "mpc-tests.h"
 
 void cmpsqr (mpc_srcptr, mpc_rnd_t);
-void testsqr (long, long, mp_prec_t, mpc_rnd_t);
+void testsqr (long, long, mpfr_prec_t, mpc_rnd_t);
 void special (void);
 
 void cmpsqr (mpc_srcptr x, mpc_rnd_t rnd)
@@ -131,7 +131,7 @@ void cmpsqr (mpc_srcptr x, mpc_rnd_t rnd)
 
 
 void
-testsqr (long a, long b, mp_prec_t prec, mpc_rnd_t rnd)
+testsqr (long a, long b, mpfr_prec_t prec, mpc_rnd_t rnd)
 {
   mpc_t x;
 

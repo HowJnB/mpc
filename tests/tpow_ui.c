@@ -23,9 +23,9 @@ MA 02111-1307, USA. */
 #include "mpc-tests.h"
 
 static void
-compare_mpc_pow (mp_prec_t pmax, int iter, unsigned long nbits)
+compare_mpc_pow (mpfr_prec_t pmax, int iter, unsigned long nbits)
 {
-  mp_prec_t p;
+  mpfr_prec_t p;
   mpc_t x, y, z, t;
   unsigned long n;
   int i, inex_pow, inex_pow_ui;
@@ -86,7 +86,7 @@ main (int argc, char *argv[])
 
   if (argc != 1)
     {
-      mp_prec_t p;
+      mpfr_prec_t p;
       unsigned long n, k;
       mpc_t res;
       if (argc != 3 && argc != 4)

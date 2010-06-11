@@ -80,7 +80,7 @@ cmpmul (mpc_srcptr x, mpc_srcptr y, mpc_rnd_t rnd)
 
 
 static void
-testmul (long a, long b, long c, long d, mp_prec_t prec, mpc_rnd_t rnd)
+testmul (long a, long b, long c, long d, mpfr_prec_t prec, mpc_rnd_t rnd)
 {
   mpc_t x, y;
 
@@ -102,7 +102,7 @@ check_regular (void)
 {
   mpc_t x, y;
   mpc_rnd_t rnd_re, rnd_im;
-  mp_prec_t prec;
+  mpfr_prec_t prec;
 
   testmul (247, -65, -223, 416, 8, 24);
   testmul (5, -896, 5, -32, 3, 2);

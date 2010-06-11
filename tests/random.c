@@ -110,7 +110,7 @@ test_end (void)
    equal to ZERO_PROBABILITY / 256.
 */
 void
-test_default_random (mpc_ptr z, mp_exp_t emin, mp_exp_t emax,
+test_default_random (mpc_ptr z, mpfr_exp_t emin, mpfr_exp_t emax,
                      unsigned int negative_probability,
                      unsigned int zero_probability)
 {
@@ -150,10 +150,10 @@ test_default_random (mpc_ptr z, mp_exp_t emin, mp_exp_t emax,
         mpfr_set_ui (MPC_IM (z), 0, GMP_RNDN);
     }
   if (!mpfr_zero_p (MPC_RE (z)))
-    mpfr_set_exp (MPC_RE (z), (mp_exp_t) gmp_urandomm_ui (rands, range) + emin);
+    mpfr_set_exp (MPC_RE (z), (mpfr_exp_t) gmp_urandomm_ui (rands, range) + emin);
 
   if (!mpfr_zero_p (MPC_IM (z)))
-    mpfr_set_exp (MPC_IM (z), (mp_exp_t) gmp_urandomm_ui (rands, range) + emin);
+    mpfr_set_exp (MPC_IM (z), (mpfr_exp_t) gmp_urandomm_ui (rands, range) + emin);
 
   if (negative_probability > 256)
     negative_probability = 256;

@@ -131,7 +131,7 @@ pure_imaginary_argument (void)
   mpfr_t tanh_y;
   mpc_t z;
   mpc_t tan_z;
-  mp_prec_t prec = (mp_prec_t) 111;
+  mpfr_prec_t prec = (mpfr_prec_t) 111;
 
   mpfr_init2 (y, 2);
   mpfr_init2 (tanh_y, prec);

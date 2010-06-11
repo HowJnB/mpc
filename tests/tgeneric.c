@@ -662,7 +662,7 @@ reuse_cuuc (mpc_function* function, unsigned long ul1, unsigned long ul2,
    of one of them cannot be the imaginary part of the other). */
 void
 tgeneric (mpc_function function, mpfr_prec_t prec_min,
-          mpfr_prec_t prec_max, mpfr_prec_t step, mp_exp_t exp_max)
+          mpfr_prec_t prec_max, mpfr_prec_t step, mpfr_exp_t exp_max)
 {
   unsigned long ul1 = 0, ul2 = 0;
   long lo = 0;
@@ -673,7 +673,7 @@ tgeneric (mpc_function function, mpfr_prec_t prec_min,
   mpfr_rnd_t rnd_re;
   mpfr_rnd_t rnd_im;
   mpfr_prec_t prec;
-  mp_exp_t exp_min;
+  mpfr_exp_t exp_min;
   int special, special_cases;
 
   mpc_init2 (z1, prec_max);

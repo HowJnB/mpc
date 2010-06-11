@@ -26,7 +26,7 @@ int
 main (void)
 {
   mpc_t z;
-  mp_prec_t prec, pr, pi;
+  mpfr_prec_t prec, pr, pi;
 
   mpc_init2 (z, 1000);
 

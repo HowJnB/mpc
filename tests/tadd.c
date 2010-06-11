@@ -26,7 +26,7 @@ static void
 check_ternary_value (void)
 {
   mpc_t x, y, z;
-  mp_prec_t prec;
+  mpfr_prec_t prec;
 
   mpc_init2 (x, 2);
   mpc_init2 (y, 2);
