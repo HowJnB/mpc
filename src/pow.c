@@ -1,6 +1,6 @@
 /* mpc_pow -- Raise a complex number to the power of another complex number.
 
-Copyright (C) 2009 Paul Zimmermann
+Copyright (C) 2009, 2010 Paul Zimmermann, Andreas Enge
 
 This file is part of the MPC Library.
 
@@ -149,14 +149,14 @@ mpc_pow_exact (mpc_ptr z, mpc_srcptr x, mpfr_srcptr y, mpc_rnd_t rnd,
   if (ec < ed)
     {
       mpz_mul_2exp (d, d, ed - ec);
-      if (mpz_sizeinbase (d, 2) > maxprec)
+      if ((mp_prec_t) mpz_sizeinbase (d, 2) > maxprec)
         goto end;
       ed = ec;
     }
   else if (ed < ec)
     {
       mpz_mul_2exp (c, c, ec - ed);
-      if (mpz_sizeinbase (c, 2) > maxprec)
+      if ((mp_prec_t) mpz_sizeinbase (c, 2) > maxprec)
         goto end;
       ec = ed;
     }
@@ -294,7 +294,8 @@ mpc_pow_exact (mpc_ptr z, mpc_srcptr x, mpfr_srcptr y, mpc_rnd_t rnd,
           mpz_tdiv_q_2exp (b, b, w);
           ed += w;
         }
-      if (mpz_sizeinbase (a, 2) > maxprec || mpz_sizeinbase (b, 2) > maxprec)
+      if (   (mp_prec_t) mpz_sizeinbase (a, 2) > maxprec
+          || (mp_prec_t) mpz_sizeinbase (b, 2) > maxprec)
         goto end;
     }
   /* now a+I*b = (c+I*d)^my */
@@ -319,7 +320,8 @@ mpc_pow_exact (mpc_ptr z, mpc_srcptr x, mpfr_srcptr y, mpc_rnd_t rnd,
       mpz_tdiv_q_2exp (b, b, sa);
       ed += sa;
 
-      if (mpz_sizeinbase (a, 2) > maxprec || mpz_sizeinbase (b, 2) > maxprec)
+      if (   (mp_prec_t) mpz_sizeinbase (a, 2) > maxprec
+          || (mp_prec_t) mpz_sizeinbase (b, 2) > maxprec)
         goto end;
     }
 

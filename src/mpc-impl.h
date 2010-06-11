@@ -1,6 +1,6 @@
 /* mpc-impl.h -- Internal include file for mpc.
 
-Copyright (C) 2002, 2004, 2005, 2008, 2009 Andreas Enge, Philippe Th\'eveny, Paul Zimmermann
+Copyright (C) 2002, 2004, 2005, 2008, 2009, 2010 Andreas Enge, Philippe Th\'eveny, Paul Zimmermann
 
 This file is part of the MPC Library.
 
@@ -150,7 +150,7 @@ __MPC_DECLSPEC int  mpc_mul_karatsuba __MPC_PROTO ((mpc_ptr, mpc_srcptr, mpc_src
 __MPC_DECLSPEC char* mpc_alloc_str __MPC_PROTO ((size_t));
 __MPC_DECLSPEC char* mpc_realloc_str __MPC_PROTO ((char*, size_t, size_t));
 __MPC_DECLSPEC void mpc_free_str __MPC_PROTO ((char*));
-__MPC_DECLSPEC unsigned long mpc_ceil_log2 __MPC_PROTO ((unsigned long));
+__MPC_DECLSPEC mp_prec_t mpc_ceil_log2 __MPC_PROTO ((unsigned long));
 
 #if defined (__cplusplus)
 }

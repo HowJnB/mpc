@@ -1,6 +1,6 @@
 /* mpc_ceil_log2 - returns ceil(log(d)/log(2))
 
-Copyright 2004, 2009 Patrick Pelissier, Paul Zimmermann, Philippe Th\'eveny
+Copyright 2004, 2009, 2010 Patrick Pelissier, Paul Zimmermann, Philippe Th\'eveny, Andreas Enge
 
 This file is part of the MPC Library.
 
@@ -23,7 +23,7 @@ MA 02111-1307, USA. */
 
 /* returns ceil(log(d)/log(2)) if d > 0 */
 /* Don't use count_leading_zeros since it is in longlong.h */
-unsigned long
+mp_prec_t
 mpc_ceil_log2 (unsigned long d)
 {
   unsigned long exp;

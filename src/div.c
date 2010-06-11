@@ -254,7 +254,7 @@ mpc_div (mpc_ptr a, mpc_srcptr b, mpc_srcptr c, mpc_rnd_t rnd)
    do
    {
       loops ++;
-      prec += (loops <= 2) ? mpc_ceil_log2 (prec) + 5 : prec / 2;
+      prec += loops <= 2 ? mpc_ceil_log2 (prec) + 5 : prec / 2;
 
       mpc_set_prec (res, prec);
       mpfr_set_prec (q, prec);
