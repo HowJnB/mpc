@@ -111,10 +111,10 @@ mpc_mul (mpc_ptr a, mpc_srcptr b, mpc_srcptr c, mpc_rnd_t rnd)
 
   /* If the real and imaginary part of one argument have a very different */
   /* exponent, it is not reasonable to use Karatsuba multiplication.      */
-  if (   SAFE_ABS (mp_exp_t, MPFR_EXP (MPC_RE (b)) - MPFR_EXP (MPC_IM (b)))
-         > (mp_exp_t) MPC_MAX_PREC (b) / 2
-         || SAFE_ABS (mp_exp_t, MPFR_EXP (MPC_RE (c)) - MPFR_EXP (MPC_IM (c)))
-         > (mp_exp_t) MPC_MAX_PREC (c) / 2)
+  if (   SAFE_ABS (mpfr_exp_t, MPFR_EXP (MPC_RE (b)) - MPFR_EXP (MPC_IM (b)))
+         > (mpfr_exp_t) MPC_MAX_PREC (b) / 2
+         || SAFE_ABS (mpfr_exp_t, MPFR_EXP (MPC_RE (c)) - MPFR_EXP (MPC_IM (c)))
+         > (mpfr_exp_t) MPC_MAX_PREC (c) / 2)
     return mpc_mul_naive (a, b, c, rnd);
   else
     return ((MPC_MAX_PREC(a)

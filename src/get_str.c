@@ -38,7 +38,7 @@ MA 02111-1307, USA. */
 #elif (__GMP_MP_SIZE_T_INT == 0)
 #define MPC_EXP_FORMAT_SPEC "li"
 #else
-#error "mp_exp_t size not supported"
+#error "mpfr_exp_t size not supported"
 #endif
 
 static char *

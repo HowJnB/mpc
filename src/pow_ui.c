@@ -51,11 +51,11 @@ mpc_pow_ui (mpc_ptr z, mpc_srcptr x, unsigned long y, mpc_rnd_t rnd)
       /* let mpc_pow deal with special cases */
       return mpc_pow_ui_naive (z, x, y, rnd);
    else {
-      mp_exp_t exp_r = mpfr_get_exp (MPC_RE (x)),
-               exp_i = mpfr_get_exp (MPC_IM (x));
-      if (   MPC_MAX (exp_r, exp_i) > mpfr_get_emax () / (mp_exp_t) y
+      mpfr_exp_t exp_r = mpfr_get_exp (MPC_RE (x)),
+                 exp_i = mpfr_get_exp (MPC_IM (x));
+      if (   MPC_MAX (exp_r, exp_i) > mpfr_get_emax () / (mpfr_exp_t) y
              /* heuristic for overflow */
-          || MPC_MAX (-exp_r, -exp_i) > (-mpfr_get_emin ()) / (mp_exp_t) y
+          || MPC_MAX (-exp_r, -exp_i) > (-mpfr_get_emin ()) / (mpfr_exp_t) y
              /* heuristic for underflow */
          )
          return mpc_pow_ui_naive (z, x, y, rnd);
@@ -111,7 +111,7 @@ mpc_pow_ui (mpc_ptr z, mpc_srcptr x, unsigned long y, mpc_rnd_t rnd)
          done = 1;
       }
       else {
-         mp_exp_t diff;
+         mpfr_exp_t diff;
          mpfr_prec_t er, ei;
          diff = mpfr_get_exp (MPC_RE(t)) - mpfr_get_exp (MPC_IM(t));
          /* the factor on the real part is 2+2^(-diff+2) <= 4 for diff >= 1

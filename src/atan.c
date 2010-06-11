@@ -191,11 +191,10 @@ mpc_atan (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
   {
     mpfr_t a, b, x, y;
     mpfr_prec_t prec, p;
-    mp_exp_t err, expo;
+    mpfr_exp_t err, expo;
     int ok = 0;
     mpfr_t minus_op_re;
-    mp_exp_t op_re_exp;
-    mp_exp_t op_im_exp;
+    mpfr_exp_t op_re_exp, op_im_exp;
     mp_rnd_t rnd1, rnd2;
 
     mpfr_inits (a, b, x, y, (mpfr_ptr) 0);

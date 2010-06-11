@@ -200,7 +200,7 @@ mpc_sqrt (mpc_ptr a, mpc_srcptr b, mpc_rnd_t rnd)
       inex_w |= mpfr_div_2ui (w, w, 1, GMP_RNDD);
       inex_w |= mpfr_sqrt (w, w, GMP_RNDD);
 
-      ok_w = mpfr_can_round (w, (mp_exp_t) prec - 2, GMP_RNDD, GMP_RNDU,
+      ok_w = mpfr_can_round (w, prec - 2, GMP_RNDD, GMP_RNDU,
                              prec_w + (rnd_w == GMP_RNDN));
       if (!inex_w || ok_w)
         {
@@ -209,7 +209,7 @@ mpc_sqrt (mpc_ptr a, mpc_srcptr b, mpc_rnd_t rnd)
           const mp_rnd_t r = im_sgn ? GMP_RNDD : GMP_RNDU;
           inex_t  = mpfr_div (t, MPC_IM (b), w, r);
           inex_t |= mpfr_div_2ui (t, t, 1, r);
-          ok_t = mpfr_can_round (t, (mp_exp_t) prec - 3, r, GMP_RNDZ,
+          ok_t = mpfr_can_round (t, prec - 3, r, GMP_RNDZ,
                                  prec_t + (rnd_t == GMP_RNDN));
           /* As for w; since t was rounded away, we check whether rounding to 0
              is possible. */

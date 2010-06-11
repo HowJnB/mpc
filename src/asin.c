@@ -150,7 +150,7 @@ mpc_asin (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
   mpc_init2 (z1, p);
   while (1)
   {
-    mp_exp_t ex, ey, err;
+    mpfr_exp_t ex, ey, err;
     p += mpc_ceil_log2 (p) + 3;
     mpfr_set_prec (MPC_RE(z1), p);
     mpfr_set_prec (MPC_IM(z1), p);

@@ -25,6 +25,11 @@ MA 02111-1307, USA. */
 #include "gmp.h"
 #include "mpfr.h"
 
+/* Backwards compatibility with mpfr<3.0.0 */
+#ifndef mpfr_exp_t
+#define mpfr_exp_t mp_exp_t
+#endif
+
 /* Define MPC version number */
 #define MPC_VERSION_MAJOR 0
 #define MPC_VERSION_MINOR 8

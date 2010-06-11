@@ -26,7 +26,7 @@ mpc_tan (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
 {
   mpc_t x, y;
   mpfr_prec_t prec;
-  mp_exp_t err;
+  mpfr_exp_t err;
   int ok = 0;
   int inex;
 
@@ -180,8 +180,7 @@ mpc_tan (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
 
   do
     {
-      mp_exp_t k;
-      mp_exp_t exr, eyr, eyi, ezr;
+      mpfr_exp_t k, exr, eyr, eyi, ezr;
 
       ok = 0;
 

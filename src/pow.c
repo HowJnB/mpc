@@ -108,7 +108,7 @@ static int
 mpc_pow_exact (mpc_ptr z, mpc_srcptr x, mpfr_srcptr y, mpc_rnd_t rnd,
                mpfr_prec_t maxprec)
 {
-  mp_exp_t ec, ed, ey, emin, emax;
+  mpfr_exp_t ec, ed, ey, emin, emax;
   mpz_t my, a, b, c, d, u;
   unsigned long int t;
   int ret = -2;
@@ -358,9 +358,9 @@ mpc_pow_exact (mpc_ptr z, mpc_srcptr x, mpfr_srcptr y, mpc_rnd_t rnd,
 */
 #define MPFR_LIMB_HIGHBIT ((mp_limb_t) 1 << (BITS_PER_MP_LIMB - 1))
 static int
-is_odd (mpfr_srcptr y, mp_exp_t k)
+is_odd (mpfr_srcptr y, mpfr_exp_t k)
 {
-  mp_exp_t expo;
+  mpfr_exp_t expo;
   mpfr_prec_t prec;
   mp_size_t yn;
   mp_limb_t *yp;
@@ -577,7 +577,7 @@ mpc_pow (mpc_ptr z, mpc_srcptr x, mpc_srcptr y, mpc_rnd_t rnd)
     goto underflow;
 
   q = mpfr_get_exp (MPC_RE(t)) > 0 ? mpfr_get_exp (MPC_RE(t)) : 0;
-  if (mpfr_get_exp (MPC_IM(t)) > (mp_exp_t) q)
+  if (mpfr_get_exp (MPC_IM(t)) > (mpfr_exp_t) q)
     q = mpfr_get_exp (MPC_IM(t));
 
   pr = mpfr_get_prec (MPC_RE(z));
@@ -593,7 +593,7 @@ mpc_pow (mpc_ptr z, mpc_srcptr x, mpc_srcptr y, mpc_rnd_t rnd)
     maxprec = MPFR_PREC(MPC_IM(z));
   for (loop = 0;; loop++)
     {
-      mp_exp_t dr, di;
+      mpfr_exp_t dr, di;
 
       if (p + q > 64) /* otherwise we reuse the initial approximation
                          t of y*log(x), avoiding two computations */
