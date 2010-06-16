@@ -616,6 +616,12 @@ double-precision number, and then only to a complex number.
 @deftypefunx int mpc_set_fr_fr (mpc_t @var{rop}, mpfr_t @var{op1}, mpfr_t @var{op2}, mpc_rnd_t @var{rnd})
 Set the real part of @var{rop} from @var{op1}, and its imaginary part from
 @var{op2}, according to the rounding mode @var{rnd}.
+
+Beware that the behaviour of @code{mpc_set_fr_fr} is undefined if @var{op1}
+or @var{op2} is a pointer to the real or imaginary part of @var{rop}.
+To exchange the real and the imaginary part of a complex number, either use
+@code{mpfr_swap (mpc_realref (rop), mpc_imagref (rop))}, which also exchanges
+the precisions of the two parts; or use a temporary variable.
 @end deftypefun
 
 For functions assigning complex variables from strings or input streams,
