@@ -46,7 +46,7 @@
 
 \title {MPC: Algorithms and Error Analysis}
 \author {Andreas Enge \and Philippe Th\'eveny \and Paul Zimmermann}
-\date {Draft; March 30, 2010}
+\date {Draft; June 16, 2010}
 
 \begin {document}
 \maketitle
@@ -617,8 +617,7 @@ then $\epsilon_1 \epsilon_2 \leq 2^{1-p}$ and
 $\epsilon \leq \big( \max (k_{R, 1}, k_{I, 1}) + \max (k_{R, 2}, k_{I, 2}) + 1
 \big) 2^{1 - p}$.
 Applying Propositions~\ref {prop:comrelerror} and~\ref {prop:relerror}
-in the converse direction yields, under the assumption that $\corr z$
-and $\appro z$ lie in the same quadrant of the complex plane,
+in the converse direction yields
 \begin {equation}
 \label {eq:propmulcomrel}
 \begin {array}{rl}
@@ -838,8 +837,7 @@ with
 \epsilon \leq (|\theta_1| + |\theta_2|) \sum_{k = 0}^\infty |\theta_2|^k.
 \]
 Using the same notation and assumptions as at the end of
-\S\ref {sssec:propmul}, in particular that $\corr z$ and $\appro z$
-lie in the same quadrant and that all higher order error terms
+\S\ref {sssec:propmul}, in particular that all higher order error terms
 (involving $\epsilon_1^2$, $\epsilon_2^2$, $\epsilon_1 \epsilon_2$
 or higher powers) are absorbed by $2^{\Exp (\appro x) - p}$,
 we find the exact same error estimate \eqref {eq:propmulcomrel}
