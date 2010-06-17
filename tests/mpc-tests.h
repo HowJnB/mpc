@@ -134,10 +134,10 @@ typedef enum
 
 typedef struct
 {
-  func_ptr  pointer;
-  func_type type;
-  char *    name;
-  int       properties;
+  func_ptr     pointer;
+  func_type    type;
+  const char * name;
+  int          properties;
 } mpc_function;
 
 #define DECL_FUNC(_ftype, _fvar, _func)         \

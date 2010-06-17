@@ -394,7 +394,7 @@ read_mpc (FILE *fp, mpc_ptr z, known_signs_t *ks)
 }
 
 static void
-check_compatible (int inex, mpfr_t expected, mpfr_rnd_t rnd, char *s)
+check_compatible (int inex, mpfr_t expected, mpfr_rnd_t rnd, const char *s)
 {
   if ((rnd == GMP_RNDU && inex == -1) ||
       (rnd == GMP_RNDD && inex == +1) ||
