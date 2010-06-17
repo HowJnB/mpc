@@ -1,6 +1,6 @@
 /* File for generic tests.
 
-Copyright (C) 2008, 2009 Philippe Th\'eveny, Andreas Enge, Paul Zimmermann
+Copyright (C) 2008, 2009, 2010 Philippe Th\'eveny, Andreas Enge, Paul Zimmermann
 
 This file is part of the MPC Library.
 
@@ -651,6 +651,46 @@ reuse_cuuc (mpc_function* function, unsigned long ul1, unsigned long ul2,
 }
 
 
+/* helper functions for iterating over mpfr rounding modes */
+static mpfr_rnd_t
+first_rnd_mode ()
+{
+   return GMP_RNDN;
+}
+
+static mpfr_rnd_t
+next_rnd_mode (mpfr_rnd_t curr)
+   /* assumes that all rounding modes are non-negative, and returns -1
+      when curr is the last rounding mode                              */
+{
+   switch (curr) {
+      case GMP_RNDN:
+         return GMP_RNDZ;
+      case GMP_RNDZ:
+         return GMP_RNDU;
+      case GMP_RNDU:
+         return GMP_RNDD;
+      default:
+         /* return invalid guard value in mpfr_rnd_t */
+#ifdef GMP_RNDNA /* mpfr < 3 */
+         return GMP_RNDNA;
+#else
+         return MPFR_RNDA; /* valid rounding type, but not (yet) used in mpc */
+#endif
+   }
+}
+
+static int
+is_valid_rnd_mode (mpfr_rnd_t curr)
+   /* returns 1 if curr is a valid rounding mode, and 0otherwise */
+{
+   if (   curr == GMP_RNDN || curr == GMP_RNDZ
+       || curr == GMP_RNDU || curr == GMP_RNDD)
+      return 1;
+   else
+      return 0;
+}
+
 /* tgeneric(prec_min, prec_max, step, exp_max) checks rounding with random
    numbers:
    - with precision ranging from prec_min to prec_max with an increment of
@@ -913,11 +953,11 @@ tgeneric (mpc_function function, mpfr_prec_t prec_min,
             }
         }
 
-      for (rnd_re = GMP_RNDN; mpfr_print_rnd_mode (rnd_re); ++rnd_re)
+      for (rnd_re = first_rnd_mode (); is_valid_rnd_mode (rnd_re); rnd_re = next_rnd_mode (rnd_re))
         switch (function.type)
           {
           case CCC:
-            for (rnd_im = GMP_RNDN; mpfr_print_rnd_mode (rnd_im); ++rnd_im)
+            for (rnd_im = first_rnd_mode (); is_valid_rnd_mode (rnd_im); rnd_im = next_rnd_mode (rnd_im))
               tgeneric_ccc (&function, z1, z2, z3, zzzz, z4,
                             RNDC (rnd_re, rnd_im));
             reuse_ccc (&function, z1, z2, z3, z4);
@@ -927,49 +967,49 @@ tgeneric (mpc_function function, mpfr_prec_t prec_min,
             reuse_fc (&function, z1, z2, x1);
             break;
           case CC:
-            for (rnd_im = GMP_RNDN; mpfr_print_rnd_mode (rnd_im); ++rnd_im)
+            for (rnd_im = first_rnd_mode (); is_valid_rnd_mode (rnd_im); rnd_im = next_rnd_mode (rnd_im))
               tgeneric_cc (&function, z1, z2, zzzz, z3,
                            RNDC (rnd_re, rnd_im));
             reuse_cc (&function, z1, z2, z3);
             break;
           case CFC:
-            for (rnd_im = GMP_RNDN; mpfr_print_rnd_mode (rnd_im); ++rnd_im)
+            for (rnd_im = first_rnd_mode (); is_valid_rnd_mode (rnd_im); rnd_im = next_rnd_mode (rnd_im))
               tgeneric_cfc (&function, x1, z1, z2, zzzz, z3,
                             RNDC (rnd_re, rnd_im));
             reuse_cfc (&function, z1, x1, z2, z3);
             break;
           case CCF:
-            for (rnd_im = GMP_RNDN; mpfr_print_rnd_mode (rnd_im); ++rnd_im)
+            for (rnd_im = first_rnd_mode (); is_valid_rnd_mode (rnd_im); rnd_im = next_rnd_mode (rnd_im))
               tgeneric_ccf (&function, z1, x1, z2, zzzz, z3,
                             RNDC (rnd_re, rnd_im));
             reuse_ccf (&function, z1, x1, z2, z3);
             break;
           case CCU:
-            for (rnd_im = GMP_RNDN; mpfr_print_rnd_mode (rnd_im); ++rnd_im)
+            for (rnd_im = first_rnd_mode (); is_valid_rnd_mode (rnd_im); rnd_im = next_rnd_mode (rnd_im))
               tgeneric_ccu (&function, z1, ul1, z2, zzzz, z3,
                             RNDC (rnd_re, rnd_im));
             reuse_ccu (&function, z1, ul1, z2, z3);
             break;
           case CUC:
-            for (rnd_im = GMP_RNDN; mpfr_print_rnd_mode (rnd_im); ++rnd_im)
+            for (rnd_im = first_rnd_mode (); is_valid_rnd_mode (rnd_im); rnd_im = next_rnd_mode (rnd_im))
               tgeneric_cuc (&function, ul1, z1, z2, zzzz, z3,
                             RNDC (rnd_re, rnd_im));
             reuse_cuc (&function, ul1, z1, z2, z3);
             break;
           case CCS:
-            for (rnd_im = GMP_RNDN; mpfr_print_rnd_mode (rnd_im); ++rnd_im)
+            for (rnd_im = first_rnd_mode (); is_valid_rnd_mode (rnd_im); rnd_im = next_rnd_mode (rnd_im))
               tgeneric_ccs (&function, z1, lo, z2, zzzz, z3,
                             RNDC (rnd_re, rnd_im));
             reuse_ccs (&function, z1, lo, z2, z3);
             break;
           case CCI:
-            for (rnd_im = GMP_RNDN; mpfr_print_rnd_mode (rnd_im); ++rnd_im)
+            for (rnd_im = first_rnd_mode (); is_valid_rnd_mode (rnd_im); rnd_im = next_rnd_mode (rnd_im))
               tgeneric_cci (&function, z1, i, z2, zzzz, z3,
                             RNDC (rnd_re, rnd_im));
             reuse_cci (&function, z1, i, z2, z3);
             break;
           case CUUC:
-            for (rnd_im = GMP_RNDN; mpfr_print_rnd_mode (rnd_im); ++rnd_im)
+            for (rnd_im = first_rnd_mode (); is_valid_rnd_mode (rnd_im); rnd_im = next_rnd_mode (rnd_im))
               tgeneric_cuuc (&function, ul1, ul2, z1, z2, zzzz, z3,
                              RNDC (rnd_re, rnd_im));
             reuse_cuuc (&function, ul1, ul2, z1, z2, z3);
