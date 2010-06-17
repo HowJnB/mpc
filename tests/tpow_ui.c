@@ -112,20 +112,6 @@ main (int argc, char *argv[])
   test_start ();
   data_check (f, "pow_ui.dat");
 
-  mpc_init2 (z, 5);
-  mpc_set_ui_ui (z, 3, 2, MPC_RNDNN);
-  mpc_pow_ui (z, z, 3, MPC_RNDNN);
-  if (mpc_cmp_si_si (z, -9, 46) != 0)
-    {
-      printf ("Error for mpc_pow_ui (1)\n");
-      printf ("expected (-9,46)\n");
-      printf ("got ");
-      mpc_out_str (stdout, 10, 0, z, MPC_RNDNN);
-      printf ("\n");
-      exit (1);
-    }
-  mpc_clear (z);
-
   compare_mpc_pow (100, 5, 19);
 
   test_end ();
