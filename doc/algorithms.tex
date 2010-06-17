@@ -1597,16 +1597,17 @@ The special case of left-to-right binary exponentiation
 satisfies that $n_{r+1} = 2 n_r$ (which occurs $\lfloor \log_2 n \rfloor$
 times) or $n_{r+1} = n_r + 1$ (which occurs once less than the number of
 $1$ in the binary expansion of $n$, or equivalently, once less than the
-Hamming weight of $n$); so $k \leq 2 \lfloor \log_2 n \rfloor$.
+Hamming weight of $n$); so $k \leq 2 \lfloor \log_2 n \rfloor + 1$.
 
 Instead of the correct sequence $\corr x_r$, we compute during the algorithm
 approximations $\appro x_1 = x = \corr x_1$ and
 $\appro x_r = \round (\appro x_s \appro x_t)$
 at some precision~$p$.
 Let $\theta_r$ be such that $\corr x_r = \appro x_r (1 + \theta_r)$, so that
-the relative error of $\appro x_r$ is given by $\epsilon_r = |\theta_r|$,
-and write $z_r = \appro x_s \appro x_t$.
-Then $\corr x_r = z_r (1 + \theta_s)(1 + \theta_t)$.
+the relative error of $\appro x_r$ is given by $\epsilon_r = |\theta_r|$.
+Write $z_r = \appro x_s \appro x_t$.
+Then $\appro x_r = \round (z_r)$ and
+$\corr x_r = z_r (1 + \theta_s)(1 + \theta_t)$.
 
 Assuming rounding to nearest, the absolute real error attributable to
 rounding $\Re z_r$ to $\Re \appro x_r$ is bounded by
@@ -1625,10 +1626,11 @@ We can thus rewrite $1 + \theta_r$ as a product of factors of the
 form $1 + \eta$ with $|\eta| \leq 2^{-p}$. Denoting by $u_r$ the
 number of such factors, we thus have $u_r = u_s + u_t + 1$, from which
 we deduce by induction, using $u_1 = 0 = n_1 - 1$,
-that $u_r \leq n_r - 1$.
+that $u_r = n_r - 1$.
 
-So the relative error of $\appro x_k$, compared to $x^n$, is bounded above by
-$(1 + 2^{-p})^{n-1} - 1$. Using Propositions~\ref {prop:comrelerror}
+So the relative error of $\appro x_k$, compared to $x^n$, is given by
+$|\theta_r| \leq (1 + 2^{-p})^{n-1} - 1$.
+Using Propositions~\ref {prop:comrelerror}
 and~\ref {prop:relerror}, this translates into an absolute error of
 \[
 \left( 1 + 2^{\Exp (\Im \appro x_k) - \Exp (\Re \appro x_k) + 1} \right)
@@ -1644,18 +1646,18 @@ on the real part and of
 on the imaginary part of the result.
 
 If we further assume that $(n-1) 2^{-p} \leq 1$, then
-$\left( (1 + 2^{-p})^{n-1} - 1 \right) \leq 2 (n-1) 2^{-p}$,
+$(1 + 2^{-p})^{n-1} - 1 \leq 2 (n-1) 2^{-p}$,
 because $(1+\varepsilon)^m-1 = \exp(m \log(1+\varepsilon)) - 1
 \leq \exp(\varepsilon m) - 1 \leq 2 \varepsilon m$ as long as
 $\varepsilon m \leq 1$. This gives the simplified bounds
 \begin{equation} \label{eq:powui_re}
-\left( 2 + 2^{\Exp (\Im \appro x_k) - \Exp (\Re \appro x_k) + 2} \right)
-(n-1) \Ulp (\Re \appro x_k)
+\left( 1 + 2^{\Exp (\Im \appro x_k) - \Exp (\Re \appro x_k) + 1} \right)
+(2n-2) \Ulp (\Re \appro x_k)
 \end{equation}
 on the real part and of
 \begin{equation} \label{eq:powui_im}
-\left( 2 + 2^{\Exp (\Re \appro x_k) - \Exp (\Im \appro x_k) + 2} \right)
-(n-1) \Ulp (\Im \appro x_k)
+\left( 1 + 2^{\Exp (\Re \appro x_k) - \Exp (\Im \appro x_k) + 1} \right)
+(2n-2) \Ulp (\Im \appro x_k)
 \end{equation}
 on the imaginary part.
 
