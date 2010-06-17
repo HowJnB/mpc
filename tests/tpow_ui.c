@@ -61,7 +61,7 @@ compare_mpc_pow (mpfr_prec_t pmax, int iter, unsigned long nbits)
               }
             if (inex_pow != inex_pow_ui)
               {
-                printf ("mpc_pow and mpc_pow_ui gives different flags for x=");
+                printf ("mpc_pow and mpc_pow_ui give different flags for x=");
                 mpc_out_str (stdout, 10, 0, x, MPC_RNDNN);
                 printf (" n=%lu\n", n);
                 printf ("mpc_pow gives %d\n", inex_pow);
