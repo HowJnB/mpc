@@ -1652,41 +1652,52 @@ because $(1+\varepsilon)^m-1 = \exp(m \log(1+\varepsilon)) - 1
 \leq \exp(\varepsilon m) - 1 \leq 2 \varepsilon m$ as long as
 $\varepsilon m \leq 1$. This gives the simplified bounds
 \begin{equation} \label{eq:powui_re}
-\left( 1 + 2^{\Exp (\Im \appro x_k) - \Exp (\Re \appro x_k) + 1} \right)
-(2n-2) \Ulp (\Re \appro x_k)
+\left( 2 + 2^{\Exp (\Im \appro x_k) - \Exp (\Re \appro x_k) + 2} \right)
+(n-1) \Ulp (\Re \appro x_k)
 \end{equation}
 on the real part and of
 \begin{equation} \label{eq:powui_im}
-\left( 1 + 2^{\Exp (\Re \appro x_k) - \Exp (\Im \appro x_k) + 1} \right)
-(2n-2) \Ulp (\Im \appro x_k)
+\left( 2 + 2^{\Exp (\Re \appro x_k) - \Exp (\Im \appro x_k) + 2} \right)
+(n-1) \Ulp (\Im \appro x_k)
 \end{equation}
 on the imaginary part.
+
 
 \subsection {\texttt {mpc\_pow\_si}}
 
 For the computation of $x^{-n}$ with $n > 0$, the analysis of
-\S\ref {ssec:mpcpowui} essentially carries through. We first compute
-$\appro {x_k}$ as an approximation to $\corr {x_k} = x^n$; the discussion
-above shows that $\corr {x_k} = \appro {x_k} (1 + \theta_k)$ with
-$|\theta_k| \leq (2 n - 2) 2^{-p}$ as long as $(n - 1) 2^{-p} \leq 1$.
+\S\ref {ssec:mpcpowui} essentially carries through. We keep the same
+notation. Using bounds on the absolute errors of $\Re z_r$ and $\Im z_r$,
+we have shown above, using Propositions~\ref {prop:relerror}
+and~\ref {prop:comrelerror}, that $z_r = \appro {x_r} (1 + \eta_r)$ with
+$|\eta_r| \leq 2^{-p}$ and concluded that
+$x^n = \corr {x_k} = \appro {x_k} (1 + \theta_k)$, where
+$1 + \theta_k$ is the product of $n-1$ factors of the form
+$1 + \eta$  with $|\eta| \leq 2^{-p}$.
+By exchanging the roles of $z_r$ and $\appro {x_r}$ and applying
+Propositions~\ref {prop:relerror} and~\ref {prop:comrelerror}
+analogously, we obtain that $z_r = \frac {\appro {x_r}}{1 + \zeta_r}$ with
+$|\zeta_r| \leq 2^{-p}$ and
+$x^n = \corr {x_k} = \frac {\appro {x_k}}{1 + \xi_k}$, where
+$\xi_k$ is the product of $n-1$ factors of the form
+$1 + \zeta$  with $|\zeta| \leq 2^{-p}$.
+
 Let $\corr {x_{k+1}} = \corr {x_k}^{-1} = x^{-n}$ be the desired
 result, $z_{k+1} = \appro {x_k}^{-1}$
 and $\appro {x_{k+1}} = \round (z_{k+1})$. As shown in \S\ref {ssec:mpcpowui},
 rounding of $z_{k+1}$ to the nearest implies that
-$z_{k+1} = \appro {x_{k+1}} (1 + \eta)$ with $|\eta| \leq 2^{-p}$.
-Then $\corr {x_{k+1}} = \appro {x_{k+1}} \frac {1 + \eta}{1 + \theta_k}
-= \appro {x_{k+1}} (1 + \theta_{k+1})$
-with
-\[
-|\theta_{k+1}| \leq \left| \frac {1 + \eta}{1 + \theta_k} - 1 \right|
-= \left| \frac {\eta - \theta_k}{1 + \theta_k} \right|
-\leq \frac {|\eta| + |\theta_k|}{1 - |\theta_k|}
-\leq \frac {(2 n -1) 2^{-p}}{1 - (2 n - 2) 2^{-p}}.
-\]
-If we assume that $(n - 1) 2^{-p} \leq \frac {1}{4}$ (instead of just
-being bounded by~$1$), then $|\theta_{k+1}| \leq (4 n - 2) 2^{-p}$,
-and the error estimates \eqref {eq:powui_re} and \eqref {eq:powui_im}
-apply after replacing $2n - 2$ by $4n - 2$.
+$z_{k+1} = \appro {x_{k+1}} (1 + \eta_{k+1})$ with
+$|\eta_{k+1}| \leq 2^{-p}$.
+Then $\corr {x_{k+1}} = \frac {1}{x_k}
+= \frac {1 + \xi_k}{\appro {x_k}}
+= z_{k+1} (1 + \xi_k)
+= \appro {x_{k+1}} (1 + \xi_k)(1 + \eta_{k+1})$,
+which contains $n$ factors of the form $1 + \eta$ with
+$|\eta| \leq 2^{-p}$.
+
+Thus, assuming that $n 2^{-p} \leq 1$, the error estimates
+\eqref {eq:powui_re} and \eqref {eq:powui_im} are valid with $n$
+in the place of $n - 1$.
 
 
 
