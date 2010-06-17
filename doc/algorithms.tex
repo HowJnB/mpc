@@ -1585,6 +1585,7 @@ where $\sigma_2$ (resp $\rho_1$, $\rho_2$) is the sign of $x_2$ (resp. $y_1$,
 $y_2$) and with the convention $0^0=+1$.
 
 \subsection {\texttt {mpc\_pow\_ui}}
+\label {ssec:mpcpowui}
 
 In the case of a positive integer exponent $n$, it may be faster to use
 binary exponentiation to compute $x^n$. More generally, let
@@ -1629,7 +1630,7 @@ we deduce by induction, using $u_1 = 0 = n_1 - 1$,
 that $u_r = n_r - 1$.
 
 So the relative error of $\appro x_k$, compared to $x^n$, is given by
-$|\theta_r| \leq (1 + 2^{-p})^{n-1} - 1$.
+$|\theta_k| \leq (1 + 2^{-p})^{n-1} - 1$.
 Using Propositions~\ref {prop:comrelerror}
 and~\ref {prop:relerror}, this translates into an absolute error of
 \[
@@ -1646,7 +1647,7 @@ on the real part and of
 on the imaginary part of the result.
 
 If we further assume that $(n-1) 2^{-p} \leq 1$, then
-$(1 + 2^{-p})^{n-1} - 1 \leq 2 (n-1) 2^{-p}$,
+$(1 + 2^{-p})^{n-1} - 1 \leq (2 n - 2) 2^{-p}$,
 because $(1+\varepsilon)^m-1 = \exp(m \log(1+\varepsilon)) - 1
 \leq \exp(\varepsilon m) - 1 \leq 2 \varepsilon m$ as long as
 $\varepsilon m \leq 1$. This gives the simplified bounds
@@ -1663,13 +1664,31 @@ on the imaginary part.
 
 \subsection {\texttt {mpc\_pow\_si}}
 
-Assume we want to round correctly $z^{-n}$ for $n > 0$. We proceed as follows.
-First compute $t = \round(z^n)$ using \texttt {mpc\_pow\_ui}, then
-compute $u = \round(1/t)$ using \texttt {mpc\_ui\_div}.
-The error analysis is the same as for $z^3$ in \texttt {mpc\_pow\_ui},
-indeed we accumulate two multiplicative rounding errors.
-Thus it suffices to replace $n$ by $3$ in (\ref{eq:powui_re}) and
-(\ref{eq:powui_im}).
+For the computation of $x^{-n}$ with $n > 0$, the analysis of
+\S\ref {ssec:mpcpowui} essentially carries through. We first compute
+$\appro {x_k}$ as an approximation to $\corr {x_k} = x^n$; the discussion
+above shows that $\corr {x_k} = \appro {x_k} (1 + \theta_k)$ with
+$|\theta_k| \leq (2 n - 2) 2^{-p}$ as long as $(n - 1) 2^{-p} \leq 1$.
+Let $\corr {x_{k+1}} = \corr {x_k}^{-1} = x^{-n}$ be the desired
+result, $z_{k+1} = \appro {x_k}^{-1}$
+and $\appro {x_{k+1}} = \round (z_{k+1})$. As shown in \S\ref {ssec:mpcpowui},
+rounding of $z_{k+1}$ to the nearest implies that
+$z_{k+1} = \appro {x_{k+1}} (1 + \eta)$ with $|\eta| \leq 2^{-p}$.
+Then $\corr {x_{k+1}} = \appro {x_{k+1}} \frac {1 + \eta}{1 + \theta_k}
+= \appro {x_{k+1}} (1 + \theta_{k+1})$
+with
+\[
+|\theta_{k+1}| \leq \left| \frac {1 + \eta}{1 + \theta_k} - 1 \right|
+= \left| \frac {\eta - \theta_k}{1 + \theta_k} \right|
+\leq \frac {|\eta| + |\theta_k|}{1 - |\theta_k|}
+\leq \frac {(2 n -1) 2^{-p}}{1 - (2 n - 2) 2^{-p}}.
+\]
+If we assume that $(n - 1) 2^{-p} \leq \frac {1}{4}$ (instead of just
+being bounded by~$1$), then $|\theta_{k+1}| \leq (4 n - 2) 2^{-p}$,
+and the error estimates \eqref {eq:powui_re} and \eqref {eq:powui_im}
+apply after replacing $2n - 2$ by $4n - 2$.
+
+
 
 \bibliographystyle{acm}
 \bibliography{algorithms}
