@@ -19,22 +19,13 @@ along with the MPC Library; see the file COPYING.LIB.  If not, write to
 the Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston,
 MA 02111-1307, USA. */
 
-#include <limits.h> /* for CHAR_BIT */
 #include "mpc-impl.h"
 
 int
 mpc_pow_si (mpc_ptr z, mpc_srcptr x, long y, mpc_rnd_t rnd)
 {
    if (y >= 0)
-     return mpc_pow_ui (z, x, (unsigned long) y, rnd);
-   else {
-      mpc_t yy;
-      int inex;
-
-      mpc_init3 (yy, sizeof (unsigned long) * CHAR_BIT, MPFR_PREC_MIN);
-      mpc_set_si (yy, y, MPC_RNDNN);   /* exact */
-      inex = mpc_pow (z, x, yy, rnd);
-      mpc_clear (yy);
-      return inex;
-   }
+     return mpc_pow_usi (z, x, (unsigned long) y, 1, rnd);
+   else
+     return mpc_pow_usi (z, x, (unsigned long) (-y), -1, rnd);
 }
