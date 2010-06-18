@@ -671,12 +671,7 @@ next_rnd_mode (mpfr_rnd_t curr)
       case GMP_RNDU:
          return GMP_RNDD;
       default:
-         /* return invalid guard value in mpfr_rnd_t */
-#ifdef GMP_RNDNA /* mpfr < 3 */
-         return GMP_RNDNA;
-#else
-         return MPFR_RNDA; /* valid rounding type, but not (yet) used in mpc */
-#endif
+         return -1;
    }
 }
 
