@@ -78,9 +78,10 @@ mpc_pow_usi (mpc_ptr z, mpc_srcptr x, unsigned long y, int sign,
          return mpc_pow_usi_naive (z, x, y, sign, rnd);
    }
 
-   for (l = 0, u = y, has3 = u&3; u > 3; l ++, u >>= 1, has3 |= u&3);
-      /* l>0 is the number of bits of y, minus 2, thus y has bits:
-         y_{l+1} y_l y_{l-1} ... y_1 y_0 */
+   has3 = y & (y >> 1);
+   for (l = 0, u = y; u > 3; l ++, u >>= 1);
+   /* l>0 is the number of bits of y, minus 2, thus y has bits:
+      y_{l+1} y_l y_{l-1} ... y_1 y_0 */
    l0 = l + 2;
    p = MPC_MAX_PREC(z) + l0 + 32; /* l0 ensures that y*2^{-p} <= 1 below */
    mpc_init2 (t, p);
