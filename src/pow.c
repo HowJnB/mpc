@@ -406,7 +406,7 @@ mpc_pow (mpc_ptr z, mpc_srcptr x, mpc_srcptr y, mpc_rnd_t rnd)
 {
   int ret = -2, loop, x_real, y_real, z_real = 0, z_imag = 0;
   mpc_t t, u;
-  mpfr_prec_t p, q, pr, pi, maxprec;
+  mpfr_prec_t p, pr, pi, maxprec;
   long Q;
 
   x_real = mpfr_zero_p (MPC_IM(x));
@@ -560,32 +560,15 @@ mpc_pow (mpc_ptr z, mpc_srcptr x, mpc_srcptr y, mpc_rnd_t rnd)
             z_real = 1;
         }
 
-  /* first bound |Re(y log(x))|, |Im(y log(x)| < 2^q */
-  mpc_init2 (t, 64);
-  mpc_log (t, x, MPC_RNDNN);
-  mpc_mul (t, t, y, MPC_RNDNN);
-
-  /* the default maximum exponent for MPFR is emax=2^30-1, thus if
-     t > log(2^emax) = emax*log(2), then exp(t) will overflow */
-  if (mpfr_cmp_ui_2exp (MPC_RE(t), 372130558, 1) > 0)
-    goto overflow;
-
-  /* the default minimum exponent for MPFR is emin=-2^30+1, thus the
-     smallest representable value is 2^(emin-1), and if
-     t < log(2^(emin-1)) = (emin-1)*log(2), then exp(t) will underflow */
-  if (mpfr_cmp_si_2exp (MPC_RE(t), -372130558, 1) < 0)
-    goto underflow;
-
-  q = mpfr_get_exp (MPC_RE(t)) > 0 ? mpfr_get_exp (MPC_RE(t)) : 0;
-  if (mpfr_get_exp (MPC_IM(t)) > (mpfr_exp_t) q)
-    q = mpfr_get_exp (MPC_IM(t));
-
   pr = mpfr_get_prec (MPC_RE(z));
   pi = mpfr_get_prec (MPC_IM(z));
   p = (pr > pi) ? pr : pi;
   p += 12; /* experimentally, seems to give less than 10% of failures in
-              Ziv's strategy */
+              Ziv's strategy; probably wrong now since q is not computed      */
+  if (p < 64)
+    p = 64;
   mpc_init2 (u, p);
+  mpc_init2 (t, p);
   pr += MPC_RND_RE(rnd) == GMP_RNDN;
   pi += MPC_RND_IM(rnd) == GMP_RNDN;
   maxprec = MPFR_PREC(MPC_RE(z));
@@ -594,14 +577,30 @@ mpc_pow (mpc_ptr z, mpc_srcptr x, mpc_srcptr y, mpc_rnd_t rnd)
   for (loop = 0;; loop++)
     {
       mpfr_exp_t dr, di;
+      mpfr_prec_t q=0;
+         /* to avoid warning message, real initialisation below */
 
-      if (p + q > 64) /* otherwise we reuse the initial approximation
-                         t of y*log(x), avoiding two computations */
-        {
-          mpc_set_prec (t, p + q);
-          mpc_log (t, x, MPC_RNDNN);
-          mpc_mul (t, t, y, MPC_RNDNN);
-        }
+      mpc_log (t, x, MPC_RNDNN);
+      mpc_mul (t, t, y, MPC_RNDNN);
+
+      if (loop == 0) {
+         /* compute q such that |Re (y log x)|, |Im (y log x)| < 2^q */
+         q = mpfr_get_exp (MPC_RE(t)) > 0 ? mpfr_get_exp (MPC_RE(t)) : 0;
+         if (mpfr_get_exp (MPC_IM(t)) > (mpfr_exp_t) q)
+            q = mpfr_get_exp (MPC_IM(t));
+
+         /* the default maximum exponent for MPFR is emax=2^30-1, thus if
+            Re t > log(2^emax) = emax*log(2), then exp(t) will overflow */
+         if (mpfr_cmp_ui_2exp (MPC_RE(t), 372130558, 1) > 0)
+            goto overflow;
+
+         /* the default minimum exponent for MPFR is emin=-2^30+1, thus the
+            smallest representable value is 2^(emin-1), and if
+            Re t < log(2^(emin-1)) = (emin-1)*log(2), then exp(t) will underflow */
+         if (mpfr_cmp_si_2exp (MPC_RE(t), -372130558, 1) < 0)
+            goto underflow;
+      }
+
       mpc_exp (u, t, MPC_RNDNN);
       /* Since the error bound is global, we have to take into account the
          exponent difference between the real and imaginary parts. We assume
@@ -624,8 +623,8 @@ mpc_pow (mpc_ptr z, mpc_srcptr x, mpc_srcptr y, mpc_rnd_t rnd)
          (see algorithms.tex) plus one due to the exponent difference: if
          z = a + I*b, where the relative error on z is at most 2^(-p), and
          EXP(a) = EXP(b) + k, the relative error on b is at most 2^(k-p) */
-      if ((z_imag || mpfr_can_round (MPC_RE(u), p - 3 - dr, GMP_RNDN, GMP_RNDZ, pr)) &&
-          (z_real || mpfr_can_round (MPC_IM(u), p - 3 - di, GMP_RNDN, GMP_RNDZ, pi)))
+      if ((z_imag || mpfr_can_round (MPC_RE(u), p - q - 3 - dr, GMP_RNDN, GMP_RNDZ, pr)) &&
+          (z_real || mpfr_can_round (MPC_IM(u), p - q - 3 - di, GMP_RNDN, GMP_RNDZ, pi)))
         break;
 
       /* if Re(u) is not known to be zero, assume it is a normal number, i.e.,
@@ -649,7 +648,7 @@ mpc_pow (mpc_ptr z, mpc_srcptr x, mpc_srcptr y, mpc_rnd_t rnd)
         }
       else
         p += p / 2;
-      mpc_set_prec (t, p + q);
+      mpc_set_prec (t, p);
       mpc_set_prec (u, p);
     }
 
@@ -710,7 +709,7 @@ mpc_pow (mpc_ptr z, mpc_srcptr x, mpc_srcptr y, mpc_rnd_t rnd)
      FIXME: this part of code is not 100% rigorous, since we don't consider
      rounding errors.
   */
-  mpc_init2 (u, 64);
+  mpc_set_prec (u, 64);
   mpfr_const_pi (MPC_RE(u), GMP_RNDN);
   mpfr_div_2exp (MPC_RE(u), MPC_RE(u), 1, GMP_RNDN); /* Pi/2 */
   mpfr_remquo (MPC_RE(u), &Q, MPC_IM(t), MPC_RE(u), GMP_RNDN);
@@ -747,7 +746,7 @@ mpc_pow (mpc_ptr z, mpc_srcptr x, mpc_srcptr y, mpc_rnd_t rnd)
      FIXME: this part of code is not 100% rigorous, since we don't consider
      rounding errors.
   */
-  mpc_init2 (u, 64);
+  mpc_set_prec (u, 64);
   mpfr_const_pi (MPC_RE(u), GMP_RNDN);
   mpfr_div_2exp (MPC_RE(u), MPC_RE(u), 1, GMP_RNDN); /* Pi/2 */
   /* the quotient is rounded to the nearest integer in mpfr_remquo */
