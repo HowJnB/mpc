@@ -27,7 +27,7 @@ mpc_sin (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
   mpfr_t x, y, z;
   mpfr_prec_t prec;
   int ok = 0;
-  int inex_re, inex_im;
+  int inex_re, inex_im, overflow_re, overflow_im;
   mp_exp_t emin, emax;
 
   /* special values */
@@ -150,15 +150,32 @@ mpc_sin (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
 
       mpfr_sin_cos (x, y, MPC_RE(op), GMP_RNDN);
       mpfr_cosh (z, MPC_IM(op), GMP_RNDN);
-      mpfr_mul (x, x, z, GMP_RNDN);
-      ok = mpfr_can_round (x, prec - 2, GMP_RNDN, GMP_RNDZ,
-                      MPFR_PREC(MPC_RE(rop)) + (MPC_RND_RE(rnd) == GMP_RNDN));
+      if ((overflow_re = (mpfr_inf_p (z) != 0)))
+        {
+          /* we assume global overflow on sin(re)*cosh(re) */
+          mpfr_set_inf (x, mpfr_sgn (x));
+          ok = 1;
+        }
+      else
+        {
+          mpfr_mul (x, x, z, GMP_RNDN);
+          ok = mpfr_can_round (x, prec - 2, GMP_RNDN, GMP_RNDZ,
+                       MPFR_PREC(MPC_RE(rop)) + (MPC_RND_RE(rnd) == GMP_RNDN));
+        }
       if (ok) /* compute imaginary part */
         {
           mpfr_sinh (z, MPC_IM(op), GMP_RNDN);
-          mpfr_mul (y, y, z, GMP_RNDN);
-          ok = mpfr_can_round (y, prec - 2, GMP_RNDN, GMP_RNDZ,
-                      MPFR_PREC(MPC_IM(rop)) + (MPC_RND_IM(rnd) == GMP_RNDN));
+          if ((overflow_im = (mpfr_inf_p (z) != 0)))
+            {
+              mpfr_set_inf (y, mpfr_sgn (y) * mpfr_sgn (z));
+              ok = 1;
+            }
+          else
+            {
+              mpfr_mul (y, y, z, GMP_RNDN);
+              ok = mpfr_can_round (y, prec - 2, GMP_RNDN, GMP_RNDZ,
+                       MPFR_PREC(MPC_IM(rop)) + (MPC_RND_IM(rnd) == GMP_RNDN));
+            }
         }
     }
   while (ok == 0);
@@ -175,6 +192,11 @@ mpc_sin (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
 
   inex_re = mpfr_check_range (MPC_RE(rop), inex_re, MPC_RND_RE(rnd));
   inex_im = mpfr_check_range (MPC_IM(rop), inex_im, MPC_RND_IM(rnd));
+
+  if (overflow_re)
+    inex_re = mpfr_sgn (MPC_RE(rop));
+  if (overflow_im)
+    inex_im = mpfr_sgn (MPC_IM(rop));
 
   return MPC_INEX (inex_re, inex_im);
 }

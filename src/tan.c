@@ -246,6 +246,22 @@ mpc_tan (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
           ok = mpfr_inf_p (MPC_IM (x))
             || mpfr_can_round (MPC_IM(x), prec - 6, GMP_RNDN, GMP_RNDZ,
                       MPFR_PREC(MPC_IM(rop)) + (MPC_RND_IM(rnd) == GMP_RNDN));
+          
+          /* Im(tan(x+I*y)) is sinh(y)*cosh(y)/(cos(x)^2+sinh(y)^2).
+             For large y it is near one, more precisely:
+             1 <= |tan(x+I*y)| <= cosh(y)/sinh(y) = (1+exp(-2y))/(1-exp(-2y))
+             <= 1 + exp(1-2y) for y >= 0.67.
+             This is realized for y >= p * log(2)/2 + 1/2.
+          */
+          if (ok == 0)
+            mpfr_dump (MPC_IM(x));
+          if (ok == 0 && mpfr_cmp_ui (MPC_IM(x), 1) == 0)
+            {
+              long q = 8 * (MPFR_PREC(MPC_IM(rop)) / 23) + 9;
+              if (mpfr_cmp_ui (MPC_IM(op), q) > 0 ||
+                  mpfr_cmp_si (MPC_IM(op), -q) < 0)
+                ok = 1;
+            }
         }
     }
   while (ok == 0);
