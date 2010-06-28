@@ -1,3 +1,5 @@
 - No checks are made for intermediate overflows, which may occur
   in the middle of the algorithms although the final result
   may be representable.
+  More precisely for cos(x+i*y) = cos(x)*cosh(y) - sin(x)*sinh(y)*I,
+  if an overflow occurs in cosh(y), we assume cos(x)*cosh(y) overflows too.
