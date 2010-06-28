@@ -1,6 +1,6 @@
 /* test file for mpc_sin.
 
-Copyright (C) 2007, 2008 Andreas Enge, Paul Zimmermann, Philippe Th\'eveny
+Copyright (C) 2007, 2008, 2010 Andreas Enge, Paul Zimmermann, Philippe Th\'eveny
 
 This file is part of the MPC Library.
 
@@ -28,6 +28,8 @@ main (void)
 
   test_start ();
 
+  mpfr_set_emin (mpfr_get_emin_min ());
+  mpfr_set_emax (mpfr_get_emax_max ());
   data_check (f, "sin.dat");
   tgeneric (f, 2, 512, 7, 7);
 

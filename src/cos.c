@@ -1,6 +1,6 @@
 /* mpc_cos -- cosine of a complex number.
 
-Copyright (C) 2008, 2009 Philippe Th\'eveny, Andreas Enge
+Copyright (C) 2008, 2009, 2010 Philippe Th\'eveny, Andreas Enge, Paul Zimmermann
 
 This file is part of the MPC Library.
 
@@ -28,6 +28,7 @@ mpc_cos (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
   mpfr_prec_t prec;
   int ok = 0;
   int inex_re, inex_im;
+  mp_exp_t emin, emax;
 
   /* special values */
   if (!mpfr_number_p (MPC_RE (op)) || !mpfr_number_p (MPC_IM (op)))
@@ -185,6 +186,10 @@ mpc_cos (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
   mpfr_init2 (y, 2);
   mpfr_init2 (z, 2);
 
+  emin = mpfr_get_emin ();
+  emax = mpfr_get_emax ();
+  mpfr_set_emin (mpfr_get_emin_min ());
+  mpfr_set_emax (mpfr_get_emax_max ());
   do
     {
       prec += mpc_ceil_log2 (prec) + 5;
@@ -215,6 +220,12 @@ mpc_cos (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
   mpfr_clear (x);
   mpfr_clear (y);
   mpfr_clear (z);
+
+  mpfr_set_emin (emin);
+  mpfr_set_emax (emax);
+
+  inex_re = mpfr_check_range (MPC_RE(rop), inex_re, MPC_RND_RE(rnd));
+  inex_im = mpfr_check_range (MPC_IM(rop), inex_im, MPC_RND_IM(rnd));
 
   return MPC_INEX (inex_re, inex_im);
 }

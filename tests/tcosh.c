@@ -1,6 +1,6 @@
 /* test file for mpc_cosh.
 
-Copyright (C) 2008, 2009 Philippe Th\'eveny, Paul Zimmermann, Andreas Enge
+Copyright (C) 2008, 2009, 2010 Philippe Th\'eveny, Paul Zimmermann, Andreas Enge
 
 This file is part of the MPC Library.
 
@@ -135,6 +135,8 @@ main (void)
 
   test_start ();
 
+  mpfr_set_emin (mpfr_get_emin_min ());
+  mpfr_set_emax (mpfr_get_emax_max ());
   data_check (f, "cosh.dat");
   tgeneric (f, 2, 512, 7, 7);
 

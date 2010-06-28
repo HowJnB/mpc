@@ -63,6 +63,8 @@ main (void)
 
   test_start ();
 
+  mpfr_set_emin (mpfr_get_emin_min ());
+  mpfr_set_emax (mpfr_get_emax_max ());
   data_check (f, "cos.dat");
   tgeneric (f, 2, 512, 7, 7);
 
