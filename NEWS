@@ -1,6 +1,8 @@
 Changes in version 0.8.3:
   - Speed-up of mpc_pow_si through binary exponentiation, and of
     mpc_pow_z when the exponent fits in a long
+  - Bug fixes:
+    - trigonometric functions: infinite loop due to overflow for large arguments
 
 Changes in version 0.8.2:
   - Speed-up of mpc_pow_ui through binary exponentiation
