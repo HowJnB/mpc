@@ -576,6 +576,7 @@ mpc_pow (mpc_ptr z, mpc_srcptr x, mpc_srcptr y, mpc_rnd_t rnd)
     maxprec = MPFR_PREC(MPC_IM(z));
   for (loop = 0;; loop++)
     {
+      int ret_exp;
       mpfr_exp_t dr, di;
       mpfr_prec_t q=0;
          /* to avoid warning message, real initialisation below */
@@ -589,11 +590,6 @@ mpc_pow (mpc_ptr z, mpc_srcptr x, mpc_srcptr y, mpc_rnd_t rnd)
          if (mpfr_get_exp (MPC_IM(t)) > (mpfr_exp_t) q)
             q = mpfr_get_exp (MPC_IM(t));
 
-         /* the default maximum exponent for MPFR is emax=2^30-1, thus if
-            Re t > log(2^emax) = emax*log(2), then exp(t) will overflow */
-         if (mpfr_cmp_ui_2exp (MPC_RE(t), 372130558, 1) > 0)
-            goto overflow;
-
          /* the default minimum exponent for MPFR is emin=-2^30+1, thus the
             smallest representable value is 2^(emin-1), and if
             Re t < log(2^(emin-1)) = (emin-1)*log(2), then exp(t) will underflow */
@@ -601,7 +597,15 @@ mpc_pow (mpc_ptr z, mpc_srcptr x, mpc_srcptr y, mpc_rnd_t rnd)
             goto underflow;
       }
 
-      mpc_exp (u, t, MPC_RNDNN);
+      mpfr_clear_flags ();
+      ret_exp = mpc_exp (u, t, MPC_RNDNN);
+      if (mpfr_overflow_p ()) {
+         mpc_set (z, u, MPC_RNDNN);
+            /* infinity. FIXME: potentially overflow in only one part of the result */
+         ret = ret_exp;
+         goto clear_t_and_u;
+      }
+
       /* Since the error bound is global, we have to take into account the
          exponent difference between the real and imaginary parts. We assume
          either the real or the imaginary part of u is not zero.
@@ -738,46 +742,7 @@ mpc_pow (mpc_ptr z, mpc_srcptr x, mpc_srcptr y, mpc_rnd_t rnd)
     }
   goto clear_t_and_u;
 
- overflow:
-  /* If we have an overflow, we know that |z| is too large to be
-     represented, but depending on arg(z), we should return +/-Inf +/- I*Inf.
-     We assume t is the approximation of y*log(x), thus we want
-     exp(t) = exp(Re(t))+exp(I*Im(t)).
-     FIXME: this part of code is not 100% rigorous, since we don't consider
-     rounding errors.
-  */
-  mpc_set_prec (u, 64);
-  mpfr_const_pi (MPC_RE(u), GMP_RNDN);
-  mpfr_div_2exp (MPC_RE(u), MPC_RE(u), 1, GMP_RNDN); /* Pi/2 */
-  /* the quotient is rounded to the nearest integer in mpfr_remquo */
-  mpfr_remquo (MPC_RE(u), &Q, MPC_IM(t), MPC_RE(u), GMP_RNDN);
-  if (mpfr_sgn (MPC_RE(u)) < 0)
-    Q--; /* corresponds to positive remainder */
-  switch (Q & 3)
-    {
-    case 0: /* first quadrant */
-      mpfr_set_inf (MPC_RE(z), 1);
-      mpfr_set_inf (MPC_IM(z), 1);
-      ret = MPC_INEX(1, 1);
-      break;
-    case 1: /* second quadrant */
-      mpfr_set_inf (MPC_RE(z), -1);
-      mpfr_set_inf (MPC_IM(z), 1);
-      ret = MPC_INEX(-1, 1);
-      break;
-    case 2: /* third quadrant */
-      mpfr_set_inf (MPC_RE(z), -1);
-      mpfr_set_inf (MPC_IM(z), -1);
-      ret = MPC_INEX(-1, -1);
-      break;
-    case 3: /* fourth quadrant */
-      mpfr_set_inf (MPC_RE(z), 1);
-      mpfr_set_inf (MPC_IM(z), -1);
-      ret = MPC_INEX(1, -1);
-      break;
-    }
-
- clear_t_and_u:
+clear_t_and_u:
   mpc_clear (t);
   mpc_clear (u);
   return ret;

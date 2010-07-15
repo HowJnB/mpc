@@ -1,6 +1,6 @@
 /* mpc_cos -- cosine of a complex number.
 
-Copyright (C) 2008, 2009 Philippe Th\'eveny, Andreas Enge
+Copyright (C) 2008, 2009, 2010 Philippe Th\'eveny, Andreas Enge
 
 This file is part of the MPC Library.
 
