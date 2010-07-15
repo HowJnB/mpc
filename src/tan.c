@@ -1,6 +1,6 @@
 /* mpc_tan -- tangent of a complex number.
 
-Copyright (C) 2008, 2009, 2010 Philippe Th\'eveny, Andreas Enge, Paul Zimmermann
+Copyright (C) 2008, 2009, 2010 Philippe Th\'eveny, Andreas Enge
 
 This file is part of the MPC Library.
 
@@ -19,7 +19,6 @@ along with the MPC Library; see the file COPYING.LIB.  If not, write to
 the Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston,
 MA 02111-1307, USA. */
 
-#include <limits.h> /* for LONG_MAX */
 #include "mpc-impl.h"
 
 int
@@ -29,8 +28,7 @@ mpc_tan (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
   mpfr_prec_t prec;
   mpfr_exp_t err;
   int ok = 0;
-  int inex, inex_re, inex_im;
-  mp_exp_t emin, emax;
+  int inex;
 
   /* special values */
   if (!mpfr_number_p (MPC_RE (op)) || !mpfr_number_p (MPC_IM (op)))
@@ -81,6 +79,7 @@ mpc_tan (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
             /* tan(+Inf +i*Inf) = +/-0 +i */
             {
               const int sign_re = mpfr_signbit (MPC_RE (op));
+              int inex_im;
 
               mpfr_set_ui (MPC_RE (rop), 0, MPC_RND_RE (rnd));
               mpfr_setsign (MPC_RE (rop), MPC_RE (rop), sign_re, GMP_RNDN);
@@ -106,6 +105,7 @@ mpc_tan (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
         {
           mpfr_t c;
           mpfr_t s;
+          int inex_im;
 
           mpfr_init (c);
           mpfr_init (s);
@@ -131,6 +131,8 @@ mpc_tan (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
     /* tan(-0 -i*y) = -0 +i*tanh(y), when y is finite. */
     /* tan(+0 +i*y) = +0 +i*tanh(y), when y is finite. */
     {
+      int inex_im;
+
       mpfr_set (MPC_RE (rop), MPC_RE (op), MPC_RND_RE (rnd));
       inex_im = mpfr_tanh (MPC_IM (rop), MPC_IM (op), MPC_RND_IM (rnd));
 
@@ -141,6 +143,8 @@ mpc_tan (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
     /* tan(x -i*0) = tan(x) -i*0, when x is finite. */
     /* tan(x +i*0) = tan(x) +i*0, when x is finite. */
     {
+      int inex_re;
+
       inex_re = mpfr_tan (MPC_RE (rop), MPC_RE (op), MPC_RND_RE (rnd));
       mpfr_set (MPC_IM (rop), MPC_IM (op), MPC_RND_IM (rnd));
 
@@ -174,10 +178,6 @@ mpc_tan (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
 
   err = 7;
 
-  emin = mpfr_get_emin ();
-  emax = mpfr_get_emax ();
-  mpfr_set_emin (mpfr_get_emin_min ());
-  mpfr_set_emax (mpfr_get_emax_max ());
   do
     {
       mpfr_exp_t k, exr, eyr, eyi, ezr;
@@ -231,51 +231,27 @@ mpc_tan (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
          k = Exp(Re(x))+Exp(Re(y))-2min{Exp(Re(y)), Exp(Im(y))}-Exp(Re(x/y))
          avoiding overflow */
       k = exr - ezr + MPC_MAX(-eyr, eyr - 2 * eyi);
-      /* warning: 5+k might overflow */
-      err = k < 2 ? 7 : (k == 2 ? 8 :
-                         ((k > (LONG_MAX - 5)) ? LONG_MAX : (5 + k)));
+      err = k < 2 ? 7 : (k == 2 ? 8 : (5 + k));
 
       /* Can the real part be rounded ? */
-      ok = mpfr_inf_p (MPC_RE (x))
-        || mpfr_can_round (MPC_RE(x), prec - err, GMP_RNDN, GMP_RNDZ,
+      ok = (!mpfr_number_p (MPC_RE (x)))
+           || mpfr_can_round (MPC_RE(x), prec - err, GMP_RNDN, GMP_RNDZ,
                       MPFR_PREC(MPC_RE(rop)) + (MPC_RND_RE(rnd) == GMP_RNDN));
 
       if (ok)
         {
           /* Can the imaginary part be rounded ? */
-          ok = mpfr_inf_p (MPC_IM (x))
-            || mpfr_can_round (MPC_IM(x), prec - 6, GMP_RNDN, GMP_RNDZ,
+          ok = (!mpfr_number_p (MPC_IM (x)))
+               || mpfr_can_round (MPC_IM(x), prec - 6, GMP_RNDN, GMP_RNDZ,
                       MPFR_PREC(MPC_IM(rop)) + (MPC_RND_IM(rnd) == GMP_RNDN));
-          
-          /* Im(tan(x+I*y)) is sinh(y)*cosh(y)/(cos(x)^2+sinh(y)^2).
-             For large y it is near one, more precisely:
-             1 <= |tan(x+I*y)| <= cosh(y)/sinh(y) = (1+exp(-2y))/(1-exp(-2y))
-             <= 1 + exp(1-2y) for y >= 0.67.
-             This is realized for y >= p * log(2)/2 + 1/2.
-          */
-          if (ok == 0)
-            mpfr_dump (MPC_IM(x));
-          if (ok == 0 && mpfr_cmp_ui (MPC_IM(x), 1) == 0)
-            {
-              long q = 8 * (MPFR_PREC(MPC_IM(rop)) / 23) + 9;
-              if (mpfr_cmp_ui (MPC_IM(op), q) > 0 ||
-                  mpfr_cmp_si (MPC_IM(op), -q) < 0)
-                ok = 1;
-            }
         }
     }
   while (ok == 0);
 
   inex = mpc_set (rop, x, rnd);
 
-  mpfr_set_emin (emin);
-  mpfr_set_emax (emax);
-
-  inex_re = mpfr_check_range (MPC_RE(rop), MPC_INEX_RE(inex), MPC_RND_RE(rnd));
-  inex_im = mpfr_check_range (MPC_IM(rop), MPC_INEX_IM(inex), MPC_RND_IM(rnd));
-
   mpc_clear (x);
   mpc_clear (y);
 
-  return MPC_INEX(inex_re, inex_im);
+  return inex;
 }
