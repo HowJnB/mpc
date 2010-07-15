@@ -1,6 +1,6 @@
 /* mpc_cos -- cosine of a complex number.
 
-Copyright (C) 2008, 2009, 2010 Philippe Th\'eveny, Andreas Enge, Paul Zimmermann
+Copyright (C) 2008, 2009 Philippe Th\'eveny, Andreas Enge
 
 This file is part of the MPC Library.
 
@@ -27,8 +27,7 @@ mpc_cos (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
   mpfr_t x, y, z;
   mpfr_prec_t prec;
   int ok = 0;
-  int inex_re, inex_im, overflow_re, overflow_im;
-  mp_exp_t emin, emax;
+  int inex_re, inex_im;
 
   /* special values */
   if (!mpfr_number_p (MPC_RE (op)) || !mpfr_number_p (MPC_IM (op)))
@@ -186,10 +185,6 @@ mpc_cos (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
   mpfr_init2 (y, 2);
   mpfr_init2 (z, 2);
 
-  emin = mpfr_get_emin ();
-  emax = mpfr_get_emax ();
-  mpfr_set_emin (mpfr_get_emin_min ());
-  mpfr_set_emax (mpfr_get_emax_max ());
   do
     {
       prec += mpc_ceil_log2 (prec) + 5;
@@ -200,54 +195,32 @@ mpc_cos (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
 
       mpfr_sin_cos (y, x, MPC_RE(op), GMP_RNDN);
       mpfr_cosh (z, MPC_IM(op), GMP_RNDN);
-      if ((overflow_re = (mpfr_inf_p (z) != 0)))
-        {
-          /* we assume global overflow on cos(re)*cosh(re) */
-          mpfr_set_inf (x, mpfr_sgn (x));
-          ok = 1;
-        }
-      else
-        {
-          mpfr_mul (x, x, z, GMP_RNDN);
-          ok = mpfr_can_round (x, prec - 2, GMP_RNDN, GMP_RNDZ,
-                       MPFR_PREC(MPC_RE(rop)) + (MPC_RND_RE(rnd) == GMP_RNDN));
-        }
+      mpfr_mul (x, x, z, GMP_RNDN);
+      ok = (!mpfr_number_p (x))
+           || mpfr_can_round (x, prec - 2, GMP_RNDN, GMP_RNDZ,
+                      MPFR_PREC(MPC_RE(rop)) + (MPC_RND_RE(rnd) == GMP_RNDN));
       if (ok) /* compute imaginary part */
         {
           mpfr_sinh (z, MPC_IM(op), GMP_RNDN);
-          if ((overflow_im = (mpfr_inf_p (z) != 0)))
-            {
-              mpfr_set_inf (y, -mpfr_sgn (y) * mpfr_sgn (z));
-              ok = 1;
-            }
-          else
-            {
-              mpfr_mul (y, y, z, GMP_RNDN);
-              mpfr_neg (y, y, GMP_RNDN);
-              ok = mpfr_can_round (y, prec - 2, GMP_RNDN, GMP_RNDZ,
-                       MPFR_PREC(MPC_IM(rop)) + (MPC_RND_IM(rnd) == GMP_RNDN));
-            }
+          mpfr_mul (y, y, z, GMP_RNDN);
+          mpfr_neg (y, y, GMP_RNDN);
+          ok = (!mpfr_number_p (y))
+               || mpfr_can_round (y, prec - 2, GMP_RNDN, GMP_RNDZ,
+                      MPFR_PREC(MPC_IM(rop)) + (MPC_RND_IM(rnd) == GMP_RNDN));
         }
     }
   while (ok == 0);
 
   inex_re = mpfr_set (MPC_RE(rop), x, MPC_RND_RE(rnd));
+  if (mpfr_inf_p (x))
+     inex_re = mpfr_sgn (x);
   inex_im = mpfr_set (MPC_IM(rop), y, MPC_RND_IM(rnd));
+  if (mpfr_inf_p (y))
+     inex_im = mpfr_sgn (y);
 
   mpfr_clear (x);
   mpfr_clear (y);
   mpfr_clear (z);
-
-  mpfr_set_emin (emin);
-  mpfr_set_emax (emax);
-
-  inex_re = mpfr_check_range (MPC_RE(rop), inex_re, MPC_RND_RE(rnd));
-  inex_im = mpfr_check_range (MPC_IM(rop), inex_im, MPC_RND_IM(rnd));
-
-  if (overflow_re)
-    inex_re = mpfr_sgn (MPC_RE(rop));
-  if (overflow_im)
-    inex_im = mpfr_sgn (MPC_IM(rop));
 
   return MPC_INEX (inex_re, inex_im);
 }
