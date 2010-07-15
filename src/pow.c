@@ -598,8 +598,13 @@ mpc_pow (mpc_ptr z, mpc_srcptr x, mpc_srcptr y, mpc_rnd_t rnd)
          ret = ret_exp;
          goto clear_t_and_u;
       }
-      else if (mpfr_underflow_p ())
-         goto underflow;
+      else if (mpfr_underflow_p ()) {
+         mpc_set (z, u, MPC_RNDNN);
+            /* 0. FIXME: potentially overflow in only one part of the result */
+         ret = MPC_INEX ((mpfr_signbit (MPC_RE (u)) ? +1 : -1),
+                         (mpfr_signbit (MPC_IM (u)) ? +1 : -1));
+         goto clear_t_and_u;
+      }
 
       /* Since the error bound is global, we have to take into account the
          exponent difference between the real and imaginary parts. We assume
@@ -700,45 +705,6 @@ mpc_pow (mpc_ptr z, mpc_srcptr x, mpc_srcptr y, mpc_rnd_t rnd)
  end:
   return ret;
 
-underflow:
-{
-  /* If we have an underflow, we know that |z| is too small to be
-     represented, but depending on arg(z), we should return +/-0 +/- I*0.
-     We assume t is the approximation of y*log(x), thus we want
-     exp(t) = exp(Re(t))+exp(I*Im(t)).
-     FIXME: this part of code is not 100% rigorous, since we don't consider
-     rounding errors.
-  */
-  long Q;
-  mpc_set_prec (u, 64);
-  mpfr_const_pi (MPC_RE(u), GMP_RNDN);
-  mpfr_div_2exp (MPC_RE(u), MPC_RE(u), 1, GMP_RNDN); /* Pi/2 */
-  mpfr_remquo (MPC_RE(u), &Q, MPC_IM(t), MPC_RE(u), GMP_RNDN);
-  if (mpfr_sgn (MPC_RE(u)) < 0)
-    Q--; /* corresponds to positive remainder */
-  mpfr_set_ui (MPC_RE(z), 0, GMP_RNDN);
-  mpfr_set_ui (MPC_IM(z), 0, GMP_RNDN);
-  switch (Q & 3)
-    {
-    case 0: /* first quadrant: round to (+0 +0) */
-      ret = MPC_INEX(-1, -1);
-      break;
-    case 1: /* second quadrant: round to (-0 +0) */
-      mpfr_neg (MPC_RE(z), MPC_RE(z), GMP_RNDN);
-      ret = MPC_INEX(1, -1);
-      break;
-    case 2: /* third quadrant: round to (-0 -0) */
-      mpfr_neg (MPC_RE(z), MPC_RE(z), GMP_RNDN);
-      mpfr_neg (MPC_IM(z), MPC_IM(z), GMP_RNDN);
-      ret = MPC_INEX(1, 1);
-      break;
-    case 3: /* fourth quadrant: round to (+0 -0) */
-      mpfr_neg (MPC_IM(z), MPC_IM(z), GMP_RNDN);
-      ret = MPC_INEX(-1, 1);
-      break;
-    }
-  goto clear_t_and_u;
-}
 
 clear_t_and_u:
   mpc_clear (t);
