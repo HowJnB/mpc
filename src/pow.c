@@ -590,19 +590,13 @@ mpc_pow (mpc_ptr z, mpc_srcptr x, mpc_srcptr y, mpc_rnd_t rnd)
             q = mpfr_get_exp (MPC_IM(t));
       }
 
-      mpfr_clear_flags ();
+      mpfr_clear_overflow ();
+      mpfr_clear_underflow ();
       ret_exp = mpc_exp (u, t, MPC_RNDNN);
-      if (mpfr_overflow_p ()) {
+      if (mpfr_underflow_p () || mpfr_overflow_p ()) {
+         /* under- and overflow flags are set by mpc_exp */
          mpc_set (z, u, MPC_RNDNN);
-            /* infinity. FIXME: potentially overflow in only one part of the result */
          ret = ret_exp;
-         goto clear_t_and_u;
-      }
-      else if (mpfr_underflow_p ()) {
-         mpc_set (z, u, MPC_RNDNN);
-            /* 0. FIXME: potentially overflow in only one part of the result */
-         ret = MPC_INEX ((mpfr_signbit (MPC_RE (u)) ? +1 : -1),
-                         (mpfr_signbit (MPC_IM (u)) ? +1 : -1));
          goto clear_t_and_u;
       }
 

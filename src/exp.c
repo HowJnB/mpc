@@ -164,17 +164,19 @@ mpc_exp (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
 
       /* FIXME: x may overflow so x.y does overflow too, while Re(exp(op))
          could be represented in the precision of rop. */
+      mpfr_clear_overflow ();
+      mpfr_clear_underflow ();
       mpfr_exp (x, MPC_RE(op), GMP_RNDN);
       mpfr_sin_cos (z, y, MPC_IM(op), GMP_RNDN);
       mpfr_mul (y, y, x, GMP_RNDN);
 
-      ok = mpfr_inf_p (y) || mpfr_zero_p (x)
+      ok = mpfr_overflow_p () || mpfr_zero_p (x)
         || mpfr_can_round (y, prec - 2, GMP_RNDN, GMP_RNDZ,
                        MPFR_PREC(MPC_RE(rop)) + (MPC_RND_RE(rnd) == GMP_RNDN));
       if (ok) /* compute imaginary part */
         {
           mpfr_mul (z, z, x, GMP_RNDN);
-          ok = mpfr_inf_p (z) || mpfr_zero_p (x)
+          ok = mpfr_overflow_p () || mpfr_zero_p (x)
             || mpfr_can_round (z, prec - 2, GMP_RNDN, GMP_RNDZ,
                        MPFR_PREC(MPC_IM(rop)) + (MPC_RND_IM(rnd) == GMP_RNDN));
         }
@@ -182,11 +184,17 @@ mpc_exp (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
   while (ok == 0);
 
   inex_re = mpfr_set (MPC_RE(rop), y, MPC_RND_RE(rnd));
-  if (mpfr_inf_p (y))
-    inex_re = mpfr_sgn (y);
   inex_im = mpfr_set (MPC_IM(rop), z, MPC_RND_IM(rnd));
-  if (mpfr_inf_p (z))
+  if (mpfr_overflow_p ()) {
+    /* overflow in real exponential, inex is sign of infinite result */
+    inex_re = mpfr_sgn (y);
     inex_im = mpfr_sgn (z);
+  }
+  else if (mpfr_underflow_p ()) {
+    /* underflow in real exponential, inex is opposite of sign of 0 result */
+    inex_re = (mpfr_signbit (y) ? +1 : -1);
+    inex_im = (mpfr_signbit (z) ? +1 : -1);
+  }
 
   mpfr_clear (x);
   mpfr_clear (y);
