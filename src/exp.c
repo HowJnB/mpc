@@ -1,6 +1,6 @@
 /* mpc_exp -- exponential of a complex number.
 
-Copyright (C) 2002, 2009 Andreas Enge, Paul Zimmermann, Philippe Th\'eveny
+Copyright (C) 2002, 2009, 2010 Andreas Enge, Paul Zimmermann, Philippe Th\'eveny
 
 This file is part of the MPC Library.
 
@@ -182,7 +182,11 @@ mpc_exp (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
   while (ok == 0);
 
   inex_re = mpfr_set (MPC_RE(rop), y, MPC_RND_RE(rnd));
+  if (mpfr_inf_p (y))
+    inex_re = mpfr_sgn (y);
   inex_im = mpfr_set (MPC_IM(rop), z, MPC_RND_IM(rnd));
+  if (mpfr_inf_p (z))
+    inex_im = mpfr_sgn (z);
 
   mpfr_clear (x);
   mpfr_clear (y);
