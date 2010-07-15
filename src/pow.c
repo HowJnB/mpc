@@ -407,7 +407,6 @@ mpc_pow (mpc_ptr z, mpc_srcptr x, mpc_srcptr y, mpc_rnd_t rnd)
   int ret = -2, loop, x_real, y_real, z_real = 0, z_imag = 0;
   mpc_t t, u;
   mpfr_prec_t p, pr, pi, maxprec;
-  long Q;
 
   x_real = mpfr_zero_p (MPC_IM(x));
   y_real = mpfr_zero_p (MPC_IM(y));
@@ -589,12 +588,6 @@ mpc_pow (mpc_ptr z, mpc_srcptr x, mpc_srcptr y, mpc_rnd_t rnd)
          q = mpfr_get_exp (MPC_RE(t)) > 0 ? mpfr_get_exp (MPC_RE(t)) : 0;
          if (mpfr_get_exp (MPC_IM(t)) > (mpfr_exp_t) q)
             q = mpfr_get_exp (MPC_IM(t));
-
-         /* the default minimum exponent for MPFR is emin=-2^30+1, thus the
-            smallest representable value is 2^(emin-1), and if
-            Re t < log(2^(emin-1)) = (emin-1)*log(2), then exp(t) will underflow */
-         if (mpfr_cmp_si_2exp (MPC_RE(t), -372130558, 1) < 0)
-            goto underflow;
       }
 
       mpfr_clear_flags ();
@@ -605,6 +598,8 @@ mpc_pow (mpc_ptr z, mpc_srcptr x, mpc_srcptr y, mpc_rnd_t rnd)
          ret = ret_exp;
          goto clear_t_and_u;
       }
+      else if (mpfr_underflow_p ())
+         goto underflow;
 
       /* Since the error bound is global, we have to take into account the
          exponent difference between the real and imaginary parts. We assume
@@ -705,7 +700,8 @@ mpc_pow (mpc_ptr z, mpc_srcptr x, mpc_srcptr y, mpc_rnd_t rnd)
  end:
   return ret;
 
- underflow:
+underflow:
+{
   /* If we have an underflow, we know that |z| is too small to be
      represented, but depending on arg(z), we should return +/-0 +/- I*0.
      We assume t is the approximation of y*log(x), thus we want
@@ -713,6 +709,7 @@ mpc_pow (mpc_ptr z, mpc_srcptr x, mpc_srcptr y, mpc_rnd_t rnd)
      FIXME: this part of code is not 100% rigorous, since we don't consider
      rounding errors.
   */
+  long Q;
   mpc_set_prec (u, 64);
   mpfr_const_pi (MPC_RE(u), GMP_RNDN);
   mpfr_div_2exp (MPC_RE(u), MPC_RE(u), 1, GMP_RNDN); /* Pi/2 */
@@ -741,6 +738,7 @@ mpc_pow (mpc_ptr z, mpc_srcptr x, mpc_srcptr y, mpc_rnd_t rnd)
       break;
     }
   goto clear_t_and_u;
+}
 
 clear_t_and_u:
   mpc_clear (t);
