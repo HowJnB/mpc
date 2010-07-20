@@ -1,3 +1,5 @@
+- Overflow and underflow are not considered in all functions, which might
+  lead to some infinite loops.
 - No checks are made for intermediate over- or underflows, which may occur
   in the middle of the algorithms although the final result may be
   representable.

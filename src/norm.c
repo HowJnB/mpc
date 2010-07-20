@@ -1,6 +1,6 @@
 /* mpc_norm -- Square of the norm of a complex number.
 
-Copyright (C) 2002, 2005, 2008, 2009 Andreas Enge, Paul Zimmermann, Philippe Th\'eveny
+Copyright (C) 2002, 2005, 2008, 2009, 2010 Andreas Enge, Paul Zimmermann, Philippe Th\'eveny
 
 This file is part of the MPC Library.
 
@@ -27,7 +27,7 @@ mpc_norm (mpfr_ptr a, mpc_srcptr b, mpfr_rnd_t rnd)
 {
   mpfr_t u, v;
   mpfr_prec_t prec;
-  int inexact, overflow;
+  int inexact, overflow, underflow;
 
   prec = MPFR_PREC(a);
 
@@ -53,6 +53,10 @@ mpc_norm (mpfr_ptr a, mpc_srcptr b, mpfr_rnd_t rnd)
      mpfr_sqr (v, MPC_IM (b), GMP_RNDN);
      inexact = mpfr_add (a, u, v, rnd);
   }
+  else if (mpfr_zero_p(MPC_RE(b)) && mpfr_zero_p(MPC_IM(b)))
+    {
+      inexact = mpfr_set_ui (a, 0, rnd);
+    }
   else
   {
     do
@@ -67,11 +71,17 @@ mpc_norm (mpfr_ptr a, mpc_srcptr b, mpfr_rnd_t rnd)
         inexact |= mpfr_add (u, u, v, GMP_RNDN);      /* err <= 3/2 ulps */
 
         overflow = mpfr_inf_p (u);
+        underflow = mpfr_zero_p (u);
       }
-    while (!overflow && inexact &&
+    while (!overflow && !underflow && inexact &&
            mpfr_can_round (u, prec - 2, GMP_RNDN, rnd, MPFR_PREC(a)) == 0);
 
     inexact |= mpfr_set (a, u, rnd);
+
+    if (overflow)
+      inexact = 1;
+    if (underflow)
+      inexact = -1;
   }
   mpfr_clear (u);
   mpfr_clear (v);
