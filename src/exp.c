@@ -148,8 +148,13 @@ mpc_exp (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
 
   /* from now on, both parts of op are regular numbers */
 
-  prec = MPC_MAX_PREC(rop);
-
+  prec = MPC_MAX_PREC(rop)
+         + MPC_MAX (MPC_MAX (-mpfr_get_exp (MPC_RE (op)), 0),
+                   -mpfr_get_exp (MPC_IM (op)));
+    /* When op is close to 0, then exp is close to 1+Re(op), while
+       cos is close to 1-Im(op); to decide on the ternary value of exp*cos,
+       we need a high enough precision so that none of exp or cos is
+       computed as 1. */
   mpfr_init2 (x, 2);
   mpfr_init2 (y, 2);
   mpfr_init2 (z, 2);
@@ -166,10 +171,9 @@ mpc_exp (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
          could be represented in the precision of rop. */
       mpfr_clear_overflow ();
       mpfr_clear_underflow ();
-      mpfr_exp (x, MPC_RE(op), GMP_RNDN);
-      mpfr_sin_cos (z, y, MPC_IM(op), GMP_RNDN);
-      mpfr_mul (y, y, x, GMP_RNDN);
-
+      mpfr_exp (x, MPC_RE(op), GMP_RNDN); /* error <= 0.5ulp */
+      mpfr_sin_cos (z, y, MPC_IM(op), GMP_RNDN); /* errors <= 0.5ulp */
+      mpfr_mul (y, y, x, GMP_RNDN); /* error <= 2ulp */
       ok = mpfr_overflow_p () || mpfr_zero_p (x)
         || mpfr_can_round (y, prec - 2, GMP_RNDN, GMP_RNDZ,
                        MPFR_PREC(MPC_RE(rop)) + (MPC_RND_RE(rnd) == GMP_RNDN));

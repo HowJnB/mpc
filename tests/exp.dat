@@ -1,6 +1,6 @@
 # Data file for mpc_exp.
 #
-# Copyright (C) 2008, 2010 Philippe Th\'eveny, Andreas Enge
+# Copyright (C) 2008, 2010 Philippe Th\'eveny, Andreas Enge, Paul Zimmermann
 #
 # This file is part of the MPC Library.
 #
@@ -116,4 +116,5 @@
 # overflow
 - - 2 -inf 2 -inf  53 0x3312ae437f94441ec@-9 53 0xe45f7bab0595dd700@-10 N N
 
+# input close to 0
 ? ? 53 1 53 0x5D7A2148071Fp-7213522 53 0x1E02AE0D0F6Fp-7213521 53 0x5D7A2148071Fp-7213522 N N
