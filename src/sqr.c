@@ -1,6 +1,6 @@
 /* mpc_sqr -- Square a complex number.
 
-Copyright (C) 2002, 2005, 2008, 2009 Andreas Enge, Paul Zimmermann, Philippe Th\'eveny
+Copyright (C) 2002, 2005, 2008, 2009, 2010 Andreas Enge, Paul Zimmermann, Philippe Th\'eveny
 
 This file is part of the MPC Library.
 
@@ -95,8 +95,8 @@ mpc_sqr (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
    if (SAFE_ABS (mpfr_exp_t, MPFR_EXP (MPC_RE (op)) - MPFR_EXP (MPC_IM (op)))
        > (mpfr_exp_t) MPC_MAX_PREC (op) / 2)
    {
-      mpfr_init2 (u, 2*MPFR_PREC (MPC_RE (op)));
-      mpfr_init2 (v, 2*MPFR_PREC (MPC_IM (op)));
+      mpfr_init2 (u, 2*MPC_PREC_RE (op));
+      mpfr_init2 (v, 2*MPC_PREC_IM (op));
 
       mpfr_sqr (u, MPC_RE (op), GMP_RNDN);
       mpfr_sqr (v, MPC_IM (op), GMP_RNDN); /* both are exact */
@@ -115,7 +115,7 @@ mpc_sqr (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
 
    if (rop == op)
    {
-      mpfr_init2 (x, MPFR_PREC (op->re));
+      mpfr_init2 (x, MPC_PREC_RE (op));
       mpfr_set (x, op->re, GMP_RNDN);
    }
    else
@@ -183,7 +183,7 @@ mpc_sqr (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
               break;
             }
           ok = (!inexact) | mpfr_can_round (u, prec - 3, GMP_RNDU, GMP_RNDZ,
-               MPFR_PREC (MPC_RE (rop)) + (MPC_RND_RE (rnd) == GMP_RNDN));
+               MPC_PREC_RE (rop) + (MPC_RND_RE (rnd) == GMP_RNDN));
           if (ok)
             {
               inex_re = mpfr_set (MPC_RE (rop), u, MPC_RND_RE (rnd));
@@ -214,7 +214,7 @@ mpc_sqr (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
               break;
             }
           ok = (!inexact) | mpfr_can_round (u, prec - 3, GMP_RNDD, GMP_RNDZ,
-               MPFR_PREC (MPC_RE (rop)) + (MPC_RND_RE (rnd) == GMP_RNDN));
+               MPC_PREC_RE (rop) + (MPC_RND_RE (rnd) == GMP_RNDN));
           if (ok)
             {
               inex_re = mpfr_set (MPC_RE (rop), u, MPC_RND_RE (rnd));

@@ -211,7 +211,7 @@ mpc_div (mpc_ptr a, mpc_srcptr b, mpc_srcptr c, mpc_rnd_t rnd)
       mpc_ptr dest = (overlap) ? tmpa : a;
 
       if (overlap)
-         mpc_init3 (tmpa, MPFR_PREC (MPC_RE (a)), MPFR_PREC (MPC_IM (a)));
+         mpc_init3 (tmpa, MPC_PREC_RE (a), MPC_PREC_IM (a));
 
       cloc[0] = MPC_IM(c)[0]; /* copies mpfr struct IM(c) into cloc */
       inexact_re = mpfr_div (MPC_RE(dest), MPC_IM(b), cloc, MPC_RND_RE(rnd));
@@ -287,14 +287,14 @@ mpc_div (mpc_ptr a, mpc_srcptr b, mpc_srcptr c, mpc_rnd_t rnd)
             inexact_re |= mpfr_div (MPC_RE (res), MPC_RE (res), q, GMP_RNDU);
             ok_re = mpfr_inf_p (MPC_RE (res)) || mpfr_zero_p (MPC_RE (res)) ||
               mpfr_can_round (MPC_RE (res), prec - 4, GMP_RNDU,
-                              MPC_RND_RE(rnd), MPFR_PREC(MPC_RE(a)));
+                              MPC_RND_RE(rnd), MPC_PREC_RE(a));
          }
          else
          {
             inexact_re |= mpfr_div (MPC_RE (res), MPC_RE (res), q, GMP_RNDD);
             ok_re = mpfr_inf_p (MPC_RE (res)) || mpfr_zero_p (MPC_RE (res)) ||
               mpfr_can_round (MPC_RE (res), prec - 4, GMP_RNDD,
-                              MPC_RND_RE(rnd), MPFR_PREC(MPC_RE(a)));
+                              MPC_RND_RE(rnd), MPC_PREC_RE(a));
          }
 
          if (ok_re || !inexact_re) /* compute imaginary part */
@@ -303,13 +303,13 @@ mpc_div (mpc_ptr a, mpc_srcptr b, mpc_srcptr c, mpc_rnd_t rnd)
             {
                inexact_im |= mpfr_div (MPC_IM (res), MPC_IM (res), q, GMP_RNDU);
                ok_im = mpfr_can_round (MPC_IM (res), prec - 4, GMP_RNDU,
-                                       MPC_RND_IM(rnd), MPFR_PREC(MPC_IM(a)));
+                                       MPC_RND_IM(rnd), MPC_PREC_IM(a));
             }
             else
             {
                inexact_im |= mpfr_div (MPC_IM (res), MPC_IM (res), q, GMP_RNDD);
                ok_im = mpfr_can_round (MPC_IM (res), prec - 4, GMP_RNDD,
-                                       MPC_RND_IM(rnd), MPFR_PREC(MPC_IM(a)));
+                                       MPC_RND_IM(rnd), MPC_PREC_IM(a));
             }
          }
       }
@@ -332,7 +332,7 @@ mpc_div (mpc_ptr a, mpc_srcptr b, mpc_srcptr c, mpc_rnd_t rnd)
              || inexact_re;
            ok_re = mpfr_inf_p (MPC_RE (res)) || mpfr_zero_p (MPC_RE (res)) ||
              mpfr_can_round (MPC_RE (res), prec - 4, GMP_RNDU,
-                             MPC_RND_RE(rnd), MPFR_PREC(MPC_RE(a)));
+                             MPC_RND_RE(rnd), MPC_PREC_RE(a));
          }
          else
          {
@@ -340,7 +340,7 @@ mpc_div (mpc_ptr a, mpc_srcptr b, mpc_srcptr c, mpc_rnd_t rnd)
              || inexact_re;
            ok_re = mpfr_inf_p (MPC_RE (res)) || mpfr_zero_p (MPC_RE (res)) ||
              mpfr_can_round (MPC_RE (res), prec - 4, GMP_RNDD,
-                             MPC_RND_RE(rnd), MPFR_PREC(MPC_RE(a)));
+                             MPC_RND_RE(rnd), MPC_PREC_RE(a));
          }
 
          if (ok_re) /* compute imaginary part */
@@ -350,18 +350,18 @@ mpc_div (mpc_ptr a, mpc_srcptr b, mpc_srcptr c, mpc_rnd_t rnd)
               inexact_im = mpfr_mul (MPC_IM (res), MPC_IM (res), q, GMP_RNDU)
                 || inexact_im;
               ok_im = mpfr_can_round (MPC_IM (res), prec - 4, GMP_RNDU,
-                                      MPC_RND_IM(rnd), MPFR_PREC(MPC_IM(a)));
+                                      MPC_RND_IM(rnd), MPC_PREC_IM(a));
             }
             else
             {
               inexact_im = mpfr_mul (MPC_IM (res), MPC_IM (res), q, GMP_RNDD)
                 || inexact_im;
               ok_im = mpfr_can_round (MPC_IM (res), prec - 4, GMP_RNDD,
-                                      MPC_RND_IM(rnd), MPFR_PREC(MPC_IM(a)));
+                                      MPC_RND_IM(rnd), MPC_PREC_IM(a));
             }
          }
       }
-      
+
       /* check for overflow or underflow on the imaginary part */
       if (ok_im == 0 &&
           (mpfr_inf_p (MPC_IM (res)) || mpfr_zero_p (MPC_IM (res))))

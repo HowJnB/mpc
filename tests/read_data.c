@@ -559,7 +559,7 @@ data_check (mpc_function function, const char *file_name)
         {
         case FC: /* example mpc_norm */
           read_fc (fp, &inex_re, x1, &sign_real, z1, &mpfr_rnd);
-          mpfr_set_prec (x2, MPFR_PREC (x1));
+          mpfr_set_prec (x2, mpfr_get_prec (x1));
           inex = function.pointer.FC (x2, z1, mpfr_rnd);
           if ((inex_re != TERNARY_NOT_CHECKED && inex_re != inex)
               || !same_mpfr_value (x1, x2, sign_real))

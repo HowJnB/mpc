@@ -29,22 +29,6 @@ mpc_exp (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
   int ok = 0;
   int inex_re, inex_im;
 
-  /* let op = a + i*b, then exp(op) = exp(a)*[cos(b) + i*sin(b)]
-                                    = exp(a)*cos(b) + i*exp(a)*sin(b).
-
-     We use the following algorithm (same for the imaginary part):
-
-     (1) x = o(exp(a)) rounded towards +infinity:
-     (2) y = o(cos(b)) rounded to nearest
-     (3) r = o(x*y)
-     then the error on r for the real part is at most 4 ulps:
-     |r - exp(a)*cos(b)| <= ulp(r) + |x*y - exp(a)*cos(b)|
-                         <= ulp(r) + |x*y - exp(a)*y| + exp(a) * |y - cos(b)|
-                         <= ulp(r) + |y| ulp(x) + 1/2 * x * ulp(y)
-                         <= ulp(r) + 2 * ulp(x*y) + ulp(x*y) [Rule 4]
-                         <= 4 * ulp(r) [Rule 8]
-  */
-
   /* special values */
   if (mpfr_nan_p (MPC_RE (op)) || mpfr_nan_p (MPC_IM (op)))
     /* NaNs
@@ -176,13 +160,13 @@ mpc_exp (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
       mpfr_mul (y, y, x, GMP_RNDN); /* error <= 2ulp */
       ok = mpfr_overflow_p () || mpfr_zero_p (x)
         || mpfr_can_round (y, prec - 2, GMP_RNDN, GMP_RNDZ,
-                       MPFR_PREC(MPC_RE(rop)) + (MPC_RND_RE(rnd) == GMP_RNDN));
+                       MPC_PREC_RE(rop) + (MPC_RND_RE(rnd) == GMP_RNDN));
       if (ok) /* compute imaginary part */
         {
           mpfr_mul (z, z, x, GMP_RNDN);
           ok = mpfr_overflow_p () || mpfr_zero_p (x)
             || mpfr_can_round (z, prec - 2, GMP_RNDN, GMP_RNDZ,
-                       MPFR_PREC(MPC_IM(rop)) + (MPC_RND_IM(rnd) == GMP_RNDN));
+                       MPC_PREC_IM(rop) + (MPC_RND_IM(rnd) == GMP_RNDN));
         }
     }
   while (ok == 0);

@@ -29,7 +29,7 @@ mpc_norm (mpfr_ptr a, mpc_srcptr b, mpfr_rnd_t rnd)
   mpfr_prec_t prec;
   int inexact, overflow, underflow;
 
-  prec = MPFR_PREC(a);
+  prec = mpfr_get_prec (a);
 
   /* handling of special values; consistent with abs in that
      norm = abs^2; so norm (+-inf, nan) = norm (nan, +-inf) = +inf */
@@ -47,8 +47,8 @@ mpc_norm (mpfr_ptr a, mpc_srcptr b, mpfr_rnd_t rnd)
     /* generic code increases the precision too much. Instead, compute the */
     /* squarings _exactly_.                                                */
   {
-     mpfr_set_prec (u, 2 * MPFR_PREC (MPC_RE (b)));
-     mpfr_set_prec (v, 2 * MPFR_PREC (MPC_IM (b)));
+     mpfr_set_prec (u, 2 * MPC_PREC_RE (b));
+     mpfr_set_prec (v, 2 * MPC_PREC_IM (b));
      mpfr_sqr (u, MPC_RE (b), GMP_RNDN);
      mpfr_sqr (v, MPC_IM (b), GMP_RNDN);
      inexact = mpfr_add (a, u, v, rnd);
@@ -74,7 +74,7 @@ mpc_norm (mpfr_ptr a, mpc_srcptr b, mpfr_rnd_t rnd)
         underflow = mpfr_zero_p (u);
       }
     while (!overflow && !underflow && inexact &&
-           mpfr_can_round (u, prec - 2, GMP_RNDN, rnd, MPFR_PREC(a)) == 0);
+           mpfr_can_round (u, prec - 2, GMP_RNDN, rnd, mpfr_get_prec (a)) == 0);
 
     inexact |= mpfr_set (a, u, rnd);
 

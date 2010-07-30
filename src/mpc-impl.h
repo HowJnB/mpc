@@ -57,11 +57,10 @@ MA 02111-1307, USA. */
 #define BITS_PER_MP_LIMB mp_bits_per_limb
 #endif
 
-#define MPFR_PREC(x) mpfr_get_prec(x)
 #define MPFR_EXP(x)  mpfr_get_exp(x)
 
 #define MPFR_SIGNBIT(x) (mpfr_signbit (x) ? -1 : 1)
-#define MPC_MPFR_SIGN(x) (mpfr_zero_p (x)? 0 : MPFR_SIGNBIT (x))
+#define MPC_MPFR_SIGN(x) (mpfr_zero_p (x) ? 0 : MPFR_SIGNBIT (x))
    /* should be called MPFR_SIGN, but this is taken in mpfr.h */
 #define MPFR_CHANGE_SIGN(x) mpfr_neg(x,x,GMP_RNDN)
 #define MPFR_IS_SINGULAR(x) (mpfr_nan_p(x) || mpfr_inf_p(x) || mpfr_zero_p(x))
@@ -76,8 +75,8 @@ MA 02111-1307, USA. */
  * MPC macros
  */
 
-#define MPC_PREC_RE(x) (MPFR_PREC(MPC_RE(x)))
-#define MPC_PREC_IM(x) (MPFR_PREC(MPC_IM(x)))
+#define MPC_PREC_RE(x) (mpfr_get_prec(MPC_RE(x)))
+#define MPC_PREC_IM(x) (mpfr_get_prec(MPC_IM(x)))
 #define MPC_MAX_PREC(x) MPC_MAX(MPC_PREC_RE(x), MPC_PREC_IM(x))
 
 #define INV_RND(r) \

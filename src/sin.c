@@ -148,14 +148,14 @@ mpc_sin (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
       mpfr_mul (x, x, z, GMP_RNDN);
       ok = (!mpfr_number_p (x))
            || mpfr_can_round (x, prec - 2, GMP_RNDN, GMP_RNDZ,
-                      MPFR_PREC(MPC_RE(rop)) + (MPC_RND_RE(rnd) == GMP_RNDN));
+                      MPC_PREC_RE(rop) + (MPC_RND_RE(rnd) == GMP_RNDN));
       if (ok) /* compute imaginary part */
         {
           mpfr_sinh (z, MPC_IM(op), GMP_RNDN);
           mpfr_mul (y, y, z, GMP_RNDN);
           ok = (!mpfr_number_p (y))
                || mpfr_can_round (y, prec - 2, GMP_RNDN, GMP_RNDZ,
-                      MPFR_PREC(MPC_IM(rop)) + (MPC_RND_IM(rnd) == GMP_RNDN));
+                      MPC_PREC_IM(rop) + (MPC_RND_IM(rnd) == GMP_RNDN));
         }
     }
   while (ok == 0);

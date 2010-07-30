@@ -570,9 +570,7 @@ mpc_pow (mpc_ptr z, mpc_srcptr x, mpc_srcptr y, mpc_rnd_t rnd)
   mpc_init2 (t, p);
   pr += MPC_RND_RE(rnd) == GMP_RNDN;
   pi += MPC_RND_IM(rnd) == GMP_RNDN;
-  maxprec = MPFR_PREC(MPC_RE(z));
-  if (MPFR_PREC(MPC_IM(z)) > maxprec)
-    maxprec = MPFR_PREC(MPC_IM(z));
+  maxprec = MPC_MAX_PREC (z);
   for (loop = 0;; loop++)
     {
       int ret_exp;

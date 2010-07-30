@@ -1,6 +1,6 @@
 /* mpc_mul -- Multiply two complex numbers
 
-Copyright (C) 2002, 2004, 2005, 2008, 2009 Andreas Enge, Paul Zimmermann, Philippe Th\'eveny
+Copyright (C) 2002, 2004, 2005, 2008, 2009, 2010 Andreas Enge, Paul Zimmermann, Philippe Th\'eveny
 
 This file is part of the MPC Library.
 
@@ -222,7 +222,7 @@ mul_pure_imaginary (mpc_ptr a, mpc_srcptr u, mpfr_srcptr y, mpc_rnd_t rnd,
   mpc_t result;
 
   if (overlap)
-    mpc_init3 (result, MPFR_PREC (MPC_RE (a)), MPFR_PREC (MPC_IM (a)));
+    mpc_init3 (result, MPC_PREC_RE (a), MPC_PREC_IM (a));
   else
     result [0] = a [0];
 
@@ -259,7 +259,7 @@ mpc_mul_naive (mpc_ptr a, mpc_srcptr b, mpc_srcptr c, mpc_rnd_t rnd)
 
   if (overlap)
     {
-      mpfr_init2 (t, MPFR_PREC(MPC_RE(a)));
+      mpfr_init2 (t, MPC_PREC_RE(a));
       inex_re = mpfr_sub (t, u, v, MPC_RND_RE(rnd));
     }
   else
@@ -309,8 +309,7 @@ mpc_mul_karatsuba (mpc_ptr rop, mpc_srcptr op1, mpc_srcptr op2, mpc_rnd_t rnd)
 
   overlap = (rop == op1) || (rop == op2);
   if (overlap)
-     mpc_init3 (result, MPFR_PREC (MPC_RE (rop)),
-                        MPFR_PREC (MPC_IM (rop)));
+     mpc_init3 (result, MPC_PREC_RE (rop), MPC_PREC_IM (rop));
   else
      result [0] = rop [0];
 
@@ -342,12 +341,12 @@ mpc_mul_karatsuba (mpc_ptr rop, mpc_srcptr op1, mpc_srcptr op2, mpc_rnd_t rnd)
   /* find the precision and rounding mode for the new real part */
   if (mul_i % 2)
     {
-      prec_re = MPFR_PREC(MPC_IM(rop));
+      prec_re = MPC_PREC_IM(rop);
       rnd_re = MPC_RND_IM(rnd);
     }
   else /* mul_i = 0 or 2 */
     {
-      prec_re = MPFR_PREC(MPC_RE(rop));
+      prec_re = MPC_PREC_RE(rop);
       rnd_re = MPC_RND_RE(rnd);
     }
 
@@ -358,8 +357,8 @@ mpc_mul_karatsuba (mpc_ptr rop, mpc_srcptr op1, mpc_srcptr op2, mpc_rnd_t rnd)
   prec = MPC_MAX_PREC(rop);
 
   mpfr_init2 (u, 2);
-  mpfr_init2 (v, prec_v = MPFR_PREC(a) + MPFR_PREC(d));
-  mpfr_init2 (w, prec_w = MPFR_PREC(b) + MPFR_PREC(c));
+  mpfr_init2 (v, prec_v = mpfr_get_prec (a) + mpfr_get_prec (d));
+  mpfr_init2 (w, prec_w = mpfr_get_prec (b) + mpfr_get_prec (c));
   mpfr_init2 (x, 2);
 
   mpfr_mul (v, a, d, GMP_RNDN); /* exact */

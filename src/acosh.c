@@ -40,7 +40,7 @@ mpc_acosh (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
       mpfr_set_nan (MPC_IM (rop));
       return 0;
     }
-  
+
   /* Note reversal of precisions due to later multiplication by i or -i */
   mpc_init3 (a, MPC_PREC_IM(rop), MPC_PREC_RE(rop));
 

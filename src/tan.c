@@ -236,14 +236,14 @@ mpc_tan (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
       /* Can the real part be rounded ? */
       ok = (!mpfr_number_p (MPC_RE (x)))
            || mpfr_can_round (MPC_RE(x), prec - err, GMP_RNDN, GMP_RNDZ,
-                      MPFR_PREC(MPC_RE(rop)) + (MPC_RND_RE(rnd) == GMP_RNDN));
+                      MPC_PREC_RE(rop) + (MPC_RND_RE(rnd) == GMP_RNDN));
 
       if (ok)
         {
           /* Can the imaginary part be rounded ? */
           ok = (!mpfr_number_p (MPC_IM (x)))
                || mpfr_can_round (MPC_IM(x), prec - 6, GMP_RNDN, GMP_RNDZ,
-                      MPFR_PREC(MPC_IM(rop)) + (MPC_RND_IM(rnd) == GMP_RNDN));
+                      MPC_PREC_IM(rop) + (MPC_RND_IM(rnd) == GMP_RNDN));
         }
     }
   while (ok == 0);

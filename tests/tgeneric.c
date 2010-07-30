@@ -45,9 +45,9 @@ tgeneric_cc (mpc_function *function, mpc_ptr op, mpc_ptr rop,
 
   /* can't use the mpfr_can_round function when argument is singular,
      use a custom macro instead. */
-  if (MPFR_CAN_ROUND (MPC_RE (rop4), 1, MPFR_PREC (MPC_RE (rop)),
+  if (MPFR_CAN_ROUND (MPC_RE (rop4), 1, MPC_PREC_RE (rop),
                       MPC_RND_RE (rnd))
-      && MPFR_CAN_ROUND (MPC_IM (rop4), 1, MPFR_PREC (MPC_IM (rop)),
+      && MPFR_CAN_ROUND (MPC_IM (rop4), 1, MPC_PREC_IM (rop),
                          MPC_RND_IM (rnd)))
     mpc_set (rop4rnd, rop4, rnd);
   else
@@ -81,7 +81,7 @@ tgeneric_fc (mpc_function *function, mpc_ptr op, mpfr_ptr rop,
 {
   function->pointer.FC (rop4, op, rnd);
   function->pointer.FC (rop, op, rnd);
-  if (MPFR_CAN_ROUND (rop4, 1, MPFR_PREC (rop), rnd))
+  if (MPFR_CAN_ROUND (rop4, 1, mpfr_get_prec (rop), rnd))
     mpfr_set (rop4rnd, rop4, rnd);
   else
     return;
@@ -111,9 +111,9 @@ tgeneric_cfc (mpc_function *function, mpfr_ptr op1, mpc_ptr op2,
 
   function->pointer.CFC (rop4, op1, op2, rnd);
   function->pointer.CFC (rop, op1, op2, rnd);
-  if (MPFR_CAN_ROUND (MPC_RE (rop4), 1,  MPFR_PREC (MPC_RE (rop)),
+  if (MPFR_CAN_ROUND (MPC_RE (rop4), 1, MPC_PREC_RE (rop),
                       MPC_RND_RE (rnd))
-      && MPFR_CAN_ROUND (MPC_IM (rop4), 1,  MPFR_PREC (MPC_IM (rop)),
+      && MPFR_CAN_ROUND (MPC_IM (rop4), 1, MPC_PREC_IM (rop),
                          MPC_RND_IM (rnd)))
     mpc_set (rop4rnd, rop4, rnd);
   else
@@ -147,9 +147,9 @@ tgeneric_ccf (mpc_function *function, mpc_ptr op1, mpfr_ptr op2,
 
   function->pointer.CCF (rop4, op1, op2, rnd);
   function->pointer.CCF (rop, op1, op2, rnd);
-  if (MPFR_CAN_ROUND (MPC_RE (rop4), 1,  MPFR_PREC (MPC_RE (rop)),
+  if (MPFR_CAN_ROUND (MPC_RE (rop4), 1, MPC_PREC_RE (rop),
                       MPC_RND_RE (rnd))
-      && MPFR_CAN_ROUND (MPC_IM (rop4), 1,  MPFR_PREC (MPC_IM (rop)),
+      && MPFR_CAN_ROUND (MPC_IM (rop4), 1, MPC_PREC_IM (rop),
                          MPC_RND_IM (rnd)))
     mpc_set (rop4rnd, rop4, rnd);
   else
@@ -189,9 +189,9 @@ tgeneric_ccc (mpc_function *function, mpc_ptr op1, mpc_ptr op2,
   function->pointer.CCC (rop, op1, op2, rnd);
 
   /* can't use mpfr_can_round when argument is singular */
-  if (MPFR_CAN_ROUND (MPC_RE (rop4), 1, MPFR_PREC (MPC_RE (rop)),
+  if (MPFR_CAN_ROUND (MPC_RE (rop4), 1, MPC_PREC_RE (rop),
                       MPC_RND_RE (rnd))
-      && MPFR_CAN_ROUND (MPC_IM (rop4), 1, MPFR_PREC (MPC_IM (rop)),
+      && MPFR_CAN_ROUND (MPC_IM (rop4), 1, MPC_PREC_IM (rop),
                          MPC_RND_IM (rnd)))
     mpc_set (rop4rnd, rop4, rnd);
   else
@@ -227,9 +227,9 @@ tgeneric_ccu (mpc_function *function, mpc_ptr op1, unsigned long int op2,
 
   function->pointer.CCU (rop4, op1, op2, rnd);
   function->pointer.CCU (rop, op1, op2, rnd);
-  if (MPFR_CAN_ROUND (MPC_RE (rop4), 1,  MPFR_PREC (MPC_RE (rop)),
+  if (MPFR_CAN_ROUND (MPC_RE (rop4), 1, MPC_PREC_RE (rop),
                       MPC_RND_RE (rnd))
-      && MPFR_CAN_ROUND (MPC_IM (rop4), 1,  MPFR_PREC (MPC_IM (rop)),
+      && MPFR_CAN_ROUND (MPC_IM (rop4), 1, MPC_PREC_IM (rop),
                          MPC_RND_IM (rnd)))
     mpc_set (rop4rnd, rop4, rnd);
   else
@@ -263,9 +263,9 @@ tgeneric_cuc (mpc_function *function, unsigned long int op1, mpc_ptr op2,
 
   function->pointer.CUC (rop4, op1, op2, rnd);
   function->pointer.CUC (rop, op1, op2, rnd);
-  if (MPFR_CAN_ROUND (MPC_RE (rop4), 1,  MPFR_PREC (MPC_RE (rop)),
+  if (MPFR_CAN_ROUND (MPC_RE (rop4), 1, MPC_PREC_RE (rop),
                       MPC_RND_RE (rnd))
-      && MPFR_CAN_ROUND (MPC_IM (rop4), 1,  MPFR_PREC (MPC_IM (rop)),
+      && MPFR_CAN_ROUND (MPC_IM (rop4), 1, MPC_PREC_IM (rop),
                          MPC_RND_IM (rnd)))
     mpc_set (rop4rnd, rop4, rnd);
   else
@@ -299,9 +299,9 @@ tgeneric_ccs (mpc_function *function, mpc_ptr op1, long int op2,
 
   function->pointer.CCS (rop4, op1, op2, rnd);
   function->pointer.CCS (rop, op1, op2, rnd);
-  if (MPFR_CAN_ROUND (MPC_RE (rop4), 1,  MPFR_PREC (MPC_RE (rop)),
+  if (MPFR_CAN_ROUND (MPC_RE (rop4), 1, MPC_PREC_RE (rop),
                       MPC_RND_RE (rnd))
-      && MPFR_CAN_ROUND (MPC_IM (rop4), 1,  MPFR_PREC (MPC_IM (rop)),
+      && MPFR_CAN_ROUND (MPC_IM (rop4), 1, MPC_PREC_IM (rop),
                          MPC_RND_IM (rnd)))
     mpc_set (rop4rnd, rop4, rnd);
   else
@@ -336,9 +336,9 @@ tgeneric_cci (mpc_function *function, mpc_ptr op1, int op2,
 
   function->pointer.CCI (rop4, op1, op2, rnd);
   function->pointer.CCI (rop, op1, op2, rnd);
-  if (MPFR_CAN_ROUND (MPC_RE (rop4), 1,  MPFR_PREC (MPC_RE (rop)),
+  if (MPFR_CAN_ROUND (MPC_RE (rop4), 1, MPC_PREC_RE (rop),
                       MPC_RND_RE (rnd))
-      && MPFR_CAN_ROUND (MPC_IM (rop4), 1,  MPFR_PREC (MPC_IM (rop)),
+      && MPFR_CAN_ROUND (MPC_IM (rop4), 1, MPC_PREC_IM (rop),
                          MPC_RND_IM (rnd)))
     mpc_set (rop4rnd, rop4, rnd);
   else
@@ -373,9 +373,9 @@ tgeneric_cuuc (mpc_function *function, unsigned long int op1,
 
   function->pointer.CUUC (rop4, op1, op2, op3, rnd);
   function->pointer.CUUC (rop, op1, op2, op3, rnd);
-  if (MPFR_CAN_ROUND (MPC_RE (rop4), 1,  MPFR_PREC (MPC_RE (rop)),
+  if (MPFR_CAN_ROUND (MPC_RE (rop4), 1, MPC_PREC_RE (rop),
                       MPC_RND_RE (rnd))
-      && MPFR_CAN_ROUND (MPC_IM (rop4), 1,  MPFR_PREC (MPC_IM (rop)),
+      && MPFR_CAN_ROUND (MPC_IM (rop4), 1, MPC_PREC_IM (rop),
                          MPC_RND_IM (rnd)))
     mpc_set (rop4rnd, rop4, rnd);
   else

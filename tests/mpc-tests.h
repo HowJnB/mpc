@@ -1,6 +1,6 @@
 /* Tests helper functions.
 
-Copyright (C) 2008, 2009 Philippe Th\'eveny, Andreas Enge, Paul Zimmermann
+Copyright (C) 2008, 2009, 2010 Philippe Th\'eveny, Andreas Enge, Paul Zimmermann
 
 This file is part of the MPC Library.
 
@@ -29,7 +29,7 @@ MA 02111-1307, USA. */
 
 /** OUTPUT HELPER MACROS */
 #define MPFR_OUT(X) \
-  printf (#X" [%ld]=", MPFR_PREC (X));\
+  printf (#X" [%ld]=", mpfr_get_prec (X));\
   mpfr_out_str (stdout, 2, 0, (X), GMP_RNDN);\
   printf ("\n");
 

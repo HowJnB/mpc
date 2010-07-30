@@ -1,6 +1,6 @@
 /* mpc_sqrt -- Take the square root of a complex number.
 
-Copyright (C) 2002, 2008, 2009 Andreas Enge, Paul Zimmermann, Philippe Th\'eveny
+Copyright (C) 2002, 2008, 2009, 2010 Andreas Enge, Paul Zimmermann, Philippe Th\'eveny
 
 This file is part of the MPC Library.
 
@@ -119,7 +119,7 @@ mpc_sqrt (mpc_ptr a, mpc_srcptr b, mpc_rnd_t rnd)
         }
       else
         {
-          mpfr_init2 (w, MPFR_PREC (MPC_RE (b)));
+          mpfr_init2 (w, MPC_PREC_RE (b));
           mpfr_neg (w, MPC_RE (b), GMP_RNDN);
           if (im_sgn)
             {
@@ -166,16 +166,16 @@ mpc_sqrt (mpc_ptr a, mpc_srcptr b, mpc_rnd_t rnd)
   if (re_cmp >= 0)
     {
       rnd_w = MPC_RND_RE (rnd);
-      prec_w = MPFR_PREC (MPC_RE (a));
+      prec_w = MPC_PREC_RE (a);
       rnd_t = MPC_RND_IM(rnd);
-      prec_t = MPFR_PREC (MPC_IM (a));
+      prec_t = MPC_PREC_IM (a);
     }
   else
     {
       rnd_w = MPC_RND_IM(rnd);
-      prec_w = MPFR_PREC (MPC_IM (a));
+      prec_w = MPC_PREC_IM (a);
       rnd_t = MPC_RND_RE(rnd);
-      prec_t = MPFR_PREC (MPC_RE (a));
+      prec_t = MPC_PREC_RE (a);
       if (im_cmp < 0)
         {
           rnd_w = INV_RND(rnd_w);

@@ -133,9 +133,9 @@ mpc_pow_usi (mpc_ptr z, mpc_srcptr x, unsigned long y, int sign,
             and < 2^(diff+3) for diff >= 0 */
          ei = (diff <= -1) ? l0 + 3 : l0 + diff + 3;
          if (mpfr_can_round (MPC_RE(t), p - er, GMP_RNDZ, GMP_RNDZ,
-                              MPFR_PREC(MPC_RE(z)) + (MPC_RND_RE(rnd) == GMP_RNDN))
+                              MPC_PREC_RE(z) + (MPC_RND_RE(rnd) == GMP_RNDN))
                && mpfr_can_round (MPC_IM(t), p - ei, GMP_RNDZ, GMP_RNDZ,
-                              MPFR_PREC(MPC_IM(z)) + (MPC_RND_IM(rnd) == GMP_RNDN))) {
+                              MPC_PREC_IM(z) + (MPC_RND_IM(rnd) == GMP_RNDN))) {
             inex = mpc_set (z, t, rnd);
             done = 1;
          }
