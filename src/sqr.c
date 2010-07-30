@@ -92,7 +92,8 @@ mpc_sqr (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
    /* exponent, it is not reasonable to use Karatsuba squaring; compute    */
    /* exactly with the standard formulae instead, even if this means an    */
    /* additional multiplication.                                           */
-   if (SAFE_ABS (mpfr_exp_t, MPFR_EXP (MPC_RE (op)) - MPFR_EXP (MPC_IM (op)))
+   if (SAFE_ABS (mpfr_exp_t,
+                 mpfr_get_exp (MPC_RE (op)) - mpfr_get_exp (MPC_IM (op)))
        > (mpfr_exp_t) MPC_MAX_PREC (op) / 2)
    {
       mpfr_init2 (u, 2*MPC_PREC_RE (op));

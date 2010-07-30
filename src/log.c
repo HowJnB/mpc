@@ -1,6 +1,6 @@
 /* mpc_log -- Take the logarithm of a complex number.
 
-Copyright (C) 2008, 2009 Andreas Enge, Paul Zimmermann, Philippe Th\'eveny
+Copyright (C) 2008, 2009, 2010 Andreas Enge, Paul Zimmermann, Philippe Th\'eveny
 
 This file is part of the MPC Library.
 
@@ -132,10 +132,12 @@ mpc_log (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd){
          mpfr_log (w, w, GMP_RNDD);
          /* generic error of log: (2^(2 - exp(w)) + 1) ulp */
 
-         if (MPFR_EXP (w) >= 2)
-            ok = mpfr_can_round (w, prec - 2, GMP_RNDD, MPC_RND_RE(rnd), MPC_PREC_RE(rop));
+         if (mpfr_get_exp (w) >= 2)
+            ok = mpfr_can_round (w, prec - 2, GMP_RNDD,
+               MPC_RND_RE(rnd), MPC_PREC_RE(rop));
          else
-            ok = mpfr_can_round (w, prec - 3 + MPFR_EXP (w), GMP_RNDD, MPC_RND_RE(rnd), MPC_PREC_RE(rop));
+            ok = mpfr_can_round (w, prec - 3 + mpfr_get_exp (w), GMP_RNDD,
+               MPC_RND_RE(rnd), MPC_PREC_RE(rop));
       }
    } while (ok == 0);
 

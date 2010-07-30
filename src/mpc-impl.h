@@ -57,8 +57,6 @@ MA 02111-1307, USA. */
 #define BITS_PER_MP_LIMB mp_bits_per_limb
 #endif
 
-#define MPFR_EXP(x)  mpfr_get_exp(x)
-
 #define MPFR_SIGNBIT(x) (mpfr_signbit (x) ? -1 : 1)
 #define MPC_MPFR_SIGN(x) (mpfr_zero_p (x) ? 0 : MPFR_SIGNBIT (x))
    /* should be called MPFR_SIGN, but this is taken in mpfr.h */

@@ -111,9 +111,11 @@ mpc_mul (mpc_ptr a, mpc_srcptr b, mpc_srcptr c, mpc_rnd_t rnd)
 
   /* If the real and imaginary part of one argument have a very different */
   /* exponent, it is not reasonable to use Karatsuba multiplication.      */
-  if (   SAFE_ABS (mpfr_exp_t, MPFR_EXP (MPC_RE (b)) - MPFR_EXP (MPC_IM (b)))
+  if (   SAFE_ABS (mpfr_exp_t,
+                   mpfr_get_exp (MPC_RE (b)) - mpfr_get_exp (MPC_IM (b)))
          > (mpfr_exp_t) MPC_MAX_PREC (b) / 2
-         || SAFE_ABS (mpfr_exp_t, MPFR_EXP (MPC_RE (c)) - MPFR_EXP (MPC_IM (c)))
+      || SAFE_ABS (mpfr_exp_t,
+                   mpfr_get_exp (MPC_RE (c)) - mpfr_get_exp (MPC_IM (c)))
          > (mpfr_exp_t) MPC_MAX_PREC (c) / 2)
     return mpc_mul_naive (a, b, c, rnd);
   else
@@ -428,12 +430,9 @@ mpc_mul_karatsuba (mpc_ptr rop, mpc_srcptr op1, mpc_srcptr op2, mpc_rnd_t rnd)
              else if (mpfr_zero_p(w))
                prec_x = prec_v;
              else
-               {
-                 prec_x = (MPFR_EXP(v) > MPFR_EXP(w)) ? MPFR_EXP(v) - MPFR_EXP(w)
-                   : MPFR_EXP(w) - MPFR_EXP(v);
-                 prec_x += MPC_MAX (prec_v, prec_w) + 1;
-               }
-           /* +1 is necessary for a potential carry */
+                 prec_x = SAFE_ABS (mpfr_exp_t, mpfr_get_exp (v) - mpfr_get_exp (w))
+                          + MPC_MAX (prec_v, prec_w) + 1;
+                 /* +1 is necessary for a potential carry */
 	     /* ensure we do not use a too large precision */
 	     if (prec_x > prec_u)
                prec_x = prec_u;

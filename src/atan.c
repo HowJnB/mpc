@@ -202,8 +202,8 @@ mpc_atan (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
     /* real part: Re(arctan(x+i*y)) = [arctan2(x,1-y) - arctan2(-x,1+y)]/2 */
     minus_op_re[0] = MPC_RE (op)[0];
     MPFR_CHANGE_SIGN (minus_op_re);
-    op_re_exp = MPFR_EXP (MPC_RE (op));
-    op_im_exp = MPFR_EXP (MPC_IM (op));
+    op_re_exp = mpfr_get_exp (MPC_RE (op));
+    op_im_exp = mpfr_get_exp (MPC_IM (op));
 
     prec = mpfr_get_prec (MPC_RE (rop)); /* result precision */
 
@@ -248,7 +248,7 @@ mpc_atan (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
             err = 2; /* ensures err will be expo below */
           }
         else
-          err = MPFR_EXP (a); /* err = Exp(a) with the notations above */
+          err = mpfr_get_exp (a); /* err = Exp(a) with the notations above */
         mpfr_atan2 (x, MPC_RE (op), a, GMP_RNDU);
 
         /* b = lower bound for atan (-x/(1+y)): for x negative, we need a
@@ -264,13 +264,13 @@ mpc_atan (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
             expo = err; /* will leave err unchanged below */
           }
         else
-          expo = MPFR_EXP (a); /* expo = Exp(c) with the notations above */
+          expo = mpfr_get_exp (a); /* expo = Exp(c) with the notations above */
         mpfr_atan2 (b, minus_op_re, a, GMP_RNDD);
 
         err = err < expo ? err : expo; /* err = min(Exp(a),Exp(c)) */
         mpfr_sub (x, x, b, GMP_RNDU);
 
-        err = 5 + op_re_exp - err - MPFR_EXP (x);
+        err = 5 + op_re_exp - err - mpfr_get_exp (x);
         /* error is bounded by [1 + 2^err] ulp(e) */
         err = err < 0 ? 1 : err + 1;
 
@@ -331,9 +331,9 @@ mpc_atan (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
 
         mpfr_sub (y, a, b, GMP_RNDU);
 
-        expo = MPFR_EXP (a) < MPFR_EXP (b) ? MPFR_EXP (b) : MPFR_EXP (a);
-        expo = expo - MPFR_EXP (y) + 1;
-        err = 3 - MPFR_EXP (y);
+        expo = MPC_MAX (mpfr_get_exp (a), mpfr_get_exp (b));
+        expo = expo - mpfr_get_exp (y) + 1;
+        err = 3 - mpfr_get_exp (y);
         /* error(j) <= [1 + 2^expo + 7*2^err] ulp(j) */
         if (expo <= err) /* error(j) <= [1 + 2^{err+1}] ulp(j) */
           err = (err < 0) ? 1 : err + 2;
