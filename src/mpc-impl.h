@@ -23,13 +23,7 @@ MA 02111-1307, USA. */
 #define __MPC_IMPL_H
 
 #include <stdlib.h>
-
-#include "config.h" /* for MPC_USE_LOGGING */
-
-#ifndef __MPC_TESTS_H
-#define __MPC_WITHIN_MPC 1
-#endif
-
+#include "config.h"
 #include "mpc.h"
 
 #define MPC_RE(x) ((x)->re)
@@ -61,7 +55,6 @@ MA 02111-1307, USA. */
 #define MPC_MPFR_SIGN(x) (mpfr_zero_p (x) ? 0 : MPFR_SIGNBIT (x))
    /* should be called MPFR_SIGN, but this is taken in mpfr.h */
 #define MPFR_CHANGE_SIGN(x) mpfr_neg(x,x,GMP_RNDN)
-#define MPFR_IS_SINGULAR(x) (mpfr_nan_p(x) || mpfr_inf_p(x) || mpfr_zero_p(x))
 #define MPFR_COPYSIGN(x,y,z,rnd) (mpfr_nan_p (z) ? \
    mpfr_setsign (x, y, 0, rnd) : \
    mpfr_copysign (x, y, z, rnd))
