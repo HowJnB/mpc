@@ -26,7 +26,7 @@ MA 02111-1307, USA. */
 mpfr_prec_t
 mpc_ceil_log2 (mpfr_prec_t d)
 {
-  unsigned long exp;
+  mpfr_prec_t exp;
 
   for (exp = 0; d > 1; d = (d + 1) / 2)
     exp++;

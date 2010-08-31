@@ -110,7 +110,7 @@ mpc_pow_exact (mpc_ptr z, mpc_srcptr x, mpfr_srcptr y, mpc_rnd_t rnd,
 {
   mpfr_exp_t ec, ed, ey, emin, emax;
   mpz_t my, a, b, c, d, u;
-  unsigned long int t;
+  mp_bitcnt_t t;
   int ret = -2;
 
   mpz_init (my);
@@ -123,7 +123,7 @@ mpc_pow_exact (mpc_ptr z, mpc_srcptr x, mpfr_srcptr y, mpc_rnd_t rnd,
   ey = mpfr_get_z_exp (my, y);
   /* normalize so that my is odd */
   t = mpz_scan1 (my, 0);
-  ey += t;
+  ey += (mpfr_exp_t) t;
   mpz_tdiv_q_2exp (my, my, t);
 
   if (mpfr_zero_p (MPC_RE(x)))
@@ -148,14 +148,14 @@ mpc_pow_exact (mpc_ptr z, mpc_srcptr x, mpfr_srcptr y, mpc_rnd_t rnd,
   /* equalize the exponents of x */
   if (ec < ed)
     {
-      mpz_mul_2exp (d, d, ed - ec);
+      mpz_mul_2exp (d, d, (mp_bitcnt_t) (ed - ec));
       if ((mpfr_prec_t) mpz_sizeinbase (d, 2) > maxprec)
         goto end;
       ed = ec;
     }
   else if (ed < ec)
     {
-      mpz_mul_2exp (c, c, ec - ed);
+      mpz_mul_2exp (c, c, (mp_bitcnt_t) (ec - ed));
       if ((mpfr_prec_t) mpz_sizeinbase (c, 2) > maxprec)
         goto end;
       ec = ed;
@@ -167,13 +167,13 @@ mpc_pow_exact (mpc_ptr z, mpc_srcptr x, mpfr_srcptr y, mpc_rnd_t rnd,
     {
       t = mpz_scan1 (d, 0);
       mpz_tdiv_q_2exp (d, d, t);
-      ec += t;
+      ec += (mpfr_exp_t) t;
     }
   else if (mpz_cmp_ui (d, 0) == 0)
     {
       t = mpz_scan1 (c, 0);
       mpz_tdiv_q_2exp (c, c, t);
-      ec += t;
+      ec += (mpfr_exp_t) t;
     }
   else /* neither c nor d is zero */
     {
@@ -184,7 +184,7 @@ mpc_pow_exact (mpc_ptr z, mpc_srcptr x, mpfr_srcptr y, mpc_rnd_t rnd,
         t = v;
       mpz_tdiv_q_2exp (c, c, t);
       mpz_tdiv_q_2exp (d, d, t);
-      ec += t;
+      ec += (mpfr_exp_t) t;
     }
 
   /* now either one of c, d is odd */
@@ -240,7 +240,7 @@ mpc_pow_exact (mpc_ptr z, mpc_srcptr x, mpfr_srcptr y, mpc_rnd_t rnd,
         }
       /* replace (c,d) by (c/(c^2+d^2), -d/(c^2+d^2)) */
       mpz_neg (d, d);
-      ec = -ec - t;
+      ec = -ec - (mpfr_exp_t) t;
       mpz_neg (my, my);
     }
 
@@ -255,7 +255,7 @@ mpc_pow_exact (mpc_ptr z, mpc_srcptr x, mpfr_srcptr y, mpc_rnd_t rnd,
   /* invariant: (a + I*b) * 2^ed = ((c + I*d) * 2^ec)^trunc(my/2^t) */
   while (t-- > 0)
     {
-      unsigned long v, w;
+      mp_bitcnt_t v, w;
       /* square a + I*b */
       mpz_mul (u, a, b);
       mpz_mul (a, a, a);
@@ -276,13 +276,13 @@ mpc_pow_exact (mpc_ptr z, mpc_srcptr x, mpfr_srcptr y, mpc_rnd_t rnd,
         {
           w = mpz_scan1 (b, 0);
           mpz_tdiv_q_2exp (b, b, w);
-          ed += w;
+          ed += (mpfr_exp_t) w;
         }
       else if (mpz_cmp_ui (b, 0) == 0)
         {
           w = mpz_scan1 (a, 0);
           mpz_tdiv_q_2exp (a, a, w);
-          ed += w;
+          ed += (mpfr_exp_t) w;
         }
       else
         {
@@ -292,7 +292,7 @@ mpc_pow_exact (mpc_ptr z, mpc_srcptr x, mpfr_srcptr y, mpc_rnd_t rnd,
             w = v;
           mpz_tdiv_q_2exp (a, a, w);
           mpz_tdiv_q_2exp (b, b, w);
-          ed += w;
+          ed += (mpfr_exp_t) w;
         }
       if (   (mpfr_prec_t) mpz_sizeinbase (a, 2) > maxprec
           || (mpfr_prec_t) mpz_sizeinbase (b, 2) > maxprec)
@@ -318,7 +318,7 @@ mpc_pow_exact (mpc_ptr z, mpc_srcptr x, mpfr_srcptr y, mpc_rnd_t rnd,
       sa = (sa <= sb) ? sa : sb;
       mpz_tdiv_q_2exp (a, a, sa);
       mpz_tdiv_q_2exp (b, b, sa);
-      ed += sa;
+      ed += (mpfr_exp_t) sa;
 
       if (   (mpfr_prec_t) mpz_sizeinbase (a, 2) > maxprec
           || (mpfr_prec_t) mpz_sizeinbase (b, 2) > maxprec)

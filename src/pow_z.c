@@ -26,7 +26,7 @@ mpc_pow_z (mpc_ptr z, mpc_srcptr x, mpz_srcptr y, mpc_rnd_t rnd)
 {
    mpc_t yy;
    int inex;
-   size_t n = mpz_sizeinbase (y, 2);
+   mpfr_prec_t n = (mpfr_prec_t) mpz_sizeinbase (y, 2);
 
    /* if y fits in an unsigned long or long, call the corresponding functions,
       which are supposed to be more efficient */

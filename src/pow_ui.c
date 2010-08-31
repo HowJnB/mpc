@@ -48,8 +48,8 @@ mpc_pow_usi (mpc_ptr z, mpc_srcptr x, unsigned long y, int sign,
 {
    int inex;
    mpc_t t, x3;
-   mpfr_prec_t p;
-   unsigned long l, l0, u;
+   mpfr_prec_t p, l, l0;
+   long unsigned int u;
    int has3; /* non-zero if y has '11' in its binary representation */
    int loop, done;
 
@@ -78,7 +78,7 @@ mpc_pow_usi (mpc_ptr z, mpc_srcptr x, unsigned long y, int sign,
          return mpc_pow_usi_naive (z, x, y, sign, rnd);
    }
 
-   has3 = y & (y >> 1);
+   has3 = (y & (y >> 1)) != 0;
    for (l = 0, u = y; u > 3; l ++, u >>= 1);
    /* l>0 is the number of bits of y, minus 2, thus y has bits:
       y_{l+1} y_l y_{l-1} ... y_1 y_0 */

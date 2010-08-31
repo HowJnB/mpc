@@ -30,6 +30,6 @@ mpc_cmp_si_si (mpc_srcptr a, long int b, long int c)
 
   cmp_re = mpfr_cmp_si (MPC_RE(a), b);
   cmp_im = mpfr_cmp_si (MPC_IM(a), c);
-  
+
   return MPC_INEX(cmp_re, cmp_im);
 }
