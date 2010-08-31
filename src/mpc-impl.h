@@ -132,7 +132,7 @@ __MPC_DECLSPEC int  mpc_pow_usi __MPC_PROTO ((mpc_ptr, mpc_srcptr, unsigned long
 __MPC_DECLSPEC char* mpc_alloc_str __MPC_PROTO ((size_t));
 __MPC_DECLSPEC char* mpc_realloc_str __MPC_PROTO ((char*, size_t, size_t));
 __MPC_DECLSPEC void mpc_free_str __MPC_PROTO ((char*));
-__MPC_DECLSPEC mpfr_prec_t mpc_ceil_log2 __MPC_PROTO ((unsigned long));
+__MPC_DECLSPEC mpfr_prec_t mpc_ceil_log2 __MPC_PROTO ((mpfr_prec_t));
 
 #if defined (__cplusplus)
 }

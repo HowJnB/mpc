@@ -24,7 +24,7 @@ MA 02111-1307, USA. */
 /* returns ceil(log(d)/log(2)) if d > 0 */
 /* Don't use count_leading_zeros since it is in longlong.h */
 mpfr_prec_t
-mpc_ceil_log2 (unsigned long d)
+mpc_ceil_log2 (mpfr_prec_t d)
 {
   unsigned long exp;
 
