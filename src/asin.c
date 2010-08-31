@@ -1,6 +1,6 @@
 /* mpc_asin -- arcsine of a complex number.
 
-Copyright (C) 2009 Philippe Th\'eveny
+Copyright (C) 2009, 2010 Philippe Th\'eveny, Paul Zimmermann
 
 This file is part of the MPC Library.
 
@@ -26,7 +26,7 @@ extern int set_pi_over_2 (mpfr_ptr rop, int s, mpfr_rnd_t rnd);
 int
 mpc_asin (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
 {
-  mpfr_prec_t p, p_re, p_im;
+  mpfr_prec_t p, p_re, p_im, incr_p = 0;
   mpfr_rnd_t rnd_re, rnd_im;
   mpc_t z1;
   int inex;
@@ -151,7 +151,9 @@ mpc_asin (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
   while (1)
   {
     mpfr_exp_t ex, ey, err;
-    p += mpc_ceil_log2 (p) + 3;
+
+    p += mpc_ceil_log2 (p) + 3 + incr_p; /* incr_p is zero initially */
+    incr_p = p / 2;
     mpfr_set_prec (MPC_RE(z1), p);
     mpfr_set_prec (MPC_IM(z1), p);
 
