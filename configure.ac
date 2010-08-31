@@ -167,7 +167,7 @@ error
 
 # Checks for header files.
 AC_HEADER_STDC
-AC_CHECK_HEADERS([locale.h inttypes.h limits.h unistd.h sys/time.h])
+AC_CHECK_HEADERS([complex.h locale.h inttypes.h limits.h unistd.h sys/time.h])
 
 # Checks for typedefs, structures, and compiler characteristics.
 AC_C_CONST

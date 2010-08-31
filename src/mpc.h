@@ -51,6 +51,11 @@ MA 02111-1307, USA. */
 # define _MPC_H_HAVE_INTMAX_T 1
 #endif
 
+/* Check if complex.h is included */
+#if defined (_COMPLEX_H)
+# define _MPC_H_HAVE_COMPLEX 1
+#endif
+
 /* Return values */
 
 /* Transform negative to 2, positive to 1, leave 0 unchanged */
@@ -75,8 +80,8 @@ MA 02111-1307, USA. */
 typedef int mpc_rnd_t;
 
 #define RNDC(r1,r2) (((int)(r1)) + ((int)(r2) << 4))
-#define MPC_RND_RE(x) ((mp_rnd_t)((x) & 0x0F))
-#define MPC_RND_IM(x) ((mp_rnd_t)((x) >> 4))
+#define MPC_RND_RE(x) ((mpfr_rnd_t)((x) & 0x0F))
+#define MPC_RND_IM(x) ((mpfr_rnd_t)((x) >> 4))
 
 #define MPC_RNDNN RNDC(GMP_RNDN,GMP_RNDN)
 #define MPC_RNDNZ RNDC(GMP_RNDN,GMP_RNDZ)
@@ -163,8 +168,8 @@ __MPC_DECLSPEC int  mpc_div_2exp __MPC_PROTO ((mpc_ptr, mpc_srcptr, unsigned lon
 __MPC_DECLSPEC int  mpc_mul_2exp __MPC_PROTO ((mpc_ptr, mpc_srcptr, unsigned long int, mpc_rnd_t));
 __MPC_DECLSPEC int  mpc_conj  __MPC_PROTO ((mpc_ptr, mpc_srcptr, mpc_rnd_t));
 __MPC_DECLSPEC int  mpc_neg   __MPC_PROTO ((mpc_ptr, mpc_srcptr, mpc_rnd_t));
-__MPC_DECLSPEC int  mpc_norm  __MPC_PROTO ((mpfr_ptr, mpc_srcptr, mp_rnd_t));
-__MPC_DECLSPEC int  mpc_abs   __MPC_PROTO ((mpfr_ptr, mpc_srcptr, mp_rnd_t));
+__MPC_DECLSPEC int  mpc_norm  __MPC_PROTO ((mpfr_ptr, mpc_srcptr, mpfr_rnd_t));
+__MPC_DECLSPEC int  mpc_abs   __MPC_PROTO ((mpfr_ptr, mpc_srcptr, mpfr_rnd_t));
 __MPC_DECLSPEC int  mpc_sqrt  __MPC_PROTO ((mpc_ptr, mpc_srcptr, mpc_rnd_t));
 __MPC_DECLSPEC int  mpc_set       __MPC_PROTO ((mpc_ptr, mpc_srcptr, mpc_rnd_t));
 __MPC_DECLSPEC int  mpc_set_d     __MPC_PROTO ((mpc_ptr, double, mpc_rnd_t));
@@ -190,6 +195,13 @@ __MPC_DECLSPEC int  mpc_set_sj __MPC_PROTO ((mpc_ptr, intmax_t, mpc_rnd_t));
 __MPC_DECLSPEC int  mpc_set_uj __MPC_PROTO ((mpc_ptr, uintmax_t,  mpc_rnd_t));
 __MPC_DECLSPEC int  mpc_set_sj_sj __MPC_PROTO ((mpc_ptr, intmax_t, intmax_t, mpc_rnd_t));
 __MPC_DECLSPEC int  mpc_set_uj_uj __MPC_PROTO ((mpc_ptr, uintmax_t, uintmax_t, mpc_rnd_t));
+#endif
+
+#ifdef _MPC_H_HAVE_COMPLEX
+__MPC_DECLSPEC int  mpc_set_c __MPC_PROTO ((mpc_ptr, double _Complex, mpc_rnd_t));
+__MPC_DECLSPEC int  mpc_set_lc __MPC_PROTO ((mpc_ptr, long double _Complex, mpc_rnd_t));
+__MPC_DECLSPEC double _Complex  mpc_get_c __MPC_PROTO ((mpc_srcptr, mpc_rnd_t));
+__MPC_DECLSPEC long double _Complex  mpc_get_lc __MPC_PROTO ((mpc_srcptr, mpc_rnd_t));
 #endif
 
 __MPC_DECLSPEC void mpc_set_nan     __MPC_PROTO ((mpc_ptr));

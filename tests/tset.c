@@ -1,6 +1,6 @@
 /* tset.c -- Test file for mpc_set_x and mpc_set_x_x functions.
 
-Copyright (C) 2009 Philippe Th\'eveny, Paul Zimmermann, Andreas Enge
+Copyright (C) 2009, 2010 Philippe Th\'eveny, Paul Zimmermann, Andreas Enge
 
 This file is part of the MPC Library.
 
@@ -28,6 +28,10 @@ MA 02111-1307, USA. */
 # if HAVE_STDINT_H
 #  include <stdint.h>
 # endif
+#endif
+
+#if HAVE_COMPLEX_H
+# include <complex.h>
 #endif
 
 #ifdef HAVE_LOCALE_H
@@ -91,7 +95,13 @@ check_set (void)
 
       mpc_set_d (z, 1.23456789, MPC_RNDNN);
       if (mpfr_cmp (MPC_RE(z), fr) != 0 || mpfr_cmp_si (MPC_IM(z), 0) != 0)
-        PRINT_ERROR ("mpc_set", prec, z);
+        PRINT_ERROR ("mpc_set_d", prec, z);
+
+#if defined _MPC_H_HAVE_COMPLEX
+      mpc_set_c (z, I*1.23456789+1.23456789, MPC_RNDNN);
+      if (mpfr_cmp (MPC_RE(z), fr) != 0 || mpfr_cmp (MPC_IM(z), fr) != 0)
+        PRINT_ERROR ("mpc_set_c", prec, z);
+#endif
 
       mpc_set_ui (z, prec, MPC_RNDNN);
       if (mpfr_cmp_ui (MPC_RE(z), prec) != 0
@@ -112,6 +122,11 @@ check_set (void)
       if (mpfr_cmp (MPC_RE(z), fr) != 0 || mpfr_cmp (MPC_IM(z), fr) != 0)
         PRINT_ERROR ("mpc_set_ld_ld", prec, z);
 
+#if defined _MPC_H_HAVE_COMPLEX
+      mpc_set_lc (z, I*1.23456789L+1.23456789L, MPC_RNDNN);
+      if (mpfr_cmp (MPC_RE(z), fr) != 0 || mpfr_cmp (MPC_IM(z), fr) != 0)
+        PRINT_ERROR ("mpc_set_lc", prec, z);
+#endif
       mpc_set_ui_ui (z, prec, prec, MPC_RNDNN);
       if (mpfr_cmp_ui (MPC_RE(z), prec) != 0
           || mpfr_cmp_ui (MPC_IM(z), prec) != 0)
@@ -271,6 +286,20 @@ check_set (void)
           PRINT_ERROR ("mpc_set_sj_sj (2)", im, z);
       }
 #endif /* _MPC_H_HAVE_INTMAX_T */
+
+#if defined _MPC_H_HAVE_COMPLEX
+      {
+         double _Complex c = 1.0 - 2.0*I;
+         long double _Complex lc = c;
+
+         mpc_set_c (z, c, MPC_RNDNN);
+         if (mpc_get_c (z, MPC_RNDNN) != c)
+            PRINT_ERROR ("mpc_get_c", prec, z);
+         mpc_set_lc (z, lc, MPC_RNDNN);
+         if (mpc_get_lc (z, MPC_RNDNN) != lc)
+            PRINT_ERROR ("mpc_get_lc", prec, z);
+      }
+#endif
     }
 
   mpz_clear (mpz);

@@ -35,7 +35,7 @@ was introduced.
 @include version.texi
 
 @set AUTHORS Andreas Enge, Philippe Th@'eveny, Paul Zimmermann
-@set COPYRIGHTDATES 2002, 2003, 2004, 2005, 2007, 2008, 2009
+@set COPYRIGHTDATES 2002, 2003, 2004, 2005, 2007, 2008, 2009, 2010
 @ifinfo
 @format
 START-INFO-DIR-ENTRY
@@ -489,6 +489,7 @@ different word size.
 @menu
 * Initializing Complex Numbers::
 * Assigning Complex Numbers::
+* Converting Complex Numbers::
 * String and Stream Input and Output::
 * Complex Comparison::
 * Projection & Decomposing::
@@ -564,16 +565,20 @@ via @var{pi}.
 @end deftypefun
 
 
-@node Assigning Complex Numbers, String and Stream Input and Output, Initializing Complex Numbers, Complex Functions
+@node Assigning Complex Numbers, Converting Complex Numbers, Initializing Complex Numbers, Complex Functions
 @comment  node-name,  next,  previous,  up
 @section Assignment Functions
 @cindex Complex assignment functions
 
 These functions assign new values to already initialized complex numbers
 (@pxref{Initializing Complex Numbers}).
-When using any functions with @code{intmax_t} parameter, you must include
-@code{<stdint.h>} or @code{<inttypes.h>} before @file{mpc.h}, to allow
+When using any functions with @code{intmax_t} or @code{uintmax_t}
+parameters, you must include
+@code{<stdint.h>} or @code{<inttypes.h>} @emph{before} @file{mpc.h}, to allow
 @file{mpc.h} to define prototypes for these functions.
+Similarly, functions with parameters of type @code{complex} or
+@code{long complex} are defined only if @code{<complex.h>} is included
+@emph{before} @file{mpc.h}.
 If you need assignment functions that are not in the current API, you can
 define them using the @code{MPC_SET_X_Y} macro (@pxref{Advanced Functions}).
 
@@ -588,6 +593,8 @@ with the given rounding mode @var{rnd}.
 @deftypefunx int mpc_set_sj (mpc_t @var{rop}, intmax_t @var{op}, mpc_rnd_t @var{rnd})
 @deftypefunx int mpc_set_d (mpc_t @var{rop}, double @var{op}, mpc_rnd_t @var{rnd})
 @deftypefunx int mpc_set_ld (mpc_t @var{rop}, long double @var{op}, mpc_rnd_t @var{rnd})
+@deftypefunx int mpc_set_c (mpc_t @var{rop}, double _Complex @var{op}, mpc_rnd_t @var{rnd})
+@deftypefunx int mpc_set_lc (mpc_t @var{rop}, long double _Complex @var{op}, mpc_rnd_t @var{rnd})
 @deftypefunx int mpc_set_z (mpc_t @var{rop}, mpz_t @var{op} mpc_rnd_t @var{rnd})
 @deftypefunx int mpc_set_q (mpc_t @var{rop}, mpq_t @var{op} mpc_rnd_t @var{rnd})
 @deftypefunx int mpc_set_f (mpc_t @var{rop}, mpf_t @var{op} mpc_rnd_t @var{rnd})
@@ -639,7 +646,25 @@ third auxiliary variable.
 @end deftypefun
 
 
-@node String and Stream Input and Output, Complex Comparison, Assigning Complex Numbers, Complex Functions
+@node Converting Complex Numbers, String and Stream Input and Output, Assigning Complex Numbers, Complex Functions
+@comment  node-name,  next,  previous,  up
+@section Conversion Functions
+@cindex Conversion functions
+
+The following functions are available only if @code{<complex.h>}
+is included @emph{before} @file{mpc.h}.
+
+@deftypefun double _Complex mpc_get_c (mpc_t @var{op}, mpc_rnd_t @var{rnd})
+@deftypefunx {long double _Complex} mpc_get_lc (mpc_t @var{op}, mpc_rnd_t @var{rnd})
+Convert @var{op} to a C complex number, using the rounding mode @var{rnd}.
+@end deftypefun
+
+
+For functions converting complex variables to strings or stream output,
+@pxref{string-io,,String and Stream Input and Output}.
+
+
+@node String and Stream Input and Output, Complex Comparison, Converting Complex Numbers, Complex Functions
 @comment  node-name,  next,  previous,  up
 @cindex String and stream input and output
 @anchor{string-io}
