@@ -1,6 +1,6 @@
 /* mpc_acos -- arccosine of a complex number.
 
-Copyright (C) 2009 Philippe Th\'eveny, Paul Zimmermann
+Copyright (C) 2009, 2010 Philippe Th\'eveny, Paul Zimmermann
 
 This file is part of the MPC Library.
 
@@ -206,19 +206,22 @@ mpc_acos (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
       inex_im = MPC_INEX_IM(inex); /* inex_im is in {-1, 0, 1} */
       e2 = mpfr_get_exp (MPC_RE(z1));
       mpfr_sub (MPC_RE(z1), pi_over_2, MPC_RE(z1), GMP_RNDN);
-      /* the error on x=Re(z1) is bounded by 1/2 ulp(x) + 2^(e1-p-1) +
-         2^(e2-p-1) */
-      e1 = e1 >= e2 ? e1 + 1 : e2 + 1;
-      /* the error on x is bounded by 1/2 ulp(x) + 2^(e1-p-1) */
-      e1 -= mpfr_get_exp (MPC_RE(z1));
-      /* the error on x is bounded by 1/2 ulp(x) [1 + 2^e1] */
-      e1 = e1 <= 0 ? 0 : e1;
-      /* the error on x is bounded by 2^e1 * ulp(x) */
-      mpfr_neg (MPC_IM(z1), MPC_IM(z1), GMP_RNDN); /* exact */
-      inex_im = -inex_im;
-      if (mpfr_can_round (MPC_RE(z1), p - e1, GMP_RNDN, GMP_RNDZ,
-                          p_re + (MPC_RND_RE(rnd) == GMP_RNDN)))
-        break;
+      if (!mpfr_zero_p (MPC_RE(z1)))
+        {
+          /* the error on x=Re(z1) is bounded by 1/2 ulp(x) + 2^(e1-p-1) +
+             2^(e2-p-1) */
+          e1 = e1 >= e2 ? e1 + 1 : e2 + 1;
+          /* the error on x is bounded by 1/2 ulp(x) + 2^(e1-p-1) */
+          e1 -= mpfr_get_exp (MPC_RE(z1));
+          /* the error on x is bounded by 1/2 ulp(x) [1 + 2^e1] */
+          e1 = e1 <= 0 ? 0 : e1;
+          /* the error on x is bounded by 2^e1 * ulp(x) */
+          mpfr_neg (MPC_IM(z1), MPC_IM(z1), GMP_RNDN); /* exact */
+          inex_im = -inex_im;
+          if (mpfr_can_round (MPC_RE(z1), p - e1, GMP_RNDN, GMP_RNDZ,
+                              p_re + (MPC_RND_RE(rnd) == GMP_RNDN)))
+            break;
+        }
     }
   inex = mpc_set (rop, z1, rnd);
   inex_re = MPC_INEX_RE(inex);

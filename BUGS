@@ -9,7 +9,3 @@
   sin(x)*sinh(y) is representable. If furthermore an underflow occurred
   in sin(x) (which has not been observed in practice), then the return
   value would be NaN*(+-inf)=NaN.
-  As another example, tan is computed as sin/cos; if there is an overflow
-  in both sin and cos, then NaN+i*NaN is returned even if the result
-  may be representable.
-

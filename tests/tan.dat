@@ -126,9 +126,5 @@
 - + 9 -0x9bp-51 9 -1    9 -0x16dp-8 9 -0x77p-3   N N
 
 # huge values
-# should yield finite result as in commented lines, in particular simple imaginary part;
-# in current implementation, yields NaN due to intermediate overflow in sin and cos
-#- + 53 -0xE72F36A66DDF7p-2765858364927957 53 -1 53 0x4580CBF242683p-3 53 -0x1B3E8A3660D279p-3 N N
-#- - 53 -0xD10502370373Fp-441000018035230 53 1 53 -0x1B3E8A3660D279p-3 53 0x4580CBF242683p-3 N N
-0 0 53 nan 53 nan  53 0x4580CBF242683p-3 53 -0x1B3E8A3660D279p-3 N N
-0 0 53 nan 53 nan  53 -0x1B3E8A3660D279p-3 53 0x4580CBF242683p-3 N N
++ - 53 -0 53 -1  53 0x4580CBF242683p-3 53 -0x1B3E8A3660D279p-3 N N
++ + 53 -0 53 +1  53 -0x1B3E8A3660D279p-3 53 0x4580CBF242683p-3 N N

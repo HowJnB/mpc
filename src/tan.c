@@ -1,6 +1,6 @@
 /* mpc_tan -- tangent of a complex number.
 
-Copyright (C) 2008, 2009, 2010 Philippe Th\'eveny, Andreas Enge
+Copyright (C) 2008, 2009, 2010 Philippe Th\'eveny, Andreas Enge, Paul Zimmermann
 
 This file is part of the MPC Library.
 
@@ -19,6 +19,8 @@ along with the MPC Library; see the file COPYING.LIB.  If not, write to
 the Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston,
 MA 02111-1307, USA. */
 
+#include <stdio.h>    /* for MPC_ASSERT */
+#include <limits.h>
 #include "mpc-impl.h"
 
 int
@@ -181,6 +183,7 @@ mpc_tan (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
   do
     {
       mpfr_exp_t k, exr, eyr, eyi, ezr;
+      int isinf = 0;
 
       ok = 0;
 
@@ -193,16 +196,49 @@ mpc_tan (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
          above), sin x and cos y are never exact, so rounding away from 0 is
          rounding towards 0 and adding one ulp to the absolute value */
       mpc_sin (x, op, MPC_RNDZZ);
+      isinf = mpfr_inf_p (MPC_RE (x)) || mpfr_inf_p (MPC_IM (x));
+      /* if the real or imaginary part of x is infinite, it means that Im(op)
+         was large, in which case the result is
+         sign(tan(Re(op)))*0 + sign(Im(op))*I,
+         where sign(tan(Re(op))) = sign(Re(x))*sign(Re(y)) */
       mpfr_signbit (MPC_RE (x)) ?
         mpfr_nextbelow (MPC_RE (x)) : mpfr_nextabove (MPC_RE (x));
       mpfr_signbit (MPC_IM (x)) ?
         mpfr_nextbelow (MPC_IM (x)) : mpfr_nextabove (MPC_IM (x));
+      MPC_ASSERT (mpfr_zero_p (MPC_RE (x)) == 0);
       exr = mpfr_get_exp (MPC_RE (x));
       mpc_cos (y, op, MPC_RNDZZ);
+      isinf = isinf || mpfr_inf_p (MPC_RE (y)) || mpfr_inf_p (MPC_IM (y));
       mpfr_signbit (MPC_RE (y)) ?
         mpfr_nextbelow (MPC_RE (y)) : mpfr_nextabove (MPC_RE (y));
       mpfr_signbit (MPC_IM (y)) ?
         mpfr_nextbelow (MPC_IM (y)) : mpfr_nextabove (MPC_IM (y));
+
+      if (isinf)
+        {
+          int inex_re, inex_im;
+          mpfr_set_ui (MPC_RE (rop), 0, GMP_RNDN);
+          if (mpfr_sgn (MPC_RE (x)) * mpfr_sgn (MPC_RE (y)) < 0)
+            {
+              mpfr_neg (MPC_RE (rop), MPC_RE (rop), GMP_RNDN);
+              inex_re = 1;
+            }
+          else
+            inex_re = -1; /* +0 is rounded down */
+          if (mpfr_sgn (MPC_IM (op)) > 0)
+            {
+              mpfr_set_ui (MPC_IM (rop), 1, GMP_RNDN);
+              inex_im = 1;
+            }
+          else
+            {
+              mpfr_set_si (MPC_IM (rop), -1, GMP_RNDN);
+              inex_im = -1;
+            }
+          inex = MPC_INEX(inex_re, inex_im);
+          goto end;
+        }
+
       eyr = mpfr_get_exp (MPC_RE (y));
       eyi = mpfr_get_exp (MPC_IM (y));
 
@@ -225,6 +261,7 @@ mpc_tan (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
       if (MPC_INEX_IM (inex))
         mpfr_signbit (MPC_IM (x)) ?
           mpfr_nextbelow (MPC_IM (x)) : mpfr_nextabove (MPC_IM (x));
+      MPC_ASSERT (mpfr_zero_p (MPC_RE (x)) == 0);
       ezr = mpfr_get_exp (MPC_RE (x));
 
       /* FIXME: compute
@@ -233,14 +270,14 @@ mpc_tan (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
       k = exr - ezr + MPC_MAX(-eyr, eyr - 2 * eyi);
       err = k < 2 ? 7 : (k == 2 ? 8 : (5 + k));
 
-      /* Can the real part be rounded ? */
+      /* Can the real part be rounded? */
       ok = (!mpfr_number_p (MPC_RE (x)))
            || mpfr_can_round (MPC_RE(x), prec - err, GMP_RNDN, GMP_RNDZ,
                       MPC_PREC_RE(rop) + (MPC_RND_RE(rnd) == GMP_RNDN));
 
       if (ok)
         {
-          /* Can the imaginary part be rounded ? */
+          /* Can the imaginary part be rounded? */
           ok = (!mpfr_number_p (MPC_IM (x)))
                || mpfr_can_round (MPC_IM(x), prec - 6, GMP_RNDN, GMP_RNDZ,
                       MPC_PREC_IM(rop) + (MPC_RND_IM(rnd) == GMP_RNDN));
@@ -250,6 +287,7 @@ mpc_tan (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
 
   inex = mpc_set (rop, x, rnd);
 
+ end:
   mpc_clear (x);
   mpc_clear (y);
 

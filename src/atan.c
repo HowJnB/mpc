@@ -1,6 +1,6 @@
 /* mpc_atan -- arctangent of a complex number.
 
-Copyright (C) 2009 Philippe Th\'eveny, Paul Zimmermann
+Copyright (C) 2009, 2010 Philippe Th\'eveny, Paul Zimmermann
 
 This file is part of the MPC Library.
 
@@ -331,21 +331,26 @@ mpc_atan (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
 
         mpfr_sub (y, a, b, GMP_RNDU);
 
-        expo = MPC_MAX (mpfr_get_exp (a), mpfr_get_exp (b));
-        expo = expo - mpfr_get_exp (y) + 1;
-        err = 3 - mpfr_get_exp (y);
-        /* error(j) <= [1 + 2^expo + 7*2^err] ulp(j) */
-        if (expo <= err) /* error(j) <= [1 + 2^{err+1}] ulp(j) */
-          err = (err < 0) ? 1 : err + 2;
-        else
-          err = (expo < 0) ? 1 : expo + 2;
-
-        mpfr_div_2ui (y, y, 2, GMP_RNDN);
         if (mpfr_zero_p (y))
-          err = 2; /* underflow */
+          ok = 0;
+        else
+          {
+            expo = MPC_MAX (mpfr_get_exp (a), mpfr_get_exp (b));
+            expo = expo - mpfr_get_exp (y) + 1;
+            err = 3 - mpfr_get_exp (y);
+            /* error(j) <= [1 + 2^expo + 7*2^err] ulp(j) */
+            if (expo <= err) /* error(j) <= [1 + 2^{err+1}] ulp(j) */
+              err = (err < 0) ? 1 : err + 2;
+            else
+              err = (expo < 0) ? 1 : expo + 2;
 
-        ok = mpfr_can_round (y, p - err, GMP_RNDU, GMP_RNDD,
-                             prec + (MPC_RND_IM (rnd) == GMP_RNDN));
+            mpfr_div_2ui (y, y, 2, GMP_RNDN);
+            if (mpfr_zero_p (y))
+              err = 2; /* underflow */
+
+            ok = mpfr_can_round (y, p - err, GMP_RNDU, GMP_RNDD,
+                                 prec + (MPC_RND_IM (rnd) == GMP_RNDN));
+          }
       } while (ok == 0);
 
     inex = mpc_set_fr_fr (rop, x, y, rnd);
