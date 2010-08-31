@@ -168,7 +168,7 @@ read_string (FILE *fp, char **buffer_ptr, size_t buffer_length, const char *name
             }
           buffer_length *= 2;
         }
-      buffer[pos++] = nextchar;
+      buffer[pos++] = (char) nextchar;
       nextchar = getc (fp);
     }
 

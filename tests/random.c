@@ -1,6 +1,6 @@
 /* Handle seed for random numbers.
 
-Copyright (C) 2008, 2009 Philippe Th\'eveny, Paul Zimmermann, Andreas Enge
+Copyright (C) 2008, 2009, 2010 Philippe Th\'eveny, Paul Zimmermann, Andreas Enge
 
 This file is part of the MPC Library.
 
@@ -66,17 +66,17 @@ test_start (void)
       gmp_randseed_ui (rands, 0xfac11e);
   else
     {
-      seed = atoi (environment_seed);
+      seed = (unsigned long int) atoi (environment_seed);
       if (seed == 0 || seed == 1)
         {
 #if HAVE_GETTIMEOFDAY
           struct timeval  tv;
           gettimeofday (&tv, NULL);
-          seed = tv.tv_sec + tv.tv_usec;
+          seed = (unsigned long int) (tv.tv_sec + tv.tv_usec);
 #else
           time_t  tv;
           time (&tv);
-          seed = tv;
+          seed = (unsigned long int) tv;
 #endif
           gmp_randseed_ui (rands, seed);
           printf ("Seed GMP_CHECK_RANDOMIZE=%lu "
@@ -114,7 +114,7 @@ test_default_random (mpc_ptr z, mpfr_exp_t emin, mpfr_exp_t emax,
                      unsigned int negative_probability,
                      unsigned int zero_probability)
 {
-  const unsigned long range = (long)emax - (long)emin + 1;
+  const unsigned long range = (unsigned long int) (emax - emin) + 1;
   unsigned long r;
 
   if (!rands_initialized)

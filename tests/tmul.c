@@ -1,6 +1,6 @@
 /* tmul -- test file for mpc_mul.
 
-Copyright (C) 2002, 2005, 2008, 2009 Andreas Enge, Paul Zimmermann, Philippe Th\'eveny
+Copyright (C) 2002, 2005, 2008, 2009, 2010 Andreas Enge, Paul Zimmermann, Philippe Th\'eveny
 
 This file is part of the MPC Library.
 
@@ -134,7 +134,7 @@ check_regular (void)
   mpfr_set_str (MPC_IM (y), "-0xECp-146", 16, GMP_RNDN);
   cmpmul (x, y, MPC_RNDNN);
 
-  for (prec = 2; prec < 1000; prec = prec * 1.1 + 1)
+  for (prec = 2; prec < 1000; prec = (mpfr_prec_t) (prec * 1.1 + 1))
     {
       mpc_set_prec (x, prec);
       mpc_set_prec (y, prec);

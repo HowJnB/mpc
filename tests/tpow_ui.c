@@ -87,7 +87,7 @@ main (int argc, char *argv[])
   if (argc != 1)
     {
       mpfr_prec_t p;
-      unsigned long n, k;
+      long int n, k;
       mpc_t res;
       if (argc != 3 && argc != 4)
         {
@@ -96,14 +96,16 @@ main (int argc, char *argv[])
         }
       p = atoi (argv[1]);
       n = atoi (argv[2]);
+      MPC_ASSERT (n >= 0);
       k = (argc > 3) ? atoi (argv[3]) : 1;
+      MPC_ASSERT (k >= 0);
       mpc_init2 (z, p);
       mpc_init2 (res, p);
       mpfr_const_pi (mpc_realref (z), GMP_RNDN);
       mpfr_div_2exp (mpc_realref (z), mpc_realref (z), 2, GMP_RNDN);
       mpfr_const_log2 (mpc_imagref (z), GMP_RNDN);
       while (k--)
-        mpc_pow_ui (res, z, n, MPC_RNDNN);
+        mpc_pow_ui (res, z, (unsigned long int) n, MPC_RNDNN);
       mpc_clear (z);
       mpc_clear (res);
       return 0;
