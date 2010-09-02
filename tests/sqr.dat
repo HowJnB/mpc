@@ -1,6 +1,6 @@
 # Data file for mpc_sqr.
 #
-# Copyright (C) 2008 Philippe Th\'eveny, Andreas Enge
+# Copyright (C) 2008, 2010 Philippe Th\'eveny, Andreas Enge
 #
 # This file is part of the MPC Library.
 #
@@ -136,7 +136,7 @@
 # ...and a case where x+y or x-y are 0.
 0 0 4 0 4 2  4 1 4 1 N N
 
-# a few values, moved over from the test file
+# a few values, previously hard-coded in tsqr.c
 0 0 8 7 8 24  8 4 8 3 N N
 + + 8 0b1.1000111e-3 8 0b1.1100111e-3  27 0b1.11111011011000010101000000e-2 27 0b1.11010001010110111001110001e-3 N N
 

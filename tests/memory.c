@@ -31,6 +31,8 @@ MA 02110-1301, USA. */
 #define __gmp_default_reallocate(p,old,new) realloc(p,new)
 #define __gmp_default_free(p,size) free(p)
 
+#include "mpc-tests.h"
+
 /* Each block allocated is a separate malloc, for the benefit of a redzoning
    malloc debugger during development or when bug hunting.
 

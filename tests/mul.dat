@@ -1,6 +1,6 @@
 # Data file for mpc_mul
 #
-# Copyright (C) 2008 Philippe Th\'eveny, Andreas Enge, Paul Zimmermann
+# Copyright (C) 2008, 2010 Philippe Th\'eveny, Andreas Enge, Paul Zimmermann
 #
 # This file is part of the MPC Library.
 #
@@ -128,3 +128,6 @@
 + - 6 0x33p-315 6 0x9p-497     6   0x3p148 6  0x1dp-73  6  0x11p-463 6 0x3p-645  N N
 0 0 4 0x1p-1902 4 0x3p-1085    4 -0x1p-892 4 -0x3p-75   4 -0x1p-1010 4 0         N N
 
+# a few values, previously hard-coded in tmul.c
+0 0 8 10 8 -5  8 4 8 3  8 1 8 -2 N N
++ + 27 0b1.10110000001100010010000000e-3 27 0b1.00111100000010100001011001e-1  27 0b1.11111011011000010101000000e-2 27 0b1.11010001010110111001110001e-3  27 0b1.10100101110110011011100100e-1 27 0b1.10111100011000001100110011e-1 N N

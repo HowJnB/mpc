@@ -152,38 +152,6 @@ check_regular (void)
 }
 
 
-static void
-check_special (void)
-{
-  mpc_t x, y, z;
-  int inexact;
-
-  mpc_init2 (x, 8);
-  mpc_init2 (y, 8);
-  mpc_init2 (z, 8);
-
-  mpc_set_si_si (x, 4, 3, MPC_RNDNN);
-  mpc_set_si_si (y, 1, -2, MPC_RNDNN);
-  inexact = mpc_mul (z, x, y, MPC_RNDNN);
-  if (MPC_INEX_RE(inexact) || MPC_INEX_IM(inexact))
-    {
-      fprintf (stderr, "Error: (4+3*I)*(1-2*I) should be exact with prec=8\n");
-      exit (1);
-    }
-
-  mpc_set_prec (x, 27);
-  mpc_set_prec (y, 27);
-  mpfr_set_str (MPC_RE(x), "1.11111011011000010101000000e-2", 2, GMP_RNDN);
-  mpfr_set_str (MPC_IM(x), "1.11010001010110111001110001e-3", 2, GMP_RNDN);
-  mpfr_set_str (MPC_RE(y), "1.10100101110110011011100100e-1", 2, GMP_RNDN);
-  mpfr_set_str (MPC_IM(y), "1.10111100011000001100110011e-1", 2, GMP_RNDN);
-  cmpmul (x, y, 0);
-
-  mpc_clear (x);
-  mpc_clear (y);
-  mpc_clear (z);
-}
-
 #ifdef TIMING
 static void
 timemul (void)
@@ -243,7 +211,6 @@ main (void)
   timemul ();
 #endif
 
-  check_special ();
   check_regular ();
 
   data_check (f, "mul.dat");
