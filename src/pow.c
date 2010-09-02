@@ -110,7 +110,7 @@ mpc_pow_exact (mpc_ptr z, mpc_srcptr x, mpfr_srcptr y, mpc_rnd_t rnd,
 {
   mpfr_exp_t ec, ed, ey, emin, emax;
   mpz_t my, a, b, c, d, u;
-  mp_bitcnt_t t;
+  unsigned long int t;
   int ret = -2;
 
   mpz_init (my);
@@ -148,14 +148,14 @@ mpc_pow_exact (mpc_ptr z, mpc_srcptr x, mpfr_srcptr y, mpc_rnd_t rnd,
   /* equalize the exponents of x */
   if (ec < ed)
     {
-      mpz_mul_2exp (d, d, (mp_bitcnt_t) (ed - ec));
+      mpz_mul_2exp (d, d, (unsigned long int) (ed - ec));
       if ((mpfr_prec_t) mpz_sizeinbase (d, 2) > maxprec)
         goto end;
       ed = ec;
     }
   else if (ed < ec)
     {
-      mpz_mul_2exp (c, c, (mp_bitcnt_t) (ec - ed));
+      mpz_mul_2exp (c, c, (unsigned long int) (ec - ed));
       if ((mpfr_prec_t) mpz_sizeinbase (c, 2) > maxprec)
         goto end;
       ec = ed;
@@ -255,7 +255,7 @@ mpc_pow_exact (mpc_ptr z, mpc_srcptr x, mpfr_srcptr y, mpc_rnd_t rnd,
   /* invariant: (a + I*b) * 2^ed = ((c + I*d) * 2^ec)^trunc(my/2^t) */
   while (t-- > 0)
     {
-      mp_bitcnt_t v, w;
+      unsigned long int v, w;
       /* square a + I*b */
       mpz_mul (u, a, b);
       mpz_mul (a, a, a);
