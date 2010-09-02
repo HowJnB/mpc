@@ -1,6 +1,6 @@
 /* tmul_i -- test file for mpc_mul_i.
 
-Copyright (C) 2008, 2009 Philippe Theveny
+Copyright (C) 2008, 2009, 2010 Philippe Theveny, Andreas Enge
 
 This file is part of the MPC Library.
 
@@ -22,10 +22,10 @@ MA 02111-1307, USA. */
 #include "mpc-tests.h"
 
 static void
-check_different_precisions()
+check_different_precisions(void)
 {
   /* check reuse when real and imaginary part have different precisions. */
-  mpc_t z, expected, got;  
+  mpc_t z, expected, got;
   int res;
 
   mpc_init2(z, 128);

@@ -653,7 +653,7 @@ reuse_cuuc (mpc_function* function, unsigned long ul1, unsigned long ul2,
 
 /* helper functions for iterating over mpfr rounding modes */
 static mpfr_rnd_t
-first_rnd_mode ()
+first_rnd_mode (void)
 {
    return GMP_RNDN;
 }

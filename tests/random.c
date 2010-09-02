@@ -69,7 +69,7 @@ test_start (void)
       seed = (unsigned long int) atoi (environment_seed);
       if (seed == 0 || seed == 1)
         {
-#if HAVE_GETTIMEOFDAY
+#if defined HAVE_GETTIMEOFDAY
           struct timeval  tv;
           gettimeofday (&tv, NULL);
           seed = (unsigned long int) (tv.tv_sec + tv.tv_usec);

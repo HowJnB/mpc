@@ -117,6 +117,11 @@ AC_DEFUN([MPC_PROG_CC_WARNINGCFLAGS], [
       AX_C_CHECK_FLAG(-Wall,,,$1="$$1 -Wall",)
       AX_C_CHECK_FLAG(-Wextra,,,$1="$$1 -Wextra",)
       AX_C_CHECK_FLAG(-Werror,,,$1="$$1 -Werror",)
+      AX_C_CHECK_FLAG(-Wdeclaration-after-statement,,,$1="$$1 -Wdeclaration-after-statement",)
+      AX_C_CHECK_FLAG(-Wundef,,,$1="$$1 -Wundef",)
+      AX_C_CHECK_FLAG(-Wshadow,,,$1="$$1 -Wshadow",)
+      AX_C_CHECK_FLAG(-Wstrict-prototypes,,,$1="$$1 -Wstrict-prototypes",)
+      AX_C_CHECK_FLAG(-Wmissing-prototypes,,,$1="$$1 -Wmissing-prototypes",)
       AC_SUBST($1)
     fi
   fi
