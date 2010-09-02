@@ -100,7 +100,7 @@ check_set (void)
         PRINT_ERROR ("mpc_set_d", prec, z);
 
 #if defined _MPC_H_HAVE_COMPLEX
-      mpc_set_c (z, I*1.23456789+1.23456789, MPC_RNDNN);
+      mpc_set_dc (z, I*1.23456789+1.23456789, MPC_RNDNN);
       if (mpfr_cmp (MPC_RE(z), fr) != 0 || mpfr_cmp (MPC_IM(z), fr) != 0)
         PRINT_ERROR ("mpc_set_c", prec, z);
 #endif
@@ -125,7 +125,7 @@ check_set (void)
         PRINT_ERROR ("mpc_set_ld_ld", prec, z);
 
 #if defined _MPC_H_HAVE_COMPLEX
-      mpc_set_lc (z, I*1.23456789L+1.23456789L, MPC_RNDNN);
+      mpc_set_ldc (z, I*1.23456789L+1.23456789L, MPC_RNDNN);
       if (mpfr_cmp (MPC_RE(z), fr) != 0 || mpfr_cmp (MPC_IM(z), fr) != 0)
         PRINT_ERROR ("mpc_set_lc", prec, z);
 #endif
@@ -294,11 +294,11 @@ check_set (void)
          double _Complex c = 1.0 - 2.0*I;
          long double _Complex lc = c;
 
-         mpc_set_c (z, c, MPC_RNDNN);
-         if (mpc_get_c (z, MPC_RNDNN) != c)
+         mpc_set_dc (z, c, MPC_RNDNN);
+         if (mpc_get_dc (z, MPC_RNDNN) != c)
             PRINT_ERROR ("mpc_get_c", prec, z);
-         mpc_set_lc (z, lc, MPC_RNDNN);
-         if (mpc_get_lc (z, MPC_RNDNN) != lc)
+         mpc_set_ldc (z, lc, MPC_RNDNN);
+         if (mpc_get_ldc (z, MPC_RNDNN) != lc)
             PRINT_ERROR ("mpc_get_lc", prec, z);
       }
 #endif

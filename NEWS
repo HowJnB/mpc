@@ -1,8 +1,8 @@
 Changes in version 0.8.3:
   - New functions:
-    - mpc_set_c, mpc_set_lc, mpc_get_c, mpc_get_lc for converting between
-      mpc type variables and C variables of type double _Complex or
-      long double _Complex
+    - mpc_set_dc, mpc_set_ldc, mpc_get_dc, mpc_get_ldc for converting
+      between mpc type variables and C variables of type double _Complex
+      or long double _Complex
   - Speed-up of mpc_pow_si through binary exponentiation, and of
     mpc_pow_z when the exponent fits in a long
   - Bug fixes:

@@ -198,10 +198,10 @@ __MPC_DECLSPEC int  mpc_set_uj_uj __MPC_PROTO ((mpc_ptr, uintmax_t, uintmax_t, m
 #endif
 
 #ifdef _MPC_H_HAVE_COMPLEX
-__MPC_DECLSPEC int  mpc_set_c __MPC_PROTO ((mpc_ptr, double _Complex, mpc_rnd_t));
-__MPC_DECLSPEC int  mpc_set_lc __MPC_PROTO ((mpc_ptr, long double _Complex, mpc_rnd_t));
-__MPC_DECLSPEC double _Complex  mpc_get_c __MPC_PROTO ((mpc_srcptr, mpc_rnd_t));
-__MPC_DECLSPEC long double _Complex  mpc_get_lc __MPC_PROTO ((mpc_srcptr, mpc_rnd_t));
+__MPC_DECLSPEC int  mpc_set_dc __MPC_PROTO ((mpc_ptr, double _Complex, mpc_rnd_t));
+__MPC_DECLSPEC int  mpc_set_ldc __MPC_PROTO ((mpc_ptr, long double _Complex, mpc_rnd_t));
+__MPC_DECLSPEC double _Complex  mpc_get_dc __MPC_PROTO ((mpc_srcptr, mpc_rnd_t));
+__MPC_DECLSPEC long double _Complex  mpc_get_ldc __MPC_PROTO ((mpc_srcptr, mpc_rnd_t));
 #endif
 
 __MPC_DECLSPEC void mpc_set_nan     __MPC_PROTO ((mpc_ptr));

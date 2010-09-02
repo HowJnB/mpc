@@ -88,12 +88,12 @@ mpc_set_sj (mpc_ptr a, intmax_t b, mpc_rnd_t rnd)
 
 #ifdef _MPC_H_HAVE_COMPLEX
 int
-mpc_set_c (mpc_ptr a, double _Complex b, mpc_rnd_t rnd) {
+mpc_set_dc (mpc_ptr a, double _Complex b, mpc_rnd_t rnd) {
    return mpc_set_d_d (a, creal (b), cimag (b), rnd);
 }
 
 int
-mpc_set_lc (mpc_ptr a, long double _Complex b, mpc_rnd_t rnd) {
+mpc_set_ldc (mpc_ptr a, long double _Complex b, mpc_rnd_t rnd) {
    return mpc_set_ld_ld (a, creall (b), cimagl (b), rnd);
 }
 #endif
