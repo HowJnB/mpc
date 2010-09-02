@@ -299,7 +299,7 @@ read_int (FILE *fp, int *nread, const char *name)
   skip_whitespace_comments (fp);
 }
 
-void
+static void
 read_uint (FILE *fp, unsigned long int *ui)
 {
   int n = 0;

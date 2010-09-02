@@ -133,6 +133,7 @@ __MPC_DECLSPEC char* mpc_alloc_str __MPC_PROTO ((size_t));
 __MPC_DECLSPEC char* mpc_realloc_str __MPC_PROTO ((char*, size_t, size_t));
 __MPC_DECLSPEC void mpc_free_str __MPC_PROTO ((char*));
 __MPC_DECLSPEC mpfr_prec_t mpc_ceil_log2 __MPC_PROTO ((mpfr_prec_t));
+__MPC_DECLSPEC int set_pi_over_2 __MPC_PROTO ((mpfr_ptr, int, mpfr_rnd_t));
 
 #if defined (__cplusplus)
 }

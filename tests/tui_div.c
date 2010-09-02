@@ -21,7 +21,7 @@ MA 02111-1307, USA. */
 
 #include "mpc-tests.h"
 
-void
+static void
 special (void)
 {
   mpc_t a, b;

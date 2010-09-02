@@ -1,6 +1,6 @@
 /* tsqr -- test file for mpc_sqr.
 
-Copyright (C) 2002, 2005, 2008 Andreas Enge, Paul Zimmermann, Philippe Th\'eveny
+Copyright (C) 2002, 2005, 2008, 2010 Andreas Enge, Paul Zimmermann, Philippe Th\'eveny
 
 This file is part of the MPC Library.
 
@@ -23,11 +23,11 @@ MA 02111-1307, USA. */
 #include <stdlib.h>
 #include "mpc-tests.h"
 
-void cmpsqr (mpc_srcptr, mpc_rnd_t);
-void testsqr (long, long, mpfr_prec_t, mpc_rnd_t);
-void special (void);
+static void cmpsqr (mpc_srcptr, mpc_rnd_t);
+static void testsqr (long, long, mpfr_prec_t, mpc_rnd_t);
+static void special (void);
 
-void cmpsqr (mpc_srcptr x, mpc_rnd_t rnd)
+static void cmpsqr (mpc_srcptr x, mpc_rnd_t rnd)
    /* computes the square of x with the specific function or by simple     */
    /* multiplication using the rounding mode rnd and compares the results  */
    /* and return values.                                                   */
@@ -130,7 +130,7 @@ void cmpsqr (mpc_srcptr x, mpc_rnd_t rnd)
 }
 
 
-void
+static void
 testsqr (long a, long b, mpfr_prec_t prec, mpc_rnd_t rnd)
 {
   mpc_t x;
@@ -145,7 +145,7 @@ testsqr (long a, long b, mpfr_prec_t prec, mpc_rnd_t rnd)
 }
 
 
-void
+static void
 special (void)
 {
   mpc_t x, z;
@@ -172,7 +172,7 @@ special (void)
   mpc_clear (z);
 }
 
-void
+static void
 bugs (void)
 {
   mpc_t z1;
@@ -197,7 +197,7 @@ bugs (void)
 }
 
 /* infinite loop */
-void
+static void
 bug20090930 (void)
 {
   mpc_t rop, op;
@@ -212,7 +212,7 @@ bug20090930 (void)
 }
 
 /* other infinite loop */
-void
+static void
 bug20091001 (void)
 {
   mpc_t rop, op;

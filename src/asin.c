@@ -1,6 +1,6 @@
 /* mpc_asin -- arcsine of a complex number.
 
-Copyright (C) 2009, 2010 Philippe Th\'eveny, Paul Zimmermann
+Copyright (C) 2009, 2010 Philippe Th\'eveny, Paul Zimmermann, Andreas Enge
 
 This file is part of the MPC Library.
 
@@ -20,8 +20,6 @@ the Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston,
 MA 02111-1307, USA. */
 
 #include "mpc-impl.h"
-
-extern int set_pi_over_2 (mpfr_ptr rop, int s, mpfr_rnd_t rnd);
 
 int
 mpc_asin (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)

@@ -57,11 +57,11 @@ MA 02111-1307, USA. */
 extern gmp_randstate_t  rands;
 extern char             rands_initialized;
 
-void test_start (void);
-void test_end (void);
+extern void test_start (void);
+extern void test_end (void);
 
-void test_default_random (mpc_ptr, mp_exp_t, mp_exp_t, unsigned int, unsigned int);
-unsigned long urandomm_ui (unsigned long);
+extern void test_default_random (mpc_ptr, mp_exp_t, mp_exp_t, unsigned int, unsigned int);
+extern unsigned long urandomm_ui (unsigned long);
 
 
 /** COMPARISON FUNCTIONS **/
@@ -81,8 +81,8 @@ typedef struct
    returns 0 in other cases.
    Unlike mpfr_cmp, same_mpfr_value(got, ref, x) return 1 when got and
    ref are both NaNs. */
-int same_mpfr_value (mpfr_ptr got, mpfr_ptr ref, int known_sign);
-int same_mpc_value (mpc_ptr got, mpc_ptr ref, known_signs_t known_signs);
+extern int same_mpfr_value (mpfr_ptr got, mpfr_ptr ref, int known_sign);
+extern int same_mpc_value (mpc_ptr got, mpc_ptr ref, known_signs_t known_signs);
 
 
 /** GENERIC TESTS **/
@@ -163,23 +163,23 @@ void tgeneric (mpc_function, mpfr_prec_t, mpfr_prec_t, mpfr_prec_t, mp_exp_t);
 /** READ FILE WITH TEST DATA SET **/
 /* data_check (function, "data_file_name") checks function results against
    precomputed data in a file.*/
-void data_check (mpc_function, const char *);
+extern void data_check (mpc_function, const char *);
 
-FILE * open_data_file (const char *file_name);
-void close_data_file (FILE *fp);
+extern FILE * open_data_file (const char *file_name);
+extern void close_data_file (FILE *fp);
 
 /* helper file reading functions */
-void skip_whitespace_comments (FILE *fp);
-void read_ternary (FILE *fp, int* ternary);
-void read_mpfr_rounding_mode (FILE *fp, mpfr_rnd_t* rnd);
-void read_mpc_rounding_mode (FILE *fp, mpc_rnd_t* rnd);
-mpfr_prec_t read_mpfr_prec (FILE *fp);
-void read_int (FILE *fp, int *n, const char *name);
-size_t read_string (FILE *fp, char **buffer_ptr, size_t buffer_length, const char *name);
-void read_mpfr (FILE *fp, mpfr_ptr x, int *known_sign);
-void read_mpc (FILE *fp, mpc_ptr z, known_signs_t *ks);
-void tests_memory_start (void);
-void tests_memory_end (void);
+extern void skip_whitespace_comments (FILE *fp);
+extern void read_ternary (FILE *fp, int* ternary);
+extern void read_mpfr_rounding_mode (FILE *fp, mpfr_rnd_t* rnd);
+extern void read_mpc_rounding_mode (FILE *fp, mpc_rnd_t* rnd);
+extern mpfr_prec_t read_mpfr_prec (FILE *fp);
+extern void read_int (FILE *fp, int *n, const char *name);
+extern size_t read_string (FILE *fp, char **buffer_ptr, size_t buffer_length, const char *name);
+extern void read_mpfr (FILE *fp, mpfr_ptr x, int *known_sign);
+extern void read_mpc (FILE *fp, mpc_ptr z, known_signs_t *ks);
+extern void tests_memory_start (void);
+extern void tests_memory_end (void);
 
 #define TERNARY_NOT_CHECKED 255
    /* special value to indicate that the ternary value is not checked */
