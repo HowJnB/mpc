@@ -88,8 +88,8 @@ mpc_sqr (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
         mpc_conj (rop, rop, MPC_RNDNN);
       return MPC_INEX(inex_re, inex_im);
    }
-   /* If the real and imaginary part of the argument have rop very different */
-   /* exponent, it is not reasonable to use Karatsuba squaring; compute    */
+   /* If the real and imaginary parts of the argument have very different  */
+   /* exponents, it is not reasonable to use Karatsuba squaring; compute   */
    /* exactly with the standard formulae instead, even if this means an    */
    /* additional multiplication.                                           */
    if (SAFE_ABS (mpfr_exp_t,
