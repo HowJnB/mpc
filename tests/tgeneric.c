@@ -762,9 +762,7 @@ tgeneric (mpc_function function, mpfr_prec_t prec_min,
     }
 
   exp_min = mpfr_get_emin ();
-  if (exp_max <= 0)
-    exp_max = mpfr_get_emax ();
-  else if (exp_max > mpfr_get_emax ())
+  if (exp_max <= 0 || exp_max > mpfr_get_emax ())
     exp_max = mpfr_get_emax();
   if (-exp_max > exp_min)
     exp_min = - exp_max;
