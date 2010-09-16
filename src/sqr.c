@@ -154,7 +154,6 @@ mpc_sqr (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
          mpfr_add_one_ulp (v, GMP_RNDN);
          inexact = 1;
       }
-
       /* compute the real part as u*v, rounded away                    */
       /* determine also the sign of inex_re                            */
       if (mpfr_sgn (u) == 0 || mpfr_sgn (v) == 0)
@@ -179,8 +178,10 @@ mpc_sqr (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
                   mpfr_set_ui_2exp (MPC_RE (rop), 1, emax, rnd_re);
                   inex_re = -1;
                 }
-              else /* round up or away from zero */
+              else /* round up or away from zero */ {
+                mpfr_set_inf (MPC_RE (rop), 1);
                 inex_re = 1;
+              }
               break;
             }
           ok = (!inexact) | mpfr_can_round (u, prec - 3, GMP_RNDU, GMP_RNDZ,
@@ -210,8 +211,10 @@ mpc_sqr (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
                   mpfr_set_ui (MPC_RE (rop), 0, rnd_re);
                   inex_re = 1;
                 }
-              else /* round down or away from zero */
+              else /* round down or away from zero */ {
+                mpfr_set (MPC_RE (rop), u, rnd_re);
                 inex_re = -1;
+              }
               break;
             }
           ok = (!inexact) | mpfr_can_round (u, prec - 3, GMP_RNDD, GMP_RNDZ,
