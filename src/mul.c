@@ -109,6 +109,12 @@ mpc_mul (mpc_ptr a, mpc_srcptr b, mpc_srcptr c, mpc_rnd_t rnd)
     /* note that a cannot be a zero */
     return mul_pure_imaginary (a, b, MPC_IM (c), rnd, (a == b || a == c));
 
+  /* Check if b==c and call mpc_sqr in this case, to make sure            */
+  /* mpc_mul(a,b,b) behaves exactly like mpc_sqr(a,b) concerning          */
+  /* internal overflows etc.                                              */
+  if (mpc_cmp (b, c) == 0)
+     return mpc_sqr (a, b, rnd);
+
   /* If the real and imaginary part of one argument have a very different */
   /* exponent, it is not reasonable to use Karatsuba multiplication.      */
   if (   SAFE_ABS (mpfr_exp_t,
