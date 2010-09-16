@@ -250,5 +250,8 @@ mpc_sqr (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
    mpfr_set_emax (old_emax);
    mpfr_set_emin (old_emin);
 
+   inex_re = mpfr_check_range (MPC_RE(rop), inex_re, MPC_RND_RE (rnd));
+   inex_im = mpfr_check_range (MPC_IM(rop), inex_im, MPC_RND_IM (rnd));
+
    return MPC_INEX (inex_re, inex_im);
 }
