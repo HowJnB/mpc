@@ -266,7 +266,7 @@ mpc_div (mpc_ptr a, mpc_srcptr b, mpc_srcptr c, mpc_rnd_t rnd)
       /* We need rounding away from zero for both the real and the imagin-  */
       /* ary part; then the final result is also rounded away from zero.    */
       /* The error is less than 1 ulp. Since this is not implemented in     */
-      /* mpfr, we round towards zero and add 1 ulp to the absolute values   */
+      /* mpc, we round towards zero and add 1 ulp to the absolute values    */
       /* if they are not exact. */
       inexact_prod = mpc_mul (res, b, c_conj, MPC_RNDZZ);
       inexact_re = MPC_INEX_RE (inexact_prod);

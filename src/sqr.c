@@ -135,25 +135,13 @@ mpc_sqr (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
       mpfr_set_prec (u, prec);
       mpfr_set_prec (v, prec);
 
-      /* Let op = x + iy. We need u = x+y and v = x-y, rounded away.       */
-      /* As this is not implemented in mpfr, we round towards zero and    */
-      /* add one ulp if the result is not exact. The error is bounded     */
-      /* above by 1 ulp.                                                  */
+      /* Let op = x + iy. We need u = x+y and v = x-y, rounded away.      */
+      /* The error is bounded above by 1 ulp.                             */
       /* We first let inexact be 1 if the real part is not computed       */
       /* exactly and determine the sign later.                            */
-      inexact = 0;
-      if (mpfr_add (u, x, MPC_IM (op), GMP_RNDZ))
-         /* we have to use x here instead of MPC_RE (op), as MPC_RE (rop)
-            may be modified later in the attempt to assign u to it */
-      {
-         mpfr_add_one_ulp (u, GMP_RNDN);
-         inexact = 1;
-      }
-      if (mpfr_sub (v, x, MPC_IM (op), GMP_RNDZ))
-      {
-         mpfr_add_one_ulp (v, GMP_RNDN);
-         inexact = 1;
-      }
+      inexact =    ROUND_AWAY (mpfr_add (u, x, MPC_IM (op), MPFR_RNDA), u)
+                 | ROUND_AWAY (mpfr_sub (v, x, MPC_IM (op), MPFR_RNDA), v);
+
       /* compute the real part as u*v, rounded away                    */
       /* determine also the sign of inex_re                            */
       if (mpfr_sgn (u) == 0 || mpfr_sgn (v) == 0)

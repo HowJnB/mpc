@@ -63,6 +63,28 @@ MA 02111-1307, USA. */
 
 
 /*
+ * Macro implementing rounding away from zero, to ease compatibility with
+ * mpfr < 3. f is the complete function call with a rounding mode of
+ * MPFR_RNDA, rop the name of the variable containing the result; it is
+ * already contained in f, but needs to be repeated so that the macro can
+ * modify the variable.
+ * Usage: replace each call to a function such as
+ *    mpfr_add (rop, a, b, MPFR_RNDA)
+ * by
+ *    ROUND_AWAY (mpfr_add (rop, a, b, MPFR_RNDA), rop)
+*/
+#if MPFR_VERSION_MAJOR < 3
+   /* round towards zero, add 1 ulp if not exact */
+#define MPFR_RNDA GMP_RNDZ
+#define ROUND_AWAY(f,rop)                            \
+   ((f) ? mpfr_add_one_ulp ((rop), GMP_RNDN), 1 : 0)
+#else
+#define ROUND_AWAY(f,rop) \
+   (f)
+#endif
+
+
+/*
  * MPC macros
  */
 
