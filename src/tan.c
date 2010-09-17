@@ -201,18 +201,14 @@ mpc_tan (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
          was large, in which case the result is
          sign(tan(Re(op)))*0 + sign(Im(op))*I,
          where sign(tan(Re(op))) = sign(Re(x))*sign(Re(y)) */
-      mpfr_signbit (MPC_RE (x)) ?
-        mpfr_nextbelow (MPC_RE (x)) : mpfr_nextabove (MPC_RE (x));
-      mpfr_signbit (MPC_IM (x)) ?
-        mpfr_nextbelow (MPC_IM (x)) : mpfr_nextabove (MPC_IM (x));
+      MPFR_ADD_ONE_ULP (MPC_RE (x));
+      MPFR_ADD_ONE_ULP (MPC_IM (x));
       MPC_ASSERT (mpfr_zero_p (MPC_RE (x)) == 0);
       exr = mpfr_get_exp (MPC_RE (x));
       mpc_cos (y, op, MPC_RNDZZ);
       isinf = isinf || mpfr_inf_p (MPC_RE (y)) || mpfr_inf_p (MPC_IM (y));
-      mpfr_signbit (MPC_RE (y)) ?
-        mpfr_nextbelow (MPC_RE (y)) : mpfr_nextabove (MPC_RE (y));
-      mpfr_signbit (MPC_IM (y)) ?
-        mpfr_nextbelow (MPC_IM (y)) : mpfr_nextabove (MPC_IM (y));
+      MPFR_ADD_ONE_ULP (MPC_RE (y));
+      MPFR_ADD_ONE_ULP (MPC_IM (y));
 
       if (isinf)
         {
@@ -256,11 +252,9 @@ mpc_tan (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
           continue;
         }
       if (MPC_INEX_RE (inex))
-        mpfr_signbit (MPC_RE (x)) ?
-          mpfr_nextbelow (MPC_RE (x)) : mpfr_nextabove (MPC_RE (x));
+         MPFR_ADD_ONE_ULP (MPC_RE (x));
       if (MPC_INEX_IM (inex))
-        mpfr_signbit (MPC_IM (x)) ?
-          mpfr_nextbelow (MPC_IM (x)) : mpfr_nextabove (MPC_IM (x));
+         MPFR_ADD_ONE_ULP (MPC_IM (x));
       MPC_ASSERT (mpfr_zero_p (MPC_RE (x)) == 0);
       ezr = mpfr_get_exp (MPC_RE (x));
 
