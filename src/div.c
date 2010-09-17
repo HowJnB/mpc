@@ -272,9 +272,9 @@ mpc_div (mpc_ptr a, mpc_srcptr b, mpc_srcptr c, mpc_rnd_t rnd)
       inexact_re = MPC_INEX_RE (inexact_prod);
       inexact_im = MPC_INEX_IM (inexact_prod);
       if (inexact_re != 0)
-         mpfr_add_one_ulp (MPC_RE (res), GMP_RNDN);
+         MPFR_ADD_ONE_ULP (MPC_RE (res));
       if (inexact_im != 0)
-         mpfr_add_one_ulp (MPC_IM (res), GMP_RNDN);
+         MPFR_ADD_ONE_ULP (MPC_IM (res));
 
       /* divide the product by the norm */
       if (inexact_norm == 0 && (inexact_re == 0 || inexact_im == 0))

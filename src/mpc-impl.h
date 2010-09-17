@@ -59,6 +59,8 @@ MA 02111-1307, USA. */
    mpfr_setsign (x, y, 0, rnd) : \
    mpfr_copysign (x, y, z, rnd))
    /* work around spurious signs in nan */
+#define MPFR_ADD_ONE_ULP(x) mpfr_add_one_ulp (x, GMP_RNDN)
+   /* drop unused rounding mode from macro */
 #define MPFR_SWAP(a,b) do { mpfr_srcptr tmp; tmp = a; a = b; b = tmp; } while (0)
 
 
@@ -77,7 +79,7 @@ MA 02111-1307, USA. */
    /* round towards zero, add 1 ulp if not exact */
 #define MPFR_RNDA GMP_RNDZ
 #define ROUND_AWAY(f,rop)                            \
-   ((f) ? mpfr_add_one_ulp ((rop), GMP_RNDN), MPFR_SIGNBIT (rop) : 0)
+   ((f) ? MPFR_ADD_ONE_ULP (rop), MPFR_SIGNBIT (rop) : 0)
 #else
 #define ROUND_AWAY(f,rop) \
    (f)
