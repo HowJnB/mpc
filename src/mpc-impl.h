@@ -77,7 +77,7 @@ MA 02111-1307, USA. */
    /* round towards zero, add 1 ulp if not exact */
 #define MPFR_RNDA GMP_RNDZ
 #define ROUND_AWAY(f,rop)                            \
-   ((f) ? mpfr_add_one_ulp ((rop), GMP_RNDN), 1 : 0)
+   ((f) ? mpfr_add_one_ulp ((rop), GMP_RNDN), MPFR_SIGNBIT (rop) : 0)
 #else
 #define ROUND_AWAY(f,rop) \
    (f)
