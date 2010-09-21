@@ -304,7 +304,7 @@ mpc_mul_karatsuba (mpc_ptr rop, mpc_srcptr op1, mpc_srcptr op2, mpc_rnd_t rnd)
   int mul_i, ok, inexact, mul_a, mul_c, inex_re, inex_im, sign_x, sign_u;
   mpfr_t u, v, w, x;
   mpfr_prec_t prec, prec_re, prec_u, prec_v, prec_w;
-  mpfr_rnd_t rnd_re, rnd_u, rnd_x;
+  mpfr_rnd_t rnd_re, rnd_u;
   int overlap;
      /* true if rop == op1 or rop == op2 */
   mpc_t result;
@@ -407,23 +407,23 @@ mpc_mul_karatsuba (mpc_ptr rop, mpc_srcptr op1, mpc_srcptr op2, mpc_rnd_t rnd)
          mpfr_set_prec (x, prec);
 
          /* first compute away(b +/- a) and store it in u */
-         rnd_u = (mpfr_sgn (a) > 0) ? GMP_RNDU : GMP_RNDD;
-         if (mul_a == -1)
-           rnd_u = INV_RND(rnd_u);
-         inexact = ((mul_a == -1) ? mpfr_sub : mpfr_add) (u, b, a, rnd_u);
+         inexact = (mul_a == -1 ?
+                    ROUND_AWAY (mpfr_sub (u, b, a, MPFR_RNDA), u) :
+                    ROUND_AWAY (mpfr_add (u, b, a, MPFR_RNDA), u));
 
          /* then compute away(+/-c - d) and store it in x */
-         rnd_x = (mpfr_sgn (c) > 0) ? GMP_RNDU : GMP_RNDD;
-         inexact |= ((mul_c == -1) ? mpfr_add : mpfr_sub) (x, c, d, rnd_x);
+         inexact |= (mul_c == -1 ?
+                     ROUND_AWAY (mpfr_add (x, c, d, MPFR_RNDA), x) :
+                     ROUND_AWAY (mpfr_sub (x, c, d, MPFR_RNDA), x));
          if (mul_c == -1)
            mpfr_neg (x, x, GMP_RNDN);
 
-	 if (inexact == 0)
-	   mpfr_prec_round (u, prec_u = 2 * prec, GMP_RNDN);
+         if (inexact == 0)
+            mpfr_prec_round (u, prec_u = 2 * prec, GMP_RNDN);
 
          /* compute away(u*x) and store it in u */
-         rnd_u = (sign_u > 0) ? GMP_RNDU : GMP_RNDD;
-         inexact |= mpfr_mul (u, u, x, rnd_u); /* (a+b)*(c-d) */
+         inexact |= ROUND_AWAY (mpfr_mul (u, u, x, MPFR_RNDA), u);
+            /* (a+b)*(c-d) */
 
 	 /* if all computations are exact up to here, it may be that
 	    the real part is exact, thus we need if possible to
@@ -446,6 +446,7 @@ mpc_mul_karatsuba (mpc_ptr rop, mpc_srcptr op1, mpc_srcptr op2, mpc_rnd_t rnd)
 	       mpfr_prec_round (x, prec_x, GMP_RNDN);
 	   }
 
+         rnd_u = (sign_u > 0) ? GMP_RNDU : GMP_RNDD;
          inexact |= mpfr_sub (x, v, w, rnd_u); /* ad - bc */
 
          /* in case u=0, ensure that rnd_u rounds x away from zero */
