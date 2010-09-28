@@ -82,9 +82,6 @@ fi
 
 # Check for programs
 AC_PROG_CC
-AC_PROG_CPP
-AC_PROG_EGREP
-AC_PROG_SED
 AC_LANG(C)
 
 dnl Check GMP Header
