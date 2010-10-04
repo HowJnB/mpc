@@ -24,7 +24,7 @@ MA 02111-1307, USA. */
 int
 mpc_cos (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
 {
-  mpfr_t x, y, z;
+  mpfr_t s, c, sh, ch;
   mpfr_prec_t prec;
   int ok = 0;
   int inex_re, inex_im;
@@ -103,11 +103,8 @@ mpc_cos (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
         {
           /* cos(x -i*Inf) = +Inf*cos(x) +i*Inf*sin(x), when x != 0 */
           /* cos(x +i*Inf) = +Inf*cos(x) -i*Inf*sin(x), when x != 0 */
-          mpfr_t c;
-          mpfr_t s;
-
-          mpfr_init (c);
-          mpfr_init (s);
+          mpfr_init2 (c, 2);
+          mpfr_init2 (s, 2);
 
           mpfr_sin_cos (s, c, MPC_RE (op), GMP_RNDN);
           mpfr_set_inf (MPC_RE (rop), mpfr_sgn (c));
@@ -181,46 +178,48 @@ mpc_cos (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
 
   prec = MPC_MAX_PREC(rop);
 
-  mpfr_init2 (x, 2);
-  mpfr_init2 (y, 2);
-  mpfr_init2 (z, 2);
+  mpfr_init2 (s, 2);
+  mpfr_init2 (c, 2);
+  mpfr_init2 (sh, 2);
+  mpfr_init2 (ch, 2);
 
   do
     {
       prec += mpc_ceil_log2 (prec) + 5;
 
-      mpfr_set_prec (x, prec);
-      mpfr_set_prec (y, prec);
-      mpfr_set_prec (z, prec);
+      mpfr_set_prec (s, prec);
+      mpfr_set_prec (c, prec);
+      mpfr_set_prec (sh, prec);
+      mpfr_set_prec (ch, prec);
 
-      mpfr_sin_cos (y, x, MPC_RE(op), GMP_RNDN);
-      mpfr_cosh (z, MPC_IM(op), GMP_RNDN);
-      mpfr_mul (x, x, z, GMP_RNDN);
-      ok = (!mpfr_number_p (x))
-           || mpfr_can_round (x, prec - 2, GMP_RNDN, GMP_RNDZ,
+      mpfr_sin_cos (s, c, MPC_RE(op), GMP_RNDN);
+      mpfr_sinh_cosh (sh, ch, MPC_IM(op), GMP_RNDN);
+      mpfr_mul (c, c, ch, GMP_RNDN);
+      ok = (!mpfr_number_p (c))
+           || mpfr_can_round (c, prec - 2, GMP_RNDN, GMP_RNDZ,
                       MPC_PREC_RE(rop) + (MPC_RND_RE(rnd) == GMP_RNDN));
       if (ok) /* compute imaginary part */
         {
-          mpfr_sinh (z, MPC_IM(op), GMP_RNDN);
-          mpfr_mul (y, y, z, GMP_RNDN);
-          mpfr_neg (y, y, GMP_RNDN);
-          ok = (!mpfr_number_p (y))
-               || mpfr_can_round (y, prec - 2, GMP_RNDN, GMP_RNDZ,
+          mpfr_mul (s, s, sh, GMP_RNDN);
+          mpfr_neg (s, s, GMP_RNDN);
+          ok = (!mpfr_number_p (s))
+               || mpfr_can_round (s, prec - 2, GMP_RNDN, GMP_RNDZ,
                       MPC_PREC_IM(rop) + (MPC_RND_IM(rnd) == GMP_RNDN));
         }
     }
   while (ok == 0);
 
-  inex_re = mpfr_set (MPC_RE(rop), x, MPC_RND_RE(rnd));
-  if (mpfr_inf_p (x))
-     inex_re = mpfr_sgn (x);
-  inex_im = mpfr_set (MPC_IM(rop), y, MPC_RND_IM(rnd));
-  if (mpfr_inf_p (y))
-     inex_im = mpfr_sgn (y);
+  inex_re = mpfr_set (MPC_RE(rop), c, MPC_RND_RE(rnd));
+  if (mpfr_inf_p (c))
+     inex_re = mpfr_sgn (c);
+  inex_im = mpfr_set (MPC_IM(rop), s, MPC_RND_IM(rnd));
+  if (mpfr_inf_p (s))
+     inex_im = mpfr_sgn (s);
 
-  mpfr_clear (x);
-  mpfr_clear (y);
-  mpfr_clear (z);
+  mpfr_clear (s);
+  mpfr_clear (c);
+  mpfr_clear (sh);
+  mpfr_clear (ch);
 
   return MPC_INEX (inex_re, inex_im);
 }

@@ -24,7 +24,7 @@ MA 02111-1307, USA. */
 int
 mpc_sin (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
 {
-  mpfr_t x, y, z;
+  mpfr_t s, c, sh, ch;
   mpfr_prec_t prec;
   int ok = 0;
   int inex_re, inex_im;
@@ -79,13 +79,13 @@ mpc_sin (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
         /* sin(x -i*Inf) = +Inf*(sin(x) -i*cos(x)) */
         /* sin(x +i*Inf) = +Inf*(sin(x) +i*cos(x)) */
         {
-          mpfr_init2 (x, 2);
-          mpfr_init2 (y, 2);
-          mpfr_sin_cos (x, y, MPC_RE (op), GMP_RNDZ);
-          mpfr_set_inf (MPC_RE (rop), MPFR_SIGN (x));
-          mpfr_set_inf (MPC_IM (rop), MPFR_SIGN (y)*MPFR_SIGN (MPC_IM (op)));
-          mpfr_clear (y);
-          mpfr_clear(x);
+          mpfr_init2 (s, 2);
+          mpfr_init2 (c, 2);
+          mpfr_sin_cos (s, c, MPC_RE (op), GMP_RNDZ);
+          mpfr_set_inf (MPC_RE (rop), MPFR_SIGN (s));
+          mpfr_set_inf (MPC_IM (rop), MPFR_SIGN (c)*MPFR_SIGN (MPC_IM (op)));
+          mpfr_clear (s);
+          mpfr_clear (c);
         }
 
       return MPC_INEX (0, 0); /* exact in all cases*/
@@ -96,11 +96,11 @@ mpc_sin (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
   /* sin(x +0*i) = sin(x) +0*i*cos(x) */
   if (mpfr_cmp_ui (MPC_IM(op), 0) == 0)
     {
-      mpfr_init2 (x, 2);
-      mpfr_cos (x, MPC_RE (op), MPC_RND_RE (rnd));
+      mpfr_init2 (c, 2);
+      mpfr_cos (c, MPC_RE (op), MPC_RND_RE (rnd));
       inex_re = mpfr_sin (MPC_RE (rop), MPC_RE (op), MPC_RND_RE (rnd));
-      mpfr_mul (MPC_IM(rop), MPC_IM(op), x, MPC_RND_IM(rnd));
-      mpfr_clear (x);
+      mpfr_mul (MPC_IM(rop), MPC_IM(op), c, MPC_RND_IM(rnd));
+      mpfr_clear (c);
 
       return MPC_INEX (inex_re, 0);
     }
@@ -131,45 +131,47 @@ mpc_sin (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
 
   prec = MPC_MAX_PREC(rop);
 
-  mpfr_init2 (x, 2);
-  mpfr_init2 (y, 2);
-  mpfr_init2 (z, 2);
+  mpfr_init2 (s, 2);
+  mpfr_init2 (c, 2);
+  mpfr_init2 (sh, 2);
+  mpfr_init2 (ch, 2);
 
   do
     {
       prec += mpc_ceil_log2 (prec) + 5;
 
-      mpfr_set_prec (x, prec);
-      mpfr_set_prec (y, prec);
-      mpfr_set_prec (z, prec);
+      mpfr_set_prec (s, prec);
+      mpfr_set_prec (c, prec);
+      mpfr_set_prec (sh, prec);
+      mpfr_set_prec (ch, prec);
 
-      mpfr_sin_cos (x, y, MPC_RE(op), GMP_RNDN);
-      mpfr_cosh (z, MPC_IM(op), GMP_RNDN);
-      mpfr_mul (x, x, z, GMP_RNDN);
-      ok = (!mpfr_number_p (x))
-           || mpfr_can_round (x, prec - 2, GMP_RNDN, GMP_RNDZ,
+      mpfr_sin_cos (s, c, MPC_RE(op), GMP_RNDN);
+      mpfr_sinh_cosh (sh, ch, MPC_IM(op), GMP_RNDN);
+      mpfr_mul (s, s, ch, GMP_RNDN);
+      ok = (!mpfr_number_p (s))
+           || mpfr_can_round (s, prec - 2, GMP_RNDN, GMP_RNDZ,
                       MPC_PREC_RE(rop) + (MPC_RND_RE(rnd) == GMP_RNDN));
       if (ok) /* compute imaginary part */
         {
-          mpfr_sinh (z, MPC_IM(op), GMP_RNDN);
-          mpfr_mul (y, y, z, GMP_RNDN);
-          ok = (!mpfr_number_p (y))
-               || mpfr_can_round (y, prec - 2, GMP_RNDN, GMP_RNDZ,
+          mpfr_mul (c, c, sh, GMP_RNDN);
+          ok = (!mpfr_number_p (c))
+               || mpfr_can_round (c, prec - 2, GMP_RNDN, GMP_RNDZ,
                       MPC_PREC_IM(rop) + (MPC_RND_IM(rnd) == GMP_RNDN));
         }
     }
   while (ok == 0);
 
-  inex_re = mpfr_set (MPC_RE(rop), x, MPC_RND_RE(rnd));
-  if (mpfr_inf_p (x))
-     inex_re = mpfr_sgn (x);
-  inex_im = mpfr_set (MPC_IM(rop), y, MPC_RND_IM(rnd));
-  if (mpfr_inf_p (y))
-     inex_im = mpfr_sgn (y);
+  inex_re = mpfr_set (MPC_RE(rop), s, MPC_RND_RE(rnd));
+  if (mpfr_inf_p (s))
+     inex_re = mpfr_sgn (s);
+  inex_im = mpfr_set (MPC_IM(rop), c, MPC_RND_IM(rnd));
+  if (mpfr_inf_p (c))
+     inex_im = mpfr_sgn (c);
 
-  mpfr_clear (x);
-  mpfr_clear (y);
-  mpfr_clear (z);
+  mpfr_clear (s);
+  mpfr_clear (c);
+  mpfr_clear (sh);
+  mpfr_clear (ch);
 
   return MPC_INEX (inex_re, inex_im);
 }
