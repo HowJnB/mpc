@@ -35,7 +35,7 @@ mpc_sqr (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
    mpfr_exp_t old_emax, old_emin, emin, emax;
 
    /* special values: NaN and infinities */
-   if (!mpfr_number_p (MPC_RE (op)) || !mpfr_number_p (MPC_IM (op))) {
+   if (!mpc_fin_p (op)) {
       if (mpfr_nan_p (MPC_RE (op)) || mpfr_nan_p (MPC_IM (op))) {
          mpfr_set_nan (MPC_RE (rop));
          mpfr_set_nan (MPC_IM (rop));

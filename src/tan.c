@@ -33,7 +33,7 @@ mpc_tan (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
   int inex;
 
   /* special values */
-  if (!mpfr_number_p (MPC_RE (op)) || !mpfr_number_p (MPC_IM (op)))
+  if (!mpc_fin_p (op))
     {
       if (mpfr_nan_p (MPC_RE (op)))
         {

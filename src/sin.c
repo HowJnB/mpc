@@ -30,7 +30,7 @@ mpc_sin (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
   int inex_re, inex_im;
 
   /* special values */
-  if (!mpfr_number_p (MPC_RE (op)) || !mpfr_number_p (MPC_IM (op)))
+  if (!mpc_fin_p (op))
     {
       if (mpfr_nan_p (MPC_RE (op)) || mpfr_nan_p (MPC_IM (op)))
         {

@@ -39,65 +39,67 @@ mpc_sqrt (mpc_ptr a, mpc_srcptr b, mpc_rnd_t rnd)
   const int im_sgn = mpfr_signbit (MPC_IM (b)) == 0? 0 : -1;
 
   /* special values */
-  /* sqrt(x +i*Inf) = +Inf +I*Inf, even if x = NaN */
-  /* sqrt(x -i*Inf) = +Inf -I*Inf, even if x = NaN */
-  if (mpfr_inf_p (MPC_IM (b)))
-    {
-      mpfr_set_inf (MPC_RE (a), +1);
-      mpfr_set_inf (MPC_IM (a), im_sgn);
-      return MPC_INEX (0, 0);
-    }
+  if (!mpc_fin_p (b)) {
+   /* sqrt(x +i*Inf) = +Inf +I*Inf, even if x = NaN */
+   /* sqrt(x -i*Inf) = +Inf -I*Inf, even if x = NaN */
+   if (mpfr_inf_p (MPC_IM (b)))
+      {
+         mpfr_set_inf (MPC_RE (a), +1);
+         mpfr_set_inf (MPC_IM (a), im_sgn);
+         return MPC_INEX (0, 0);
+      }
 
-  if (mpfr_inf_p (MPC_RE (b)))
-    {
-      if (mpfr_signbit (MPC_RE (b)))
-        {
-          if (mpfr_number_p (MPC_IM (b)))
-            {
-              /* sqrt(-Inf +i*y) = +0 +i*Inf, when y positive */
-              /* sqrt(-Inf +i*y) = +0 -i*Inf, when y positive */
-              mpfr_set_ui (MPC_RE (a), 0, GMP_RNDN);
-              mpfr_set_inf (MPC_IM (a), im_sgn);
-              return MPC_INEX (0, 0);
-            }
-          else
-            {
-              /* sqrt(-Inf +i*NaN) = NaN +/-i*Inf */
-              mpfr_set_nan (MPC_RE (a));
-              mpfr_set_inf (MPC_IM (a), im_sgn);
-              return MPC_INEX (0, 0);
-            }
-        }
-      else
-        {
-          if (mpfr_number_p (MPC_IM (b)))
-            {
-              /* sqrt(+Inf +i*y) = +Inf +i*0, when y positive */
-              /* sqrt(+Inf +i*y) = +Inf -i*0, when y positive */
-              mpfr_set_inf (MPC_RE (a), +1);
-              mpfr_set_ui (MPC_IM (a), 0, GMP_RNDN);
-              if (im_sgn)
-                mpc_conj (a, a, MPC_RNDNN);
-              return MPC_INEX (0, 0);
-            }
-          else
-            {
-              /* sqrt(+Inf -i*Inf) = +Inf -i*Inf */
-              /* sqrt(+Inf +i*Inf) = +Inf +i*Inf */
-              /* sqrt(+Inf +i*NaN) = +Inf +i*NaN */
-              return mpc_set (a, b, rnd);
-            }
-        }
-    }
+   if (mpfr_inf_p (MPC_RE (b)))
+      {
+         if (mpfr_signbit (MPC_RE (b)))
+         {
+            if (mpfr_number_p (MPC_IM (b)))
+               {
+               /* sqrt(-Inf +i*y) = +0 +i*Inf, when y positive */
+               /* sqrt(-Inf +i*y) = +0 -i*Inf, when y positive */
+               mpfr_set_ui (MPC_RE (a), 0, GMP_RNDN);
+               mpfr_set_inf (MPC_IM (a), im_sgn);
+               return MPC_INEX (0, 0);
+               }
+            else
+               {
+               /* sqrt(-Inf +i*NaN) = NaN +/-i*Inf */
+               mpfr_set_nan (MPC_RE (a));
+               mpfr_set_inf (MPC_IM (a), im_sgn);
+               return MPC_INEX (0, 0);
+               }
+         }
+         else
+         {
+            if (mpfr_number_p (MPC_IM (b)))
+               {
+               /* sqrt(+Inf +i*y) = +Inf +i*0, when y positive */
+               /* sqrt(+Inf +i*y) = +Inf -i*0, when y positive */
+               mpfr_set_inf (MPC_RE (a), +1);
+               mpfr_set_ui (MPC_IM (a), 0, GMP_RNDN);
+               if (im_sgn)
+                  mpc_conj (a, a, MPC_RNDNN);
+               return MPC_INEX (0, 0);
+               }
+            else
+               {
+               /* sqrt(+Inf -i*Inf) = +Inf -i*Inf */
+               /* sqrt(+Inf +i*Inf) = +Inf +i*Inf */
+               /* sqrt(+Inf +i*NaN) = +Inf +i*NaN */
+               return mpc_set (a, b, rnd);
+               }
+         }
+      }
 
-  /* sqrt(x +i*NaN) = NaN +i*NaN, if x is not infinite */
-  /* sqrt(NaN +i*y) = NaN +i*NaN, if y is not infinite */
-  if (mpfr_nan_p (MPC_RE (b)) || mpfr_nan_p (MPC_IM (b)))
-    {
-      mpfr_set_nan (MPC_RE (a));
-      mpfr_set_nan (MPC_IM (a));
-      return MPC_INEX (0, 0);
-    }
+   /* sqrt(x +i*NaN) = NaN +i*NaN, if x is not infinite */
+   /* sqrt(NaN +i*y) = NaN +i*NaN, if y is not infinite */
+   if (mpfr_nan_p (MPC_RE (b)) || mpfr_nan_p (MPC_IM (b)))
+      {
+         mpfr_set_nan (MPC_RE (a));
+         mpfr_set_nan (MPC_IM (a));
+         return MPC_INEX (0, 0);
+      }
+  }
 
   /* purely real */
   if (im_cmp == 0)
