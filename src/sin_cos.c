@@ -33,7 +33,7 @@ mpc_sin_cos (mpc_ptr rop_sin, mpc_ptr rop_cos, mpc_srcptr op,
       inex_cos = mpc_cos (rop_cos, op, rnd_cos);
    }
    else {
-      mpfr_t s, c, sh, ch, ssh, sch, csh, cch;
+      mpfr_t s, c, sh, ch, sch, csh;
       mpfr_prec_t prec;
       int ok = 0;
       int inex_re, inex_im;
@@ -44,10 +44,8 @@ mpc_sin_cos (mpc_ptr rop_sin, mpc_ptr rop_cos, mpc_srcptr op,
       mpfr_init2 (c, 2);
       mpfr_init2 (sh, 2);
       mpfr_init2 (ch, 2);
-      mpfr_init2 (ssh, 2);
       mpfr_init2 (sch, 2);
       mpfr_init2 (csh, 2);
-      mpfr_init2 (cch, 2);
 
       do {
          prec += mpc_ceil_log2 (prec) + 5;
@@ -56,10 +54,8 @@ mpc_sin_cos (mpc_ptr rop_sin, mpc_ptr rop_cos, mpc_srcptr op,
          mpfr_set_prec (c, prec);
          mpfr_set_prec (sh, prec);
          mpfr_set_prec (ch, prec);
-         mpfr_set_prec (ssh, prec);
          mpfr_set_prec (sch, prec);
          mpfr_set_prec (csh, prec);
-         mpfr_set_prec (cch, prec);
 
          mpfr_sin_cos (s, c, MPC_RE(op), GMP_RNDN);
          mpfr_sinh_cosh (sh, ch, MPC_IM(op), GMP_RNDN);
@@ -81,18 +77,18 @@ mpc_sin_cos (mpc_ptr rop_sin, mpc_ptr rop_cos, mpc_srcptr op,
 
             if (ok) {
                /* real part of cosine */
-               mpfr_mul (cch, c, ch, GMP_RNDN);
-               ok = (!mpfr_number_p (cch))
-                     || mpfr_can_round (cch, prec - 2, GMP_RNDN, GMP_RNDZ,
+               mpfr_mul (c, c, ch, GMP_RNDN);
+               ok = (!mpfr_number_p (c))
+                     || mpfr_can_round (c, prec - 2, GMP_RNDN, GMP_RNDZ,
                            MPC_PREC_RE (rop_cos)
                            + (MPC_RND_RE (rnd_cos) == GMP_RNDN));
 
                if (ok) {
                   /* imaginary part of cosine */
-                  mpfr_mul (ssh, s, sh, GMP_RNDN);
-                  mpfr_neg (ssh, ssh, GMP_RNDN);
-                  ok = (!mpfr_number_p (ssh))
-                        || mpfr_can_round (ssh, prec - 2, GMP_RNDN, GMP_RNDZ,
+                  mpfr_mul (s, s, sh, GMP_RNDN);
+                  mpfr_neg (s, s, GMP_RNDN);
+                  ok = (!mpfr_number_p (s))
+                        || mpfr_can_round (s, prec - 2, GMP_RNDN, GMP_RNDZ,
                               MPC_PREC_IM (rop_cos)
                               + (MPC_RND_IM (rnd_cos) == GMP_RNDN));
                }
@@ -107,23 +103,20 @@ mpc_sin_cos (mpc_ptr rop_sin, mpc_ptr rop_cos, mpc_srcptr op,
       if (mpfr_inf_p (csh))
          inex_im = mpfr_sgn (csh);
       inex_sin = MPC_INEX (inex_re, inex_im);
-      inex_re = mpfr_set (MPC_RE (rop_cos), cch, MPC_RND_RE (rnd_cos));
-      if (mpfr_inf_p (cch))
-         inex_re = mpfr_sgn (cch);
-      /* negation already executed above */
-      inex_im = mpfr_set (MPC_IM (rop_cos), ssh, MPC_RND_IM (rnd_cos));
-      if (mpfr_inf_p (ssh))
-         inex_im = mpfr_sgn (ssh);
+      inex_re = mpfr_set (MPC_RE (rop_cos), c, MPC_RND_RE (rnd_cos));
+      if (mpfr_inf_p (c))
+         inex_re = mpfr_sgn (c);
+      inex_im = mpfr_set (MPC_IM (rop_cos), s, MPC_RND_IM (rnd_cos));
+      if (mpfr_inf_p (s))
+         inex_im = mpfr_sgn (s);
       inex_cos = MPC_INEX (inex_re, inex_im);
 
       mpfr_clear (s);
       mpfr_clear (c);
       mpfr_clear (sh);
       mpfr_clear (ch);
-      mpfr_clear (ssh);
       mpfr_clear (sch);
       mpfr_clear (csh);
-      mpfr_clear (cch);
    }
 
    return (inex_sin == 0 && inex_cos == 0 ? 0 : 1);
