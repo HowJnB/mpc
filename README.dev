@@ -14,31 +14,29 @@ Required versions:
 Creating a new release
 ----------------------
 
- 0) Run all tests with valgrind and check no memory leak remains:
+ 1) Run all tests with valgrind and check no memory leak remains:
        for f in .libs/lt-t*; do valgrind $f; done
- 0b) Disable test in line 35 of log.dat.
- 0c) Check compilation with gmp 4.2.2 and mpfr 2.3.1.
- 1) Check the version number in configure.ac ("AC_INIT (mpc, _version_...)"),
+ 2) Check compilation with gmp 4.3.2 and mpfr 2.4.2.
+ 3) Check the version number in configure.ac ("AC_INIT (mpc, _version_...)"),
     INSTALL, src/get_version.c, src/mpc.h (remove suffix "-dev" in
     MPC_VERSION_STRING) and Makefile.vc.
- 2) Verify that the API version in src/Makefile.am is correct.
- 3) Check that NEWS, BUGS and TODO are up to date, and that the minimal
+ 4) Verify that the API version in src/Makefile.am is correct.
+ 5) Check that NEWS, BUGS and TODO are up to date, and that the minimal
     version numbers of gmp and mpfr in configure.ac, INSTALL and
     doc/mpc.texi are correct.
- 4) Execute "autoreconf; touch doc/mpc.texi; make distcheck".
+ 6) Execute "autoreconf; touch doc/mpc.texi; make distcheck".
     This updates the date and version number in doc/version.texi and
     creates the tarball for distribution.
     Warning: do this on a machine with a recent libtool (for example 2.2.x
     instead of 1.5.x which is buggy, cf
     http://lists.gforge.inria.fr/pipermail/mpc-discuss/2009-March/000106.html)
- 5) Create an svn tag from inside the svn root:
+ 7) Create an svn tag from inside the svn root:
     svn cp trunk tags/VERSION
- 6) Update the web page on the server.
+ 8) Update the web page on the server.
     The html documentation is created with
        makeinfo --html --no-split mpc.texi
     and the resulting mpc.html is copied to content_html.php.
- 7) After the release, update the version number in configure.ac, INSTALL,
+ 9) After the release, update the version number in configure.ac, INSTALL,
     src/get_version.c, src/mpc.h and Makefile.vc.
- 9) Potentially increase the API version in src/Makefile.am.
- 9b) Reenable test in line 35 of log.dat.
-10) Commit the changes to svn.
+10) Potentially increase the API version in src/Makefile.am.
+11) Commit the changes to svn.

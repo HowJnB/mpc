@@ -132,34 +132,33 @@ AC_COMPILE_IFELSE(
         [AC_LANG_SOURCE(
         [[
 #include "gmp.h"
-#if (__GNU_MP_VERSION*100 + __GNU_MP_VERSION_MINOR*10 + __GNU_MP_VERSION_PATCHLEVEL < 420)
-# error "Minimal GMP version is 4.2"
+#if (__GNU_MP_VERSION*100 + __GNU_MP_VERSION_MINOR*10 + __GNU_MP_VERSION_PATCHLEVEL < 432)
+# error "Minimal GMP version is 4.3.2"
 error
 #endif
         ]])],
         [AC_MSG_RESULT(yes)],
         [
         AC_MSG_RESULT(no)
-        AC_MSG_ERROR([GMP version >= 4.2 required])
+        AC_MSG_ERROR([GMP version >= 4.3.2 required])
         ])
 
-# Check for a recent MPFR: we require MPFR 2.3.1 because of a bug in
-# mpfr_div_ui which makes mpc_div_ui return the wrong sign of the zero part
-# when applied on a pure real or pure imaginary parameter (see mpfr r4950)
+# Check for a recent MPFR: we require MPFR 2.4.2 so that the tests
+# in log.dat pass
 AC_MSG_CHECKING(for recent MPFR)
 AC_COMPILE_IFELSE(
         [AC_LANG_SOURCE(
         [[
 #include "mpfr.h"
-#if (MPFR_VERSION < MPFR_VERSION_NUM (2,3,1))
-# error "Minimal MPFR version is 2.3.1"
+#if (MPFR_VERSION < MPFR_VERSION_NUM (2,4,2))
+# error "Minimal MPFR version is 2.4.2"
 error
 #endif
         ]])],
         [AC_MSG_RESULT(yes)],
         [
          AC_MSG_RESULT(no)
-         AC_MSG_ERROR([MPFR version >= 2.3.1 required])
+         AC_MSG_ERROR([MPFR version >= 2.4.2 required])
          ])
 
 # Checks for header files.
