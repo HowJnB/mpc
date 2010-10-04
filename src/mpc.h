@@ -216,6 +216,7 @@ __MPC_DECLSPEC int  mpc_exp  __MPC_PROTO ((mpc_ptr, mpc_srcptr, mpc_rnd_t));
 __MPC_DECLSPEC int  mpc_log  __MPC_PROTO ((mpc_ptr, mpc_srcptr, mpc_rnd_t));
 __MPC_DECLSPEC int  mpc_sin  __MPC_PROTO ((mpc_ptr, mpc_srcptr, mpc_rnd_t));
 __MPC_DECLSPEC int  mpc_cos  __MPC_PROTO ((mpc_ptr, mpc_srcptr, mpc_rnd_t));
+__MPC_DECLSPEC int  mpc_sin_cos  __MPC_PROTO ((mpc_ptr, mpc_ptr, mpc_srcptr, mpc_rnd_t, mpc_rnd_t));
 __MPC_DECLSPEC int  mpc_tan  __MPC_PROTO ((mpc_ptr, mpc_srcptr, mpc_rnd_t));
 __MPC_DECLSPEC int  mpc_sinh __MPC_PROTO ((mpc_ptr, mpc_srcptr, mpc_rnd_t));
 __MPC_DECLSPEC int  mpc_cosh __MPC_PROTO ((mpc_ptr, mpc_srcptr, mpc_rnd_t));
