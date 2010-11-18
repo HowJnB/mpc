@@ -210,6 +210,9 @@ mpc_sqrt (mpc_ptr a, mpc_srcptr b, mpc_rnd_t rnd)
           /* total error bounded by 7 ulps */
           const mpfr_rnd_t r = im_sgn ? GMP_RNDD : GMP_RNDU;
           inex_t  = mpfr_div (t, MPC_IM (b), w, r);
+          if (!inex_t && inex_w)
+             /* The division was exact, but w was not. */
+             inex_t = im_sgn ? -1 : 1;
           inex_t |= mpfr_div_2ui (t, t, 1, r);
           ok_t = mpfr_can_round (t, prec - 3, r, GMP_RNDZ,
                                  prec_t + (rnd_t == GMP_RNDN));
