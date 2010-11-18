@@ -60,7 +60,8 @@ MA 02111-1307, USA. */
    mpfr_copysign (x, y, z, rnd))
    /* work around spurious signs in nan */
 #define MPFR_ADD_ONE_ULP(x) mpfr_add_one_ulp (x, GMP_RNDN)
-   /* drop unused rounding mode from macro */
+#define MPFR_SUB_ONE_ULP(x) mpfr_sub_one_ulp (x, GMP_RNDN)
+   /* drop unused rounding mode from macroes */
 #define MPFR_SWAP(a,b) do { mpfr_srcptr tmp; tmp = a; a = b; b = tmp; } while (0)
 
 
