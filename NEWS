@@ -8,6 +8,7 @@ Changes in version 0.8.3:
   - Bug fixes:
     - trigonometric functions: infinite loop due to overflow for large arguments
     - exp: close to infinite loop for argument close to 0
+    - sqrt: close to infinite loop for argument close to 1
   - Minimally required library versions: gmp 4.3.2, mpfr 2.4.2
 
 Changes in version 0.8.2:
