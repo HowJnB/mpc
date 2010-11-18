@@ -42,10 +42,9 @@ mpc_sqrt (mpc_ptr a, mpc_srcptr b, mpc_rnd_t rnd)
   const int re_cmp = mpfr_cmp_ui (MPC_RE (b), 0),
             im_cmp = mpfr_cmp_ui (MPC_IM (b), 0);
      /* comparison of the real/imaginary part of b with 0 */
-  int repr_w_nearest, repr_t_nearest = 0 /* to avoid gcc warning */ ;
-     /* in the case where w or t are rounded to nearest, flag indicating
-        whether the computed value is already representable at the target
-        precision */
+  int repr_w, repr_t = 0 /* to avoid gcc warning */ ;
+     /* flag indicating whether the computed value is already representable
+        at the target precision */
   const int im_sgn = mpfr_signbit (MPC_IM (b)) == 0? 0 : -1;
      /* we need to know the sign of Im(b) when it is +/-0 */
 
@@ -213,8 +212,8 @@ mpc_sqrt (mpc_ptr a, mpc_srcptr b, mpc_rnd_t rnd)
       inex_w |= mpfr_div_2ui (w, w, 1, GMP_RNDD);
       inex_w |= mpfr_sqrt (w, w, GMP_RNDD);
 
-      repr_w_nearest = (rnd_w == GMP_RNDN) && (mpfr_min_prec (w) <= prec_w);
-      if (!repr_w_nearest)
+      repr_w = mpfr_min_prec (w) <= prec_w;
+      if (!(repr_w && rnd_w == GMP_RNDN))
          /* use the usual trick for obtaining the ternary value */
          ok_w = mpfr_can_round (w, prec - 2, GMP_RNDD, GMP_RNDU,
                                 prec_w + (rnd_w == GMP_RNDN));
@@ -234,8 +233,8 @@ mpc_sqrt (mpc_ptr a, mpc_srcptr b, mpc_rnd_t rnd)
             /* The division was exact, but w was not. */
             inex_t = im_sgn ? -1 : 1;
          inex_t |= mpfr_div_2ui (t, t, 1, r);
-         repr_t_nearest = (rnd_t == GMP_RNDN) && (mpfr_min_prec (t) <= prec_t);
-         if (!repr_t_nearest)
+         repr_t = mpfr_min_prec (t) <= prec_t;
+         if (!(repr_t && rnd_t == GMP_RNDN))
              /* As for w; since t was rounded away, we check whether rounding to 0
                 is possible. */
             ok_t = mpfr_can_round (t, prec - 3, r, GMP_RNDZ,
@@ -259,7 +258,7 @@ mpc_sqrt (mpc_ptr a, mpc_srcptr b, mpc_rnd_t rnd)
       inex_im = mpfr_neg (MPC_IM (a), w, MPC_RND_IM(rnd));
    }
 
-   if (repr_w_nearest) {
+   if (repr_w && rnd_w == GMP_RNDN) {
       /* w has not been rounded with mpfr_set/mpfr_neg, determine ternary
          value from inex_w instead                                        */
       if (re_cmp > 0)
@@ -269,7 +268,7 @@ mpc_sqrt (mpc_ptr a, mpc_srcptr b, mpc_rnd_t rnd)
       else
          inex_im = -inex_w;
    }
-   if (repr_t_nearest) {
+   if (repr_t && rnd_t == GMP_RNDN) {
       if (re_cmp > 0)
          inex_im = inex_t;
       else if (im_cmp > 0)
