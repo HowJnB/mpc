@@ -96,7 +96,6 @@ $(DIRMPC)\clear.obj \
 $(DIRMPC)\cmp.obj \
 $(DIRMPC)\cmp_si_si.obj \
 $(DIRMPC)\conj.obj \
-$(DIRMPC)\cos.obj \
 $(DIRMPC)\cosh.obj \
 $(DIRMPC)\div.obj \
 $(DIRMPC)\div_2exp.obj \
@@ -138,7 +137,7 @@ $(DIRMPC)\set_prec.obj \
 $(DIRMPC)\set_str.obj \
 $(DIRMPC)\set_x.obj \
 $(DIRMPC)\set_x_x.obj \
-$(DIRMPC)\sin.obj \
+$(DIRMPC)\sin_cos.obj \
 $(DIRMPC)\sinh.obj \
 $(DIRMPC)\sqr.obj \
 $(DIRMPC)\sqrt.obj \
@@ -171,7 +170,6 @@ clear.obj \
 cmp.obj \
 cmp_si_si.obj \
 conj.obj \
-cos.obj \
 cosh.obj \
 div.obj \
 div_2exp.obj \
@@ -213,7 +211,7 @@ set_prec.obj \
 set_str.obj \
 set_x.obj \
 set_x_x.obj \
-sin.obj \
+sin_cos.obj \
 sinh.obj \
 sqr.obj \
 sqrt.obj \
