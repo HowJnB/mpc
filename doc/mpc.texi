@@ -1,6 +1,6 @@
 \input texinfo
 @ignore
-Copyright (C) 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010 Andreas Enge, Philippe Th\'eveny, Paul Zimmermann
+Copyright (C) 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010, 2011 Andreas Enge, Philippe Th\'eveny, Paul Zimmermann
 
 This file is part of the MPC Library.
 
@@ -451,6 +451,11 @@ Similarly, functions computing a result of type @code{mpfr_t}
 return an integer that is 0, positive or negative depending on
 whether the rounded value is the same, larger or smaller then
 the exact result.
+
+Some functions, such as @code{mpc_sin_cos}, compute two complex results;
+the macros @code{MPC_INEX1(i)} and @code{MPC_INEX2(i)}, applied to
+the return value @code{i} of such a function, yield the exactness value
+corresponding to the first or the second computed value, respectively.
 
 
 @section Branch Cuts And Special Values

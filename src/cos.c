@@ -1,6 +1,6 @@
 /* mpc_cos -- cosine of a complex number.
 
-Copyright (C) 2008, 2009, 2010 Philippe Th\'eveny, Andreas Enge
+Copyright (C) 2008, 2009, 2010, 2011 Philippe Th\'eveny, Andreas Enge
 
 This file is part of the MPC Library.
 
@@ -30,135 +30,8 @@ mpc_cos (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
   int inex_re, inex_im;
 
   /* special values */
-  if (!mpc_fin_p (op))
-    {
-      if (mpfr_nan_p (MPC_RE (op)))
-        {
-          /* cos(NaN + i * NaN) = NaN + i * NaN */
-          /* cos(NaN - i * Inf) = +Inf + i * NaN */
-          /* cos(NaN + i * Inf) = +Inf + i * NaN */
-          /* cos(NaN - i * 0) = NaN - i * 0 */
-          /* cos(NaN + i * 0) = NaN + i * 0 */
-          /* cos(NaN + i * y) = NaN + i * NaN, when y != 0 */
-          if (mpfr_inf_p (MPC_IM (op)))
-            mpfr_set_inf (MPC_RE (rop), +1);
-          else
-            mpfr_set_nan (MPC_RE (rop));
-
-          if (mpfr_zero_p (MPC_IM (op)))
-            mpfr_set (MPC_IM (rop), MPC_IM (op), MPC_RND_IM (rnd));
-          else
-            mpfr_set_nan (MPC_IM (rop));
-        }
-      else if (mpfr_nan_p (MPC_IM (op)))
-        {
-          /* cos(-Inf + i * NaN) = NaN + i * NaN */
-          /* cos(+Inf + i * NaN) = NaN + i * NaN */
-          /* cos(-0 + i * NaN) = NaN - i * 0 */
-          /* cos(+0 + i * NaN) = NaN + i * 0 */
-          /* cos(x + i * NaN) = NaN + i * NaN, when x != 0 */
-          if (mpfr_zero_p (MPC_RE (op)))
-            mpfr_set (MPC_IM (rop), MPC_RE (op), MPC_RND_IM (rnd));
-          else
-            mpfr_set_nan (MPC_IM (rop));
-
-          mpfr_set_nan (MPC_RE (rop));
-        }
-      else if (mpfr_inf_p (MPC_RE (op)))
-        {
-          /* cos(-Inf -i*Inf) = cos(+Inf +i*Inf) = -Inf +i*NaN */
-          /* cos(-Inf +i*Inf) = cos(+Inf -i*Inf) = +Inf +i*NaN */
-          /* cos(-Inf -i*0) = cos(+Inf +i*0) = NaN -i*0 */
-          /* cos(-Inf +i*0) = cos(+Inf -i*0) = NaN +i*0 */
-          /* cos(-Inf +i*y) = cos(+Inf +i*y) = NaN +i*NaN, when y != 0 */
-
-          /* SAME_SIGN is useful only if op == (+/-)Inf + i * (+/-)0, but, as
-             MPC_RE(OP) might be erased (when ROP == OP), we compute it now */
-          const int same_sign =
-            mpfr_signbit (MPC_RE (op)) == mpfr_signbit (MPC_IM (op));
-
-          if (mpfr_inf_p (MPC_IM (op)))
-            mpfr_set_inf (MPC_RE (rop), (same_sign ? -1 : +1));
-          else
-            mpfr_set_nan (MPC_RE (rop));
-
-          if (mpfr_zero_p (MPC_IM (op)))
-            mpfr_setsign (MPC_IM (rop), MPC_IM (op), same_sign,
-                          MPC_RND_IM(rnd));
-          else
-            mpfr_set_nan (MPC_IM (rop));
-        }
-      else if (mpfr_zero_p (MPC_RE (op)))
-        {
-          /* cos(-0 -i*Inf) = cos(+0 +i*Inf) = +Inf -i*0 */
-          /* cos(-0 +i*Inf) = cos(+0 -i*Inf) = +Inf +i*0 */
-          const int same_sign =
-            mpfr_signbit (MPC_RE (op)) == mpfr_signbit (MPC_IM (op));
-
-          mpfr_setsign (MPC_IM (rop), MPC_RE (op), same_sign,
-                        MPC_RND_IM (rnd));
-          mpfr_set_inf (MPC_RE (rop), +1);
-        }
-      else
-        {
-          /* cos(x -i*Inf) = +Inf*cos(x) +i*Inf*sin(x), when x != 0 */
-          /* cos(x +i*Inf) = +Inf*cos(x) -i*Inf*sin(x), when x != 0 */
-          mpfr_init2 (c, 2);
-          mpfr_init2 (s, 2);
-
-          mpfr_sin_cos (s, c, MPC_RE (op), GMP_RNDN);
-          mpfr_set_inf (MPC_RE (rop), mpfr_sgn (c));
-          mpfr_set_inf (MPC_IM (rop),
-                        (mpfr_sgn (MPC_IM (op)) == mpfr_sgn (s) ? -1 : +1));
-
-          mpfr_clear (s);
-          mpfr_clear (c);
-        }
-
-      return MPC_INEX (0, 0); /* always exact */
-    }
-
-  if (mpfr_zero_p (MPC_RE (op)))
-    {
-      /* cos(-0 - i * y) = cos(+0 + i * y) = cosh(y) - i * 0
-         cos(-0 + i * y) = cos(+0 - i * y) = cosh(y) + i * 0,
-         when y >= 0 */
-
-      /* When ROP == OP, the sign of 0 will be erased, so use it now */
-      const int imag_sign =
-        mpfr_signbit (MPC_RE (op)) ==  mpfr_signbit (MPC_IM (op));
-
-      if (mpfr_zero_p (MPC_IM (op)))
-        inex_re = mpfr_set_ui (MPC_RE (rop), 1, MPC_RND_RE (rnd));
-      else
-        inex_re = mpfr_cosh (MPC_RE (rop), MPC_IM (op), MPC_RND_RE (rnd));
-
-      mpfr_set_ui (MPC_IM (rop), 0, MPC_RND_IM (rnd));
-      mpfr_setsign (MPC_IM (rop), MPC_IM (rop), imag_sign, MPC_RND_IM (rnd));
-
-      return MPC_INEX (inex_re, 0);
-    }
-
-  if (mpfr_zero_p (MPC_IM (op)))
-    {
-      /* cos(x +i*0) = cos(x) -i*0*sign(sin(x)) */
-      /* cos(x -i*0) = cos(x) +i*0*sign(sin(x)) */
-      mpfr_t sign;
-      mpfr_init2 (sign, 2);
-      mpfr_sin (sign, MPC_RE (op), GMP_RNDN);
-      if (!mpfr_signbit (MPC_IM (op)))
-         MPFR_CHANGE_SIGN (sign);
-
-      inex_re = mpfr_cos (MPC_RE (rop), MPC_RE (op), MPC_RND_RE (rnd));
-
-      mpfr_set_ui (MPC_IM (rop), 0ul, GMP_RNDN);
-      if (mpfr_signbit (sign))
-         MPFR_CHANGE_SIGN (MPC_IM (rop));
-
-      mpfr_clear (sign);
-
-      return MPC_INEX (inex_re, 0);
-    }
+  if (!mpc_fin_p (op) || mpfr_zero_p (MPC_IM (op)) || mpfr_zero_p (MPC_RE (op)))
+     return MPC_INEX2 (mpc_sin_cos (NULL, rop, op, 0, rnd));
 
   /* ordinary (non-zero) numbers */
 

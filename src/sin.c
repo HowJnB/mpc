@@ -1,6 +1,6 @@
 /* mpc_sin -- sine of a complex number.
 
-Copyright (C) 2007, 2009, 2010 Paul Zimmermann, Philippe Th\'eveny, Andreas Enge
+Copyright (C) 2007, 2009, 2010, 2011 Paul Zimmermann, Philippe Th\'eveny, Andreas Enge
 
 This file is part of the MPC Library.
 
@@ -30,90 +30,8 @@ mpc_sin (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
   int inex_re, inex_im;
 
   /* special values */
-  if (!mpc_fin_p (op))
-    {
-      if (mpfr_nan_p (MPC_RE (op)) || mpfr_nan_p (MPC_IM (op)))
-        {
-          mpc_set (rop, op, rnd);
-
-          if (mpfr_nan_p (MPC_IM (op)))
-            {
-              /* sin(x +i*NaN) = NaN +i*NaN, except for x=0 */
-              /* sin(-0 +i*NaN) = -0 +i*NaN */
-              /* sin(+0 +i*NaN) = +0 +i*NaN */
-              if (!mpfr_zero_p (MPC_RE (op)))
-                mpfr_set_nan (MPC_RE (rop));
-              else if (!mpfr_inf_p (MPC_IM (op))
-                       && !mpfr_zero_p (MPC_IM (op)))
-                /* sin(NaN -i*Inf) = NaN -i*Inf */
-                /* sin(NaN -i*0) = NaN -i*0 */
-                /* sin(NaN +i*0) = NaN +i*0 */
-                /* sin(NaN +i*Inf) = NaN +i*Inf */
-                /* sin(NaN +i*y) = NaN +i*NaN, when 0<|y|<Inf */
-                mpfr_set_nan (MPC_IM (rop));
-            }
-        }
-      else if (mpfr_inf_p (MPC_RE (op)))
-        {
-          mpfr_set_nan (MPC_RE (rop));
-
-          if (!mpfr_inf_p (MPC_IM (op)) && !mpfr_zero_p (MPC_IM (op)))
-            /* sin(+/-Inf -i*Inf) = NaN -i*Inf */
-            /* sin(+/-Inf +i*Inf) = NaN +i*Inf */
-            /* sin(+/-Inf +i*y) = NaN +i*NaN, when 0<|y|<Inf */
-            mpfr_set_nan (MPC_IM (rop));
-          else
-            /* sin(+/-Inf -i*0) = NaN -i*0 */
-            /* sin(+/-Inf +i*0) = NaN +i*0 */
-            mpfr_set (MPC_IM (rop), MPC_IM (op), MPC_RND_IM (rnd));
-        }
-      else if (mpfr_zero_p (MPC_RE (op)))
-        /* sin(-0 -i*Inf) = -0 -i*Inf */
-        /* sin(+0 -i*Inf) = +0 -i*Inf */
-        /* sin(-0 +i*Inf) = -0 +i*Inf */
-        /* sin(+0 +i*Inf) = +0 +i*Inf */
-        {
-          mpc_set (rop, op, rnd);
-        }
-      else
-        /* sin(x -i*Inf) = +Inf*(sin(x) -i*cos(x)) */
-        /* sin(x +i*Inf) = +Inf*(sin(x) +i*cos(x)) */
-        {
-          mpfr_init2 (s, 2);
-          mpfr_init2 (c, 2);
-          mpfr_sin_cos (s, c, MPC_RE (op), GMP_RNDZ);
-          mpfr_set_inf (MPC_RE (rop), MPFR_SIGN (s));
-          mpfr_set_inf (MPC_IM (rop), MPFR_SIGN (c)*MPFR_SIGN (MPC_IM (op)));
-          mpfr_clear (s);
-          mpfr_clear (c);
-        }
-
-      return MPC_INEX (0, 0); /* exact in all cases*/
-    }
-
-  /* special case when the input is real: */
-  /* sin(x -0*i) = sin(x) -0*i*cos(x) */
-  /* sin(x +0*i) = sin(x) +0*i*cos(x) */
-  if (mpfr_cmp_ui (MPC_IM(op), 0) == 0)
-    {
-      mpfr_init2 (c, 2);
-      mpfr_cos (c, MPC_RE (op), MPC_RND_RE (rnd));
-      inex_re = mpfr_sin (MPC_RE (rop), MPC_RE (op), MPC_RND_RE (rnd));
-      mpfr_mul (MPC_IM(rop), MPC_IM(op), c, MPC_RND_IM(rnd));
-      mpfr_clear (c);
-
-      return MPC_INEX (inex_re, 0);
-    }
-
-  /* special case when the input is imaginary:
-     sin(+/-O +i*y) = +/-0 +i*sinh(y) */
-  if (mpfr_cmp_ui (MPC_RE(op), 0) == 0)
-    {
-      mpfr_set (MPC_RE(rop), MPC_RE(op), MPC_RND_RE(rnd));
-      inex_im = mpfr_sinh (MPC_IM(rop), MPC_IM(op), MPC_RND_IM(rnd));
-
-      return MPC_INEX (0, inex_im);
-    }
+  if (!mpc_fin_p (op) || mpfr_zero_p (MPC_IM (op)) || mpfr_zero_p (MPC_RE (op)))
+     return MPC_INEX1 (mpc_sin_cos (rop, NULL, op, rnd, 0));
 
   /* let op = a + i*b, then sin(op) = sin(a)*cosh(b) + i*cos(a)*sinh(b).
 
