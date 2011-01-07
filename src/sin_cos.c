@@ -1,4 +1,4 @@
-/* mpc_sin_cos -- sine and cosine of a complex number.
+/* mpc_sin_cos, mpc_sin, mpc_cos -- sine and cosine of a complex number.
 
 Copyright (C) 2010, 2011 Andreas Enge, Philippe Th\'eveny, Paul Zimmermann
 
@@ -375,4 +375,18 @@ mpc_sin_cos (mpc_ptr rop_sin, mpc_ptr rop_cos, mpc_srcptr op,
 
       return (MPC_INEX12 (inex_sin, inex_cos));
    }
+}
+
+
+int
+mpc_sin (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
+{
+   return MPC_INEX1 (mpc_sin_cos (rop, NULL, op, rnd, 0));
+}
+
+
+int
+mpc_cos (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
+{
+  return MPC_INEX2 (mpc_sin_cos (NULL, rop, op, 0, rnd));
 }
