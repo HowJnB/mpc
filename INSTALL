@@ -10,8 +10,8 @@ in the Texinfo documentation (type 'info mpc.info').
 
 1. In the directory of the MPC archive, type
 
-      tar xzf mpc-0.8.3.tar.gz
-      cd mpc-0.8.3
+      tar xzf mpc-0.9.tar.gz
+      cd mpc-0.9
       ./configure
       make
 
