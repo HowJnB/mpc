@@ -1,6 +1,6 @@
 /* mpc_tan -- tangent of a complex number.
 
-Copyright (C) 2008, 2009, 2010 Philippe Th\'eveny, Andreas Enge, Paul Zimmermann
+Copyright (C) 2008, 2009, 2010, 2011 Philippe Th\'eveny, Andreas Enge, Paul Zimmermann
 
 This file is part of the MPC Library.
 
@@ -183,7 +183,6 @@ mpc_tan (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
   do
     {
       mpfr_exp_t k, exr, eyr, eyi, ezr;
-      int isinf = 0;
 
       ok = 0;
 
@@ -195,23 +194,19 @@ mpc_tan (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
       /* rounding away from zero: except in the cases x=0 or y=0 (processed
          above), sin x and cos y are never exact, so rounding away from 0 is
          rounding towards 0 and adding one ulp to the absolute value */
-      mpc_sin (x, op, MPC_RNDZZ);
-      isinf = mpfr_inf_p (MPC_RE (x)) || mpfr_inf_p (MPC_IM (x));
-      /* if the real or imaginary part of x is infinite, it means that Im(op)
-         was large, in which case the result is
-         sign(tan(Re(op)))*0 + sign(Im(op))*I,
-         where sign(tan(Re(op))) = sign(Re(x))*sign(Re(y)) */
+      mpc_sin_cos (x, y, op, MPC_RNDZZ, MPC_RNDZZ);
       MPFR_ADD_ONE_ULP (MPC_RE (x));
       MPFR_ADD_ONE_ULP (MPC_IM (x));
-      MPC_ASSERT (mpfr_zero_p (MPC_RE (x)) == 0);
-      exr = mpfr_get_exp (MPC_RE (x));
-      mpc_cos (y, op, MPC_RNDZZ);
-      isinf = isinf || mpfr_inf_p (MPC_RE (y)) || mpfr_inf_p (MPC_IM (y));
       MPFR_ADD_ONE_ULP (MPC_RE (y));
       MPFR_ADD_ONE_ULP (MPC_IM (y));
+      MPC_ASSERT (mpfr_zero_p (MPC_RE (x)) == 0);
 
-      if (isinf)
-        {
+      if (   mpfr_inf_p (MPC_RE (x)) || mpfr_inf_p (MPC_IM (x))
+          || mpfr_inf_p (MPC_RE (y)) || mpfr_inf_p (MPC_IM (y))) {
+         /* If the real or imaginary part of x is infinite, it means that
+            Im(op) was large, in which case the result is
+            sign(tan(Re(op)))*0 + sign(Im(op))*I,
+            where sign(tan(Re(op))) = sign(Re(x))*sign(Re(y)). */
           int inex_re, inex_im;
           mpfr_set_ui (MPC_RE (rop), 0, GMP_RNDN);
           if (mpfr_sgn (MPC_RE (x)) * mpfr_sgn (MPC_RE (y)) < 0)
@@ -235,6 +230,7 @@ mpc_tan (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
           goto end;
         }
 
+      exr = mpfr_get_exp (MPC_RE (x));
       eyr = mpfr_get_exp (MPC_RE (y));
       eyi = mpfr_get_exp (MPC_IM (y));
 
