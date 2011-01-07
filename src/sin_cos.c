@@ -246,6 +246,9 @@ mpc_sin_cos_imag (mpc_ptr rop_sin, mpc_ptr rop_cos, mpc_srcptr op,
 int
 mpc_sin_cos (mpc_ptr rop_sin, mpc_ptr rop_cos, mpc_srcptr op,
    mpc_rnd_t rnd_sin, mpc_rnd_t rnd_cos)
+   /* Feature not documented in the texinfo file: One of rop_sin or
+      rop_cos may be NULL, in which case it is not computed, and the
+      corresponding ternary inexact value is set to 0 (exact).       */
 {
    int inex_sin, inex_cos;
 

@@ -1012,6 +1012,13 @@ Set @var{rop} to the cosine of @var{op},
 rounded according to @var{rnd} with the precision of @var{rop}.
 @end deftypefun
 
+@deftypefun int mpc_sin_cos (mpc_t @var{rop_sin}, mpc_t @var{rop_cos}, mpc_t @var{op}, mpc_rnd_t @var{rnd_sin}, mpc_rnd_t @var{rnd_cos})
+Set @var{rop_sin} to the sine of @var{op},
+rounded according to @var{rnd_sin} with the precision of @var{rop_sin},
+and @var{rop_cos} to the cosine of @var{op},
+rounded according to @var{rnd_cos} with the precision of @var{rop_cos}.
+@end deftypefun
+
 @deftypefun int mpc_tan (mpc_t @var{rop}, mpc_t @var{op}, mpc_rnd_t @var{rnd})
 Set @var{rop} to the tangent of @var{op},
 rounded according to @var{rnd} with the precision of @var{rop}.
