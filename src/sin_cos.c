@@ -250,8 +250,6 @@ mpc_sin_cos (mpc_ptr rop_sin, mpc_ptr rop_cos, mpc_srcptr op,
       rop_cos may be NULL, in which case it is not computed, and the
       corresponding ternary inexact value is set to 0 (exact).       */
 {
-   int inex_sin, inex_cos;
-
    if (!mpc_fin_p (op))
       return mpc_sin_cos_nonfinite (rop_sin, rop_cos, op, rnd_sin, rnd_cos);
    else if (mpfr_zero_p (MPC_IM (op)))
@@ -277,9 +275,13 @@ mpc_sin_cos (mpc_ptr rop_sin, mpc_ptr rop_cos, mpc_srcptr op,
       mpfr_t s, c, sh, ch, sch, csh;
       mpfr_prec_t prec;
       int ok;
-      int inex_re, inex_im;
+      int inex_re, inex_im, inex_sin, inex_cos;
 
-      prec = MPC_MAX (MPC_MAX_PREC (rop_sin), MPC_MAX_PREC (rop_cos));
+      prec = 2;
+      if (rop_sin != NULL)
+         prec = MPC_MAX (prec, MPC_MAX_PREC (rop_sin));
+      if (rop_cos != NULL)
+         prec = MPC_MAX (prec, MPC_MAX_PREC (rop_cos));
 
       mpfr_init2 (s, 2);
       mpfr_init2 (c, 2);
@@ -370,7 +372,7 @@ mpc_sin_cos (mpc_ptr rop_sin, mpc_ptr rop_cos, mpc_srcptr op,
       mpfr_clear (ch);
       mpfr_clear (sch);
       mpfr_clear (csh);
-   }
 
-   return (MPC_INEX12 (inex_sin, inex_cos));
+      return (MPC_INEX12 (inex_sin, inex_cos));
+   }
 }
