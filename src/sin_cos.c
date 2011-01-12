@@ -170,13 +170,20 @@ mpc_sin_cos_real (mpc_ptr rop_sin, mpc_ptr rop_cos, mpc_srcptr op,
    int inex_sin_re, inex_cos_re;
 
    if (rop_sin != NULL) {
-      /* sin(x +-0*i) = sin(x) +-0*i*cos(x) */
-      mpfr_t (c);
-      mpfr_init2 (c, 2);
-      mpfr_cos (c, MPC_RE (op), MPC_RND_RE (rnd_sin));
+      /* sin(x +-0*i) = sin(x) +-0*i*sign(cos(x)) */
+      mpfr_t (sign);
+      mpfr_init2 (sign, 2);
+      mpfr_cos (sign, MPC_RE (op), GMP_RNDN);
+      if (mpfr_signbit (MPC_IM (op)))
+         MPFR_CHANGE_SIGN (sign);
+
       inex_sin_re = mpfr_sin (MPC_RE (rop_sin), MPC_RE (op), MPC_RND_RE (rnd_sin));
-      mpfr_mul (MPC_IM(rop_sin), MPC_IM(op), c, MPC_RND_IM(rnd_sin));
-      mpfr_clear (c);
+
+      mpfr_set_ui (MPC_IM (rop_sin), 0ul, GMP_RNDN);
+      if (mpfr_signbit (sign))
+         MPFR_CHANGE_SIGN (MPC_IM (rop_sin));
+
+      mpfr_clear (sign);
    }
    else
       inex_sin_re = 0;
@@ -213,28 +220,29 @@ mpc_sin_cos_imag (mpc_ptr rop_sin, mpc_ptr rop_cos, mpc_srcptr op,
 
    if (rop_sin != NULL) {
       /* sin(+-O +i*y) = +-0 +i*sinh(y) */
-      mpfr_set (MPC_RE(rop_sin), MPC_RE(op), MPC_RND_RE(rnd_sin));
+      mpfr_set (MPC_RE(rop_sin), MPC_RE(op), GMP_RNDN);
       inex_sin_im = mpfr_sinh (MPC_IM(rop_sin), MPC_IM(op), MPC_RND_IM(rnd_sin));
    }
    else
       inex_sin_im = 0;
 
    if (rop_cos != NULL) {
-      /* cos(-0 - i * y) = cos(+0 + i * y) = cosh(y) - i * 0
+      /* cos(-0 - i * y) = cos(+0 + i * y) = cosh(y) - i * 0,
          cos(-0 + i * y) = cos(+0 - i * y) = cosh(y) + i * 0,
-         when y >= 0 */
+         where y >= 0 */
 
-      /* When ROP == OP, the sign of 0 will be erased, so use it now */
+      /* When rop == op, the sign of 0 will be erased, so use it now. */
       const int imag_sign =
-        mpfr_signbit (MPC_RE (op)) ==  mpfr_signbit (MPC_IM (op));
+         mpfr_signbit (MPC_RE (op)) ==  mpfr_signbit (MPC_IM (op));
 
       if (mpfr_zero_p (MPC_IM (op)))
-        inex_cos_re = mpfr_set_ui (MPC_RE (rop_cos), 1, MPC_RND_RE (rnd_cos));
+        inex_cos_re = mpfr_set_ui (MPC_RE (rop_cos), 1ul, MPC_RND_RE (rnd_cos));
       else
         inex_cos_re = mpfr_cosh (MPC_RE (rop_cos), MPC_IM (op), MPC_RND_RE (rnd_cos));
 
-      mpfr_set_ui (MPC_IM (rop_cos), 0, MPC_RND_IM (rnd_cos));
-      mpfr_setsign (MPC_IM (rop_cos), MPC_IM (rop_cos), imag_sign, MPC_RND_IM (rnd_cos));
+      mpfr_set_ui (MPC_IM (rop_cos), 0ul, MPC_RND_IM (rnd_cos));
+      if (imag_sign)
+         MPFR_CHANGE_SIGN (MPC_IM (rop_cos));
    }
    else
       inex_cos_re = 0;
