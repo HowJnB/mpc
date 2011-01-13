@@ -1,6 +1,6 @@
 /* test file for mpc_cosh.
 
-Copyright (C) 2008, 2009, 2010 Philippe Th\'eveny, Paul Zimmermann, Andreas Enge
+Copyright (C) 2008, 2009, 2010, 2011 Philippe Th\'eveny, Paul Zimmermann, Andreas Enge
 
 This file is part of the MPC Library.
 
@@ -27,10 +27,10 @@ static void
 test_failed (mpc_t op, mpc_t get, mpc_t expected)
 {
   printf ("mpc_cosh(op) failed\n with ");
-  OUT (op);
+  MPC_OUT (op);
   printf ("     ");
-  OUT (get);
-  OUT (expected);
+  MPC_OUT (get);
+  MPC_OUT (expected);
   exit (1);
 }
 

@@ -17,3 +17,8 @@ New tests to add:
 - from Andreas Enge and Philippe Théveny 9 April 2008
   correct handling of Nan and infinities in the case of
   intermediate overflows while the result may fit (we need special code)
+
+Code clean-up:
+- from Andreas Enge 12 January 2011
+  factor out code such as test_failed in ttan.c, error message in
+  bug20090105 of tcos.c etc. into one macro in mpc-tests.h

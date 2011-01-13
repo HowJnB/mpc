@@ -1,6 +1,6 @@
 /* test file for mpc_cos.
 
-Copyright (C) 2008, 2009 Andreas Enge, Philippe Th\'eveny
+Copyright (C) 2008, 2009, 2011 Andreas Enge, Philippe Th\'eveny
 
 This file is part of the MPC Library.
 
@@ -43,10 +43,10 @@ bug20090105 (void)
   if (mpc_cmp (got, expected) != 0)
     {
       printf ("Error in bug20090105: cos(op) with rounding mode MPC_RNDNN\n");
-      OUT (op);
-      OUT (expected);
+      MPC_OUT (op);
+      MPC_OUT (expected);
       printf("     ");
-      OUT (got);
+      MPC_OUT (got);
 
       exit (1);
     }

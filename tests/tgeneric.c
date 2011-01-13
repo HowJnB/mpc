@@ -1,6 +1,6 @@
 /* File for generic tests.
 
-Copyright (C) 2008, 2009, 2010 Philippe Th\'eveny, Andreas Enge, Paul Zimmermann
+Copyright (C) 2008, 2009, 2010, 2011 Philippe Th\'eveny, Andreas Enge, Paul Zimmermann
 
 This file is part of the MPC Library.
 
@@ -59,18 +59,18 @@ tgeneric_cc (mpc_function *function, mpc_ptr op, mpc_ptr rop,
 
   /* rounding failed */
   printf ("Rounding in %s might be incorrect for\n", function->name);
-  OUT (op);
+  MPC_OUT (op);
 
   printf ("with rounding mode (%s, %s)",
           mpfr_print_rnd_mode (MPC_RND_RE (rnd)),
           mpfr_print_rnd_mode (MPC_RND_IM (rnd)));
 
   printf ("\n%s                     gives ", function->name);
-  OUT (rop);
+  MPC_OUT (rop);
   printf ("%s quadruple precision gives ", function->name);
-  OUT (rop4);
+  MPC_OUT (rop4);
   printf ("and is rounded to                  ");
-  OUT (rop4rnd);
+  MPC_OUT (rop4rnd);
 
   exit (1);
 }
@@ -90,7 +90,7 @@ tgeneric_fc (mpc_function *function, mpc_ptr op, mpfr_ptr rop,
     return;
 
   printf ("Rounding in %s might be incorrect for\n", function->name);
-  OUT (op);
+  MPC_OUT (op);
   printf ("with rounding mode %s", mpfr_print_rnd_mode (rnd));
 
   printf ("\n%s                     gives ", function->name);
@@ -124,17 +124,17 @@ tgeneric_cfc (mpc_function *function, mpfr_ptr op1, mpc_ptr op2,
 
   printf ("Rounding in %s might be incorrect for\n", function->name);
   MPFR_OUT (op1);
-  OUT (op2);
+  MPC_OUT (op2);
   printf ("with rounding mode (%s, %s)",
           mpfr_print_rnd_mode (MPC_RND_RE (rnd)),
           mpfr_print_rnd_mode (MPC_RND_IM (rnd)));
 
   printf ("\n%s                     gives ", function->name);
-  OUT (rop);
+  MPC_OUT (rop);
   printf ("%s quadruple precision gives ", function->name);
-  OUT (rop4);
+  MPC_OUT (rop4);
   printf ("and is rounded to                  ");
-  OUT (rop4rnd);
+  MPC_OUT (rop4rnd);
 
   exit (1);
 }
@@ -159,18 +159,18 @@ tgeneric_ccf (mpc_function *function, mpc_ptr op1, mpfr_ptr op2,
     return;
 
   printf ("Rounding in %s might be incorrect for\n", function->name);
-  OUT (op1);
+  MPC_OUT (op1);
   MPFR_OUT (op2);
   printf ("with rounding mode (%s, %s)",
           mpfr_print_rnd_mode (MPC_RND_RE (rnd)),
           mpfr_print_rnd_mode (MPC_RND_IM (rnd)));
 
   printf ("\n%s                     gives ", function->name);
-  OUT (rop);
+  MPC_OUT (rop);
   printf ("%s quadruple precision gives ", function->name);
-  OUT (rop4);
+  MPC_OUT (rop4);
   printf ("and is rounded to                  ");
-  OUT (rop4rnd);
+  MPC_OUT (rop4rnd);
 
   exit (1);
 }
@@ -203,18 +203,18 @@ tgeneric_ccc (mpc_function *function, mpc_ptr op1, mpc_ptr op2,
 
   /* rounding failed */
   printf ("Rounding in %s might be incorrect for\n", function->name);
-  OUT (op1);
-  OUT (op2);
+  MPC_OUT (op1);
+  MPC_OUT (op2);
   printf ("with rounding mode (%s, %s)",
           mpfr_print_rnd_mode (MPC_RND_RE (rnd)),
           mpfr_print_rnd_mode (MPC_RND_IM (rnd)));
 
   printf ("\n%s                     gives ", function->name);
-  OUT (rop);
+  MPC_OUT (rop);
   printf ("%s quadruple precision gives ", function->name);
-  OUT (rop4);
+  MPC_OUT (rop4);
   printf ("and is rounded to                  ");
-  OUT (rop4rnd);
+  MPC_OUT (rop4rnd);
 
   exit (1);
 }
@@ -239,18 +239,18 @@ tgeneric_ccu (mpc_function *function, mpc_ptr op1, unsigned long int op2,
     return;
 
   printf ("Rounding in %s might be incorrect for\n", function->name);
-  OUT (op1);
+  MPC_OUT (op1);
   printf ("op2=%lu\n", op2);
   printf ("with rounding mode (%s, %s)",
           mpfr_print_rnd_mode (MPC_RND_RE (rnd)),
           mpfr_print_rnd_mode (MPC_RND_IM (rnd)));
 
   printf ("\n%s                     gives ", function->name);
-  OUT (rop);
+  MPC_OUT (rop);
   printf ("%s quadruple precision gives ", function->name);
-  OUT (rop4);
+  MPC_OUT (rop4);
   printf ("and is rounded to                  ");
-  OUT (rop4rnd);
+  MPC_OUT (rop4rnd);
 
   exit (1);
 }
@@ -276,17 +276,17 @@ tgeneric_cuc (mpc_function *function, unsigned long int op1, mpc_ptr op2,
 
   printf ("Rounding in %s might be incorrect for\n", function->name);
   printf ("op1=%lu\n", op1);
-  OUT (op2);
+  MPC_OUT (op2);
   printf ("with rounding mode (%s, %s)",
           mpfr_print_rnd_mode (MPC_RND_RE (rnd)),
           mpfr_print_rnd_mode (MPC_RND_IM (rnd)));
 
   printf ("\n%s                     gives ", function->name);
-  OUT (rop);
+  MPC_OUT (rop);
   printf ("%s quadruple precision gives ", function->name);
-  OUT (rop4);
+  MPC_OUT (rop4);
   printf ("and is rounded to                  ");
-  OUT (rop4rnd);
+  MPC_OUT (rop4rnd);
 
   exit (1);
 }
@@ -311,18 +311,18 @@ tgeneric_ccs (mpc_function *function, mpc_ptr op1, long int op2,
     return;
 
   printf ("Rounding in %s might be incorrect for\n", function->name);
-  OUT (op1);
+  MPC_OUT (op1);
   printf ("op2=%ld\n", op2);
   printf ("with rounding mode (%s, %s)",
           mpfr_print_rnd_mode (MPC_RND_RE (rnd)),
           mpfr_print_rnd_mode (MPC_RND_IM (rnd)));
 
   printf ("\n%s                     gives ", function->name);
-  OUT (rop);
+  MPC_OUT (rop);
   printf ("%s quadruple precision gives ", function->name);
-  OUT (rop4);
+  MPC_OUT (rop4);
   printf ("and is rounded to                  ");
-  OUT (rop4rnd);
+  MPC_OUT (rop4rnd);
 
   exit (1);
 }
@@ -348,18 +348,18 @@ tgeneric_cci (mpc_function *function, mpc_ptr op1, int op2,
     return;
 
   printf ("Rounding in %s might be incorrect for\n", function->name);
-  OUT (op1);
+  MPC_OUT (op1);
   printf ("op2=%d\n", op2);
   printf ("with rounding mode (%s, %s)",
           mpfr_print_rnd_mode (MPC_RND_RE (rnd)),
           mpfr_print_rnd_mode (MPC_RND_IM (rnd)));
 
   printf ("\n%s                     gives ", function->name);
-  OUT (rop);
+  MPC_OUT (rop);
   printf ("%s quadruple precision gives ", function->name);
-  OUT (rop4);
+  MPC_OUT (rop4);
   printf ("and is rounded to                  ");
-  OUT (rop4rnd);
+  MPC_OUT (rop4rnd);
 
   exit (1);
 }
@@ -387,17 +387,17 @@ tgeneric_cuuc (mpc_function *function, unsigned long int op1,
   printf ("Rounding in %s might be incorrect for\n", function->name);
   printf ("op1=%lu\n", op1);
   printf ("op2=%lu\n", op2);
-  OUT (op3);
+  MPC_OUT (op3);
   printf ("with rounding mode (%s, %s)",
           mpfr_print_rnd_mode (MPC_RND_RE (rnd)),
           mpfr_print_rnd_mode (MPC_RND_IM (rnd)));
 
   printf ("\n%s                     gives ", function->name);
-  OUT (rop);
+  MPC_OUT (rop);
   printf ("%s quadruple precision gives ", function->name);
-  OUT (rop4);
+  MPC_OUT (rop4);
   printf ("and is rounded to                  ");
-  OUT (rop4rnd);
+  MPC_OUT (rop4rnd);
 
   exit (1);
 }
@@ -416,9 +416,9 @@ reuse_cc (mpc_function* function, mpc_srcptr z, mpc_ptr got, mpc_ptr expected)
   if (!same_mpc_value (got, expected, ks))
     {
       printf ("Error for %s(z, z) for\n", function->name);
-      OUT (z);
-      OUT (expected);
-      OUT (got);
+      MPC_OUT (z);
+      MPC_OUT (expected);
+      MPC_OUT (got);
 
       exit (1);
     }
@@ -435,7 +435,7 @@ reuse_fc (mpc_function* function, mpc_ptr z, mpc_ptr x, mpfr_ptr expected)
       mpfr_t got;
       got[0] = MPC_RE(x)[0]; /* display sensible name */
       printf ("Error for %s(MPC_RE(z), z) for\n", function->name);
-      OUT (z);
+      MPC_OUT (z);
       MPFR_OUT (expected);
       MPFR_OUT (got);
 
@@ -448,7 +448,7 @@ reuse_fc (mpc_function* function, mpc_ptr z, mpc_ptr x, mpfr_ptr expected)
       mpfr_t got;
       got[0] = MPC_IM(x)[0]; /* display sensible name */
       printf ("Error for %s(MPC_IM(z), z) for \n", function->name);
-      OUT (z);
+      MPC_OUT (z);
       MPFR_OUT (expected);
       MPFR_OUT (got);
 
@@ -469,9 +469,9 @@ reuse_cfc (mpc_function* function, mpc_srcptr z, mpfr_srcptr x, mpc_ptr got,
     {
       printf ("Error for %s(z, x, z) for\n", function->name);
       MPFR_OUT (x);
-      OUT (z);
-      OUT (expected);
-      OUT (got);
+      MPC_OUT (z);
+      MPC_OUT (expected);
+      MPC_OUT (got);
 
       exit (1);
     }
@@ -489,10 +489,10 @@ reuse_ccf (mpc_function* function, mpc_srcptr z, mpfr_srcptr x, mpc_ptr got,
   if (!same_mpc_value (got, expected, ks))
     {
       printf ("Error for %s(z, z, x) for\n", function->name);
-      OUT (z);
+      MPC_OUT (z);
       MPFR_OUT (x);
-      OUT (expected);
-      OUT (got);
+      MPC_OUT (expected);
+      MPC_OUT (got);
 
       exit (1);
     }
@@ -510,10 +510,10 @@ reuse_ccc (mpc_function* function, mpc_srcptr z, mpc_srcptr x,
   if (!same_mpc_value (got, expected, ks))
     {
       printf ("Error for %s(z, z, x) for\n", function->name);
-      OUT (z);
-      OUT (x);
-      OUT (expected);
-      OUT (got);
+      MPC_OUT (z);
+      MPC_OUT (x);
+      MPC_OUT (expected);
+      MPC_OUT (got);
 
       exit (1);
     }
@@ -523,10 +523,10 @@ reuse_ccc (mpc_function* function, mpc_srcptr z, mpc_srcptr x,
   if (!same_mpc_value (got, expected, ks))
     {
       printf ("Error for %s(x, z, x) for\n", function->name);
-      OUT (z);
-      OUT (x);
-      OUT (expected);
-      OUT (got);
+      MPC_OUT (z);
+      MPC_OUT (x);
+      MPC_OUT (expected);
+      MPC_OUT (got);
 
       exit (1);
     }
@@ -536,9 +536,9 @@ reuse_ccc (mpc_function* function, mpc_srcptr z, mpc_srcptr x,
   if (!same_mpc_value (got, expected, ks))
     {
       printf ("Error for %s(x, x, x) for\n", function->name);
-      OUT (x);
-      OUT (expected);
-      OUT (got);
+      MPC_OUT (x);
+      MPC_OUT (expected);
+      MPC_OUT (got);
 
       exit (1);
     }
@@ -556,10 +556,10 @@ reuse_ccu (mpc_function* function, mpc_srcptr z, unsigned long ul,
   if (!same_mpc_value (got, expected, ks))
     {
       printf ("Error for %s(z, z, n) for\n", function->name);
-      OUT (z);
+      MPC_OUT (z);
       printf ("n=%lu\n", ul);
-      OUT (expected);
-      OUT (got);
+      MPC_OUT (expected);
+      MPC_OUT (got);
 
       exit (1);
     }
@@ -578,9 +578,9 @@ reuse_cuc (mpc_function* function, unsigned long ul, mpc_srcptr z,
     {
       printf ("Error for %s(z, n, z) for\n", function->name);
       printf ("n=%lu\n", ul);
-      OUT (z);
-      OUT (expected);
-      OUT (got);
+      MPC_OUT (z);
+      MPC_OUT (expected);
+      MPC_OUT (got);
 
       exit (1);
     }
@@ -598,10 +598,10 @@ reuse_ccs (mpc_function* function, mpc_srcptr z, long lo,
   if (!same_mpc_value (got, expected, ks))
     {
       printf ("Error for %s(z, z, n) for\n", function->name);
-      OUT (z);
+      MPC_OUT (z);
       printf ("n=%ld\n", lo);
-      OUT (expected);
-      OUT (got);
+      MPC_OUT (expected);
+      MPC_OUT (got);
 
       exit (1);
     }
@@ -619,10 +619,10 @@ reuse_cci (mpc_function* function, mpc_srcptr z, int i,
   if (!same_mpc_value (got, expected, ks))
     {
       printf ("Error for %s(z, z, n) for\n", function->name);
-      OUT (z);
+      MPC_OUT (z);
       printf ("n=%d\n", i);
-      OUT (expected);
-      OUT (got);
+      MPC_OUT (expected);
+      MPC_OUT (got);
 
       exit (1);
     }
@@ -642,9 +642,9 @@ reuse_cuuc (mpc_function* function, unsigned long ul1, unsigned long ul2,
       printf ("Error for %s(z, m, n, z) for\n", function->name);
       printf ("m=%lu\n", ul1);
       printf ("n=%lu\n", ul2);
-      OUT (z);
-      OUT (expected);
-      OUT (got);
+      MPC_OUT (z);
+      MPC_OUT (expected);
+      MPC_OUT (got);
 
       exit (1);
     }

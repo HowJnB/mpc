@@ -1,6 +1,6 @@
 /* Read data file and check function.
 
-Copyright (C) 2008, 2009, 2010 Andreas Enge, Philippe Th\'eveny
+Copyright (C) 2008, 2009, 2010, 2011 Andreas Enge, Philippe Th\'eveny
 
 This file is part of the MPC Library.
 
@@ -575,7 +575,7 @@ data_check (mpc_function function, const char *file_name)
               if (inex_re != TERNARY_NOT_CHECKED && inex_re != inex)
                 printf("ternary value: got %s, expected %s\n",
                        MPFR_INEX_STR (inex), MPFR_INEX_STR (inex_re));
-              OUT (op);
+              MPC_OUT (op);
               printf ("     ");
               MPFR_OUT (got);
               MPFR_OUT (expected);
@@ -602,10 +602,10 @@ data_check (mpc_function function, const char *file_name)
                 printf("ternary value: got %s, expected (%s, %s)\n",
                        MPC_INEX_STR (inex),
                        MPFR_INEX_STR (inex_re), MPFR_INEX_STR (inex_im));
-              OUT (op);
+              MPC_OUT (op);
               printf ("     ");
-              OUT (got);
-              OUT (expected);
+              MPC_OUT (got);
+              MPC_OUT (expected);
 
               exit (1);
             }
@@ -631,11 +631,11 @@ data_check (mpc_function function, const char *file_name)
                 printf("ternary value: got %s, expected (%s, %s)\n",
                        MPC_INEX_STR (inex),
                        MPFR_INEX_STR (inex_re), MPFR_INEX_STR (inex_im));
-              OUT (op1);
-              OUT (op2);
+              MPC_OUT (op1);
+              MPC_OUT (op2);
               printf ("     ");
-              OUT (got);
-              OUT (expected);
+              MPC_OUT (got);
+              MPC_OUT (expected);
 
               exit (1);
             }
@@ -658,11 +658,11 @@ data_check (mpc_function function, const char *file_name)
                     printf("ternary value: got %s, expected (%s, %s)\n",
                            MPC_INEX_STR (inex),
                            MPFR_INEX_STR (inex_re), MPFR_INEX_STR (inex_im));
-                  OUT (op1);
-                  OUT (op2);
+                  MPC_OUT (op1);
+                  MPC_OUT (op2);
                   printf ("     ");
-                  OUT (got);
-                  OUT (expected);
+                  MPC_OUT (got);
+                  MPC_OUT (expected);
 
                   exit (1);
                 }
@@ -691,10 +691,10 @@ data_check (mpc_function function, const char *file_name)
                        MPC_INEX_STR (inex),
                        MPFR_INEX_STR (inex_re), MPFR_INEX_STR (inex_im));
               MPFR_OUT (op1);
-              OUT (op2);
+              MPC_OUT (op2);
               printf ("     ");
-              OUT (got);
-              OUT (expected);
+              MPC_OUT (got);
+              MPC_OUT (expected);
 
               exit (1);
             }
@@ -721,11 +721,11 @@ data_check (mpc_function function, const char *file_name)
                 printf("ternary value: got %s, expected (%s, %s)\n",
                        MPC_INEX_STR (inex),
                        MPFR_INEX_STR (inex_re), MPFR_INEX_STR (inex_im));
-              OUT (op1);
+              MPC_OUT (op1);
               MPFR_OUT (op2);
               printf ("     ");
-              OUT (got);
-              OUT (expected);
+              MPC_OUT (got);
+              MPC_OUT (expected);
 
               exit (1);
             }
@@ -750,10 +750,10 @@ data_check (mpc_function function, const char *file_name)
                 printf("ternary value: got %s, expected (%s, %s)\n",
                        MPC_INEX_STR (inex),
                        MPFR_INEX_STR (inex_re), MPFR_INEX_STR (inex_im));
-              OUT (op1);
+              MPC_OUT (op1);
               printf ("op2 %lu\n     ", ui);
-              OUT (got);
-              OUT (expected);
+              MPC_OUT (got);
+              MPC_OUT (expected);
 
               exit (1);
             }

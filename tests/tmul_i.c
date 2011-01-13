@@ -1,6 +1,6 @@
 /* tmul_i -- test file for mpc_mul_i.
 
-Copyright (C) 2008, 2009, 2010 Philippe Theveny, Andreas Enge
+Copyright (C) 2008, 2009, 2010, 2011 Philippe Theveny, Andreas Enge
 
 This file is part of the MPC Library.
 
@@ -54,10 +54,10 @@ check_different_precisions(void)
   if (mpc_cmp(got, expected) != 0)
     {
       printf ("Error for mpc_mul_i(z, z, n) for\n");
-      OUT (z);
+      MPC_OUT (z);
       printf ("n=+1\n");
-      OUT (expected);
-      OUT (got);
+      MPC_OUT (expected);
+      MPC_OUT (got);
 
       exit (1);
     }
@@ -68,10 +68,10 @@ check_different_precisions(void)
   if (mpc_cmp(got, expected) != 0)
     {
       printf ("Error for mpc_mul_i(z, z, n) for\n");
-      OUT (z);
+      MPC_OUT (z);
       printf ("n=-1\n");
-      OUT (expected);
-      OUT (got);
+      MPC_OUT (expected);
+      MPC_OUT (got);
 
       exit (1);
     }

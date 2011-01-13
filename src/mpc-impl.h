@@ -1,6 +1,6 @@
 /* mpc-impl.h -- Internal include file for mpc.
 
-Copyright (C) 2002, 2004, 2005, 2008, 2009, 2010 Andreas Enge, Philippe Th\'eveny, Paul Zimmermann
+Copyright (C) 2002, 2004, 2005, 2008, 2009, 2010, 2011 Andreas Enge, Philippe Th\'eveny, Paul Zimmermann
 
 This file is part of the MPC Library.
 
@@ -110,7 +110,7 @@ MA 02111-1307, USA. */
    /* Consider as NaN all other numbers containing at least one NaN */
 
 
-#define OUT(x)                                                  \
+#define MPC_OUT(x)                                                  \
 do {                                                            \
   printf (#x "[%lu,%lu]=", (unsigned long int) MPC_PREC_RE (x), \
       (unsigned long int) MPC_PREC_IM (x));                     \

@@ -1,6 +1,6 @@
 /* tsqr -- test file for mpc_sqr.
 
-Copyright (C) 2002, 2005, 2008, 2010 Andreas Enge, Paul Zimmermann, Philippe Th\'eveny
+Copyright (C) 2002, 2005, 2008, 2010, 2011 Andreas Enge, Paul Zimmermann, Philippe Th\'eveny
 
 This file is part of the MPC Library.
 
@@ -158,7 +158,7 @@ reuse_bug (void)
       ||!mpfr_zero_p (MPC_IM (z1)) || !mpfr_signbit (MPC_IM (z1)))
     {
       printf ("Error: Regression, bug 20081021 reproduced\n");
-      OUT (z1);
+      MPC_OUT (z1);
       exit (1);
     }
 

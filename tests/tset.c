@@ -1,6 +1,6 @@
 /* tset.c -- Test file for mpc_set_x and mpc_set_x_x functions.
 
-Copyright (C) 2009, 2010 Philippe Th\'eveny, Paul Zimmermann, Andreas Enge
+Copyright (C) 2009, 2010, 2011 Philippe Th\'eveny, Paul Zimmermann, Andreas Enge
 
 This file is part of the MPC Library.
 
@@ -44,7 +44,7 @@ MA 02111-1307, USA. */
   do {                                                          \
     printf ("Error in "function_name" for prec = %lu\n",        \
             (unsigned long int) precision);                     \
-    OUT(a);                                                     \
+    MPC_OUT(a);                                                     \
     exit (1);                                                   \
   } while (0)
 
@@ -154,8 +154,8 @@ check_set (void)
         {
           printf ("Error in mpc_set for prec = %lu\n",
                   (unsigned long int) prec);
-          OUT(z);
-          OUT(x);
+          MPC_OUT(z);
+          MPC_OUT(x);
           exit (1);
         }
 
@@ -350,9 +350,9 @@ check_set_str (mpfr_exp_t exp_max)
         {
           printf ("Error: mpc_set_str o mpc_get_str != Id\n"
                   "in base %u with str=\"%s\"\n", base, str);
-          OUT (expected);
+          MPC_OUT (expected);
           printf ("     ");
-          OUT (got);
+          MPC_OUT (got);
           exit (1);
         }
       mpc_free_str (str);
@@ -364,9 +364,9 @@ check_set_str (mpfr_exp_t exp_max)
         {
           printf ("Error: mpc_set_str o mpc_get_str != Id\n"
                   "in base %u with str=\"%s\"\n", base, str);
-          OUT (expected);
+          MPC_OUT (expected);
           printf ("     ");
-          OUT (got);
+          MPC_OUT (got);
           exit (1);
         }
       mpc_free_str (str);
@@ -386,9 +386,9 @@ check_set_str (mpfr_exp_t exp_max)
           {
             printf ("Error: mpc_set_str o mpc_get_str != Id\n"
                     "with str=\"%s\"\n", str);
-            OUT (expected);
+            MPC_OUT (expected);
             printf ("     ");
-            OUT (got);
+            MPC_OUT (got);
             exit (1);
           }
         mpc_free_str (str);
@@ -408,9 +408,9 @@ check_set_str (mpfr_exp_t exp_max)
     {
       printf ("Error: mpc_set_str o mpc_get_str != Id\n"
               "with str=\"%s\"\n", str);
-      OUT (expected);
+      MPC_OUT (expected);
       printf ("     ");
-      OUT (got);
+      MPC_OUT (got);
       exit (1);
     }
   mpc_free_str (str);
