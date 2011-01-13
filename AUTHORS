@@ -3,6 +3,4 @@ Main authors:
    Philipe Théveny
    Paul Zimmermann
 
-Patrick Pelissier has cleaned up some code.
-Marc Helbling has contributed the mpc_ui_ui_sub function and the mpc_ui_sub macro.
 Mickaël Gastineau has contributed the file Makefile.vc.
