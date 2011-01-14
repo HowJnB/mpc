@@ -30,7 +30,6 @@ MA 02111-1307, USA. */
 #endif
 
 #include "mpc-log.h"
-#include "mpc-impl.h"
 
 #include <dlfcn.h>
 
