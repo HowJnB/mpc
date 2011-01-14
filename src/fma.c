@@ -21,9 +21,9 @@ MA 02111-1307, USA. */
 
 #include "mpc-impl.h"
 
-/* return a bound on the precision needed to add x and y exactly */
+/* return a bound on the precision needed to add or subtract x and y exactly */
 static mpfr_prec_t
-bound_prec_add (mpfr_srcptr x, mpfr_srcptr y)
+bound_prec_addsub (mpfr_srcptr x, mpfr_srcptr y)
 {
   if (mpfr_regular_p (x) == 0)
     return mpfr_get_prec (y);
@@ -36,24 +36,6 @@ bound_prec_add (mpfr_srcptr x, mpfr_srcptr y)
       mpfr_exp_t ulpx = ex - mpfr_get_prec (x);
       mpfr_exp_t ulpy = ey - mpfr_get_prec (y);
       return ((ex >= ey) ? ex : ey) + 1 - ((ulpx <= ulpy) ? ulpx : ulpy);
-    }
-}
-
-/* return a bound on the precision needed to subtract x and y exactly */
-static mpfr_prec_t
-bound_prec_sub (mpfr_srcptr x, mpfr_srcptr y)
-{
-  if (mpfr_regular_p (x) == 0)
-    return mpfr_get_prec (y);
-  else if (mpfr_regular_p (y) == 0)
-    return mpfr_get_prec (x);
-  else /* neither x nor y are NaN, Inf or zero */
-    {
-      mpfr_exp_t ex = mpfr_get_exp (x);
-      mpfr_exp_t ey = mpfr_get_exp (y);
-      mpfr_exp_t ulpx = ex - mpfr_get_prec (x);
-      mpfr_exp_t ulpy = ey - mpfr_get_prec (y);
-      return ((ex >= ey) ? ex : ey) - ((ulpx <= ulpy) ? ulpx : ulpy);
     }
 }
 
@@ -77,10 +59,12 @@ mpc_fma (mpc_ptr r, mpc_srcptr a, mpc_srcptr b, mpc_srcptr c, mpc_rnd_t rnd)
 
   /* Re(r) <- rea_reb - ima_imb + Re(c) */
 
-  pre12 = bound_prec_sub (rea_reb, ima_imb); /* bound on exact precision for
-						rea_reb - ima_imb */
-  pre13 = bound_prec_add (rea_reb, MPC_RE(c)); /* bound for rea_reb + Re(c) */
-  pre23 = bound_prec_sub (ima_imb, MPC_RE(c)); /* bound for ima_imb - Re(c) */
+  pre12 = bound_prec_addsub (rea_reb, ima_imb); /* bound on exact precision for
+						   rea_reb - ima_imb */
+  pre13 = bound_prec_addsub (rea_reb, MPC_RE(c));
+  /* bound for rea_reb + Re(c) */
+  pre23 = bound_prec_addsub (ima_imb, MPC_RE(c));
+  /* bound for ima_imb - Re(c) */
   if (pre12 <= pre13 && pre12 <= pre23) /* (rea_reb - ima_imb) + Re(c) */
     {
       mpfr_init2 (tmp, pre12);
@@ -107,10 +91,12 @@ mpc_fma (mpc_ptr r, mpc_srcptr a, mpc_srcptr b, mpc_srcptr c, mpc_rnd_t rnd)
     }
 
   /* Im(r) <- rea_imb + ima_reb + Im(c) */
-  pim12 = bound_prec_add (rea_imb, ima_reb); /* bound on exact precision for
-						rea_imb + ima_reb */
-  pim13 = bound_prec_add (rea_imb, MPC_IM(c)); /* bound for rea_imb + Im(c) */
-  pim23 = bound_prec_add (ima_reb, MPC_IM(c)); /* bound for ima_reb + Im(c) */
+  pim12 = bound_prec_addsub (rea_imb, ima_reb); /* bound on exact precision for
+						   rea_imb + ima_reb */
+  pim13 = bound_prec_addsub (rea_imb, MPC_IM(c));
+  /* bound for rea_imb + Im(c) */
+  pim23 = bound_prec_addsub (ima_reb, MPC_IM(c));
+  /* bound for ima_reb + Im(c) */
   if (pim12 <= pim13 && pim12 <= pim23) /* (rea_imb + ima_reb) + Im(c) */
     {
       mpfr_set_prec (tmp, pim12);
