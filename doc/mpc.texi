@@ -958,6 +958,10 @@ of the real and imaginary parts by @var{op2}
 when @var{rop} and @var{op1} are identical.
 @end deftypefun
 
+@deftypefun int mpc_fma (mpc_t @var{rop}, mpc_t @var{op1}, mpc_t @var{op2}, mpc_t @var{op3}, mpc_rnd_t @var{rnd})
+Set @var{rop} to @var{op1} times @var{op2} plus @var{op3},
+rounded according to @var{rnd}, with only one final rounding.
+@end deftypefun
 
 @node Power Functions and Logarithm, Trigonometric Functions, Basic Arithmetic, Complex Functions
 @comment  node-name,  next,  previous,  up

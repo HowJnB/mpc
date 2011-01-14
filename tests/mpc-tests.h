@@ -89,6 +89,8 @@ extern int same_mpc_value (mpc_ptr got, mpc_ptr ref, known_signs_t known_signs);
 
 typedef int (*CC_func_ptr) (mpc_t, mpc_srcptr, mpc_rnd_t);
 typedef int (*CCC_func_ptr) (mpc_t, mpc_srcptr, mpc_srcptr, mpc_rnd_t);
+typedef int (*CCCC_func_ptr) (mpc_t, mpc_srcptr, mpc_srcptr, mpc_srcptr,
+			      mpc_rnd_t);
 typedef int (*CCU_func_ptr) (mpc_t, mpc_srcptr, unsigned long, mpc_rnd_t);
 typedef int (*CCS_func_ptr) (mpc_t, mpc_srcptr, long, mpc_rnd_t);
 typedef int (*CCI_func_ptr) (mpc_t, mpc_srcptr, int, mpc_rnd_t);
@@ -104,6 +106,7 @@ typedef union
   FC_func_ptr FC;     /* output: mpfr_t, input: mpc_t */
   CC_func_ptr CC;     /* output: mpc_t, input: mpc_t */
   CCC_func_ptr CCC;   /* output: mpc_t, inputs: (mpc_t, mpc_t) */
+  CCCC_func_ptr CCCC; /* output: mpc_t, inputs: (mpc_t, mpc_t, mpc_t) */
   CCU_func_ptr CCU;   /* output: mpc_t, inputs: (mpc_t, unsigned long) */
   CCS_func_ptr CCS;   /* output: mpc_t, inputs: (mpc_t, long) */
   CCI_func_ptr CCI;   /* output: mpc_t, inputs: (mpc_t, int) */
@@ -119,6 +122,7 @@ typedef enum
     FC,   /* output: mpfr_t, input: mpc_t */
     CC,   /* output: mpc_t, input: mpc_t */
     CCC,  /* output: mpc_t, inputs: (mpc_t, mpc_t) */
+    CCCC, /* output: mpc_t, inputs: (mpc_t, mpc_t, mpc_t) */
     CCU,  /* output: mpc_t, inputs: (mpc_t, unsigned long) */
     CCS,  /* output: mpc_t, inputs: (mpc_t, long) */
     CCI,  /* output: mpc_t, inputs: (mpc_t, int) */
