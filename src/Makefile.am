@@ -14,3 +14,4 @@ libmpc_la_SOURCES = mpc-impl.h abs.c acos.c acosh.c add.c add_fr.c         \
   sub.c sub_fr.c sub_ui.c swap.c tan.c tanh.c uceil_log2.c ui_div.c        \
   ui_ui_sub.c
 
+libmpc_la_LIBADD = @LTLIBOBJS@

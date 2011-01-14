@@ -72,6 +72,17 @@ AC_ARG_WITH([gmp],
                AC_MSG_FAILURE([Do not use --with-gmp and --with-gmp-include/--with-gmp-lib options simultaneously.])
             fi
             ])
+AC_ARG_ENABLE([logging],
+             [AC_HELP_STRING([--enable-logging],
+                             [enable logging of function calls to stderr (default = no)])],
+             [case $enableval in
+                 yes) ;;
+                 no)  ;;
+                 *)   AC_MSG_ERROR([Bad value for --enable-logging: Use yes or no]) ;;
+              esac
+             ]
+             )
+
 
 dnl Setup CC and CFLAGS
 
@@ -163,12 +174,27 @@ error
 
 # Checks for header files.
 AC_HEADER_STDC
-AC_CHECK_HEADERS([complex.h locale.h inttypes.h limits.h unistd.h sys/time.h])
+AC_CHECK_HEADERS([complex.h locale.h inttypes.h stdint.h limits.h unistd.h sys/time.h])
 
 # Checks for typedefs, structures, and compiler characteristics.
 AC_C_CONST
 AC_TYPE_SIZE_T
 AC_HEADER_TIME
+
+# Check for logging feature
+AS_IF([test "x$enable_logging" = "xyes"],
+       [AC_CHECK_HEADERS([dlfcn.h])
+        AC_CHECK_LIB([dl],[dlsym],
+           [
+            AC_DEFINE(HAVE_LIBDL, 1, [Library dl present])
+            LIBS="-ldl $LIBS"
+            AC_TYPE_INTPTR_T
+            AC_LIBOBJ([logging])
+            AC_SUBST([MPC_LOG_H],[src/mpc-log.h])
+           ],
+           [AC_MSG_ERROR([Library dl not found, logging impossible])])
+       ]
+     )
 
 # Checks if compiler accepts warning flags.
 MPC_PROG_CC_WARNINGCFLAGS([WARNINGCFLAGS])

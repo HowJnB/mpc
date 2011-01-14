@@ -22,3 +22,8 @@ Code clean-up:
 - from Andreas Enge 12 January 2011
   factor out code such as test_failed in ttan.c, error message in
   bug20090105 of tcos.c etc. into one macro in mpc-tests.h
+- from Andreas Enge 12 January 2011
+  in tests, replace CCC by C_CC - one output, two inputs, to be able to
+  write generic reuse tests and data files for the case CC_C presented by
+  sin_cos
+
