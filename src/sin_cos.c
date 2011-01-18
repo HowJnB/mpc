@@ -46,24 +46,25 @@ mpc_sin_cos_nonfinite (mpc_ptr rop_sin, mpc_ptr rop_cos, mpc_srcptr op,
             /* sin(+0 +i*NaN) = +0 +i*NaN */
             if (!mpfr_zero_p (MPC_RE (op_loc)))
                mpfr_set_nan (MPC_RE (rop_sin));
-            else if (!mpfr_inf_p (MPC_IM (op_loc)) && !mpfr_zero_p (MPC_IM (op_loc)))
-               /* sin(NaN -i*Inf) = NaN -i*Inf */
-               /* sin(NaN -i*0) = NaN -i*0 */
-               /* sin(NaN +i*0) = NaN +i*0 */
-               /* sin(NaN +i*Inf) = NaN +i*Inf */
-               /* sin(NaN +i*y) = NaN +i*NaN, when 0<|y|<Inf */
-               mpfr_set_nan (MPC_IM (rop_sin));
-            }
          }
+         else /* op = NaN + i*y */
+            if (!mpfr_inf_p (MPC_IM (op_loc)) && !mpfr_zero_p (MPC_IM (op_loc)))
+            /* sin(NaN -i*Inf) = NaN -i*Inf */
+            /* sin(NaN -i*0) = NaN -i*0 */
+            /* sin(NaN +i*0) = NaN +i*0 */
+            /* sin(NaN +i*Inf) = NaN +i*Inf */
+            /* sin(NaN +i*y) = NaN +i*NaN, when 0<|y|<Inf */
+            mpfr_set_nan (MPC_IM (rop_sin));
+      }
       else if (mpfr_inf_p (MPC_RE (op_loc))) {
          mpfr_set_nan (MPC_RE (rop_sin));
 
          if (!mpfr_inf_p (MPC_IM (op_loc)) && !mpfr_zero_p (MPC_IM (op_loc)))
-            /* sin(+/-Inf -i*Inf) = NaN -i*Inf */
-            /* sin(+/-Inf +i*Inf) = NaN +i*Inf */
             /* sin(+/-Inf +i*y) = NaN +i*NaN, when 0<|y|<Inf */
             mpfr_set_nan (MPC_IM (rop_sin));
          else
+            /* sin(+/-Inf -i*Inf) = NaN -i*Inf */
+            /* sin(+/-Inf +i*Inf) = NaN +i*Inf */
             /* sin(+/-Inf -i*0) = NaN -i*0 */
             /* sin(+/-Inf +i*0) = NaN +i*0 */
             mpfr_set (MPC_IM (rop_sin), MPC_IM (op_loc), MPC_RND_IM (rnd_sin));
@@ -127,8 +128,6 @@ mpc_sin_cos_nonfinite (mpc_ptr rop_sin, mpc_ptr rop_cos, mpc_srcptr op,
          /* cos(-Inf +i*0) = cos(+Inf -i*0) = NaN +i*0 */
          /* cos(-Inf +i*y) = cos(+Inf +i*y) = NaN +i*NaN, when y != 0 */
 
-         /* SAME_SIGN is useful only if op == (+/-)Inf + i * (+/-)0, but, as
-            MPC_RE(OP) might be erased (when ROP == OP), we compute it now */
          const int same_sign =
             mpfr_signbit (MPC_RE (op_loc)) == mpfr_signbit (MPC_IM (op_loc));
 
