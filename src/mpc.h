@@ -146,6 +146,7 @@ extern "C" {
 
 __MPC_DECLSPEC int  mpc_add    __MPC_PROTO ((mpc_ptr, mpc_srcptr, mpc_srcptr, mpc_rnd_t));
 __MPC_DECLSPEC int  mpc_add_fr __MPC_PROTO ((mpc_ptr, mpc_srcptr, mpfr_srcptr, mpc_rnd_t));
+__MPC_DECLSPEC int  mpc_add_si __MPC_PROTO ((mpc_ptr, mpc_srcptr, long int, mpc_rnd_t));
 __MPC_DECLSPEC int  mpc_add_ui __MPC_PROTO ((mpc_ptr, mpc_srcptr, unsigned long int, mpc_rnd_t));
 __MPC_DECLSPEC int  mpc_sub    __MPC_PROTO ((mpc_ptr, mpc_srcptr, mpc_srcptr, mpc_rnd_t));
 __MPC_DECLSPEC int  mpc_sub_fr __MPC_PROTO ((mpc_ptr, mpc_srcptr, mpfr_srcptr, mpc_rnd_t));
@@ -259,8 +260,6 @@ __MPC_DECLSPEC size_t mpc_out_str __MPC_PROTO ((FILE *, int, size_t, mpc_srcptr,
 #define mpc_realref(x) ((x)->re)
 #define mpc_imagref(x) ((x)->im)
 
-#define mpc_add_si(x, y, z, rnd) \
- ( (z) >= 0 ? mpc_add_ui ((x), (y), (unsigned long int) (z), (rnd)) : mpc_sub_ui ((x), (y), (unsigned long int) (-(z)), (rnd)) )
 #define mpc_cmp_si(x, y) \
  ( mpc_cmp_si_si ((x), (y), 0l) )
 #define mpc_ui_sub(x, y, z, r) mpc_ui_ui_sub (x, y, 0ul, z, r)
