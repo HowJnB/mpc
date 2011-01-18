@@ -76,6 +76,64 @@ tgeneric_cc (mpc_function *function, mpc_ptr op, mpc_ptr rop,
 }
 
 static void
+tgeneric_cc_c (mpc_function *function, mpc_ptr op, mpc_ptr rop1, mpc_ptr rop2,
+   mpc_ptr rop14, mpc_ptr rop24, mpc_ptr rop14rnd, mpc_ptr rop24rnd,
+   mpc_rnd_t rnd1, mpc_rnd_t rnd2)
+{
+   /* same as the previous function, but for mpc functions computing two
+      results from one argument                                          */
+   known_signs_t ks = {1, 1};
+
+   function->pointer.CC_C (rop14, rop24, op, rnd1, rnd2);
+   function->pointer.CC_C (rop1,  rop2,  op, rnd1, rnd2);
+
+   if (   MPFR_CAN_ROUND (MPC_RE (rop14), 1, MPC_PREC_RE (rop1),
+                          MPC_RND_RE (rnd1))
+       && MPFR_CAN_ROUND (MPC_IM (rop14), 1, MPC_PREC_IM (rop1),
+                          MPC_RND_IM (rnd1))
+       && MPFR_CAN_ROUND (MPC_RE (rop24), 1, MPC_PREC_RE (rop2),
+                          MPC_RND_RE (rnd2))
+       && MPFR_CAN_ROUND (MPC_IM (rop24), 1, MPC_PREC_IM (rop2),
+                          MPC_RND_IM (rnd2))) {
+     mpc_set (rop14rnd, rop14, rnd1);
+     mpc_set (rop24rnd, rop24, rnd2);
+   }
+   else
+     return;
+
+   if (!same_mpc_value (rop1, rop14rnd, ks)) {
+      /* rounding failed for first result */
+      printf ("Rounding might be incorrect for the first result of %s at\n", function->name);
+      MPC_OUT (op);
+      printf ("with rounding mode (%s, %s)",
+          mpfr_print_rnd_mode (MPC_RND_RE (rnd1)),
+          mpfr_print_rnd_mode (MPC_RND_IM (rnd1)));
+      printf ("\n%s                     gives ", function->name);
+      MPC_OUT (rop1);
+      printf ("%s quadruple precision gives ", function->name);
+      MPC_OUT (rop14);
+      printf ("and is rounded to                  ");
+      MPC_OUT (rop14rnd);
+      exit (1);
+   }
+   else if (!same_mpc_value (rop2, rop24rnd, ks)) {
+      /* rounding failed for second result */
+      printf ("Rounding might be incorrect for the second result of %s at\n", function->name);
+      MPC_OUT (op);
+      printf ("with rounding mode (%s, %s)",
+          mpfr_print_rnd_mode (MPC_RND_RE (rnd2)),
+          mpfr_print_rnd_mode (MPC_RND_IM (rnd2)));
+      printf ("\n%s                     gives ", function->name);
+      MPC_OUT (rop2);
+      printf ("%s quadruple precision gives ", function->name);
+      MPC_OUT (rop24);
+      printf ("and is rounded to                  ");
+      MPC_OUT (rop24rnd);
+      exit (1);
+   }
+}
+
+static void
 tgeneric_fc (mpc_function *function, mpc_ptr op, mpfr_ptr rop,
              mpfr_ptr rop4, mpfr_ptr rop4rnd, mpfr_rnd_t rnd)
 {
@@ -470,6 +528,39 @@ reuse_cc (mpc_function* function, mpc_srcptr z, mpc_ptr got, mpc_ptr expected)
 }
 
 static void
+reuse_cc_c (mpc_function* function, mpc_srcptr z, mpc_ptr got1, mpc_ptr got2,
+            mpc_ptr exp1, mpc_ptr exp2)
+{
+   known_signs_t ks = {1, 1};
+
+   function->pointer.CC_C (exp1, exp2, z, MPC_RNDNN, MPC_RNDNN);
+   mpc_set (got1, z, MPC_RNDNN); /* exact */
+   function->pointer.CC_C (got1, got2, got1, MPC_RNDNN, MPC_RNDNN);
+   if (   !same_mpc_value (got1, exp1, ks)
+       || !same_mpc_value (got2, exp2, ks)) {
+      printf ("Reuse error in first result of %s for\n", function->name);
+      MPC_OUT (z);
+      MPC_OUT (exp1);
+      MPC_OUT (got1);
+      MPC_OUT (exp2);
+      MPC_OUT (got2);
+      exit (1);
+   }
+   mpc_set (got2, z, MPC_RNDNN); /* exact */
+   function->pointer.CC_C (got1, got2, got2, MPC_RNDNN, MPC_RNDNN);
+   if (   !same_mpc_value (got1, exp1, ks)
+       || !same_mpc_value (got2, exp2, ks)) {
+      printf ("Reuse error in second result of %s for\n", function->name);
+      MPC_OUT (z);
+      MPC_OUT (exp1);
+      MPC_OUT (got1);
+      MPC_OUT (exp2);
+      MPC_OUT (got2);
+      exit (1);
+   }
+}
+
+static void
 reuse_fc (mpc_function* function, mpc_ptr z, mpc_ptr x, mpfr_ptr expected)
 {
   mpc_set (x, z, MPC_RNDNN); /* exact */
@@ -818,10 +909,9 @@ tgeneric (mpc_function function, mpfr_prec_t prec_min,
   long lo = 0;
   int i = 0;
   mpfr_t x1, x2, xxxx;
-  mpc_t  z1, z2, z3, z4, z5, zzzz;
+  mpc_t  z1, z2, z3, z4, z5, zzzz, zzzz2;
 
-  mpfr_rnd_t rnd_re;
-  mpfr_rnd_t rnd_im;
+  mpfr_rnd_t rnd_re, rnd_im, rnd2_re, rnd2_im;
   mpfr_prec_t prec;
   mpfr_exp_t exp_min;
   int special, special_cases;
@@ -871,6 +961,15 @@ tgeneric (mpc_function function, mpfr_prec_t prec_min,
       mpc_init2 (zzzz, 4*prec_max);
       special_cases = 2;
       break;
+    case CC_C:
+      mpc_init2 (z2, prec_max);
+      mpc_init2 (z3, prec_max);
+      mpc_init2 (z4, prec_max);
+      mpc_init2 (z5, prec_max);
+      mpc_init2 (zzzz, 4*prec_max);
+      mpc_init2 (zzzz2, 4*prec_max);
+      special_cases = 2;
+      break;
     case CC:
     default:
       mpc_init2 (z2, prec_max);
@@ -889,11 +988,11 @@ tgeneric (mpc_function function, mpfr_prec_t prec_min,
     step = 1;
 
   for (prec = prec_min, special = 0;
-       prec <= prec_max && special <= special_cases;
-       prec+=step, special += (prec == prec_max ? 1 : 0))
+       prec <= prec_max || special <= special_cases;
+       prec+=step, special += (prec > prec_max ? 1 : 0))
+       /* In the end, test functions in special cases of purely real and
+          purely imaginary arguments */
     {
-      /* when prec == prec_max, test functions with pure real/pure imaginary
-         parameters */
 
       /* probability of one zero part in 256th (25 is almost 10%) */
       const unsigned int zero_probability = special != 0 ? 0 : 25;
@@ -1076,6 +1175,23 @@ tgeneric (mpc_function function, mpfr_prec_t prec_min,
               break;
             }
           break;
+        case CC_C:
+          mpc_set_prec (z2, prec);
+          mpc_set_prec (z3, prec);
+          mpc_set_prec (z4, prec);
+          mpc_set_prec (z5, prec);
+          mpc_set_prec (zzzz, 4*prec);
+          mpc_set_prec (zzzz2, 4*prec);
+          switch (special)
+            {
+            case 1:
+              mpfr_set_ui (MPC_RE (z1), 0, GMP_RNDN);
+              break;
+            case 2:
+              mpfr_set_ui (MPC_IM (z1), 0, GMP_RNDN);
+              break;
+            }
+          break;
         case CC:
         default:
           mpc_set_prec (z2, prec);
@@ -1116,6 +1232,14 @@ tgeneric (mpc_function function, mpfr_prec_t prec_min,
               tgeneric_cc (&function, z1, z2, zzzz, z3,
                            RNDC (rnd_re, rnd_im));
             reuse_cc (&function, z1, z2, z3);
+            break;
+          case CC_C:
+            for (rnd_im = first_rnd_mode (); is_valid_rnd_mode (rnd_im); rnd_im = next_rnd_mode (rnd_im))
+               for (rnd2_re = first_rnd_mode (); is_valid_rnd_mode (rnd2_re); rnd2_re = next_rnd_mode (rnd2_re))
+                  for (rnd2_im = first_rnd_mode (); is_valid_rnd_mode (rnd2_im); rnd2_im = next_rnd_mode (rnd2_im))
+                     tgeneric_cc_c (&function, z1, z2, z3, zzzz, zzzz2, z4, z5,
+                           RNDC (rnd_re, rnd_im), RNDC (rnd2_re, rnd2_im));
+             reuse_cc_c (&function, z1, z2, z3, z4, z5);
             break;
           case CFC:
             for (rnd_im = first_rnd_mode (); is_valid_rnd_mode (rnd_im); rnd_im = next_rnd_mode (rnd_im))
@@ -1193,6 +1317,14 @@ tgeneric (mpc_function function, mpfr_prec_t prec_min,
       mpc_clear (z2);
       mpc_clear (z3);
       mpc_clear (zzzz);
+      break;
+    case CC_C:
+      mpc_clear (z2);
+      mpc_clear (z3);
+      mpc_clear (z4);
+      mpc_clear (z5);
+      mpc_clear (zzzz);
+      mpc_clear (zzzz2);
       break;
     case CUUC:
     case CCI: case CCS:

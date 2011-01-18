@@ -1,6 +1,6 @@
 /* Tests helper functions.
 
-Copyright (C) 2008, 2009, 2010 Philippe Th\'eveny, Andreas Enge, Paul Zimmermann
+Copyright (C) 2008, 2009, 2010, 2011 Philippe Th\'eveny, Andreas Enge, Paul Zimmermann
 
 This file is part of the MPC Library.
 
@@ -100,37 +100,38 @@ typedef int (*CUC_func_ptr) (mpc_t, unsigned long, mpc_srcptr, mpc_rnd_t);
 typedef int (*CUUC_func_ptr) (mpc_t, unsigned long, unsigned long, mpc_srcptr,
                               mpc_rnd_t);
 typedef int (*FC_func_ptr) (mpfr_t, mpc_srcptr, mpfr_rnd_t);
+typedef int (*CC_C_func_ptr) (mpc_t, mpc_t, mpc_srcptr, mpc_rnd_t, mpc_rnd_t);
 
-typedef union
-{
-  FC_func_ptr FC;     /* output: mpfr_t, input: mpc_t */
-  CC_func_ptr CC;     /* output: mpc_t, input: mpc_t */
-  CCC_func_ptr CCC;   /* output: mpc_t, inputs: (mpc_t, mpc_t) */
-  CCCC_func_ptr CCCC; /* output: mpc_t, inputs: (mpc_t, mpc_t, mpc_t) */
-  CCU_func_ptr CCU;   /* output: mpc_t, inputs: (mpc_t, unsigned long) */
-  CCS_func_ptr CCS;   /* output: mpc_t, inputs: (mpc_t, long) */
-  CCI_func_ptr CCI;   /* output: mpc_t, inputs: (mpc_t, int) */
-  CCF_func_ptr CCF;   /* output: mpc_t, inputs: (mpc_t, mpfr_t) */
-  CFC_func_ptr CFC;   /* output: mpc_t, inputs: (mpfr_t, mpc_t) */
-  CUC_func_ptr CUC;   /* output: mpc_t, inputs: (unsigned long, mpc_t) */
-  CUUC_func_ptr CUUC; /* output: mpc_t, inputs: (ulong, ulong, mpc_t) */
+typedef union {
+   FC_func_ptr FC;     /* output: mpfr_t, input: mpc_t */
+   CC_func_ptr CC;     /* output: mpc_t, input: mpc_t */
+   CCC_func_ptr CCC;   /* output: mpc_t, inputs: (mpc_t, mpc_t) */
+   CCCC_func_ptr CCCC; /* output: mpc_t, inputs: (mpc_t, mpc_t, mpc_t) */
+   CCU_func_ptr CCU;   /* output: mpc_t, inputs: (mpc_t, unsigned long) */
+   CCS_func_ptr CCS;   /* output: mpc_t, inputs: (mpc_t, long) */
+   CCI_func_ptr CCI;   /* output: mpc_t, inputs: (mpc_t, int) */
+   CCF_func_ptr CCF;   /* output: mpc_t, inputs: (mpc_t, mpfr_t) */
+   CFC_func_ptr CFC;   /* output: mpc_t, inputs: (mpfr_t, mpc_t) */
+   CUC_func_ptr CUC;   /* output: mpc_t, inputs: (unsigned long, mpc_t) */
+   CUUC_func_ptr CUUC; /* output: mpc_t, inputs: (ulong, ulong, mpc_t) */
+   CC_C_func_ptr CC_C;   /* outputs: (mpc_t, mpc_t), input: mpc_t */
 } func_ptr;
 
 /* the rounding mode is implicit */
-typedef enum
-  {
-    FC,   /* output: mpfr_t, input: mpc_t */
-    CC,   /* output: mpc_t, input: mpc_t */
-    CCC,  /* output: mpc_t, inputs: (mpc_t, mpc_t) */
-    CCCC, /* output: mpc_t, inputs: (mpc_t, mpc_t, mpc_t) */
-    CCU,  /* output: mpc_t, inputs: (mpc_t, unsigned long) */
-    CCS,  /* output: mpc_t, inputs: (mpc_t, long) */
-    CCI,  /* output: mpc_t, inputs: (mpc_t, int) */
-    CCF,  /* output: mpc_t, inputs: (mpc_t, mpfr_t) */
-    CFC,  /* output: mpc_t, inputs: (mpfr_t, mpc_t) */
-    CUC,  /* output: mpc_t, inputs: (unsigned long, mpc_t) */
-    CUUC  /* output: mpc_t, inputs: (ulong, ulong, mpc_t) */
-  } func_type;
+typedef enum {
+   FC,   /* output: mpfr_t, input: mpc_t */
+   CC,   /* output: mpc_t, input: mpc_t */
+   CCC,  /* output: mpc_t, inputs: (mpc_t, mpc_t) */
+   CCCC, /* output: mpc_t, inputs: (mpc_t, mpc_t, mpc_t) */
+   CCU,  /* output: mpc_t, inputs: (mpc_t, unsigned long) */
+   CCS,  /* output: mpc_t, inputs: (mpc_t, long) */
+   CCI,  /* output: mpc_t, inputs: (mpc_t, int) */
+   CCF,  /* output: mpc_t, inputs: (mpc_t, mpfr_t) */
+   CFC,  /* output: mpc_t, inputs: (mpfr_t, mpc_t) */
+   CUC,  /* output: mpc_t, inputs: (unsigned long, mpc_t) */
+   CUUC, /* output: mpc_t, inputs: (ulong, ulong, mpc_t) */
+   CC_C  /* outputs: (mpc_t, mpc_t), input: mpc_t */
+} func_type;
 
 /* properties */
 #define FUNC_PROP_NONE     0
