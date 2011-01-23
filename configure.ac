@@ -76,7 +76,8 @@ AC_ARG_ENABLE([logging],
              [AC_HELP_STRING([--enable-logging],
                              [enable logging of function calls to stderr (default = no)])],
              [case $enableval in
-                 yes) ;;
+                 yes) AS_IF([test "x$enable_shared" = "xno"],
+                            AC_MSG_ERROR([Logging works only with shared libraries; do not mix --enable-logging and --disable-shared])) ;;
                  no)  ;;
                  *)   AC_MSG_ERROR([Bad value for --enable-logging: Use yes or no]) ;;
               esac
