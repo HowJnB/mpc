@@ -1,7 +1,6 @@
-/* mpc_get_prec -- returns the common precision of real and imaginary part, or 0
-if they differ
+/* mpc_get_prec -- returns the common precision of real and imaginary part, or 0 if they differ
 
-Copyright (C) 2007, 2009, 2010 Andreas Enge, Philippe Th\'eveny
+Copyright (C) INRIA, 2007, 2009, 2010
 
 This file is part of the MPC Library.
 

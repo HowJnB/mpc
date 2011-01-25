@@ -1,6 +1,6 @@
 /* mpc_inp_str -- Input a complex number from a given stream.
 
-Copyright (C) 2009, 2010 Andreas Enge, Philippe Th\'eveny, Paul Zimmermann
+Copyright (C) INRIA, 2009, 2010
 
 This file is part of the MPC Library.
 

@@ -1,6 +1,6 @@
 /* mpc_init2 -- Initialize a complex variable with a given precision.
 
-Copyright (C) 2002, 2009 Andreas Enge, Paul Zimmermann, Philippe Th\'eveny
+Copyright (C) INRIA, 2002, 2009
 
 This file is part of the MPC Library.
 

@@ -1,6 +1,6 @@
 /* mpc_get_version -- MPC version
 
-Copyright (C) 2008, 2009, 2010, 2011 Philippe Th\'eveny, Andreas Enge
+Copyright (C) INRIA, 2008, 2009, 2010, 2011
 
 This file is part of the MPC Library.
 

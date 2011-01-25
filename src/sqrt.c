@@ -1,6 +1,6 @@
 /* mpc_sqrt -- Take the square root of a complex number.
 
-Copyright (C) 2002, 2008, 2009, 2010 Andreas Enge, Paul Zimmermann, Philippe Th\'eveny
+Copyright (C) INRIA, 2002, 2008, 2009, 2010
 
 This file is part of the MPC Library.
 

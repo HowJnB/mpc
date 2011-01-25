@@ -1,6 +1,6 @@
 /* mpc_asin -- arcsine of a complex number.
 
-Copyright (C) 2009, 2010 Philippe Th\'eveny, Paul Zimmermann, Andreas Enge
+Copyright (C) INRIA, 2009, 2010
 
 This file is part of the MPC Library.
 

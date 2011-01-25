@@ -1,6 +1,6 @@
 /* mpc_mul_i -- Multiply a complex number by plus or minus i.
 
-Copyright (C) 2005, 2009, 2010 Andreas Enge, Philippe Th\'eveny
+Copyright (C) INRIA, 2005, 2009, 2010
 
 This file is part of the MPC Library.
 

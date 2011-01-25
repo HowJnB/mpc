@@ -1,6 +1,6 @@
 /* mpc-log.h -- Include file to enable function call logging; replaces mpc.h.
 
-Copyright (C) 2011 Andreas Enge
+Copyright (C) INRIA, 2011
 
 This file is part of the MPC Library.
 

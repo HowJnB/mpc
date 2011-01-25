@@ -1,7 +1,7 @@
 /* mpc_cmp_si_si -- Compare a complex number to a number of the form
    b+c*i with b and c signed integers.
 
-Copyright (C) 2005, 2009 Andreas Enge, Philippe Th\'eveny
+Copyright (C) INRIA, 2005, 2009
 
 This file is part of the MPC Library.
 

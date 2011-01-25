@@ -1,6 +1,6 @@
 /* mpc_strtoc -- Read a complex number from a string.
 
-Copyright (C) 2009, 2010 Philippe Th\'eveny, Andreas Enge, Paul Zimmermann
+Copyright (C) INRIA, 2009, 2010
 
 This file is part of the MPC Library.
 

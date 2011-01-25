@@ -1,6 +1,6 @@
 /* mpc_sin_cos, mpc_sin, mpc_cos -- sine and cosine of a complex number.
 
-Copyright (C) 2010, 2011 Andreas Enge, Philippe Th\'eveny, Paul Zimmermann
+Copyright (C) INRIA, 2010, 2011
 
 This file is part of the MPC Library.
 

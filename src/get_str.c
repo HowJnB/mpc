@@ -1,6 +1,6 @@
 /* mpc_get_str -- Convert a complex number into a string.
 
-Copyright (C) 2009 Philippe Th\'eveny, Andreas Enge, Paul Zimmermann
+Copyright (C) INRIA, 2009
 
 This file is part of the MPC Library.
 

@@ -1,6 +1,6 @@
 /* logging.c -- "Dummy" functions logging calls to real mpc functions.
 
-Copyright (C) 2011 Andreas Enge
+Copyright (C) INRIA, 2011
 
 This file is part of the MPC Library.
 

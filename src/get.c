@@ -1,6 +1,6 @@
 /* mpc_get_c, mpc_get_lc -- Transform mpc number into C complex number
 
-Copyright (C) 2010 Andreas Enge
+Copyright (C) INRIA, 2010
 
 This file is part of the MPC Library.
 

@@ -1,7 +1,7 @@
 /* mpc_set_x -- Set the real part of a complex number
    (imaginary part equals +0 regardless of rounding mode).
 
-Copyright (C) 2008, 2009, 2010 Philippe Th\'eveny, Andreas Enge
+Copyright (C) INRIA, 2008, 2009, 2010
 
 This file is part of the MPC Library.
 

@@ -1,6 +1,6 @@
 /* mpc_fma -- Fused multiply-add of three complex numbers
 
-Copyright (C) 2011 Paul Zimmermann, Andreas Enge
+Copyright (C) INRIA, 2011
 
 This file is part of the MPC Library.
 

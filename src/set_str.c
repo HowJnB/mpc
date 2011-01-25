@@ -1,6 +1,6 @@
 /* mpc_set_str -- Convert a string into a complex number.
 
-Copyright (C) 2009, 2010 Philippe Th\'eveny, Andreas Enge, Paul Zimmermann
+Copyright (C) INRIA, 2009, 2010
 
 This file is part of the MPC Library.
 

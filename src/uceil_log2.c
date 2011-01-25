@@ -1,6 +1,6 @@
 /* mpc_ceil_log2 - returns ceil(log(d)/log(2))
 
-Copyright 2004, 2009, 2010 Patrick Pelissier, Paul Zimmermann, Philippe Th\'eveny, Andreas Enge
+Copyright (C) INRIA, 2004, 2009, 2010
 
 This file is part of the MPC Library.
 

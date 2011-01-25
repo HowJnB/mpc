@@ -1,7 +1,7 @@
 /* mpc_ui_ui_sub -- Subtract a complex number from another one given
 implicitly by its real and imaginary parts of type unsigned long int.
 
-Copyright (C) 2011 Andreas Enge
+Copyright (C) INRIA, 2011
 
 This file is part of the MPC Library.
 

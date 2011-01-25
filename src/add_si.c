@@ -1,6 +1,6 @@
 /* mpc_add_si -- Add a complex number and a signed long int.
 
-Copyright (C) 2011 Andreas Enge
+Copyright (C) INRIA, 2011
 
 This file is part of the MPC Library.
 

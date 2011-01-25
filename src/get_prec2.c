@@ -1,7 +1,7 @@
 /* mpc_get_prec2 -- returns the precisions of the real and of the imaginary
 part through the first two arguments
 
-Copyright (C) 2007, 2009, 2010 Andreas Enge, Philippe Th\'eveny
+Copyright (C) INRIA, 2007, 2009, 2010
 
 This file is part of the MPC Library.
 
