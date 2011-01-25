@@ -33,8 +33,10 @@ MA 02111-1307, USA. */
 
 #include <dlfcn.h>
 
-typedef int (*c_cc_func_ptr) (mpc_ptr, mpc_srcptr, mpc_srcptr, mpc_rnd_t);
 typedef int (*c_c_func_ptr) (mpc_ptr, mpc_srcptr, mpc_rnd_t);
+typedef int (*c_cc_func_ptr) (mpc_ptr, mpc_srcptr, mpc_srcptr, mpc_rnd_t);
+typedef int (*c_ccc_func_ptr) (mpc_ptr, mpc_srcptr, mpc_srcptr, mpc_srcptr, mpc_rnd_t);
+typedef int (*cc_c_func_ptr) (mpc_ptr, mpc_ptr, mpc_srcptr, mpc_rnd_t, mpc_rnd_t);
 
 #define MPC_LOGGING_OUT_PREC(z) \
    do { \
@@ -49,19 +51,10 @@ typedef int (*c_c_func_ptr) (mpc_ptr, mpc_srcptr, mpc_rnd_t);
       mpc_out_str (stderr, 16, 0, z, MPC_RNDNN); \
    } while (0);
 
-#define MPC_LOGGING_C_CC(funcname) \
-__MPC_DECLSPEC int mpc_log_##funcname (mpc_ptr rop, mpc_srcptr op1, mpc_srcptr op2, mpc_rnd_t rnd) \
-{ \
-   static c_cc_func_ptr func = NULL; \
-   if (func == NULL) \
-      func = (c_cc_func_ptr) (intptr_t) dlsym (NULL, "mpc_"#funcname); \
-   fprintf (stderr, #funcname" c_cc"); \
-   MPC_LOGGING_OUT_PREC (rop); \
-   MPC_LOGGING_OUT_C (op1); \
-   MPC_LOGGING_OUT_C (op2); \
-   fprintf (stderr, "\n"); \
-   return func (rop, op1, op2, rnd); \
-}
+#define MPC_LOGGING_FUNC_TYPE(funcname, type) \
+   do { \
+      fprintf (stderr, "mpc_"#funcname" "#type); \
+   } while (0);
 
 #define MPC_LOGGING_C_C(funcname) \
 __MPC_DECLSPEC int mpc_log_##funcname (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd) \
@@ -69,18 +62,55 @@ __MPC_DECLSPEC int mpc_log_##funcname (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd
    static c_c_func_ptr func = NULL; \
    if (func == NULL) \
       func = (c_c_func_ptr) (intptr_t) dlsym (NULL, "mpc_"#funcname); \
-   fprintf (stderr, #funcname" c_c"); \
+   MPC_LOGGING_FUNC_TYPE (funcname, c_c); \
    MPC_LOGGING_OUT_PREC (rop); \
    MPC_LOGGING_OUT_C (op); \
    fprintf (stderr, "\n"); \
    return func (rop, op, rnd); \
 }
 
-MPC_LOGGING_C_CC (add)
-MPC_LOGGING_C_CC (sub)
-MPC_LOGGING_C_CC (mul)
-MPC_LOGGING_C_CC (div)
-MPC_LOGGING_C_CC (pow)
+#define MPC_LOGGING_C_CC(funcname) \
+__MPC_DECLSPEC int mpc_log_##funcname (mpc_ptr rop, mpc_srcptr op1, mpc_srcptr op2, mpc_rnd_t rnd) \
+{ \
+   static c_cc_func_ptr func = NULL; \
+   if (func == NULL) \
+      func = (c_cc_func_ptr) (intptr_t) dlsym (NULL, "mpc_"#funcname); \
+   MPC_LOGGING_FUNC_TYPE (funcname, c_cc); \
+   MPC_LOGGING_OUT_PREC (rop); \
+   MPC_LOGGING_OUT_C (op1); \
+   MPC_LOGGING_OUT_C (op2); \
+   fprintf (stderr, "\n"); \
+   return func (rop, op1, op2, rnd); \
+}
+
+#define MPC_LOGGING_C_CCC(funcname) \
+__MPC_DECLSPEC int mpc_log_##funcname (mpc_ptr rop, mpc_srcptr op1, mpc_srcptr op2, mpc_srcptr op3, mpc_rnd_t rnd) \
+{ \
+   static c_ccc_func_ptr func = NULL; \
+   if (func == NULL) \
+      func = (c_ccc_func_ptr) (intptr_t) dlsym (NULL, "mpc_"#funcname); \
+   MPC_LOGGING_FUNC_TYPE (funcname, c_ccc); \
+   MPC_LOGGING_OUT_PREC (rop); \
+   MPC_LOGGING_OUT_C (op1); \
+   MPC_LOGGING_OUT_C (op2); \
+   MPC_LOGGING_OUT_C (op3); \
+   fprintf (stderr, "\n"); \
+   return func (rop, op1, op2, op3, rnd); \
+}
+
+#define MPC_LOGGING_CC_C(funcname) \
+__MPC_DECLSPEC int mpc_log_##funcname (mpc_ptr rop1, mpc_ptr rop2, mpc_srcptr op, mpc_rnd_t rnd1, mpc_rnd_t rnd2) \
+{ \
+   static cc_c_func_ptr func = NULL; \
+   if (func == NULL) \
+      func = (cc_c_func_ptr) (intptr_t) dlsym (NULL, "mpc_"#funcname); \
+   MPC_LOGGING_FUNC_TYPE (funcname, cc_c); \
+   MPC_LOGGING_OUT_PREC (rop1); \
+   MPC_LOGGING_OUT_PREC (rop2); \
+   MPC_LOGGING_OUT_C (op); \
+   fprintf (stderr, "\n"); \
+   return func (rop1, rop2, op, rnd1, rnd2); \
+}
 
 MPC_LOGGING_C_C (sqr)
 MPC_LOGGING_C_C (conj)
@@ -101,3 +131,13 @@ MPC_LOGGING_C_C (atan)
 MPC_LOGGING_C_C (asinh)
 MPC_LOGGING_C_C (acosh)
 MPC_LOGGING_C_C (atanh)
+
+MPC_LOGGING_C_CC (add)
+MPC_LOGGING_C_CC (sub)
+MPC_LOGGING_C_CC (mul)
+MPC_LOGGING_C_CC (div)
+MPC_LOGGING_C_CC (pow)
+
+MPC_LOGGING_C_CCC (fma)
+
+MPC_LOGGING_CC_C (sin_cos)

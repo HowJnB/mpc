@@ -19,12 +19,6 @@ along with the MPC Library; see the file COPYING.LIB.  If not, write to
 the Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston,
 MA 02111-1307, USA. */
 
-#define mpc_add mpc_log_add
-#define mpc_sub mpc_log_sub
-#define mpc_mul mpc_log_mul
-#define mpc_div mpc_log_div
-#define mpc_pow mpc_log_pow
-
 #define mpc_sqr mpc_log_sqr
 #define mpc_conj mpc_log_conj
 #define mpc_neg mpc_log_neg
@@ -44,5 +38,15 @@ MA 02111-1307, USA. */
 #define mpc_asinh mpc_log_asinh
 #define mpc_acosh mpc_log_acosh
 #define mpc_atanh mpc_log_atanh
+
+#define mpc_add mpc_log_add
+#define mpc_sub mpc_log_sub
+#define mpc_mul mpc_log_mul
+#define mpc_div mpc_log_div
+#define mpc_pow mpc_log_pow
+
+#define mpc_fma mpc_log_fma
+
+#define mpc_sin_cos mpc_log_sin_cos
 
 #include "mpc.h"

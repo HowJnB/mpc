@@ -205,6 +205,22 @@ Another useful parameter is @samp{--prefix}, which can be used to
 specify an alternative installation location instead of
 @file{/usr/local}; see @samp{make install} below.
 
+If for debugging purposes you wish to log calls to MPC functions from
+within your code, add the parameter @samp{--enable-logging}.
+In your code, replace the inclusion of @file{mpc.h} by @file{mpc-log.h}
+and link the executable dynamically.
+Then all calls to functions with only complex arguments are printed to
+@file{stderr} in the following form: First, the function name is given,
+followed by its type such as @samp{c_cc}, meaning that the function has
+one complex result (one @samp{c} in front of the @samp{_}), computed from
+two complex arguments (two @samp{c} after the @samp{_}). Then, the
+precisions of the real and the imaginary part of the first result is given,
+followed by the second one and so on. Finally, for each argument, the
+precisions of its real and imaginary part are specified and the argument
+itself is printed in hexadecimal via the function
+@code{mpc_out_str}
+(@pxref{string-io,,String and Stream Input and Output}).
+
 Use @samp{./configure --help} for an exhaustive list of parameters.
 
 @item
