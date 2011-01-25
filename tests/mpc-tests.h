@@ -1,6 +1,6 @@
 /* Tests helper functions.
 
-Copyright (C) 2008, 2009, 2010, 2011 Philippe Th\'eveny, Andreas Enge, Paul Zimmermann
+Copyright (C) INRIA, 2008, 2009, 2010, 2011
 
 This file is part of the MPC Library.
 

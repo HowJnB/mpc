@@ -1,6 +1,6 @@
 /* tset.c -- Test file for mpc_set_x and mpc_set_x_x functions.
 
-Copyright (C) 2009, 2010, 2011 Philippe Th\'eveny, Paul Zimmermann, Andreas Enge
+Copyright (C) INRIA, 2009, 2010, 2011
 
 This file is part of the MPC Library.
 

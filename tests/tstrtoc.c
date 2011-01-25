@@ -1,6 +1,6 @@
 /* test file for mpc_strtoc.
 
-Copyright (C) 2009, 2011 Philippe Th\'eveny, Andreas Enge
+Copyright (C) INRIA, 2009, 2011
 
 This file is part of the MPC Library.
 

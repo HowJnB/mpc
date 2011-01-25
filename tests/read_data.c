@@ -1,6 +1,6 @@
 /* Read data file and check function.
 
-Copyright (C) 2008, 2009, 2010, 2011 Andreas Enge, Philippe Th\'eveny
+Copyright (C) INRIA, 2008, 2009, 2010, 2011
 
 This file is part of the MPC Library.
 

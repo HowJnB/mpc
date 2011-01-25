@@ -1,6 +1,6 @@
 /* test file for mpc_fma.
 
-Copyright (C) 2011 Paul Zimmermann
+Copyright (C) INRIA, 2011
 
 This file is part of the MPC Library.
 

@@ -1,6 +1,6 @@
 /* test file for mpc_tan.
 
-Copyright (C) 2008, 2011 Philippe Th\'eveny, Paul Zimmermann, Andreas Enge
+Copyright (C) INRIA, 2008, 2011
 
 This file is part of the MPC Library.
 

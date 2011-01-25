@@ -1,6 +1,6 @@
 /* test file for mpc_add_si.
 
-Copyright (C) 2011 Andreas Enge
+Copyright (C) INRIA, 2011
 
 This file is part of the MPC Library.
 

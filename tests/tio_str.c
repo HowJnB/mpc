@@ -1,6 +1,6 @@
 /* tio_str.c -- Test file for mpc_inp_str and mpc_out_str.
 
-Copyright (C) 2009, 2011 Philippe Th\'eveny, Andreas Enge
+Copyright (C) INRIA, 2009, 2011
 
 This file is part of the MPC Library.
 

@@ -1,6 +1,6 @@
 /* tget_version.c -- Test file for mpc_get_version
 
-Copyright (C) 2002, 2003, 2004, 2005, 2007, 2008, 2009, 2010 Andreas Enge, Paul Zimmermann, Philippe Th\'eveny
+Copyright (C) INRIA, 2002, 2003, 2004, 2005, 2007, 2008, 2009, 2010
 
 This file is part of the MPC Library.
 

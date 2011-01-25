@@ -1,6 +1,6 @@
 /* test file for mpc_pow_si.
 
-Copyright (C) 2009, 2010 Paul Zimmermann, Andreas Enge
+Copyright (C) INRIA, 2009, 2010
 
 This file is part of the MPC Library.
 

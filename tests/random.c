@@ -1,6 +1,6 @@
 /* Handle seed for random numbers.
 
-Copyright (C) 2008, 2009, 2010 Philippe Th\'eveny, Paul Zimmermann, Andreas Enge
+Copyright (C) INRIA, 2008, 2009, 2010
 
 This file is part of the MPC Library.
 
