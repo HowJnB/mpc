@@ -94,7 +94,7 @@ AC_DEFUN([MPC_GMP_CC_CFLAGS], [
       CFLAGS=$GMP_CFLAGS
       CC=$GMP_CC
       AC_MSG_CHECKING(for CC=$GMP_CC and CFLAGS=$GMP_CFLAGS)
-      AC_COMPILE_IFELSE(AC_LANG_PROGRAM([[/*hello*/]],[[/*world*/]]), [
+      AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[/*hello*/]],[[/*world*/]])], [
          AC_MSG_RESULT(yes)
          ], [
          AC_MSG_RESULT(no)
