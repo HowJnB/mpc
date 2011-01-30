@@ -1,6 +1,6 @@
 /* mpc_pow -- Raise a complex number to the power of another complex number.
 
-Copyright (C) INRIA, 2009, 2010
+Copyright (C) INRIA, 2009, 2010, 2011
 
 This file is part of the MPC Library.
 
@@ -108,7 +108,7 @@ static int
 mpc_pow_exact (mpc_ptr z, mpc_srcptr x, mpfr_srcptr y, mpc_rnd_t rnd,
                mpfr_prec_t maxprec)
 {
-  mpfr_exp_t ec, ed, ey, emin, emax;
+  mpfr_exp_t ec, ed, ey;
   mpz_t my, a, b, c, d, u;
   unsigned long int t;
   int ret = -2;
@@ -325,18 +325,10 @@ mpc_pow_exact (mpc_ptr z, mpc_srcptr x, mpfr_srcptr y, mpc_rnd_t rnd,
         goto end;
     }
 
-  /* save emin, emax */
-  emin = mpfr_get_emin ();
-  emax = mpfr_get_emax ();
-  mpfr_set_emin (mpfr_get_emin_min ());
-  mpfr_set_emax (mpfr_get_emax_max ());
   ret = mpfr_set_z (MPC_RE(z), a, MPC_RND_RE(rnd));
   ret = MPC_INEX(ret, mpfr_set_z (MPC_IM(z), b, MPC_RND_IM(rnd)));
   mpfr_mul_2si (MPC_RE(z), MPC_RE(z), ed, MPC_RND_RE(rnd));
   mpfr_mul_2si (MPC_IM(z), MPC_IM(z), ed, MPC_RND_IM(rnd));
-  /* restore emin, emax */
-  mpfr_set_emin (emin);
-  mpfr_set_emax (emax);
 
  end:
   mpz_clear (my);

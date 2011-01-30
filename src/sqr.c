@@ -1,6 +1,6 @@
 /* mpc_sqr -- Square a complex number.
 
-Copyright (C) INRIA, 2002, 2005, 2008, 2009, 2010
+Copyright (C) INRIA, 2002, 2005, 2008, 2009, 2010, 2011
 
 This file is part of the MPC Library.
 
@@ -32,7 +32,7 @@ mpc_sqr (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
          needed in the case rop==op */
    mpfr_prec_t prec;
    int inex_re, inex_im, inexact;
-   mpfr_exp_t old_emax, old_emin, emin, emax;
+   mpfr_exp_t emin, emax;
 
    /* special values: NaN and infinities */
    if (!mpc_fin_p (op)) {
@@ -122,11 +122,8 @@ mpc_sqr (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
    else
       x [0] = op->re [0];
 
-   /* store the maximal exponent */
-   old_emax = mpfr_get_emax ();
-   old_emin = mpfr_get_emin ();
-   mpfr_set_emax (emax = mpfr_get_emax_max ());
-   mpfr_set_emin (emin = mpfr_get_emin_min ());
+   emax = mpfr_get_emax ();
+   emin = mpfr_get_emin ();
 
    do
    {
@@ -236,10 +233,6 @@ mpc_sqr (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
 
    if (rop == op)
       mpfr_clear (x);
-
-   /* restore the exponent range */
-   mpfr_set_emax (old_emax);
-   mpfr_set_emin (old_emin);
 
    inex_re = mpfr_check_range (MPC_RE(rop), inex_re, MPC_RND_RE (rnd));
    inex_im = mpfr_check_range (MPC_IM(rop), inex_im, MPC_RND_IM (rnd));
