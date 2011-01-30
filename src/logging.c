@@ -31,7 +31,9 @@ MA 02111-1307, USA. */
 
 #include "mpc-log.h"
 
+#ifdef HAVE_DLFCN_H
 #include <dlfcn.h>
+#endif
 
 typedef int (*c_c_func_ptr) (mpc_ptr, mpc_srcptr, mpc_rnd_t);
 typedef int (*c_cc_func_ptr) (mpc_ptr, mpc_srcptr, mpc_srcptr, mpc_rnd_t);
