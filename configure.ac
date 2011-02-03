@@ -121,7 +121,18 @@ esac
 dnl Finally set up LibTool
 AC_PROG_LIBTOOL
 
+# Checks for header files.
+AC_HEADER_STDC
+AC_CHECK_HEADERS([complex.h locale.h inttypes.h stdint.h limits.h unistd.h sys/time.h])
+
+# Checks for typedefs, structures, and compiler characteristics.
+AC_C_CONST
+AC_TYPE_SIZE_T
+AC_HEADER_TIME
+
 # Checks for libraries.
+AC_CHECK_LIB([m], [creal])
+
 AC_CHECK_LIB([gmp], [__gmpz_init],
              [LIBS="-lgmp $LIBS"],
              [AC_MSG_ERROR([libgmp not found or uses a different ABI.])])
@@ -172,15 +183,6 @@ error
          AC_MSG_RESULT(no)
          AC_MSG_ERROR([MPFR version >= 2.4.2 required])
          ])
-
-# Checks for header files.
-AC_HEADER_STDC
-AC_CHECK_HEADERS([complex.h locale.h inttypes.h stdint.h limits.h unistd.h sys/time.h])
-
-# Checks for typedefs, structures, and compiler characteristics.
-AC_C_CONST
-AC_TYPE_SIZE_T
-AC_HEADER_TIME
 
 # Check for logging feature
 AS_IF([test "x$enable_logging" = "xyes"],
