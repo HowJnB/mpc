@@ -2,14 +2,14 @@ Source code from the subversion repository
 ------------------------------------------
 
 To compile source code obtained from the subversion repository,
-make sure you have installed the autoconf, automake and libtools packages.
+make sure you have installed the autoconf, automake and libtool packages.
 Execute
 $ autoreconf -i
 
 Required versions:
 * autoconf >= 2.61
-* automake >= 1.10.1 (maybe older versions work, please report)
-* libtool >= 1.5.26 (maybe older versions work, please report)
+* automake >= 1.10.1
+* libtool >= 2.2
 
 Creating a new release
 ----------------------
@@ -27,9 +27,6 @@ Creating a new release
  6) Execute "autoreconf; touch doc/mpc.texi; make distcheck".
     This updates the date and version number in doc/version.texi and
     creates the tarball for distribution.
-    Warning: do this on a machine with a recent libtool (for example 2.2.x
-    instead of 1.5.x which is buggy, cf
-    http://lists.gforge.inria.fr/pipermail/mpc-discuss/2009-March/000106.html)
  7) Create an svn tag from inside the svn root:
     svn cp trunk tags/VERSION
  8) Update the web page on the server.
