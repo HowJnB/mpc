@@ -1,6 +1,6 @@
-/* test file for mpc_add.
+/* tadd - test file for mpc_add.
 
-Copyright (C) INRIA, 2008, 2010
+Copyright (C) INRIA, 2008, 2010, 2011
 
 This file is part of the MPC Library.
 
@@ -56,7 +56,7 @@ check_ternary_value (void)
 int
 main (void)
 {
-  DECL_FUNC (CCC, f, mpc_add);
+  DECL_FUNC (C_CC, f, mpc_add);
   f.properties = FUNC_PROP_SYMETRIC;
 
   test_start ();

@@ -45,6 +45,16 @@ MA 02111-1307, USA. */
     : (inex) == 9 ? "(+1, -1)"                  \
     : (inex) == 10 ? "(-1, -1)" : "unknown"
 
+#define TEST_FAILED(func,op,got,expected,rnd)			\
+  do {								\
+    printf ("%s(op) failed [rnd=%d]\n with", func, rnd);	\
+    MPC_OUT (op);						\
+    printf ("     ");						\
+    MPC_OUT (got);						\
+    MPC_OUT (expected);						\
+    exit (1);							\
+  } while (0)
+
 #define QUOTE(X) NAME(X)
 #define NAME(X) #X
 
@@ -88,7 +98,7 @@ extern int same_mpc_value (mpc_ptr got, mpc_ptr ref, known_signs_t known_signs);
 /** GENERIC TESTS **/
 
 typedef int (*CC_func_ptr) (mpc_t, mpc_srcptr, mpc_rnd_t);
-typedef int (*CCC_func_ptr) (mpc_t, mpc_srcptr, mpc_srcptr, mpc_rnd_t);
+typedef int (*C_CC_func_ptr) (mpc_t, mpc_srcptr, mpc_srcptr, mpc_rnd_t);
 typedef int (*CCCC_func_ptr) (mpc_t, mpc_srcptr, mpc_srcptr, mpc_srcptr,
 			      mpc_rnd_t);
 typedef int (*CCU_func_ptr) (mpc_t, mpc_srcptr, unsigned long, mpc_rnd_t);
@@ -105,7 +115,7 @@ typedef int (*CC_C_func_ptr) (mpc_t, mpc_t, mpc_srcptr, mpc_rnd_t, mpc_rnd_t);
 typedef union {
    FC_func_ptr FC;     /* output: mpfr_t, input: mpc_t */
    CC_func_ptr CC;     /* output: mpc_t, input: mpc_t */
-   CCC_func_ptr CCC;   /* output: mpc_t, inputs: (mpc_t, mpc_t) */
+   C_CC_func_ptr C_CC; /* output: mpc_t, inputs: (mpc_t, mpc_t) */
    CCCC_func_ptr CCCC; /* output: mpc_t, inputs: (mpc_t, mpc_t, mpc_t) */
    CCU_func_ptr CCU;   /* output: mpc_t, inputs: (mpc_t, unsigned long) */
    CCS_func_ptr CCS;   /* output: mpc_t, inputs: (mpc_t, long) */
@@ -121,7 +131,7 @@ typedef union {
 typedef enum {
    FC,   /* output: mpfr_t, input: mpc_t */
    CC,   /* output: mpc_t, input: mpc_t */
-   CCC,  /* output: mpc_t, inputs: (mpc_t, mpc_t) */
+   C_CC, /* output: mpc_t, inputs: (mpc_t, mpc_t) */
    CCCC, /* output: mpc_t, inputs: (mpc_t, mpc_t, mpc_t) */
    CCU,  /* output: mpc_t, inputs: (mpc_t, unsigned long) */
    CCS,  /* output: mpc_t, inputs: (mpc_t, long) */

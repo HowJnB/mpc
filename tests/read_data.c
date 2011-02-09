@@ -551,7 +551,7 @@ data_check (mpc_function function, const char *file_name)
       mpc_init2 (z2, 2);
       mpc_init2 (z3, 2);
       break;
-    case CCC:
+    case C_CC:
       mpc_init2 (z2, 2);
       mpc_init2 (z3, 2);
       mpc_init2 (z4, 2);
@@ -636,11 +636,11 @@ data_check (mpc_function function, const char *file_name)
             }
           break;
 
-        case CCC: /* example mpc_mul */
+        case C_CC: /* example mpc_mul */
           read_ccc (fp, &inex_re, &inex_im, z1, &signs, z2, z3, &rnd);
           mpfr_set_prec (MPC_RE(z4), MPC_PREC_RE (z1));
           mpfr_set_prec (MPC_IM(z4), MPC_PREC_IM (z1));
-          inex = function.pointer.CCC (z4, z2, z3, rnd);
+          inex = function.pointer.C_CC (z4, z2, z3, rnd);
           if (!MPC_INEX_CMP (inex_re, inex_im, inex)
               || !same_mpc_value (z4, z1, signs))
             {
@@ -666,7 +666,7 @@ data_check (mpc_function function, const char *file_name)
             }
           if (function.properties & FUNC_PROP_SYMETRIC)
             {
-              inex = function.pointer.CCC (z4, z3, z2, rnd);
+              inex = function.pointer.C_CC (z4, z3, z2, rnd);
               if (!MPC_INEX_CMP (inex_re, inex_im, inex)
               || !same_mpc_value (z4, z1, signs))
                 {
@@ -865,7 +865,7 @@ data_check (mpc_function function, const char *file_name)
       mpc_clear (z2);
       mpc_clear (z3);
       break;
-    case CCC:
+    case C_CC:
       mpc_clear (z2);
       mpc_clear (z3);
       mpc_clear (z4);

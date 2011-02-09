@@ -41,15 +41,7 @@ bug20090105 (void)
 
   mpc_cos (got, op, MPC_RNDNN);
   if (mpc_cmp (got, expected) != 0)
-    {
-      printf ("Error in bug20090105: cos(op) with rounding mode MPC_RNDNN\n");
-      MPC_OUT (op);
-      MPC_OUT (expected);
-      printf("     ");
-      MPC_OUT (got);
-
-      exit (1);
-    }
+    TEST_FAILED ("mpc_cos", op, got, expected, MPC_RNDNN);
 
   mpc_clear (got);
   mpc_clear(expected);

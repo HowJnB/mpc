@@ -30,6 +30,7 @@ MA 02111-1307, USA. */
    || mpfr_can_round (b, (long)mpfr_get_prec (b) - (err), (rnd),        \
                       GMP_RNDZ, (prec) + ((rnd)==GMP_RNDN)))
 
+/* functions with one input, one output */
 static void
 tgeneric_cc (mpc_function *function, mpc_ptr op, mpc_ptr rop,
              mpc_ptr rop4, mpc_ptr rop4rnd, mpc_rnd_t rnd)
@@ -233,9 +234,10 @@ tgeneric_ccf (mpc_function *function, mpc_ptr op1, mpfr_ptr op2,
   exit (1);
 }
 
+/* for functions with one mpc_t output, two mpc_t inputs */
 static void
-tgeneric_ccc (mpc_function *function, mpc_ptr op1, mpc_ptr op2,
-              mpc_ptr rop, mpc_ptr rop4, mpc_ptr rop4rnd, mpc_rnd_t rnd)
+tgeneric_c_cc (mpc_function *function, mpc_ptr op1, mpc_ptr op2,
+	       mpc_ptr rop, mpc_ptr rop4, mpc_ptr rop4rnd, mpc_rnd_t rnd)
 {
   known_signs_t ks = {1, 1};
 
@@ -243,8 +245,8 @@ tgeneric_ccc (mpc_function *function, mpc_ptr op1, mpc_ptr op2,
      rounding is correct. Error reports in this part of the algorithm might
      still be wrong, though, since there are two consecutive roundings (but we
      try to avoid them).  */
-  function->pointer.CCC (rop4, op1, op2, rnd);
-  function->pointer.CCC (rop, op1, op2, rnd);
+  function->pointer.C_CC (rop4, op1, op2, rnd);
+  function->pointer.C_CC (rop, op1, op2, rnd);
 
   /* can't use mpfr_can_round when argument is singular */
   if (MPFR_CAN_ROUND (MPC_RE (rop4), 1, MPC_PREC_RE (rop),
@@ -634,15 +636,16 @@ reuse_ccf (mpc_function* function, mpc_srcptr z, mpfr_srcptr x, mpc_ptr got,
     }
 }
 
+/* for functions with one mpc_t output, two mpc_t inputs */
 static void
-reuse_ccc (mpc_function* function, mpc_srcptr z, mpc_srcptr x,
+reuse_c_cc (mpc_function* function, mpc_srcptr z, mpc_srcptr x,
            mpc_ptr got, mpc_ptr expected)
 {
   known_signs_t ks = {1, 1};
 
   mpc_set (got, z, MPC_RNDNN); /* exact */
-  function->pointer.CCC (expected, z, x, MPC_RNDNN);
-  function->pointer.CCC (got, got, x, MPC_RNDNN);
+  function->pointer.C_CC (expected, z, x, MPC_RNDNN);
+  function->pointer.C_CC (got, got, x, MPC_RNDNN);
   if (!same_mpc_value (got, expected, ks))
     {
       printf ("Error for %s(z, z, x) for\n", function->name);
@@ -654,8 +657,8 @@ reuse_ccc (mpc_function* function, mpc_srcptr z, mpc_srcptr x,
       exit (1);
     }
   mpc_set (got, x, MPC_RNDNN); /* exact */
-  function->pointer.CCC (expected, z, x, MPC_RNDNN);
-  function->pointer.CCC (got, z, got, MPC_RNDNN);
+  function->pointer.C_CC (expected, z, x, MPC_RNDNN);
+  function->pointer.C_CC (got, z, got, MPC_RNDNN);
   if (!same_mpc_value (got, expected, ks))
     {
       printf ("Error for %s(x, z, x) for\n", function->name);
@@ -667,8 +670,8 @@ reuse_ccc (mpc_function* function, mpc_srcptr z, mpc_srcptr x,
       exit (1);
     }
   mpc_set (got, x, MPC_RNDNN); /* exact */
-  function->pointer.CCC (expected, x, x, MPC_RNDNN);
-  function->pointer.CCC (got, got, got, MPC_RNDNN);
+  function->pointer.C_CC (expected, x, x, MPC_RNDNN);
+  function->pointer.C_CC (got, got, got, MPC_RNDNN);
   if (!same_mpc_value (got, expected, ks))
     {
       printf ("Error for %s(x, x, x) for\n", function->name);
@@ -919,7 +922,7 @@ tgeneric (mpc_function function, mpfr_prec_t prec_min,
   mpc_init2 (z1, prec_max);
   switch (function.type)
     {
-    case CCC:
+    case C_CC:
       mpc_init2 (z2, prec_max);
       mpc_init2 (z3, prec_max);
       mpc_init2 (z4, prec_max);
@@ -1002,7 +1005,7 @@ tgeneric (mpc_function function, mpfr_prec_t prec_min,
 
       switch (function.type)
         {
-        case CCC:
+        case C_CC:
           mpc_set_prec (z2, prec);
           test_default_random (z2, exp_min, exp_max, 128, zero_probability);
           mpc_set_prec (z3, prec);
@@ -1211,11 +1214,11 @@ tgeneric (mpc_function function, mpfr_prec_t prec_min,
       for (rnd_re = first_rnd_mode (); is_valid_rnd_mode (rnd_re); rnd_re = next_rnd_mode (rnd_re))
         switch (function.type)
           {
-          case CCC:
+          case C_CC:
             for (rnd_im = first_rnd_mode (); is_valid_rnd_mode (rnd_im); rnd_im = next_rnd_mode (rnd_im))
-              tgeneric_ccc (&function, z1, z2, z3, zzzz, z4,
-                            RNDC (rnd_re, rnd_im));
-            reuse_ccc (&function, z1, z2, z3, z4);
+              tgeneric_c_cc (&function, z1, z2, z3, zzzz, z4,
+			     RNDC (rnd_re, rnd_im));
+            reuse_c_cc (&function, z1, z2, z3, z4);
             break;
           case CCCC:
             for (rnd_im = first_rnd_mode (); is_valid_rnd_mode (rnd_im); rnd_im = next_rnd_mode (rnd_im))
@@ -1293,7 +1296,7 @@ tgeneric (mpc_function function, mpfr_prec_t prec_min,
   mpc_clear (z1);
   switch (function.type)
     {
-    case CCC:
+    case C_CC:
       mpc_clear (z2);
       mpc_clear (z3);
       mpc_clear (z4);

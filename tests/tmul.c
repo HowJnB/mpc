@@ -1,6 +1,6 @@
 /* tmul -- test file for mpc_mul.
 
-Copyright (C) INRIA, 2002, 2005, 2008, 2009, 2010
+Copyright (C) INRIA, 2002, 2005, 2008, 2009, 2010, 2011
 
 This file is part of the MPC Library.
 
@@ -202,7 +202,7 @@ timemul (void)
 int
 main (void)
 {
-  DECL_FUNC (CCC, f, mpc_mul);
+  DECL_FUNC (C_CC, f, mpc_mul);
   f.properties = FUNC_PROP_SYMETRIC;
 
   test_start ();
