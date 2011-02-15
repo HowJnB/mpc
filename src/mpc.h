@@ -34,7 +34,7 @@ MA 02111-1307, USA. */
 #define MPC_VERSION_MAJOR 0
 #define MPC_VERSION_MINOR 9
 #define MPC_VERSION_PATCHLEVEL 0
-#define MPC_VERSION_STRING "0.9-rc1"
+#define MPC_VERSION_STRING "0.9-rc2"
 
 /* Macros dealing with MPC VERSION */
 #define MPC_VERSION_NUM(a,b,c) (((a) << 16L) | ((b) << 8) | (c))

@@ -24,5 +24,5 @@ MA 02111-1307, USA. */
 const char *
 mpc_get_version (void)
 {
-  return "0.9-rc1";
+  return "0.9-rc2";
 }
