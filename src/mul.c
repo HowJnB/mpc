@@ -248,6 +248,7 @@ mul_pure_imaginary (mpc_ptr a, mpc_srcptr u, mpfr_srcptr y, mpc_rnd_t rnd,
 int
 mpc_mul_naive (mpc_ptr a, mpc_srcptr b, mpc_srcptr c, mpc_rnd_t rnd)
 {
+   /* We assume that b and c are different, which is checked in mpc_mul. */
   int overlap, inex_re, inex_im;
   mpfr_t u, v, t;
   mpfr_prec_t prec;
@@ -275,13 +276,8 @@ mpc_mul_naive (mpc_ptr a, mpc_srcptr b, mpc_srcptr c, mpc_rnd_t rnd)
 
   /* Im(a) = Re(b)*Im(c) + Im(b)*Re(c) */
   mpfr_mul (u, MPC_RE(b), MPC_IM(c), GMP_RNDN); /* exact */
-  if (b == c) /* square case */
-    inex_im = mpfr_mul_2exp (MPC_IM(a), u, 1, MPC_RND_IM(rnd));
-  else
-    {
-      mpfr_mul (v, MPC_IM(b), MPC_RE(c), GMP_RNDN); /* exact */
-      inex_im = mpfr_add (MPC_IM(a), u, v, MPC_RND_IM(rnd));
-    }
+  mpfr_mul (v, MPC_IM(b), MPC_RE(c), GMP_RNDN); /* exact */
+  inex_im = mpfr_add (MPC_IM(a), u, v, MPC_RND_IM(rnd));
 
   mpfr_clear (u);
   mpfr_clear (v);
