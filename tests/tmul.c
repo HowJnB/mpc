@@ -199,35 +199,11 @@ timemul (void)
 }
 #endif
 
-/* bug reported by Emmanuel Thome */
-static void
-bug20110214 (void)
-{
-  mpc_t u, v, w;
-  mpz_t z;
-
-  mpc_init2 (u, 3000);
-  mpc_init2 (v, 3000);
-  mpc_init2 (w, 3000);
-  mpz_init (z);
-  mpz_ui_pow_ui (z, 47, 541);
-  mpfr_set_z_2exp (mpc_realref (u), z, 500000000, GMP_RNDN);
-  mpz_ui_pow_ui (z, 23, 664);
-  mpfr_set_z_2exp (mpc_imagref (u), z, 500000000, GMP_RNDN);
-  mpz_ui_pow_ui (z, 31, 606);
-  mpfr_set_z_2exp (mpc_realref (v), z, 900000000, GMP_RNDN);
-  mpz_ui_pow_ui (z, 101, 451);
-  mpfr_set_z_2exp (mpc_imagref (v), z, 900000000, GMP_RNDN);
-  mpc_mul (w, u, v, MPC_RNDNN);
-  mpc_clear (u);
-  mpc_clear (v);
-  mpc_clear (w);
-}
 
 int
 main (void)
 {
-  DECL_FUNC (C_CC, f, mpc_mul);
+  DECL_FUNC (C_CC, f, mpc_mul_naive);
   f.properties = FUNC_PROP_SYMETRIC;
 
   test_start ();
@@ -236,7 +212,6 @@ main (void)
   timemul ();
 #endif
 
-  bug20110214 ();
   check_regular ();
 
   data_check (f, "mul.dat");
