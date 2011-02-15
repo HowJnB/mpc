@@ -203,7 +203,7 @@ timemul (void)
 int
 main (void)
 {
-  DECL_FUNC (C_CC, f, mpc_mul_naive);
+  DECL_FUNC (C_CC, f, mpc_mul);
   f.properties = FUNC_PROP_SYMETRIC;
 
   test_start ();
