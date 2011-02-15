@@ -1,6 +1,6 @@
 /* mpc_mul -- Multiply two complex numbers
 
-Copyright (C) INRIA, 2002, 2004, 2005, 2008, 2009, 2010
+Copyright (C) INRIA, 2002, 2004, 2005, 2008, 2009, 2010, 2011
 
 This file is part of the MPC Library.
 
