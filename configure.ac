@@ -33,7 +33,7 @@ AM_MAINTAINER_MODE
 AC_CANONICAL_HOST
 AC_CONFIG_MACRO_DIR([m4])
 
-dnl Extra arguments to configure
+# Extra arguments to configure
 AC_ARG_WITH([mpfr_include],
             [AC_HELP_STRING([--with-mpfr-include=DIR],
                             [MPFR include directory])],
@@ -85,18 +85,19 @@ AC_ARG_ENABLE([logging],
              )
 
 
-dnl Setup CC and CFLAGS
+# Setup CC and CFLAGS
+AC_PROG_CC
+AC_LANG(C)
 
-dnl Check for user specification of CC or CFLAGS
+# Set up LibTool
+AC_PROG_LIBTOOL
+
+# Check for user specification of CC or CFLAGS
 if test -n "$CFLAGS" || test -n "$CC" ; then
    user_redefine_cc=yes
 fi
 
-# Check for programs
-AC_PROG_CC
-AC_LANG(C)
-
-dnl Check GMP Header
+# Check GMP Header
 AC_MSG_CHECKING(for gmp.h)
 AC_COMPILE_IFELSE([AC_LANG_SOURCE([[
 #include "gmp.h"
@@ -105,21 +106,18 @@ AC_COMPILE_IFELSE([AC_LANG_SOURCE([[
  AC_MSG_ERROR([gmp.h can't be found, or is unusable.])
 ])
 
-dnl Check for GMP CFLAGS in gmp.h
+# Check for GMP CFLAGS in gmp.h
 if test -z "$user_redefine_cc" ; then
    MPC_GMP_CC_CFLAGS
 fi
 
 
-dnl Configs for Windows DLLs
+# Configs for Windows DLLs
 case $host in
   *-*-cygwin* | *-*-mingw* | *-*-pw32* | *-*-os2*)
      MPC_WINDOWS
 esac
 
-
-dnl Finally set up LibTool
-AC_PROG_LIBTOOL
 
 # Checks for header files.
 AC_HEADER_STDC
