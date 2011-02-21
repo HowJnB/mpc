@@ -297,7 +297,7 @@ int
 mpc_mul_karatsuba (mpc_ptr rop, mpc_srcptr op1, mpc_srcptr op2, mpc_rnd_t rnd)
 {
   mpfr_srcptr a, b, c, d;
-  int mul_i, ok, inexact, mul_a, mul_c, inex_re, inex_im, sign_x, sign_u;
+  int mul_i, ok, inexact, mul_a, mul_c, inex_re = 0, inex_im = 0, sign_x, sign_u;
   mpfr_t u, v, w, x;
   mpfr_prec_t prec, prec_re, prec_u, prec_v, prec_w;
   mpfr_rnd_t rnd_re, rnd_u;
