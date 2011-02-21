@@ -36,8 +36,8 @@ was introduced.
 @set MINGMP 4.3.2
 @set MINMPFR 2.4.2
 
-@set AUTHORS Andreas Enge, Philippe Th@'eveny, Paul Zimmermann
-@set COPYRIGHTDATES 2002, 2003, 2004, 2005, 2007, 2008, 2009, 2010, 2011
+@set AUTHORS INRIA
+@set COPYRIGHTDATES 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010, 2011
 @ifinfo
 @format
 START-INFO-DIR-ENTRY
