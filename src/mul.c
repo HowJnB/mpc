@@ -21,6 +21,13 @@ MA 02111-1307, USA. */
 
 #include "mpc-impl.h"
 
+#define mpz_add_si(z,x,y) do { \
+   if (y >= 0) \
+      mpz_add_ui (z, x, (long int) y); \
+   else \
+      mpz_sub_ui (z, x, (long int) (-y)); \
+   } while (0);
+
 /* compute z=x*y when x has an infinite part */
 static int
 mul_infinite (mpc_ptr z, mpc_srcptr x, mpc_srcptr y)
@@ -203,8 +210,59 @@ mul_naive_overflow (mpc_ptr z, mpc_srcptr x, mpc_srcptr y, mpc_rnd_t rnd)
       inex_re = signu;
    }
    else {
-      /* the difficult case; FIXME */
-      inex_re = mpfr_sub (MPC_RE (rop), u, v, MPC_RND_RE (rnd));
+      /* the difficult case |u|, |v| == inf and signu == signv;
+         redo the computations with mpz_t exponents             */
+      mpfr_t xr, xi, yr, yi;
+      mpz_t eu, ev;
+
+      /* Write x=xr+i*xi, y=yr+i*yi; normalise the real and imaginary parts
+         by shifting and keep track of the shifts in the exponents of u and v */
+      mpz_init (eu);
+      mpz_init (ev);
+      mpfr_init2 (xr, MPC_PREC_RE (x));
+      mpfr_init2 (xi, MPC_PREC_IM (x));
+      mpfr_init2 (yr, MPC_PREC_RE (y));
+      mpfr_init2 (yi, MPC_PREC_IM (y));
+      mpfr_set (xr, MPC_RE (x), GMP_RNDN);
+      mpz_set_si (eu, (long int) mpfr_get_exp (xr));
+      mpfr_set_exp (xr, (mp_prec_t) 0);
+      mpfr_set (yr, MPC_RE (y), GMP_RNDN);
+      mpz_add_si (eu, eu, mpfr_get_exp (yr));
+      mpfr_set_exp (yr, (mp_prec_t) 0);
+      mpfr_set (xi, MPC_IM (x), GMP_RNDN);
+      mpz_set_si (ev, (long int) mpfr_get_exp (xi));
+      mpfr_set_exp (xi, (mp_prec_t) 0);
+      mpfr_set (yi, MPC_IM (y), GMP_RNDN);
+      mpz_add_si (ev, ev, mpfr_get_exp (yi));
+      mpfr_set_exp (yi, (mp_prec_t) 0);
+
+      /* recompute u and v and move exponents to eu and ev */
+      mpfr_mul (u, xr, yr, GMP_RNDN);
+      mpz_add_si (eu, eu, (long int) mpfr_get_exp (u));
+      mpfr_set_exp (u, 0);
+      mpfr_mul (v, xi, yi, GMP_RNDN);
+      mpz_add_si (ev, ev, (long int) mpfr_get_exp (v));
+      mpfr_set_exp (v, 0);
+
+      if (mpz_cmp (eu, ev) > 0) {
+         mpfr_set_inf (MPC_RE (rop), signu);
+         inex_re = signu;
+      }
+      else if (mpz_cmp (eu, ev) < 0) {
+         mpfr_set_inf (MPC_RE (rop), -signv);
+         inex_re = -signv;
+      }
+      else /* both exponents are equal */ {
+         inex_re = mpfr_sub (MPC_RE (rop), u, v, MPC_RND_RE (rnd));
+         /* FIXME: shift by eu */
+      }
+
+      mpz_clear (eu);
+      mpz_clear (ev);
+      mpfr_clear (xr);
+      mpfr_clear (xi);
+      mpfr_clear (yr);
+      mpfr_clear (yi);
    }
 
    /* Im(z) = Re(x)*Im(y) + Im(x)*Re(y) */
