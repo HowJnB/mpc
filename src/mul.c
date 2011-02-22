@@ -164,8 +164,83 @@ mul_imag (mpc_ptr z, mpc_srcptr x, mpc_srcptr y, mpc_rnd_t rnd)
 }
 
 
-/* Computes z=x*y by the schoolbook method, where x and y are assumed
-   to be finite and different.                                        */
+/* compute z=x*y by the schoolbook method, where x and y are assumed to be
+   finite and different, and where direct application of the formulae leads
+   to an overflow in at least one part                                      */
+static int
+mul_naive_overflow (mpc_ptr z, mpc_srcptr x, mpc_srcptr y, mpc_rnd_t rnd)
+{
+   int overlap, inex_re, inex_im, signu, signv;
+   mpfr_t u, v;
+   mpc_t rop;
+   mpfr_prec_t prec;
+
+   overlap = (z == x) || (z == y);
+   if (overlap)
+      mpc_init3 (rop, MPC_PREC_RE (z), MPC_PREC_IM (z));
+   else
+      rop [0] = z [0];
+
+   prec = MPC_MAX_PREC (x) + MPC_MAX_PREC (y);
+   mpfr_init2 (u, prec);
+   mpfr_init2 (v, prec);
+
+   /* Re(z) = Re(x)*Re(y) - Im(x)*Im(y) */
+   mpfr_mul (u, MPC_RE (x), MPC_RE (y), GMP_RNDN);
+   mpfr_mul (v, MPC_IM (x), MPC_IM (y), GMP_RNDN);
+   signu = (mpfr_signbit (u) ? -1 : 1);
+   signv = (mpfr_signbit (v) ? -1 : 1);
+   if (mpfr_number_p (u)) {
+      if (mpfr_number_p (v))
+         inex_re = mpfr_sub (MPC_RE (rop), u, v, MPC_RND_RE (rnd));
+      else {
+         mpfr_set_inf (MPC_RE (rop), -signv);
+         inex_re = -signv;
+      }
+   }
+   else if (mpfr_number_p (v) || signu != signv) {
+      mpfr_set_inf (MPC_RE (rop), signu);
+      inex_re = signu;
+   }
+   else {
+      /* the difficult case; FIXME */
+      inex_re = mpfr_sub (MPC_RE (rop), u, v, MPC_RND_RE (rnd));
+   }
+
+   /* Im(z) = Re(x)*Im(y) + Im(x)*Re(y) */
+   mpfr_mul (u, MPC_RE (x), MPC_IM (y), GMP_RNDN);
+   mpfr_mul (v, MPC_IM (x), MPC_RE (y), GMP_RNDN);
+   signu = (mpfr_signbit (u) ? -1 : 1);
+   signv = (mpfr_signbit (v) ? -1 : 1);
+   if (mpfr_number_p (u)) {
+      if (mpfr_number_p (v))
+         inex_im = mpfr_add (MPC_IM (rop), u, v, MPC_RND_IM (rnd));
+      else {
+         mpfr_set_inf (MPC_IM (rop), signv);
+         inex_im = signv;
+      }
+   }
+   else if (mpfr_number_p (v) || signu == signv) {
+      mpfr_set_inf (MPC_IM (rop), signu);
+      inex_im = signu;
+   }
+   else {
+      /* the difficult case; FIXME */
+      inex_im = mpfr_add (MPC_IM (rop), u, v, MPC_RND_IM (rnd));
+   }
+
+   mpfr_clear (u);
+   mpfr_clear (v);
+   mpc_set (z, rop, MPC_RNDNN); /* exact */
+   if (overlap)
+      mpc_clear (rop);
+
+   return MPC_INEX (inex_re, inex_im);
+}
+
+
+/* computes z=x*y by the schoolbook method, where x and y are assumed
+   to be finite and different                                        */
 int
 mpc_mul_naive (mpc_ptr z, mpc_srcptr x, mpc_srcptr y, mpc_rnd_t rnd)
 {
@@ -182,8 +257,6 @@ mpc_mul_naive (mpc_ptr z, mpc_srcptr x, mpc_srcptr y, mpc_rnd_t rnd)
    mpfr_init2 (v, MPC_PREC_IM (x) + MPC_MAX_PREC (y));
 
    /* Re(z) = Re(x)*Re(y) - Im(x)*Im(y) */
-   /* FIXME: this code suffers undue overflows: v can overflow while the result
-      of the subtraction is representable */
    mpfr_mul (v, MPC_IM (x), MPC_IM (y), GMP_RNDN); /* exact */
    inex_re = mpfr_fms (MPC_RE (rop), MPC_RE (x), MPC_RE (y), v, MPC_RND_RE (rnd));
 
@@ -196,7 +269,10 @@ mpc_mul_naive (mpc_ptr z, mpc_srcptr x, mpc_srcptr y, mpc_rnd_t rnd)
    if (overlap)
       mpc_clear (rop);
 
-   return MPC_INEX (inex_re, inex_im);
+   if (mpc_fin_p (z))
+      return MPC_INEX (inex_re, inex_im);
+   else /* intermediate overflow */
+      return mul_naive_overflow (z, x, y, rnd);
 }
 
 
