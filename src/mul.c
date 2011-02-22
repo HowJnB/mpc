@@ -164,46 +164,39 @@ mul_imag (mpc_ptr z, mpc_srcptr x, mpc_srcptr y, mpc_rnd_t rnd)
 }
 
 
+/* Computes z=x*y by the schoolbook method, where x and y are assumed
+   to be finite and different.                                        */
 int
-mpc_mul_naive (mpc_ptr a, mpc_srcptr b, mpc_srcptr c, mpc_rnd_t rnd)
+mpc_mul_naive (mpc_ptr z, mpc_srcptr x, mpc_srcptr y, mpc_rnd_t rnd)
 {
-   /* We assume that b and c are different, which is checked in mpc_mul. */
-  int overlap, inex_re, inex_im;
-  mpfr_t v, t;
-  mpfr_prec_t prec;
+   int overlap, inex_re, inex_im;
+   mpfr_t v;
+   mpc_t rop;
 
-  overlap = (a == b) || (a == c);
+   overlap = (z == x) || (z == y);
+   if (overlap)
+      mpc_init3 (rop, MPC_PREC_RE (z), MPC_PREC_IM (z));
+   else
+      rop [0] = z [0];
 
-  prec = MPC_PREC_IM(b) + MPC_MAX_PREC(c);
+   mpfr_init2 (v, MPC_PREC_IM (x) + MPC_MAX_PREC (y));
 
-  mpfr_init2 (v, prec);
+   /* Re(z) = Re(x)*Re(y) - Im(x)*Im(y) */
+   /* FIXME: this code suffers undue overflows: v can overflow while the result
+      of the subtraction is representable */
+   mpfr_mul (v, MPC_IM (x), MPC_IM (y), GMP_RNDN); /* exact */
+   inex_re = mpfr_fms (MPC_RE (rop), MPC_RE (x), MPC_RE (y), v, MPC_RND_RE (rnd));
 
-  /* Re(a) = Re(b)*Re(c) - Im(b)*Im(c) */
-  /* FIXME: this code suffers undue overflows: v can overflow while the result
-     of the subtraction is representable */
-  mpfr_mul (v, MPC_IM(b), MPC_IM(c), GMP_RNDN); /* exact */
+   /* Im(z) = Re(x)*Im(y) + Im(x)*Re(y) */
+   mpfr_mul (v, MPC_IM (x), MPC_RE (y), GMP_RNDN); /* exact */
+   inex_im = mpfr_fma (MPC_IM (rop), MPC_RE (x), MPC_IM (y), v, MPC_RND_IM(rnd));
 
-  if (overlap)
-    {
-      mpfr_init2 (t, MPC_PREC_RE(a));
-      inex_re = mpfr_fms (t, MPC_RE (b), MPC_RE (c), v, MPC_RND_RE (rnd));
-    }
-  else
-      inex_re = mpfr_fms (MPC_RE (a), MPC_RE (b), MPC_RE (c), v, MPC_RND_RE (rnd));
+   mpfr_clear (v);
+   mpc_set (z, rop, MPC_RNDNN); /* exact */
+   if (overlap)
+      mpc_clear (rop);
 
-  /* Im(a) = Re(b)*Im(c) + Im(b)*Re(c) */
-  mpfr_mul (v, MPC_IM(b), MPC_RE(c), GMP_RNDN); /* exact */
-  inex_im = mpfr_fma (MPC_IM(a), MPC_RE (b), MPC_IM (c), v, MPC_RND_IM(rnd));
-
-  mpfr_clear (v);
-
-  if (overlap)
-    {
-      mpfr_set (MPC_RE(a), t, GMP_RNDN); /* exact */
-      mpfr_clear (t);
-    }
-
-  return MPC_INEX(inex_re, inex_im);
+   return MPC_INEX (inex_re, inex_im);
 }
 
 
