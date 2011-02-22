@@ -21,115 +21,6 @@ MA 02111-1307, USA. */
 
 #include "mpc-impl.h"
 
-static int mul_infinite (mpc_ptr a, mpc_srcptr u, mpc_srcptr v);
-static int mul_pure_imaginary (mpc_ptr a, mpc_srcptr u, mpfr_srcptr y,
-                               mpc_rnd_t rnd, int overlap);
-
-/* return inex such that MPC_INEX_RE(inex) = -1, 0, 1
-                         MPC_INEX_IM(inex) = -1, 0, 1
-   depending on the signs of the real/imaginary parts of the result
-*/
-int
-mpc_mul (mpc_ptr a, mpc_srcptr b, mpc_srcptr c, mpc_rnd_t rnd)
-{
-  int brs, bis, crs, cis;
-
-  /* Conforming to ISO C99 standard (G.5.1 multiplicative operators),
-     infinities have special treatment if both parts are NaN when computed
-     naively. */
-  if (mpc_inf_p (b))
-    return mul_infinite (a, b, c);
-  if (mpc_inf_p (c))
-    return mul_infinite (a, c, b);
-
-  /* NaN contamination of both part in result */
-  if (mpfr_nan_p (MPC_RE (b)) || mpfr_nan_p (MPC_IM (b))
-      || mpfr_nan_p (MPC_RE (c)) || mpfr_nan_p (MPC_IM (c)))
-    {
-      mpfr_set_nan (MPC_RE (a));
-      mpfr_set_nan (MPC_IM (a));
-      return MPC_INEX (0, 0);
-    }
-
-  /* save operands' sign */
-  brs = MPFR_SIGNBIT (MPC_RE (b));
-  bis = MPFR_SIGNBIT (MPC_IM (b));
-  crs = MPFR_SIGNBIT (MPC_RE (c));
-  cis = MPFR_SIGNBIT (MPC_IM (c));
-
-  /* first check for real multiplication */
-  if (mpfr_zero_p (MPC_IM (b))) /* b * (x+i*y) = b*x + i *(b*y) */
-    {
-      int inex;
-      inex = mpc_mul_fr (a, c, MPC_RE (b), rnd);
-
-      /* Sign of zeros is wrong in some cases. This correction doesn't change
-         inexact flag. */
-      if (mpfr_zero_p (MPC_RE (a)))
-        mpfr_setsign (MPC_RE (a), MPC_RE (a), MPC_RND_RE(rnd) == GMP_RNDD
-                      || (brs != crs && bis == cis), GMP_RNDN); /* exact */
-      if (mpfr_zero_p (MPC_IM (a)))
-        mpfr_setsign (MPC_IM (a), MPC_IM (a), MPC_RND_IM (rnd) == GMP_RNDD
-                      || (brs != cis && bis != crs), GMP_RNDN); /* exact */
-
-      return inex;
-    }
-  if (mpfr_zero_p (MPC_IM (c)))
-    {
-      int inex;
-      inex = mpc_mul_fr (a, b, MPC_RE (c), rnd);
-
-      /* Sign of zeros is wrong in some cases. This correction doesn't change
-         inexact flag. */
-      if (mpfr_zero_p (MPC_RE (a)))
-        mpfr_setsign (MPC_RE (a), MPC_RE (a), MPC_RND_RE(rnd) == GMP_RNDD
-                      || (brs != crs && bis == cis), GMP_RNDN);
-      if (mpfr_zero_p (MPC_IM (a)))
-        mpfr_setsign (MPC_IM (a), MPC_IM (a), MPC_RND_IM (rnd) == GMP_RNDD
-                      || (brs != cis && bis != crs), GMP_RNDN);
-
-      return inex;
-    }
-
-  /* check for purely complex multiplication */
-  if (mpfr_zero_p (MPC_RE (b))) /* i*b * (x+i*y) = -b*y + i*(b*x) */
-    {
-      int inex;
-      inex = mul_pure_imaginary (a, c, MPC_IM (b), rnd, (a == b || a == c));
-
-      /* Sign of zeros is wrong in some cases (note that Re(a) cannot be a
-         zero) */
-      if (mpfr_zero_p (MPC_IM (a)))
-        mpfr_setsign (MPC_IM (a), MPC_IM (a), MPC_RND_IM (rnd) == GMP_RNDD
-                      || (brs != cis && bis != crs), GMP_RNDN);
-
-      return inex;
-    }
-  if (mpfr_zero_p (MPC_RE (c)))
-    /* note that a cannot be a zero */
-    return mul_pure_imaginary (a, b, MPC_IM (c), rnd, (a == b || a == c));
-
-  /* Check if b==c and call mpc_sqr in this case, to make sure            */
-  /* mpc_mul(a,b,b) behaves exactly like mpc_sqr(a,b) concerning          */
-  /* internal overflows etc.                                              */
-  if (mpc_cmp (b, c) == 0)
-     return mpc_sqr (a, b, rnd);
-
-  /* If the real and imaginary part of one argument have a very different */
-  /* exponent, it is not reasonable to use Karatsuba multiplication.      */
-  if (   SAFE_ABS (mpfr_exp_t,
-                   mpfr_get_exp (MPC_RE (b)) - mpfr_get_exp (MPC_IM (b)))
-         > (mpfr_exp_t) MPC_MAX_PREC (b) / 2
-      || SAFE_ABS (mpfr_exp_t,
-                   mpfr_get_exp (MPC_RE (c)) - mpfr_get_exp (MPC_IM (c)))
-         > (mpfr_exp_t) MPC_MAX_PREC (c) / 2)
-    return mpc_mul_naive (a, b, c, rnd);
-  else
-    return ((MPC_MAX_PREC(a)
-             <= (mpfr_prec_t) MUL_KARATSUBA_THRESHOLD * BITS_PER_MP_LIMB)
-            ? mpc_mul_naive : mpc_mul_karatsuba) (a, b, c, rnd);
-}
-
 /* compute a=u*v when u has an infinite part */
 static int
 mul_infinite (mpc_ptr a, mpc_srcptr u, mpc_srcptr v)
@@ -220,6 +111,32 @@ mul_infinite (mpc_ptr a, mpc_srcptr u, mpc_srcptr v)
     mpfr_set_inf (MPC_IM (a), y);
 
   return MPC_INEX (0, 0); /* exact */
+}
+
+/* compute z = x*y for Im(y) == 0 */
+static int
+mul_real (mpc_ptr z, mpc_srcptr x, mpc_srcptr y, mpc_rnd_t rnd)
+{
+   int xrs, xis, yrs, yis;
+   int inex;
+
+   /* save signs of operands */
+   xrs = MPFR_SIGNBIT (MPC_RE (x));
+   xis = MPFR_SIGNBIT (MPC_IM (x));
+   yrs = MPFR_SIGNBIT (MPC_RE (y));
+   yis = MPFR_SIGNBIT (MPC_IM (y));
+
+   inex = mpc_mul_fr (z, x, MPC_RE (y), rnd);
+   /* Signs of zeroes may be wrong. Their correction does not change the
+      inexact flag. */
+   if (mpfr_zero_p (MPC_RE (z)))
+      mpfr_setsign (MPC_RE (z), MPC_RE (z), MPC_RND_RE(rnd) == GMP_RNDD
+                     || (xrs != yrs && xis == yis), GMP_RNDN);
+   if (mpfr_zero_p (MPC_IM (z)))
+      mpfr_setsign (MPC_IM (z), MPC_IM (z), MPC_RND_IM (rnd) == GMP_RNDD
+                     || (xrs != yis && xis != yrs), GMP_RNDN);
+
+   return inex;
 }
 
 static int
@@ -520,3 +437,76 @@ mpc_mul_karatsuba (mpc_ptr rop, mpc_srcptr op1, mpc_srcptr op2, mpc_rnd_t rnd)
    else
       return mpc_mul_naive (rop, op1, op2, rnd);
 }
+
+
+int
+mpc_mul (mpc_ptr a, mpc_srcptr b, mpc_srcptr c, mpc_rnd_t rnd)
+{
+   int brs, bis, crs, cis;
+
+   /* Conforming to ISO C99 standard (G.5.1 multiplicative operators),
+      infinities are treated specially if both parts are NaN when computed
+      naively. */
+   if (mpc_inf_p (b))
+      return mul_infinite (a, b, c);
+   else if (mpc_inf_p (c))
+      return mul_infinite (a, c, b);
+   /* NaN contamination of both parts in result */
+   else if (mpfr_nan_p (MPC_RE (b)) || mpfr_nan_p (MPC_IM (b))
+       || mpfr_nan_p (MPC_RE (c)) || mpfr_nan_p (MPC_IM (c))) {
+      mpfr_set_nan (MPC_RE (a));
+      mpfr_set_nan (MPC_IM (a));
+      return MPC_INEX (0, 0);
+   }
+
+   /* save signs of operands */
+   brs = MPFR_SIGNBIT (MPC_RE (b));
+   bis = MPFR_SIGNBIT (MPC_IM (b));
+   crs = MPFR_SIGNBIT (MPC_RE (c));
+   cis = MPFR_SIGNBIT (MPC_IM (c));
+
+   /* first check for real multiplication */
+   if (mpfr_zero_p (MPC_IM (b)))
+      return mul_real (a, c, b, rnd);
+   else if (mpfr_zero_p (MPC_IM (c)))
+      return mul_real (a, b, c, rnd);
+
+   /* check for purely complex multiplication */
+   if (mpfr_zero_p (MPC_RE (b))) /* i*b * (x+i*y) = -b*y + i*(b*x) */
+      {
+      int inex;
+      inex = mul_pure_imaginary (a, c, MPC_IM (b), rnd, (a == b || a == c));
+
+      /* Sign of zeros is wrong in some cases (note that Re(a) cannot be a
+         zero) */
+      if (mpfr_zero_p (MPC_IM (a)))
+         mpfr_setsign (MPC_IM (a), MPC_IM (a), MPC_RND_IM (rnd) == GMP_RNDD
+                        || (brs != cis && bis != crs), GMP_RNDN);
+
+      return inex;
+      }
+   if (mpfr_zero_p (MPC_RE (c)))
+      /* note that a cannot be a zero */
+      return mul_pure_imaginary (a, b, MPC_IM (c), rnd, (a == b || a == c));
+
+   /* Check if b==c and call mpc_sqr in this case, to make sure            */
+   /* mpc_mul(a,b,b) behaves exactly like mpc_sqr(a,b) concerning          */
+   /* internal overflows etc.                                              */
+   if (mpc_cmp (b, c) == 0)
+      return mpc_sqr (a, b, rnd);
+
+   /* If the real and imaginary part of one argument have a very different */
+   /* exponent, it is not reasonable to use Karatsuba multiplication.      */
+   if (   SAFE_ABS (mpfr_exp_t,
+                     mpfr_get_exp (MPC_RE (b)) - mpfr_get_exp (MPC_IM (b)))
+         > (mpfr_exp_t) MPC_MAX_PREC (b) / 2
+      || SAFE_ABS (mpfr_exp_t,
+                     mpfr_get_exp (MPC_RE (c)) - mpfr_get_exp (MPC_IM (c)))
+         > (mpfr_exp_t) MPC_MAX_PREC (c) / 2)
+      return mpc_mul_naive (a, b, c, rnd);
+   else
+      return ((MPC_MAX_PREC(a)
+               <= (mpfr_prec_t) MUL_KARATSUBA_THRESHOLD * BITS_PER_MP_LIMB)
+            ? mpc_mul_naive : mpc_mul_karatsuba) (a, b, c, rnd);
+}
+
