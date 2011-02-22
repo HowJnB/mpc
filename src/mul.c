@@ -250,36 +250,32 @@ mpc_mul_naive (mpc_ptr a, mpc_srcptr b, mpc_srcptr c, mpc_rnd_t rnd)
 {
    /* We assume that b and c are different, which is checked in mpc_mul. */
   int overlap, inex_re, inex_im;
-  mpfr_t u, v, t;
+  mpfr_t v, t;
   mpfr_prec_t prec;
 
   overlap = (a == b) || (a == c);
 
-  prec = MPC_MAX_PREC(b) + MPC_MAX_PREC(c);
+  prec = MPC_PREC_IM(b) + MPC_MAX_PREC(c);
 
-  mpfr_init2 (u, prec);
   mpfr_init2 (v, prec);
 
   /* Re(a) = Re(b)*Re(c) - Im(b)*Im(c) */
-  /* FIXME: this code suffers undue overflows: u or v can overflow while u-v
-     or u+v is representable */
-  mpfr_mul (u, MPC_RE(b), MPC_RE(c), GMP_RNDN); /* exact */
+  /* FIXME: this code suffers undue overflows: v can overflow while the result
+     of the subtraction is representable */
   mpfr_mul (v, MPC_IM(b), MPC_IM(c), GMP_RNDN); /* exact */
 
   if (overlap)
     {
       mpfr_init2 (t, MPC_PREC_RE(a));
-      inex_re = mpfr_sub (t, u, v, MPC_RND_RE(rnd));
+      inex_re = mpfr_fms (t, MPC_RE (b), MPC_RE (c), v, MPC_RND_RE (rnd));
     }
   else
-    inex_re = mpfr_sub (MPC_RE(a), u, v, MPC_RND_RE(rnd));
+      inex_re = mpfr_fms (MPC_RE (a), MPC_RE (b), MPC_RE (c), v, MPC_RND_RE (rnd));
 
   /* Im(a) = Re(b)*Im(c) + Im(b)*Re(c) */
-  mpfr_mul (u, MPC_RE(b), MPC_IM(c), GMP_RNDN); /* exact */
   mpfr_mul (v, MPC_IM(b), MPC_RE(c), GMP_RNDN); /* exact */
-  inex_im = mpfr_add (MPC_IM(a), u, v, MPC_RND_IM(rnd));
+  inex_im = mpfr_fma (MPC_IM(a), MPC_RE (b), MPC_IM (c), v, MPC_RND_IM(rnd));
 
-  mpfr_clear (u);
   mpfr_clear (v);
 
   if (overlap)
