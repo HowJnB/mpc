@@ -21,97 +21,85 @@ MA 02111-1307, USA. */
 
 #include "mpc-impl.h"
 
-/* compute a=u*v when u has an infinite part */
+/* compute z=x*y when x has an infinite part */
 static int
-mul_infinite (mpc_ptr a, mpc_srcptr u, mpc_srcptr v)
+mul_infinite (mpc_ptr z, mpc_srcptr x, mpc_srcptr y)
 {
-  /* let u = ur+i*ui and v =vr+i*vi */
-  int x, y;
+   /* Let x=xr+i*xi and y=yr+i*yi; extract the signs of the operands */
+   int xrs = mpfr_signbit (MPC_RE (x)) ? -1 : 1;
+   int xis = mpfr_signbit (MPC_IM (x)) ? -1 : 1;
+   int yrs = mpfr_signbit (MPC_RE (y)) ? -1 : 1;
+   int yis = mpfr_signbit (MPC_IM (y)) ? -1 : 1;
 
-  /* save operands' sign */
-  int urs = mpfr_signbit (MPC_RE (u)) ? -1 : 1;
-  int uis = mpfr_signbit (MPC_IM (u)) ? -1 : 1;
-  int vrs = mpfr_signbit (MPC_RE (v)) ? -1 : 1;
-  int vis = mpfr_signbit (MPC_IM (v)) ? -1 : 1;
+   int u, v;
 
-  /* compute the sign of
-     x = urs * ur * vrs * vr - uis * ui * vis * vi
-     y = urs * ur * vis * vi + uis * ui * vrs * vr
-     +1 if positive, -1 if negative, 0 if zero or NaN */
-  if (mpfr_nan_p (MPC_RE (u)) || mpfr_nan_p (MPC_IM (u))
-      || mpfr_nan_p (MPC_RE (v)) || mpfr_nan_p (MPC_IM (v)))
-    {
-      x = 0;
-      y = 0;
-    }
-  else if (mpfr_inf_p (MPC_RE (u)))
-    {
-      /* u = (+/-inf) +i*v */
-      x = mpfr_zero_p (MPC_RE (v))
-        || (mpfr_inf_p (MPC_IM (u)) && mpfr_zero_p (MPC_IM (v)))
-        || (mpfr_zero_p (MPC_IM (u)) && mpfr_inf_p (MPC_IM (v)))
-        || ((mpfr_inf_p (MPC_IM (u)) || mpfr_inf_p (MPC_IM (v)))
-            && urs*vrs == uis*vis) ?
-        0 : urs * vrs;
-      y = mpfr_zero_p (MPC_IM (v))
-        || (mpfr_inf_p (MPC_IM (u)) && mpfr_zero_p (MPC_RE (v)))
-        || (mpfr_zero_p (MPC_IM (u)) && mpfr_inf_p (MPC_RE (v)))
-        || ((mpfr_inf_p (MPC_IM (u)) || mpfr_inf_p (MPC_IM (u)))
-            && urs*vis == -uis*vrs) ?
-        0 : urs * vis;
-    }
-  else
-    {
-      /* u = u +i*(+/-inf) where |u| < inf */
-      x = mpfr_zero_p (MPC_IM (v))
-        || (mpfr_zero_p (MPC_RE (u)) && mpfr_inf_p (MPC_RE (v)))
-        || (mpfr_inf_p (MPC_RE (v)) && urs*vrs == uis*vis) ?
-        0 : -uis * vis;
-      y = mpfr_zero_p (MPC_RE (v))
-        || (mpfr_zero_p (MPC_RE (u)) && mpfr_inf_p (MPC_IM (v)))
-        || (mpfr_inf_p (MPC_IM (v)) && urs*vis == -uis*vrs) ?
-        0 : uis * vrs;
-    }
+   /* compute the sign of
+      u = xrs * yrs * xr * yr - xis * yis * xi * yi
+      v = xrs * yis * xr * yi + xis * yrs * xi * yr
+      +1 if positive, -1 if negatiye, 0 if NaN */
+   if (  mpfr_nan_p (MPC_RE (x)) || mpfr_nan_p (MPC_IM (x))
+      || mpfr_nan_p (MPC_RE (y)) || mpfr_nan_p (MPC_IM (y))) {
+      u = 0;
+      v = 0;
+   }
+   else if (mpfr_inf_p (MPC_RE (x))) {
+      /* x = (+/-inf) xr + i*xi */
+      u = (   mpfr_zero_p (MPC_RE (y))
+           || (mpfr_inf_p (MPC_IM (x)) && mpfr_zero_p (MPC_IM (y)))
+           || (mpfr_zero_p (MPC_IM (x)) && mpfr_inf_p (MPC_IM (y)))
+           || (   (mpfr_inf_p (MPC_IM (x)) || mpfr_inf_p (MPC_IM (y)))
+              && xrs*yrs == xis*yis)
+           ? 0 : xrs * yrs);
+      v = (   mpfr_zero_p (MPC_IM (y))
+           || (mpfr_inf_p (MPC_IM (x)) && mpfr_zero_p (MPC_RE (y)))
+           || (mpfr_zero_p (MPC_IM (x)) && mpfr_inf_p (MPC_RE (y)))
+           || (   (mpfr_inf_p (MPC_IM (x)) || mpfr_inf_p (MPC_IM (x)))
+               && xrs*yis != xis*yrs)
+           ? 0 : xrs * yis);
+   }
+   else {
+      /* x = xr + i*(+/-inf) with |xr| != inf */
+      u = (   mpfr_zero_p (MPC_IM (y))
+           || (mpfr_zero_p (MPC_RE (x)) && mpfr_inf_p (MPC_RE (y)))
+           || (mpfr_inf_p (MPC_RE (y)) && xrs*yrs == xis*yis)
+           ? 0 : -xis * yis);
+      v = (   mpfr_zero_p (MPC_RE (y))
+           || (mpfr_zero_p (MPC_RE (x)) && mpfr_inf_p (MPC_IM (y)))
+           || (mpfr_inf_p (MPC_IM (y)) && xrs*yis != xis*yrs)
+           ? 0 : xis * yrs);
+   }
 
-  /* Naive result is NaN+i*NaN. We will try to obtain an infinite using
-     algorithm given in Annex G of ISO C99 standard */
-  if (x == 0 && y ==0)
-    {
-      int ur = mpfr_zero_p (MPC_RE (u)) || mpfr_nan_p (MPC_RE (u)) ?
-        0 : 1;
-      int ui = mpfr_zero_p (MPC_IM (u)) || mpfr_nan_p (MPC_IM (u)) ?
-        0 : 1;
-      int vr = mpfr_zero_p (MPC_RE (v)) || mpfr_nan_p (MPC_RE (v)) ?
-        0 : 1;
-      int vi = mpfr_zero_p (MPC_IM (v)) || mpfr_nan_p (MPC_IM (v)) ?
-        0 : 1;
-      if (mpc_inf_p (u))
-        {
-          ur = mpfr_inf_p (MPC_RE (u)) ? 1 : 0;
-          ui = mpfr_inf_p (MPC_IM (u)) ? 1 : 0;
-        }
-      if (mpc_inf_p (v))
-        {
-          vr = mpfr_inf_p (MPC_RE (v)) ? 1 : 0;
-          vi = mpfr_inf_p (MPC_IM (v)) ? 1 : 0;
-        }
+   if (u == 0 && v == 0) {
+      /* Naive result is NaN+i*NaN. Obtain an infinity using the algorithm
+         given in Annex G.5.1 of the ISO C99 standard */
+      int xr = (mpfr_zero_p (MPC_RE (x)) || mpfr_nan_p (MPC_RE (x)) ? 0
+                : (mpfr_inf_p (MPC_RE (x)) ? 1 : 0));
+      int xi = (mpfr_zero_p (MPC_IM (x)) || mpfr_nan_p (MPC_IM (x)) ? 0
+                : (mpfr_inf_p (MPC_IM (x)) ? 1 : 0));
+      int yr = (mpfr_zero_p (MPC_RE (y)) || mpfr_nan_p (MPC_RE (y)) ? 0 : 1);
+      int yi = (mpfr_zero_p (MPC_IM (y)) || mpfr_nan_p (MPC_IM (y)) ? 0 : 1);
+      if (mpc_inf_p (y)) {
+         yr = mpfr_inf_p (MPC_RE (y)) ? 1 : 0;
+         yi = mpfr_inf_p (MPC_IM (y)) ? 1 : 0;
+      }
 
-      x = urs * ur * vrs * vr - uis * ui * vis * vi;
-      y = urs * ur * vis * vi + uis * ui * vrs * vr;
-    }
+      u = xrs * xr * yrs * yr - xis * xi * yis * yi;
+      v = xrs * xr * yis * yi + xis * xi * yrs * yr;
+   }
 
-  if (x == 0)
-    mpfr_set_nan (MPC_RE (a));
-  else
-    mpfr_set_inf (MPC_RE (a), x);
+   if (u == 0)
+      mpfr_set_nan (MPC_RE (z));
+   else
+      mpfr_set_inf (MPC_RE (z), u);
 
-  if (y == 0)
-    mpfr_set_nan (MPC_IM (a));
-  else
-    mpfr_set_inf (MPC_IM (a), y);
+   if (v == 0)
+      mpfr_set_nan (MPC_IM (z));
+   else
+      mpfr_set_inf (MPC_IM (z), v);
 
-  return MPC_INEX (0, 0); /* exact */
+   return MPC_INEX (0, 0); /* exact */
 }
+
 
 /* compute z = x*y for Im(y) == 0 */
 static int
