@@ -2,8 +2,8 @@ Recent changes:
   - Bug fixes:
     - mul now returns correct results even if there are over- or underflows
       during the computation
-    - proj: wrong result when input variable has infinite part and equals
-      output variable
+    - asin, proj: wrong result when input variable has infinite part and
+      equals output variable
 
 Changes in version 0.9:
   - New functions:

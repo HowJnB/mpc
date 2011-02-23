@@ -1,6 +1,6 @@
 /* mpc_asin -- arcsine of a complex number.
 
-Copyright (C) INRIA, 2009, 2010
+Copyright (C) INRIA, 2009, 2010, 2011
 
 This file is part of the MPC Library.
 
@@ -56,21 +56,20 @@ mpc_asin (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
       int inex_re;
       if (mpfr_inf_p (MPC_RE (op)))
         {
-          inex_re = set_pi_over_2 (MPC_RE (rop), -mpfr_signbit (MPC_RE (op)),
-                                   MPC_RND_RE (rnd));
-          mpfr_set_inf (MPC_IM (rop), -mpfr_signbit (MPC_IM (op)));
+          int inf_im = mpfr_inf_p (MPC_IM (op));
 
-          if (mpfr_inf_p (MPC_IM (op)))
+          inex_re = set_pi_over_2 (MPC_RE (rop),
+             (mpfr_signbit (MPC_RE (op)) ? -1 : 1), MPC_RND_RE (rnd));
+          mpfr_set_inf (MPC_IM (rop), (mpfr_signbit (MPC_IM (op)) ? -1 : 1));
+
+          if (inf_im)
             mpfr_div_2ui (MPC_RE (rop), MPC_RE (rop), 1, GMP_RNDN);
         }
       else
         {
-          int s;
-          s = mpfr_signbit (MPC_RE (op));
-          inex_re = mpfr_set_ui (MPC_RE (rop), 0, GMP_RNDN);
-          if (s)
-            mpfr_neg (MPC_RE (rop), MPC_RE (rop), GMP_RNDN);
-          mpfr_set_inf (MPC_IM (rop), -mpfr_signbit (MPC_IM (op)));
+          mpfr_set_zero (MPC_RE (rop), (mpfr_signbit (MPC_RE (op)) ? -1 : 1));
+          inex_re = 0;
+          mpfr_set_inf (MPC_IM (rop), (mpfr_signbit (MPC_IM (op)) ? -1 : 1));
         }
 
       return MPC_INEX (inex_re, 0);
@@ -92,8 +91,8 @@ mpc_asin (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
           else
             inex_im = mpfr_acosh (MPC_IM (rop), MPC_RE (op),
                                   MPC_RND_IM (rnd));
-          inex_re = set_pi_over_2 (MPC_RE (rop), -mpfr_signbit (MPC_RE (op)),
-                                   MPC_RND_RE (rnd));
+          inex_re = set_pi_over_2 (MPC_RE (rop),
+             (mpfr_signbit (MPC_RE (op)) ? -1 : 1), MPC_RND_RE (rnd));
           if (s_im)
             mpc_conj (rop, rop, MPC_RNDNN);
         }
@@ -109,8 +108,8 @@ mpc_asin (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
           else
             inex_im = mpfr_acosh (MPC_IM (rop), minus_op_re,
                                   MPC_RND_IM (rnd));
-          inex_re = set_pi_over_2 (MPC_RE (rop), -mpfr_signbit (MPC_RE (op)),
-                                   MPC_RND_RE (rnd));
+          inex_re = set_pi_over_2 (MPC_RE (rop),
+             (mpfr_signbit (MPC_RE (op)) ? -1 : 1), MPC_RND_RE (rnd));
           if (s_im)
             mpc_conj (rop, rop, MPC_RNDNN);
         }
