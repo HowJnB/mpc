@@ -232,12 +232,13 @@ mpfr_fmam (mpfr_ptr z, mpfr_srcptr a, mpfr_srcptr b, mpfr_srcptr c,
 
       /* recompute u and v and move exponents to eu and ev */
       mpfr_mul (u, a, b, GMP_RNDN);
-      mpz_add_si (eu, eu, (long int) mpfr_get_exp (u));
+      /* exponent of u is non-positive */
+      mpz_sub_ui (eu, eu, (unsigned long int) (-mpfr_get_exp (u)));
       mpfr_set_exp (u, (mpfr_prec_t) 0);
       mpfr_mul (v, c, d, GMP_RNDN);
       if (sign < 0)
          mpfr_neg (v, v, GMP_RNDN);
-      mpz_add_si (ev, ev, (long int) mpfr_get_exp (v));
+      mpz_sub_ui (ev, ev, (unsigned long int) (-mpfr_get_exp (v)));
       mpfr_set_exp (v, (mpfr_prec_t) 0);
 
       if (mpfr_nan_p (z)) {
