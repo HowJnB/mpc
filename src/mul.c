@@ -182,9 +182,8 @@ mpfr_fmam (mpfr_ptr z, mpfr_srcptr a, mpfr_srcptr b, mpfr_srcptr c,
       multiplication yielding 0 is an underflow.
       Assumes further that z is distinct from a, b, c, d. */
 
-   int inex, signu, signv;
+   int inex;
    mpfr_t u, v;
-   mpfr_exp_t emax = mpfr_get_emax ();
 
    /* u=a*b, v=sign*c*d exactly */
    mpfr_init2 (u, mpfr_get_prec (a) + mpfr_get_prec (b));
@@ -194,10 +193,6 @@ mpfr_fmam (mpfr_ptr z, mpfr_srcptr a, mpfr_srcptr b, mpfr_srcptr c,
    if (sign < 0)
       mpfr_neg (v, v, GMP_RNDN);
 
-   /* extract signs of u and v for later use */
-   signu = (mpfr_signbit (u) ? -1 : 1);
-   signv = (mpfr_signbit (v) ? -1 : 1);
-
    /* tentatively compute z as u+v; here we need z to be distinct
       from a, b, c, d to not lose the latter */
    inex = mpfr_add (z, u, v, rnd);
@@ -205,14 +200,12 @@ mpfr_fmam (mpfr_ptr z, mpfr_srcptr a, mpfr_srcptr b, mpfr_srcptr c,
    if (mpfr_inf_p (z)) {
       /* replace by "correctly rounded overflow" */
       mpfr_set_si (z, (mpfr_signbit (z) ? -1 : 1), GMP_RNDN);
-      inex = mpfr_mul_2ui (z, z, emax, rnd);
+      inex = mpfr_mul_2ui (z, z, mpfr_get_emax (), rnd);
    }
    else if (mpfr_nan_p (z) || (mpfr_zero_p (u) && mpfr_zero_p (v))) {
       /* In the first case, u and v are infinities with opposite signs.
-         In the second case, u and v are zeroes. If they have opposite
-         signs, the result is zero, but we need to determine its sign.
-         If they have the same signs, the result may be the least
-         representable number.
+         In the second case, u and v are zeroes; their sum may be 0 or the
+         least representable number, with a sign to be determined.
          Redo the computations with mpz_t exponents */
       mpfr_exp_t ea, eb, ec, ed;
       mpz_t eu, ev;
@@ -248,6 +241,7 @@ mpfr_fmam (mpfr_ptr z, mpfr_srcptr a, mpfr_srcptr b, mpfr_srcptr c,
       mpfr_set_exp (v, (mpfr_prec_t) 0);
 
       if (mpfr_nan_p (z)) {
+         mpfr_exp_t emax = mpfr_get_emax ();
          int overflow;
          /* We have a = ma * 2^ea with 1/2 <= |ma| < 1 and ea <= emax, and
             analogously for b. So eu <= 2*emax, and eu > emax since we have
@@ -276,7 +270,8 @@ mpfr_fmam (mpfr_ptr z, mpfr_srcptr a, mpfr_srcptr b, mpfr_srcptr c,
          if (overflow)
             inex = overflow;
       }
-      else if (signu == signv) {
+      else {
+         int underflow;
          /* Addition of two zeroes with same sign. We have a = ma * 2^ea
             with 1/2 <= |ma| < 1 and ea >= emin and similarly for b.
             So 2*emin < 2*emin+1 <= eu < emin < 0, and analogously for v. */
@@ -296,32 +291,9 @@ mpfr_fmam (mpfr_ptr z, mpfr_srcptr a, mpfr_srcptr b, mpfr_srcptr c,
          }
          inex = mpfr_add (z, u, v, rnd);
          mpz_neg (eu, eu);
-         mpfr_div_2ui (z, z, mpz_get_ui (eu), GMP_RNDN);
-         if (mpfr_zero_p (z))
-            inex = (mpfr_signbit (z) ? +1 : -1);
-      }
-      else {
-         /* z is already computed as 0, determine sign */
-         if (mpz_cmp (eu, ev) > 0) {
-            mpfr_set_zero (z, signu);
-            inex = -signu;
-         }
-         else if (mpz_cmp (eu, ev) < 0) {
-            mpfr_set_zero (z, signv);
-            inex = -signv;
-         }
-         else /* both exponents are equal */ if (mpfr_cmpabs (u, v) > 0) {
-            mpfr_set_zero (z, signu);
-            inex = -signu;
-         }
-         else if (mpfr_cmpabs (u, v) < 0) {
-            mpfr_set_zero (z, signv);
-            inex = -signv;
-         }
-         else {
-            mpfr_set_zero (z, +1);
-            inex = 0;
-         }
+         underflow = mpfr_div_2ui (z, z, mpz_get_ui (eu), rnd);
+         if (underflow)
+            inex = underflow;
       }
 
       mpz_clear (eu);
