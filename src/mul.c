@@ -184,6 +184,7 @@ mpfr_fmam (mpfr_ptr z, mpfr_srcptr a, mpfr_srcptr b, mpfr_srcptr c,
 
    int inex, signu, signv;
    mpfr_t u, v;
+   mpfr_exp_t emax = mpfr_get_emax ();
 
    /* u=a*b, v=sign*c*d exactly */
    mpfr_init2 (u, mpfr_get_prec (a) + mpfr_get_prec (b));
@@ -200,10 +201,13 @@ mpfr_fmam (mpfr_ptr z, mpfr_srcptr a, mpfr_srcptr b, mpfr_srcptr c,
    /* tentatively compute z as u+v; here we need z to be distinct
       from a, b, c, d to not lose the latter */
    inex = mpfr_add (z, u, v, rnd);
-   if (mpfr_inf_p (z))
-      inex = (mpfr_signbit (z) ? -1 : 1);
 
-   if (mpfr_nan_p (z) || (mpfr_zero_p (u) && mpfr_zero_p (v))) {
+   if (mpfr_inf_p (z)) {
+      /* replace by "correctly rounded overflow" */
+      mpfr_set_si (z, (mpfr_signbit (z) ? -1 : 1), GMP_RNDN);
+      inex = mpfr_mul_2ui (z, z, emax, rnd);
+   }
+   else if (mpfr_nan_p (z) || (mpfr_zero_p (u) && mpfr_zero_p (v))) {
       /* In the first case, u and v are infinities with opposite signs.
          In the second case, u and v are zeroes. If they have opposite
          signs, the result is zero, but we need to determine its sign.
@@ -244,13 +248,13 @@ mpfr_fmam (mpfr_ptr z, mpfr_srcptr a, mpfr_srcptr b, mpfr_srcptr c,
       mpfr_set_exp (v, (mpfr_prec_t) 0);
 
       if (mpfr_nan_p (z)) {
+         int overflow;
          /* We have a = ma * 2^ea with 1/2 <= |ma| < 1 and ea <= emax, and
             analogously for b. So eu <= 2*emax, and eu > emax since we have
             an overflow. The same holds for ev. Shift u and v by as much as
             possible so that one of them has exponent emax and the
             remaining exponents in eu and ev are the same. Then carry out
             the addition. Shifting u and v prevents an underflow. */
-         mpfr_exp_t emax = mpfr_get_emax ();
          if (mpz_cmp (eu, ev) >= 0) {
             mpfr_set_exp (u, emax);
             mpz_sub_ui (eu, eu, (long int) emax);
@@ -268,9 +272,9 @@ mpfr_fmam (mpfr_ptr z, mpfr_srcptr a, mpfr_srcptr b, mpfr_srcptr c,
          }
          inex = mpfr_add (z, u, v, rnd);
             /* Result is finite since u and v have different signs. */
-         mpfr_mul_2ui (z, z, mpz_get_ui (eu), GMP_RNDN);
-         if (mpfr_inf_p (z))
-            inex = (mpfr_signbit (z) ? -1 : +1);
+         overflow = mpfr_mul_2ui (z, z, mpz_get_ui (eu), rnd);
+         if (overflow)
+            inex = overflow;
       }
       else if (signu == signv) {
          /* Addition of two zeroes with same sign. We have a = ma * 2^ea
