@@ -84,7 +84,13 @@ MA 02111-1307, USA. */
 #else
 #define ROUND_AWAY(f,rop) \
    (f)
-#endif
+#endif /* mpfr < 3 */
+
+#if MPFR_VERSION_MAJOR < 3
+/* declare missing functions, defined in get_version.c */
+__MPC_DECLSPEC void mpfr_set_zero __MPC_PROTO ((mpfr_ptr, int));
+__MPC_DECLSPEC int mpfr_regular_p __MPC_PROTO ((mpfr_srcptr));
+#endif /* mpfr < 3 */
 
 
 /*

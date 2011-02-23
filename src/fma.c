@@ -25,11 +25,9 @@ MA 02111-1307, USA. */
 static mpfr_prec_t
 bound_prec_addsub (mpfr_srcptr x, mpfr_srcptr y)
 {
-  if (!mpfr_number_p (x) || mpfr_zero_p (x))
-    /* FIXME: With mpfr-3, this and the following test may be replaced by
-       if (!mpfr_regular_p (x)) */
+  if (!mpfr_regular_p (x))
     return mpfr_get_prec (y);
-  else if (!mpfr_number_p (y) || mpfr_zero_p (y))
+  else if (!mpfr_regular_p (y))
     return mpfr_get_prec (x);
   else /* neither x nor y are NaN, Inf or zero */
     {
