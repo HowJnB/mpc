@@ -42,26 +42,26 @@ mpc_sqr (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
       }
       else if (mpfr_inf_p (MPC_RE (op))) {
          if (mpfr_inf_p (MPC_IM (op))) {
-            mpfr_set_nan (MPC_RE (rop));
             mpfr_set_inf (MPC_IM (rop),
                           MPFR_SIGN (MPC_RE (op)) * MPFR_SIGN (MPC_IM (op)));
+            mpfr_set_nan (MPC_RE (rop));
          }
          else {
-            mpfr_set_inf (MPC_RE (rop), +1);
             if (mpfr_zero_p (MPC_IM (op)))
                mpfr_set_nan (MPC_IM (rop));
             else
                mpfr_set_inf (MPC_IM (rop),
                              MPFR_SIGN (MPC_RE (op)) * MPFR_SIGN (MPC_IM (op)));
+            mpfr_set_inf (MPC_RE (rop), +1);
          }
       }
       else /* IM(op) is infinity, RE(op) is not */ {
-         mpfr_set_inf (MPC_RE (rop), -1);
          if (mpfr_zero_p (MPC_RE (op)))
             mpfr_set_nan (MPC_IM (rop));
          else
             mpfr_set_inf (MPC_IM (rop),
                           MPFR_SIGN (MPC_RE (op)) * MPFR_SIGN (MPC_IM (op)));
+         mpfr_set_inf (MPC_RE (rop), -1);
       }
       return MPC_INEX (0, 0); /* exact */
    }
