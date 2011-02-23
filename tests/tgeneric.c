@@ -520,7 +520,7 @@ reuse_cc (mpc_function* function, mpc_srcptr z, mpc_ptr got, mpc_ptr expected)
   function->pointer.CC (got, got, MPC_RNDNN);
   if (!same_mpc_value (got, expected, ks))
     {
-      printf ("Error for %s(z, z) for\n", function->name);
+      printf ("Reuse error for %s(z, z) for\n", function->name);
       MPC_OUT (z);
       MPC_OUT (expected);
       MPC_OUT (got);
@@ -572,7 +572,7 @@ reuse_fc (mpc_function* function, mpc_ptr z, mpc_ptr x, mpfr_ptr expected)
     {
       mpfr_t got;
       got[0] = MPC_RE(x)[0]; /* display sensible name */
-      printf ("Error for %s(MPC_RE(z), z) for\n", function->name);
+      printf ("Reuse error for %s(MPC_RE(z), z) for\n", function->name);
       MPC_OUT (z);
       MPFR_OUT (expected);
       MPFR_OUT (got);
@@ -585,7 +585,7 @@ reuse_fc (mpc_function* function, mpc_ptr z, mpc_ptr x, mpfr_ptr expected)
     {
       mpfr_t got;
       got[0] = MPC_IM(x)[0]; /* display sensible name */
-      printf ("Error for %s(MPC_IM(z), z) for \n", function->name);
+      printf ("Reuse error for %s(MPC_IM(z), z) for \n", function->name);
       MPC_OUT (z);
       MPFR_OUT (expected);
       MPFR_OUT (got);
@@ -605,7 +605,7 @@ reuse_cfc (mpc_function* function, mpc_srcptr z, mpfr_srcptr x, mpc_ptr got,
   function->pointer.CFC (got, x, got, MPC_RNDNN);
   if (!same_mpc_value (got, expected, ks))
     {
-      printf ("Error for %s(z, x, z) for\n", function->name);
+      printf ("Reuse error for %s(z, x, z) for\n", function->name);
       MPFR_OUT (x);
       MPC_OUT (z);
       MPC_OUT (expected);
@@ -626,7 +626,7 @@ reuse_ccf (mpc_function* function, mpc_srcptr z, mpfr_srcptr x, mpc_ptr got,
   function->pointer.CCF (got, got, x, MPC_RNDNN);
   if (!same_mpc_value (got, expected, ks))
     {
-      printf ("Error for %s(z, z, x) for\n", function->name);
+      printf ("Reuse error for %s(z, z, x) for\n", function->name);
       MPC_OUT (z);
       MPFR_OUT (x);
       MPC_OUT (expected);
@@ -648,7 +648,7 @@ reuse_c_cc (mpc_function* function, mpc_srcptr z, mpc_srcptr x,
   function->pointer.C_CC (got, got, x, MPC_RNDNN);
   if (!same_mpc_value (got, expected, ks))
     {
-      printf ("Error for %s(z, z, x) for\n", function->name);
+      printf ("Reuse error for %s(z, z, x) for\n", function->name);
       MPC_OUT (z);
       MPC_OUT (x);
       MPC_OUT (expected);
@@ -661,7 +661,7 @@ reuse_c_cc (mpc_function* function, mpc_srcptr z, mpc_srcptr x,
   function->pointer.C_CC (got, z, got, MPC_RNDNN);
   if (!same_mpc_value (got, expected, ks))
     {
-      printf ("Error for %s(x, z, x) for\n", function->name);
+      printf ("Reuse error for %s(x, z, x) for\n", function->name);
       MPC_OUT (z);
       MPC_OUT (x);
       MPC_OUT (expected);
@@ -674,7 +674,7 @@ reuse_c_cc (mpc_function* function, mpc_srcptr z, mpc_srcptr x,
   function->pointer.C_CC (got, got, got, MPC_RNDNN);
   if (!same_mpc_value (got, expected, ks))
     {
-      printf ("Error for %s(x, x, x) for\n", function->name);
+      printf ("Reuse error for %s(x, x, x) for\n", function->name);
       MPC_OUT (x);
       MPC_OUT (expected);
       MPC_OUT (got);
@@ -694,7 +694,7 @@ reuse_cccc (mpc_function* function, mpc_srcptr z, mpc_srcptr x, mpc_srcptr y,
   function->pointer.CCCC (got, got, x, y, MPC_RNDNN);
   if (!same_mpc_value (got, expected, ks))
     {
-      printf ("Error for %s(z, z, x, y) for\n", function->name);
+      printf ("Reuse error for %s(z, z, x, y) for\n", function->name);
       MPC_OUT (z);
       MPC_OUT (x);
       MPC_OUT (y);
@@ -709,7 +709,7 @@ reuse_cccc (mpc_function* function, mpc_srcptr z, mpc_srcptr x, mpc_srcptr y,
   function->pointer.CCCC (got, z, got, y, MPC_RNDNN);
   if (!same_mpc_value (got, expected, ks))
     {
-      printf ("Error for %s(x, z, x, y) for\n", function->name);
+      printf ("Reuse error for %s(x, z, x, y) for\n", function->name);
       MPC_OUT (z);
       MPC_OUT (x);
       MPC_OUT (y);
@@ -724,7 +724,7 @@ reuse_cccc (mpc_function* function, mpc_srcptr z, mpc_srcptr x, mpc_srcptr y,
   function->pointer.CCCC (got, z, x, got, MPC_RNDNN);
   if (!same_mpc_value (got, expected, ks))
     {
-      printf ("Error for %s(y, z, x, y) for\n", function->name);
+      printf ("Reuse error for %s(y, z, x, y) for\n", function->name);
       MPC_OUT (z);
       MPC_OUT (x);
       MPC_OUT (y);
@@ -739,7 +739,7 @@ reuse_cccc (mpc_function* function, mpc_srcptr z, mpc_srcptr x, mpc_srcptr y,
   function->pointer.CCCC (got, got, got, got, MPC_RNDNN);
   if (!same_mpc_value (got, expected, ks))
     {
-      printf ("Error for %s(x, x, x, x) for\n", function->name);
+      printf ("Reuse error for %s(x, x, x, x) for\n", function->name);
       MPC_OUT (x);
       MPC_OUT (expected);
       MPC_OUT (got);
@@ -759,7 +759,7 @@ reuse_ccu (mpc_function* function, mpc_srcptr z, unsigned long ul,
   function->pointer.CCU (got, got, ul, MPC_RNDNN);
   if (!same_mpc_value (got, expected, ks))
     {
-      printf ("Error for %s(z, z, n) for\n", function->name);
+      printf ("Reuse error for %s(z, z, n) for\n", function->name);
       MPC_OUT (z);
       printf ("n=%lu\n", ul);
       MPC_OUT (expected);
@@ -780,7 +780,7 @@ reuse_cuc (mpc_function* function, unsigned long ul, mpc_srcptr z,
   function->pointer.CUC (got, ul, got, MPC_RNDNN);
   if (!same_mpc_value (got, expected, ks))
     {
-      printf ("Error for %s(z, n, z) for\n", function->name);
+      printf ("Reuse error for %s(z, n, z) for\n", function->name);
       printf ("n=%lu\n", ul);
       MPC_OUT (z);
       MPC_OUT (expected);
@@ -801,7 +801,7 @@ reuse_ccs (mpc_function* function, mpc_srcptr z, long lo,
   function->pointer.CCS (got, got, lo, MPC_RNDNN);
   if (!same_mpc_value (got, expected, ks))
     {
-      printf ("Error for %s(z, z, n) for\n", function->name);
+      printf ("Reuse error for %s(z, z, n) for\n", function->name);
       MPC_OUT (z);
       printf ("n=%ld\n", lo);
       MPC_OUT (expected);
@@ -822,7 +822,7 @@ reuse_cci (mpc_function* function, mpc_srcptr z, int i,
   function->pointer.CCI (got, got, i, MPC_RNDNN);
   if (!same_mpc_value (got, expected, ks))
     {
-      printf ("Error for %s(z, z, n) for\n", function->name);
+      printf ("Reuse error for %s(z, z, n) for\n", function->name);
       MPC_OUT (z);
       printf ("n=%d\n", i);
       MPC_OUT (expected);
@@ -843,7 +843,7 @@ reuse_cuuc (mpc_function* function, unsigned long ul1, unsigned long ul2,
   function->pointer.CUUC (got, ul1, ul2, got, MPC_RNDNN);
   if (!same_mpc_value (got, expected, ks))
     {
-      printf ("Error for %s(z, m, n, z) for\n", function->name);
+      printf ("Reuse error for %s(z, m, n, z) for\n", function->name);
       printf ("m=%lu\n", ul1);
       printf ("n=%lu\n", ul2);
       MPC_OUT (z);
@@ -927,7 +927,7 @@ tgeneric (mpc_function function, mpfr_prec_t prec_min,
       mpc_init2 (z3, prec_max);
       mpc_init2 (z4, prec_max);
       mpc_init2 (zzzz, 4*prec_max);
-      special_cases = 4;
+      special_cases = 8;
       break;
     case CCCC:
       mpc_init2 (z2, prec_max);
@@ -935,34 +935,34 @@ tgeneric (mpc_function function, mpfr_prec_t prec_min,
       mpc_init2 (z4, prec_max);
       mpc_init2 (z5, prec_max);
       mpc_init2 (zzzz, 4*prec_max);
-      special_cases = 4;
+      special_cases = 8;
       break;
     case FC:
       mpfr_init2 (x1, prec_max);
       mpfr_init2 (x2, prec_max);
       mpfr_init2 (xxxx, 4*prec_max);
       mpc_init2 (z2, prec_max);
-      special_cases = 2;
+      special_cases = 4;
       break;
     case CCF: case CFC:
       mpfr_init2 (x1, prec_max);
       mpc_init2 (z2, prec_max);
       mpc_init2 (z3, prec_max);
       mpc_init2 (zzzz, 4*prec_max);
-      special_cases = 3;
+      special_cases = 6;
       break;
     case CCI: case CCS:
     case CCU: case CUC:
       mpc_init2 (z2, prec_max);
       mpc_init2 (z3, prec_max);
       mpc_init2 (zzzz, 4*prec_max);
-      special_cases = 3;
+      special_cases = 5;
       break;
     case CUUC:
       mpc_init2 (z2, prec_max);
       mpc_init2 (z3, prec_max);
       mpc_init2 (zzzz, 4*prec_max);
-      special_cases = 2;
+      special_cases = 6;
       break;
     case CC_C:
       mpc_init2 (z2, prec_max);
@@ -971,14 +971,14 @@ tgeneric (mpc_function function, mpfr_prec_t prec_min,
       mpc_init2 (z5, prec_max);
       mpc_init2 (zzzz, 4*prec_max);
       mpc_init2 (zzzz2, 4*prec_max);
-      special_cases = 2;
+      special_cases = 4;
       break;
     case CC:
     default:
       mpc_init2 (z2, prec_max);
       mpc_init2 (z3, prec_max);
       mpc_init2 (zzzz, 4*prec_max);
-      special_cases = 2;
+      special_cases = 4;
     }
 
   exp_min = mpfr_get_emin ();
@@ -992,10 +992,9 @@ tgeneric (mpc_function function, mpfr_prec_t prec_min,
 
   for (prec = prec_min, special = 0;
        prec <= prec_max || special <= special_cases;
-       prec+=step, special += (prec > prec_max ? 1 : 0))
-       /* In the end, test functions in special cases of purely real and
-          purely imaginary arguments */
-    {
+       prec+=step, special += (prec > prec_max ? 1 : 0)) {
+       /* In the end, test functions in special cases of purely real, purely
+          imaginary or infinite arguments. */
 
       /* probability of one zero part in 256th (25 is almost 10%) */
       const unsigned int zero_probability = special != 0 ? 0 : 25;
@@ -1017,13 +1016,25 @@ tgeneric (mpc_function function, mpfr_prec_t prec_min,
               mpfr_set_ui (MPC_RE (z1), 0, GMP_RNDN);
               break;
             case 2:
-              mpfr_set_ui (MPC_IM (z1), 0, GMP_RNDN);
+              mpfr_set_inf (MPC_RE (z1), +1);
               break;
             case 3:
-              mpfr_set_ui (MPC_RE (z2), 0, GMP_RNDN);
+              mpfr_set_ui (MPC_IM (z1), 0, GMP_RNDN);
               break;
             case 4:
+              mpfr_set_inf (MPC_IM (z1), -1);
+              break;
+            case 5:
+              mpfr_set_ui (MPC_RE (z2), 0, GMP_RNDN);
+              break;
+            case 6:
+              mpfr_set_inf (MPC_RE (z2), -1);
+              break;
+            case 7:
               mpfr_set_ui (MPC_IM (z2), 0, GMP_RNDN);
+              break;
+            case 8:
+              mpfr_set_inf (MPC_IM (z2), +1);
               break;
             }
           break;
@@ -1040,13 +1051,25 @@ tgeneric (mpc_function function, mpfr_prec_t prec_min,
               mpfr_set_ui (MPC_RE (z1), 0, GMP_RNDN);
               break;
             case 2:
-              mpfr_set_ui (MPC_IM (z1), 0, GMP_RNDN);
+              mpfr_set_inf (MPC_RE (z1), +1);
               break;
             case 3:
-              mpfr_set_ui (MPC_RE (z2), 0, GMP_RNDN);
+              mpfr_set_ui (MPC_IM (z1), 0, GMP_RNDN);
               break;
             case 4:
+              mpfr_set_inf (MPC_IM (z1), -1);
+              break;
+            case 5:
+              mpfr_set_ui (MPC_RE (z2), 0, GMP_RNDN);
+              break;
+            case 6:
+              mpfr_set_inf (MPC_RE (z2), -1);
+              break;
+            case 7:
               mpfr_set_ui (MPC_IM (z2), 0, GMP_RNDN);
+              break;
+            case 8:
+              mpfr_set_inf (MPC_IM (z2), +1);
               break;
             }
           break;
@@ -1061,7 +1084,13 @@ tgeneric (mpc_function function, mpfr_prec_t prec_min,
               mpfr_set_ui (MPC_RE (z1), 0, GMP_RNDN);
               break;
             case 2:
+              mpfr_set_inf (MPC_RE (z1), +1);
+              break;
+            case 3:
               mpfr_set_ui (MPC_IM (z1), 0, GMP_RNDN);
+              break;
+            case 4:
+              mpfr_set_inf (MPC_IM (z1), -1);
               break;
             }
           break;
@@ -1080,9 +1109,15 @@ tgeneric (mpc_function function, mpfr_prec_t prec_min,
               mpfr_set_ui (MPC_RE (z1), 0, GMP_RNDN);
               break;
             case 2:
-              mpfr_set_ui (MPC_IM (z1), 0, GMP_RNDN);
+              mpfr_set_inf (MPC_RE (z1), +1);
               break;
             case 3:
+              mpfr_set_ui (MPC_IM (z1), 0, GMP_RNDN);
+              break;
+            case 4:
+              mpfr_set_inf (MPC_IM (z1), -1);
+              break;
+            case 5:
               ul1 = 0;
               break;
             }
@@ -1104,12 +1139,18 @@ tgeneric (mpc_function function, mpfr_prec_t prec_min,
               mpfr_set_ui (MPC_RE (z1), 0, GMP_RNDN);
               break;
             case 2:
-              mpfr_set_ui (MPC_IM (z1), 0, GMP_RNDN);
+              mpfr_set_inf (MPC_RE (z1), +1);
               break;
             case 3:
-              ul1 = 0;
+              mpfr_set_ui (MPC_IM (z1), 0, GMP_RNDN);
               break;
             case 4:
+              mpfr_set_inf (MPC_IM (z1), -1);
+              break;
+            case 5:
+              ul1 = 0;
+              break;
+            case 6:
               ul2 = 0;
               break;
             }
@@ -1129,9 +1170,15 @@ tgeneric (mpc_function function, mpfr_prec_t prec_min,
               mpfr_set_ui (MPC_RE (z1), 0, GMP_RNDN);
               break;
             case 2:
-              mpfr_set_ui (MPC_IM (z1), 0, GMP_RNDN);
+              mpfr_set_inf (MPC_RE (z1), +1);
               break;
             case 3:
+              mpfr_set_ui (MPC_IM (z1), 0, GMP_RNDN);
+              break;
+            case 4:
+              mpfr_set_inf (MPC_IM (z1), -1);
+              break;
+            case 5:
               lo = 0;
               break;
             }
@@ -1151,9 +1198,15 @@ tgeneric (mpc_function function, mpfr_prec_t prec_min,
               mpfr_set_ui (MPC_RE (z1), 0, GMP_RNDN);
               break;
             case 2:
-              mpfr_set_ui (MPC_IM (z1), 0, GMP_RNDN);
+              mpfr_set_inf (MPC_RE (z1), +1);
               break;
             case 3:
+              mpfr_set_ui (MPC_IM (z1), 0, GMP_RNDN);
+              break;
+            case 4:
+              mpfr_set_inf (MPC_IM (z1), -1);
+              break;
+            case 5:
               i = 0;
               break;
             }
@@ -1171,10 +1224,19 @@ tgeneric (mpc_function function, mpfr_prec_t prec_min,
               mpfr_set_ui (MPC_RE (z1), 0, GMP_RNDN);
               break;
             case 2:
-              mpfr_set_ui (MPC_IM (z1), 0, GMP_RNDN);
+              mpfr_set_inf (MPC_RE (z1), +1);
               break;
             case 3:
+              mpfr_set_ui (MPC_IM (z1), 0, GMP_RNDN);
+              break;
+            case 4:
+              mpfr_set_inf (MPC_IM (z1), -1);
+              break;
+            case 5:
               mpfr_set_ui (x1, 0, GMP_RNDN);
+              break;
+            case 6:
+              mpfr_set_inf (x1, +1);
               break;
             }
           break;
@@ -1191,7 +1253,13 @@ tgeneric (mpc_function function, mpfr_prec_t prec_min,
               mpfr_set_ui (MPC_RE (z1), 0, GMP_RNDN);
               break;
             case 2:
+              mpfr_set_inf (MPC_RE (z1), +1);
+              break;
+            case 3:
               mpfr_set_ui (MPC_IM (z1), 0, GMP_RNDN);
+              break;
+            case 4:
+              mpfr_set_inf (MPC_IM (z1), -1);
               break;
             }
           break;
@@ -1206,7 +1274,13 @@ tgeneric (mpc_function function, mpfr_prec_t prec_min,
               mpfr_set_ui (MPC_RE (z1), 0, GMP_RNDN);
               break;
             case 2:
+              mpfr_set_inf (MPC_RE (z1), +1);
+              break;
+            case 3:
               mpfr_set_ui (MPC_IM (z1), 0, GMP_RNDN);
+              break;
+            case 4:
+              mpfr_set_inf (MPC_IM (z1), -1);
               break;
             }
         }
