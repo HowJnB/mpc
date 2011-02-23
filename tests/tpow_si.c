@@ -1,6 +1,6 @@
 /* test file for mpc_pow_si.
 
-Copyright (C) INRIA, 2009, 2010
+Copyright (C) INRIA, 2009, 2010, 2011
 
 This file is part of the MPC Library.
 
@@ -81,7 +81,9 @@ compare_mpc_pow (mpfr_prec_t pmax, int iter, unsigned long nbits)
 int
 main (void)
 {
+  DECL_FUNC (CCS, f, mpc_pow_si);
   test_start ();
+  data_check (f, "pow_si.dat");
 
   compare_mpc_pow (100, 5, 19);
 
