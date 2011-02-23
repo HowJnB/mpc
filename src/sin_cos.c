@@ -238,7 +238,7 @@ mpc_sin_cos_real (mpc_ptr rop_sin, mpc_ptr rop_cos, mpc_srcptr op,
 static int
 mpc_sin_cos_imag (mpc_ptr rop_sin, mpc_ptr rop_cos, mpc_srcptr op,
    mpc_rnd_t rnd_sin, mpc_rnd_t rnd_cos)
-   /* assumes that op is purely imaginary */
+   /* assumes that op is purely imaginary, but not zero */
 {
    int inex_sin_im = 0, inex_cos_re = 0;
       /* assume exact if not computed */
@@ -262,12 +262,8 @@ mpc_sin_cos_imag (mpc_ptr rop_sin, mpc_ptr rop_cos, mpc_srcptr op,
    if (rop_cos != NULL) {
       /* cos(-0 - i * y) = cos(+0 + i * y) = cosh(y) - i * 0,
          cos(-0 + i * y) = cos(+0 - i * y) = cosh(y) + i * 0,
-         where y >= 0 */
-
-      if (mpfr_zero_p (MPC_IM (op_loc)))
-        inex_cos_re = mpfr_set_ui (MPC_RE (rop_cos), 1ul, MPC_RND_RE (rnd_cos));
-      else
-        inex_cos_re = mpfr_cosh (MPC_RE (rop_cos), MPC_IM (op_loc), MPC_RND_RE (rnd_cos));
+         where y > 0 */
+      inex_cos_re = mpfr_cosh (MPC_RE (rop_cos), MPC_IM (op_loc), MPC_RND_RE (rnd_cos));
 
       mpfr_set_ui (MPC_IM (rop_cos), 0ul, MPC_RND_IM (rnd_cos));
       if (mpfr_signbit (MPC_RE (op_loc)) ==  mpfr_signbit (MPC_IM (op_loc)))
