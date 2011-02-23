@@ -306,11 +306,11 @@ mpfr_fmam (mpfr_ptr z, mpfr_srcptr a, mpfr_srcptr b, mpfr_srcptr c,
             mpfr_set_zero (z, signv);
             inex = -signv;
          }
-         else /* both exponents are equal */ if (mpfr_cmp (u, v) > 0) {
+         else /* both exponents are equal */ if (mpfr_cmpabs (u, v) > 0) {
             mpfr_set_zero (z, signu);
             inex = -signu;
          }
-         else if (mpfr_cmp (u, v) < 0) {
+         else if (mpfr_cmpabs (u, v) < 0) {
             mpfr_set_zero (z, signv);
             inex = -signv;
          }
