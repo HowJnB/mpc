@@ -117,6 +117,7 @@ do {                                                            \
   mpc_out_str (stdout, 2, 0, x, MPC_RNDNN);                     \
   printf ("\n");                                                \
 } while (0)
+
 #define MPFR_OUT(x)                                             \
 do {                                                            \
   printf (#x "[%lu]=", (unsigned long int) mpfr_get_prec (x));  \

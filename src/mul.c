@@ -19,6 +19,7 @@ along with the MPC Library; see the file COPYING.LIB.  If not, write to
 the Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston,
 MA 02111-1307, USA. */
 
+#include <stdio.h>    /* for MPC_ASSERT */
 #include "mpc-impl.h"
 
 #define mpz_add_si(z,x,y) do { \
@@ -344,6 +345,8 @@ mpc_mul_naive (mpc_ptr z, mpc_srcptr x, mpc_srcptr y, mpc_rnd_t rnd)
    int overlap, inex;
    mpc_t rop;
 
+   MPC_ASSERT (   mpfr_regular_p (MPC_RE (x)) && mpfr_regular_p (MPC_IM (x))
+               && mpfr_regular_p (MPC_RE (y)) && mpfr_regular_p (MPC_IM (y)));
    overlap = (z == x) || (z == y);
    if (overlap)
       mpc_init3 (rop, MPC_PREC_RE (z), MPC_PREC_IM (z));

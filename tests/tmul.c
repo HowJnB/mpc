@@ -45,11 +45,11 @@ cmpmul (mpc_srcptr x, mpc_srcptr y, mpc_rnd_t rnd)
 
   if (mpc_cmp (z, t))
     {
-      fprintf (stderr, "mul and mul2 differ for rnd=(%s,%s) \nx=",
+      fprintf (stderr, "mul and mul2 differ for rnd=(%s,%s)\nx=",
                mpfr_print_rnd_mode(MPC_RND_RE(rnd)),
                mpfr_print_rnd_mode(MPC_RND_IM(rnd)));
       mpc_out_str (stderr, 2, 0, x, MPC_RNDNN);
-      fprintf (stderr, "\nand y=");
+      fprintf (stderr, "\ny=");
       mpc_out_str (stderr, 2, 0, y, MPC_RNDNN);
       fprintf (stderr, "\nmpc_mul_naive     gives ");
       mpc_out_str (stderr, 2, 0, z, MPC_RNDNN);
@@ -111,10 +111,6 @@ check_regular (void)
   testmul (170, 9, 450, 251, 8, 0);
   testmul (768, 85, 169, 440, 8, 16);
   testmul (145, 1816, 848, 169, 8, 24);
-  testmul (0, 1816, 848, 169, 8, 24);
-  testmul (145, 0, 848, 169, 8, 24);
-  testmul (145, 1816, 0, 169, 8, 24);
-  testmul (145, 1816, 848, 0, 8, 24);
 
   mpc_init2 (x, 1000);
   mpc_init2 (y, 1000);
@@ -139,8 +135,8 @@ check_regular (void)
       mpc_set_prec (x, prec);
       mpc_set_prec (y, prec);
 
-      test_default_random (x, -1024, 1024, 128, 25);
-      test_default_random (y, -1024, 1024, 128, 25);
+      test_default_random (x, -1024, 1024, 128, 0);
+      test_default_random (y, -1024, 1024, 128, 0);
 
       for (rnd_re = 0; rnd_re < 4; rnd_re ++)
         for (rnd_im = 0; rnd_im < 4; rnd_im ++)
