@@ -157,16 +157,8 @@ mpc_sqr (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
           MPC_ASSERT (mpfr_get_exp (u) != emin);
           if (mpfr_inf_p (u))
             {
-              mpfr_rnd_t rnd_re = MPC_RND_RE (rnd);
-              if (rnd_re == GMP_RNDZ || rnd_re == GMP_RNDD)
-                {
-                  mpfr_set_ui_2exp (MPC_RE (rop), 1, emax, rnd_re);
-                  inex_re = -1;
-                }
-              else /* round up or away from zero */ {
-                mpfr_set_inf (MPC_RE (rop), 1);
-                inex_re = 1;
-              }
+              /* let MPC_RE(rop) be a "correctly rounded overflow" */
+              inex_re = mpfr_set_ui_2exp (MPC_RE (rop), 1, emax, MPC_RND_RE (rnd));
               break;
             }
           ok = (!inexact) | mpfr_can_round (u, prec - 3, GMP_RNDU, GMP_RNDZ,
