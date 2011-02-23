@@ -323,6 +323,30 @@ read_uint (FILE *fp, unsigned long int *ui)
   skip_whitespace_comments (fp);
 }
 
+static void
+read_sint (FILE *fp, long int *si)
+{
+  int n = 0;
+
+  if (nextchar == EOF)
+    {
+      printf ("Error: Unexpected EOF when reading sint "
+              "in file '%s' line %lu\n",
+              pathname, line_number);
+      exit (1);
+    }
+  ungetc (nextchar, fp);
+  n = fscanf (fp, "%li", si);
+  if (ferror (fp) || n == 0 || n == EOF)
+    {
+      printf ("Error: Cannot read sint in file '%s' line %lu\n",
+              pathname, line_number);
+      exit (1);
+    }
+  nextchar = getc (fp);
+  skip_whitespace_comments (fp);
+}
+
 mpfr_prec_t
 read_mpfr_prec (FILE *fp)
 {
@@ -516,6 +540,21 @@ read_ccu (FILE *fp, int *inex_re, int *inex_im, mpc_ptr expected,
   check_compatible (*inex_im, MPC_IM(expected), MPC_RND_IM(*rnd), "imag");
 }
 
+static void
+read_ccs (FILE *fp, int *inex_re, int *inex_im, mpc_ptr expected,
+          known_signs_t *signs, mpc_ptr op1, long int *op2, mpc_rnd_t *rnd)
+{
+  test_line_number = line_number;
+  read_ternary (fp, inex_re);
+  read_ternary (fp, inex_im);
+  read_mpc (fp, expected, signs);
+  read_mpc (fp, op1, NULL);
+  read_sint (fp, op2);
+  read_mpc_rounding_mode (fp, rnd);
+  check_compatible (*inex_re, MPC_RE(expected), MPC_RND_RE(*rnd), "real");
+  check_compatible (*inex_im, MPC_IM(expected), MPC_RND_IM(*rnd), "imag");
+}
+
 /* data_check (function, data_file_name) checks function results against
  precomputed data in a file.*/
 void
@@ -533,6 +572,7 @@ data_check (mpc_function function, const char *file_name)
   mpc_rnd_t rnd = MPC_RNDNN;
 
   unsigned long int ui;
+  long int si;
 
   known_signs_t signs;
   int inex = 0;
@@ -547,7 +587,7 @@ data_check (mpc_function function, const char *file_name)
       mpfr_init (x1);
       mpfr_init (x2);
       break;
-    case CC: case CCU:
+    case CC: case CCU: case CCS:
       mpc_init2 (z2, 2);
       mpc_init2 (z3, 2);
       break;
@@ -848,8 +888,37 @@ data_check (mpc_function function, const char *file_name)
             }
           break;
 
+        case CCS: /* example mpc_pow_si */
+          read_ccs (fp, &inex_re, &inex_im, z1, &signs, z2, &si, &rnd);
+          mpfr_set_prec (MPC_RE(z3), MPC_PREC_RE (z1));
+          mpfr_set_prec (MPC_IM(z3), MPC_PREC_IM (z1));
+          inex = function.pointer.CCS (z3, z2, si, rnd);
+          if (!MPC_INEX_CMP (inex_re, inex_im, inex)
+              || !same_mpc_value (z3, z1, signs))
+            {
+              /* display sensible variable names */
+              mpc_t op1, got, expected;
+              op1[0] = z2[0];
+              expected[0]= z1[0];
+              got[0] = z3[0];
+              printf ("%s(op) failed (line %lu)\nwith rounding mode %s\n",
+                      function.name, test_line_number, rnd_mode[rnd]);
+              if (!MPC_INEX_CMP (inex_re, inex_im, inex))
+                printf("ternary value: got %s, expected (%s, %s)\n",
+                       MPC_INEX_STR (inex),
+                       MPFR_INEX_STR (inex_re), MPFR_INEX_STR (inex_im));
+              MPC_OUT (op1);
+              printf ("op2 %li\n     ", si);
+              MPC_OUT (got);
+              MPC_OUT (expected);
+
+              exit (1);
+            }
+          break;
+
         default:
-          ;
+          printf ("Unhandled function prototype %i in 'data_check'\n", function.type);
+          exit (1);
         }
     }
 
@@ -861,7 +930,7 @@ data_check (mpc_function function, const char *file_name)
       mpfr_clear (x1);
       mpfr_clear (x2);
       break;
-    case CC: case CCU:
+    case CC: case CCU: case CCS:
       mpc_clear (z2);
       mpc_clear (z3);
       break;
