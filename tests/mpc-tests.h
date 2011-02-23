@@ -27,13 +27,6 @@ MA 02111-1307, USA. */
 
 #include "mpc-impl.h"
 
-/** OUTPUT HELPER MACROS */
-#define MPFR_OUT(X) \
-  printf (#X" [%ld]=", mpfr_get_prec (X));\
-  mpfr_out_str (stdout, 2, 0, (X), GMP_RNDN);\
-  printf ("\n");
-
-
 #define MPC_INEX_STR(inex)                      \
   (inex) == 0 ? "(0, 0)"                        \
     : (inex) == 1 ? "(+1, 0)"                   \
