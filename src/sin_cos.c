@@ -185,6 +185,7 @@ mpc_sin_cos_real (mpc_ptr rop_sin, mpc_ptr rop_cos, mpc_srcptr op,
          by definition, for not computed values.                         */
    mpfr_t s, c;
    int inex_s, inex_c;
+   int sign_im = mpfr_signbit (MPC_IM (op));
 
    /* sin(x +-0*i) = sin(x) +-0*i*sign(cos(x)) */
    /* cos(x +-i*0) = cos(x) -+i*0*sign(sin(x)) */
@@ -206,16 +207,16 @@ mpc_sin_cos_real (mpc_ptr rop_sin, mpc_ptr rop_cos, mpc_srcptr op,
       mpfr_set (MPC_RE (rop_sin), s, GMP_RNDN); /* exact */
       inex_sin_re = inex_s;
       mpfr_set_zero (MPC_IM (rop_sin),
-         (   ( mpfr_signbit (MPC_IM(op)) && !mpfr_signbit(c))
-            || (!mpfr_signbit (MPC_IM(op)) &&  mpfr_signbit(c)) ? -1 : 1));
+         (     ( sign_im && !mpfr_signbit(c))
+            || (!sign_im &&  mpfr_signbit(c)) ? -1 : 1));
    }
 
    if (rop_cos != NULL) {
       mpfr_set (MPC_RE (rop_cos), c, GMP_RNDN); /* exact */
       inex_cos_re = inex_c;
       mpfr_set_zero (MPC_IM (rop_cos),
-         (     ( mpfr_signbit (MPC_IM(op)) &&  mpfr_signbit(s))
-            || (!mpfr_signbit (MPC_IM(op)) && !mpfr_signbit(s)) ? -1 : 1));
+         (     ( sign_im &&  mpfr_signbit(s))
+            || (!sign_im && !mpfr_signbit(s)) ? -1 : 1));
    }
 
    mpfr_clear (s);
