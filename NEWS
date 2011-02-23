@@ -1,3 +1,8 @@
+Recent changes:
+  - Bug fix:
+    mpc_mul returns correct results even if there are over- or underflows
+    during the computation
+
 Changes in version 0.9:
   - New functions:
     - mpc_set_dc, mpc_set_ldc, mpc_get_dc, mpc_get_ldc for converting

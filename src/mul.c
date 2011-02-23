@@ -202,7 +202,7 @@ mpfr_fmam (mpfr_ptr z, mpfr_srcptr a, mpfr_srcptr b, mpfr_srcptr c,
    if (mpfr_inf_p (z))
       inex = (mpfr_signbit (z) ? -1 : 1);
 
-   if (mpfr_nan_p (z) || mpfr_zero_p (z)) {
+   if (mpfr_nan_p (z) || (mpfr_zero_p (u) && mpfr_zero_p (v))) {
       /* In the first case, u and v are infinities with opposite signs.
          In the second case, u and v are zeroes. If they have opposite
          signs, the result is zero, but we need to determine its sign.
