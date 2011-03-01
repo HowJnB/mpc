@@ -42,11 +42,6 @@ MA 02111-1307, USA. */
   MPC_VERSION_NUM(MPC_VERSION_MAJOR,MPC_VERSION_MINOR,MPC_VERSION_PATCHLEVEL)
 
 
-/* Check if complex.h is included */
-#if defined (_Complex_I)
-# define _MPC_H_HAVE_COMPLEX 1
-#endif
-
 /* Return values */
 
 /* Transform negative to 2, positive to 1, leave 0 unchanged */
@@ -189,20 +184,6 @@ __MPC_DECLSPEC int  mpc_set_z_z   __MPC_PROTO ((mpc_ptr, mpz_srcptr, mpz_srcptr,
 __MPC_DECLSPEC void mpc_swap      __MPC_PROTO ((mpc_ptr, mpc_ptr));
 __MPC_DECLSPEC int  mpc_fma       __MPC_PROTO ((mpc_ptr, mpc_srcptr, mpc_srcptr, mpc_srcptr, mpc_rnd_t));
 
-#ifdef _MPC_H_HAVE_INTMAX_T
-__MPC_DECLSPEC int  mpc_set_sj __MPC_PROTO ((mpc_ptr, intmax_t, mpc_rnd_t));
-__MPC_DECLSPEC int  mpc_set_uj __MPC_PROTO ((mpc_ptr, uintmax_t,  mpc_rnd_t));
-__MPC_DECLSPEC int  mpc_set_sj_sj __MPC_PROTO ((mpc_ptr, intmax_t, intmax_t, mpc_rnd_t));
-__MPC_DECLSPEC int  mpc_set_uj_uj __MPC_PROTO ((mpc_ptr, uintmax_t, uintmax_t, mpc_rnd_t));
-#endif
-
-#ifdef _MPC_H_HAVE_COMPLEX
-__MPC_DECLSPEC int  mpc_set_dc __MPC_PROTO ((mpc_ptr, double _Complex, mpc_rnd_t));
-__MPC_DECLSPEC int  mpc_set_ldc __MPC_PROTO ((mpc_ptr, long double _Complex, mpc_rnd_t));
-__MPC_DECLSPEC double _Complex  mpc_get_dc __MPC_PROTO ((mpc_srcptr, mpc_rnd_t));
-__MPC_DECLSPEC long double _Complex  mpc_get_ldc __MPC_PROTO ((mpc_srcptr, mpc_rnd_t));
-#endif
-
 __MPC_DECLSPEC void mpc_set_nan     __MPC_PROTO ((mpc_ptr));
 
 __MPC_DECLSPEC int  mpc_real __MPC_PROTO ((mpfr_ptr, mpc_srcptr, mpfr_rnd_t));
@@ -239,7 +220,23 @@ __MPC_DECLSPEC int  mpc_strtoc    _MPFR_PROTO ((mpc_ptr, const char *, char **, 
 __MPC_DECLSPEC int  mpc_set_str   _MPFR_PROTO ((mpc_ptr, const char *, int, mpc_rnd_t));
 __MPC_DECLSPEC char * mpc_get_str _MPFR_PROTO ((int, size_t, mpc_srcptr, mpc_rnd_t));
 __MPC_DECLSPEC void mpc_free_str  _MPFR_PROTO ((char *));
-#ifdef _MPC_H_HAVE_FILE
+
+/* declare certain functions only if appropriate headers have been included */
+#if defined (INTMAX_C) && defined (UINTMAX_C)
+__MPC_DECLSPEC int  mpc_set_sj __MPC_PROTO ((mpc_ptr, intmax_t, mpc_rnd_t));
+__MPC_DECLSPEC int  mpc_set_uj __MPC_PROTO ((mpc_ptr, uintmax_t,  mpc_rnd_t));
+__MPC_DECLSPEC int  mpc_set_sj_sj __MPC_PROTO ((mpc_ptr, intmax_t, intmax_t, mpc_rnd_t));
+__MPC_DECLSPEC int  mpc_set_uj_uj __MPC_PROTO ((mpc_ptr, uintmax_t, uintmax_t, mpc_rnd_t));
+#endif
+
+#ifdef _Complex_I
+__MPC_DECLSPEC int  mpc_set_dc __MPC_PROTO ((mpc_ptr, double _Complex, mpc_rnd_t));
+__MPC_DECLSPEC int  mpc_set_ldc __MPC_PROTO ((mpc_ptr, long double _Complex, mpc_rnd_t));
+__MPC_DECLSPEC double _Complex  mpc_get_dc __MPC_PROTO ((mpc_srcptr, mpc_rnd_t));
+__MPC_DECLSPEC long double _Complex  mpc_get_ldc __MPC_PROTO ((mpc_srcptr, mpc_rnd_t));
+#endif
+
+#ifdef _GMP_H_HAVE_FILE
 __MPC_DECLSPEC int mpc_inp_str __MPC_PROTO ((mpc_ptr, FILE *, size_t *, int, mpc_rnd_t));
 __MPC_DECLSPEC size_t mpc_out_str __MPC_PROTO ((FILE *, int, size_t, mpc_srcptr, mpc_rnd_t));
 #endif
