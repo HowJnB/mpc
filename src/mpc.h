@@ -41,10 +41,6 @@ MA 02111-1307, USA. */
 #define MPC_VERSION                                                     \
   MPC_VERSION_NUM(MPC_VERSION_MAJOR,MPC_VERSION_MINOR,MPC_VERSION_PATCHLEVEL)
 
-/* Check if stdio.h is included */
-#if defined (_GMP_H_HAVE_FILE)
-# define _MPC_H_HAVE_FILE 1
-#endif
 
 /* Check if complex.h is included */
 #if defined (_Complex_I)
