@@ -22,12 +22,9 @@ MA 02111-1307, USA. */
 #include "config.h"
 
 #if HAVE_COMPLEX_H
-# include <complex.h>
-#endif
-
+#include <complex.h>
 #include "mpc-impl.h"
 
-#if defined _MPC_H_HAVE_COMPLEX
 double _Complex
 mpc_get_dc (mpc_srcptr op, mpc_rnd_t rnd) {
    return I * mpfr_get_d (mpc_imagref (op), MPC_RND_IM (rnd))

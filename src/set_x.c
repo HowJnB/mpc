@@ -86,7 +86,7 @@ mpc_set_sj (mpc_ptr a, intmax_t b, mpc_rnd_t rnd)
    MPC_SET_X (sj, a, b, rnd)
 #endif
 
-#ifdef _MPC_H_HAVE_COMPLEX
+#ifdef HAVE_COMPLEX_H
 int
 mpc_set_dc (mpc_ptr a, double _Complex b, mpc_rnd_t rnd) {
    return mpc_set_d_d (a, creal (b), cimag (b), rnd);
