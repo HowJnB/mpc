@@ -47,7 +47,7 @@ MA 02111-1307, USA. */
 #endif
 
 /* Check if complex.h is included */
-#if defined (_COMPLEX_H)
+#if defined (_Complex_I)
 # define _MPC_H_HAVE_COMPLEX 1
 #endif
 
