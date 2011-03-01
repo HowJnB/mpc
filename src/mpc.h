@@ -46,11 +46,6 @@ MA 02111-1307, USA. */
 # define _MPC_H_HAVE_FILE 1
 #endif
 
-/* Check if stdint.h/inttypes.h is included */
-#if defined (INTMAX_C) && defined (UINTMAX_C)
-# define _MPC_H_HAVE_INTMAX_T 1
-#endif
-
 /* Check if complex.h is included */
 #if defined (_COMPLEX_H)
 # define _MPC_H_HAVE_COMPLEX 1
