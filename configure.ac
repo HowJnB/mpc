@@ -217,6 +217,9 @@ AS_IF([test "x$enable_logging" = "xyes"],
 # Checks if compiler accepts warning flags.
 MPC_PROG_CC_WARNINGCFLAGS([WARNINGCFLAGS])
 
+# Checks for gcc version, result in GCC_VERSION inside config.log, for instance
+AX_GCC_VERSION
+
 # Checks for library functions with warning flags.
 old_cflags=$CFLAGS
 CFLAGS="$CFLAGS $WARNINGCFLAGS"
