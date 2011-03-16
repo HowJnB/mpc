@@ -296,10 +296,10 @@ check_set (void)
 
          mpc_set_dc (z, c, MPC_RNDNN);
          if (mpc_get_dc (z, MPC_RNDNN) != c)
-            PRINT_ERROR ("mpc_get_c", prec, z);
+            PRINT_ERROR ("mpc_get_dc", prec, z);
          mpc_set_ldc (z, lc, MPC_RNDNN);
          if (mpc_get_ldc (z, MPC_RNDNN) != lc)
-            PRINT_ERROR ("mpc_get_lc", prec, z);
+            PRINT_ERROR ("mpc_get_ldc", prec, z);
       }
 #endif
     }
