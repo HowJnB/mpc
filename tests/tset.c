@@ -291,15 +291,23 @@ check_set (void)
 
 #if defined _MPC_H_HAVE_COMPLEX
       {
-         double _Complex c = 1.0 - 2.0*I;
-         long double _Complex lc = c;
+        double _Complex c = 1.0 - 2.0*I, d;
+        long double _Complex lc = c, ld;
 
          mpc_set_dc (z, c, MPC_RNDNN);
-         if (mpc_get_dc (z, MPC_RNDNN) != c)
-            PRINT_ERROR ("mpc_get_dc", prec, z);
+         if ((d = mpc_get_dc (z, MPC_RNDNN)) != c)
+           {
+             printf ("expected (%f,%f)\n", creal (c), cimag (c));
+             printf ("got      (%f,%f)\n", creal (d), cimag (d));
+             PRINT_ERROR ("mpc_get_dc", prec, z);
+           }
          mpc_set_ldc (z, lc, MPC_RNDNN);
-         if (mpc_get_ldc (z, MPC_RNDNN) != lc)
-            PRINT_ERROR ("mpc_get_ldc", prec, z);
+         if ((ld = mpc_get_ldc (z, MPC_RNDNN)) != lc)
+           {
+             printf ("expected (%Lf,%Lf)\n", creall (lc), cimagl (lc));
+             printf ("got      (%Lf,%Lf)\n", creall (ld), cimagl (ld));
+             PRINT_ERROR ("mpc_get_ldc", prec, z);
+           }
       }
 #endif
     }
