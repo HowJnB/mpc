@@ -50,6 +50,7 @@ AC_DEFUN([MPC_PROG_CC_WARNINGCFLAGS], [
       AX_C_CHECK_FLAG(-Wshadow,,,$1="$$1 -Wshadow",)
       AX_C_CHECK_FLAG(-Wstrict-prototypes,,,$1="$$1 -Wstrict-prototypes",)
       AX_C_CHECK_FLAG(-Wmissing-prototypes,,,$1="$$1 -Wmissing-prototypes",)
+      AX_C_CHECK_FLAG(-Wno-unused-value,,,$1="$$1 -Wno-unused-value",)
       AC_SUBST($1)
     fi
   fi
