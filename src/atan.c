@@ -1,6 +1,6 @@
 /* mpc_atan -- arctangent of a complex number.
 
-Copyright (C) INRIA, 2009, 2010
+Copyright (C) INRIA, 2009, 2010, 2011
 
 This file is part of the MPC Library.
 
@@ -197,7 +197,10 @@ mpc_atan (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
     mpfr_exp_t op_re_exp, op_im_exp;
     mpfr_rnd_t rnd1, rnd2;
 
-    mpfr_inits (a, b, x, y, (mpfr_ptr) 0);
+    mpfr_init (a);
+    mpfr_init (b);
+    mpfr_init (x);
+    mpfr_init (y);
 
     /* real part: Re(arctan(x+i*y)) = [arctan2(x,1-y) - arctan2(-x,1+y)]/2 */
     minus_op_re[0] = MPC_RE (op)[0];
@@ -355,7 +358,11 @@ mpc_atan (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
 
     inex = mpc_set_fr_fr (rop, x, y, rnd);
 
-    mpfr_clears (a, b, x, y, (mpfr_ptr) 0);
+    mpfr_clear (a);
+    mpfr_clear (b);
+    mpfr_clear (x);
+    mpfr_clear (y);
+
     return inex;
   }
 }
