@@ -197,10 +197,7 @@ mpc_atan (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
     mpfr_exp_t op_re_exp, op_im_exp;
     mpfr_rnd_t rnd1, rnd2;
 
-    mpfr_init (a);
-    mpfr_init (b);
-    mpfr_init (x);
-    mpfr_init (y);
+    mpfr_inits2 (MPFR_PREC_MIN, a, b, x, y, (mpfr_ptr) 0);
 
     /* real part: Re(arctan(x+i*y)) = [arctan2(x,1-y) - arctan2(-x,1+y)]/2 */
     minus_op_re[0] = MPC_RE (op)[0];
@@ -358,11 +355,7 @@ mpc_atan (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
 
     inex = mpc_set_fr_fr (rop, x, y, rnd);
 
-    mpfr_clear (a);
-    mpfr_clear (b);
-    mpfr_clear (x);
-    mpfr_clear (y);
-
+    mpfr_clears (a, b, x, y, (mpfr_ptr) 0);
     return inex;
   }
 }
