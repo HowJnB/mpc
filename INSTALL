@@ -83,4 +83,9 @@ add the following to the configure command (or in your environment):
 
 LDFLAGS=-L/usr/local/lib CPPFLAGS=-I/usr/local/include
 
+In addition, you might need to give the following additional argument to
+configure (reported for mpc-0.9):
+
+CPP="x86_64-w64-mingw32-gcc -E"
+
 (reported by Sisyphus)
