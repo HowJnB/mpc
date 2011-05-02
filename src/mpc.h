@@ -118,7 +118,7 @@ typedef __gmp_const __mpc_struct *mpc_srcptr;
 #endif
 
 /* Support for WINDOWS DLL, see the thread http://lists.gforge.inria.fr/pipermail/mpc-discuss/2011-April/000871.html */
-#if defined(__GMP_LIBGMP_DLL)
+#if __GMP_LIBGMP_DLL
 # define __MPC_DECLSPEC __GMP_DECLSPEC_EXPORT
 #else
 # define __MPC_DECLSPEC __GMP_DECLSPEC
