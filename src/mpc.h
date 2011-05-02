@@ -117,10 +117,8 @@ typedef __gmp_const __mpc_struct *mpc_srcptr;
 # define __MPC_PROTO(x) ()
 #endif
 
-/* Support for WINDOWS Dll:
-   Check if we are inside a MPC build, and if so export the functions.
-   Otherwise does the same thing as GMP */
-#if defined(__MPC_WITHIN_MPC) && __GMP_LIBGMP_DLL
+/* Support for WINDOWS DLL, see the thread http://lists.gforge.inria.fr/pipermail/mpc-discuss/2011-April/000871.html */
+#if defined(__GMP_LIBGMP_DLL)
 # define __MPC_DECLSPEC __GMP_DECLSPEC_EXPORT
 #else
 # define __MPC_DECLSPEC __GMP_DECLSPEC
