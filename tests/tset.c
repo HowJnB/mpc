@@ -289,7 +289,7 @@ check_set (void)
       }
 #endif /* _MPC_H_HAVE_INTMAX_T */
 
-#if defined _MPC_H_HAVE_COMPLEX
+#if defined HAVE_COMPLEX_H
       {
         double _Complex c = 1.0 - 2.0*I, d;
         long double _Complex lc = c, ld;
