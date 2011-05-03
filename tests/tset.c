@@ -124,7 +124,7 @@ check_set (void)
       if (mpfr_cmp (MPC_RE(z), fr) != 0 || mpfr_cmp (MPC_IM(z), fr) != 0)
         PRINT_ERROR ("mpc_set_ld_ld", prec, z);
 
-#if defined _MPC_H_HAVE_COMPLEX
+#if defined HAVE_COMPLEX_H
       mpc_set_ldc (z, I*1.23456789L+1.23456789L, MPC_RNDNN);
       if (mpfr_cmp (MPC_RE(z), fr) != 0 || mpfr_cmp (MPC_IM(z), fr) != 0)
         PRINT_ERROR ("mpc_set_lc", prec, z);
