@@ -48,7 +48,7 @@ MA 02111-1307, USA. */
     exit (1);                                                   \
   } while (0)
 
-/* test MPC_SET_X_Y though some functions */
+/* test MPC_SET_X_Y through some functions */
 static int
 mpc_set_ui_fr (mpc_ptr z, unsigned long int a, mpfr_srcptr b, mpc_rnd_t rnd)
   MPC_SET_X_Y (ui, fr, z, a, b, rnd)
@@ -99,7 +99,7 @@ check_set (void)
       if (mpfr_cmp (MPC_RE(z), fr) != 0 || mpfr_cmp_si (MPC_IM(z), 0) != 0)
         PRINT_ERROR ("mpc_set_d", prec, z);
 
-#if defined _MPC_H_HAVE_COMPLEX
+#if defined HAVE_COMPLEX_H
       mpc_set_dc (z, I*1.23456789+1.23456789, MPC_RNDNN);
       if (mpfr_cmp (MPC_RE(z), fr) != 0 || mpfr_cmp (MPC_IM(z), fr) != 0)
         PRINT_ERROR ("mpc_set_c", prec, z);
