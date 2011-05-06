@@ -219,6 +219,9 @@ MPC_PROG_CC_WARNINGCFLAGS([WARNINGCFLAGS])
 
 # Checks for gcc version, result in GCC_VERSION inside config.log, for instance
 AX_GCC_VERSION
+AC_DEFINE_UNQUOTED([MPC_GCC], ["$GCC"], [Gcc yes or no])
+AC_DEFINE_UNQUOTED([MPC_CC], ["$CC"], [C compiler])
+AC_DEFINE_UNQUOTED([MPC_GCC_VERSION], ["$GCC_VERSION"], [Version of gcc])
 
 # Checks for library functions with warning flags.
 old_cflags=$CFLAGS
