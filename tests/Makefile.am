@@ -12,7 +12,7 @@ tasinh tatan tatanh tconj tcos tcosh tdiv tdiv_2exp tdiv_fr tdiv_ui texp tfma \
 tfr_div tfr_sub timag tio_str tlog tmul tmul_2exp tmul_fr tmul_i tmul_si      \
 tmul_ui tneg tnorm tpow tpow_ld tpow_d tpow_fr tpow_si tpow_ui tpow_z tprec   \
 tproj treal treimref tset tsin tsin_cos tsinh tsqr tsqrt tstrtoc tsub tsub_fr \
-tsub_ui ttan ttanh tui_div tui_ui_sub tget_version
+tsub_ui tswap ttan ttanh tui_div tui_ui_sub tget_version
 
 check_LTLIBRARIES=libmpc-tests.la
 libmpc_tests_la_SOURCES=mpc-tests.h random.c tgeneric.c read_data.c           \
