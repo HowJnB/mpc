@@ -149,8 +149,8 @@ License for more details.
 
 
 GNU MPC is a portable library written in C for arbitrary precision arithmetic
-on complex numbers providing correct rounding. Ultimately, it
-should implement a multiprecision equivalent of the C99 standard.
+on complex numbers providing correct rounding. It implements a multiprecision
+equivalent of the C99 standard.
 It builds upon the GNU MP and the GNU MPFR libraries.
 
 @section How to use this Manual
