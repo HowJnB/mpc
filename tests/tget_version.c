@@ -50,9 +50,15 @@ main (void)
       exit (1);
     }
 
+#ifdef MPC_CC
   printf ("C compiler: %s\n", MPC_CC);
-  printf ("Gcc: %s\n", MPC_GCC);
-  printf ("Gcc version: %s\n", MPC_GCC_VERSION);
+#endif
+#ifdef MPC_GCC
+  printf ("GCC: %s\n", MPC_GCC);
+#endif
+#ifdef MPC_GCC_VERSION
+  printf ("GCC version: %s\n", MPC_GCC_VERSION);
+#endif
 
   return 0;
 }
