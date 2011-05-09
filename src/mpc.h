@@ -41,6 +41,10 @@ MA 02111-1307, USA. */
 #define MPC_VERSION                                                     \
   MPC_VERSION_NUM(MPC_VERSION_MAJOR,MPC_VERSION_MINOR,MPC_VERSION_PATCHLEVEL)
 
+/* Check if stdint.h/inttypes.h is included */
+#if defined (INTMAX_C) && defined (UINTMAX_C)
+#define _MPC_H_HAVE_INTMAX_T 1
+#endif
 
 /* Return values */
 

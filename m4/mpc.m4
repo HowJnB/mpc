@@ -143,7 +143,7 @@ error
 #endif
      ]], [[]])],[AC_MSG_RESULT(DLL)],[
   AC_MSG_RESULT(static)
-  AC_MSG_ERROR([gmp.h isn't a DLL: use --enable-static --disable-shared]) ])
+  AC_MSG_ERROR([gmp is not available as a DLL: use --enable-static --disable-shared]) ])
      AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[
 #include "mpfr.h"
 #if !__GMP_LIBGMP_DLL
@@ -152,7 +152,7 @@ error
 #endif
      ]], [[]])],[AC_MSG_RESULT(DLL)],[
   AC_MSG_RESULT(static)
-  AC_MSG_ERROR([gmp.h isn't a DLL: use --enable-static --disable-shared]) ])
+  AC_MSG_ERROR([gmp is not available as a DLL: use --enable-static --disable-shared]) ])
    else
      AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[
 #include "gmp.h"
@@ -162,7 +162,7 @@ error
 #endif
      ]], [[]])],[AC_MSG_RESULT(static)],[
   AC_MSG_RESULT(DLL)
-  AC_MSG_ERROR([gmp.h is a DLL: use --disable-static --enable-shared]) ])
+  AC_MSG_ERROR([gmp is only available as a DLL: use --disable-static --enable-shared]) ])
   fi
   ;;
 ])
