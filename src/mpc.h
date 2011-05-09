@@ -224,7 +224,7 @@ __MPC_DECLSPEC char * mpc_get_str _MPFR_PROTO ((int, size_t, mpc_srcptr, mpc_rnd
 __MPC_DECLSPEC void mpc_free_str  _MPFR_PROTO ((char *));
 
 /* declare certain functions only if appropriate headers have been included */
-#if defined (INTMAX_C) && defined (UINTMAX_C)
+#ifdef _MPC_H_HAVE_INTMAX_T
 __MPC_DECLSPEC int  mpc_set_sj __MPC_PROTO ((mpc_ptr, intmax_t, mpc_rnd_t));
 __MPC_DECLSPEC int  mpc_set_uj __MPC_PROTO ((mpc_ptr, uintmax_t,  mpc_rnd_t));
 __MPC_DECLSPEC int  mpc_set_sj_sj __MPC_PROTO ((mpc_ptr, intmax_t, intmax_t, mpc_rnd_t));
