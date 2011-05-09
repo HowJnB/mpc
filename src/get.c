@@ -21,7 +21,7 @@ MA 02111-1307, USA. */
 
 #include "config.h"
 
-#if HAVE_COMPLEX_H
+#ifdef HAVE_COMPLEX_H
 #include <complex.h>
 #include "mpc-impl.h"
 
