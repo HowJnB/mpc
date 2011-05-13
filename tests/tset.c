@@ -22,15 +22,15 @@ MA 02111-1307, USA. */
 #include "config.h"
 #include <limits.h> /* for LONG_MAX */
 
-#if HAVE_INTTYPES_H
+#ifdef HAVE_INTTYPES_H
 # include <inttypes.h> /* for intmax_t */
 #else
-# if HAVE_STDINT_H
+# ifdef HAVE_STDINT_H
 #  include <stdint.h>
 # endif
 #endif
 
-#if HAVE_COMPLEX_H
+#ifdef HAVE_COMPLEX_H
 # include <complex.h>
 #endif
 
