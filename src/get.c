@@ -36,4 +36,6 @@ mpc_get_ldc (mpc_srcptr op, mpc_rnd_t rnd) {
    return I * mpfr_get_ld (mpc_imagref (op), MPC_RND_IM (rnd))
           + mpfr_get_ld (mpc_realref (op), MPC_RND_RE (rnd));
 }
+#else
+/* ISO C forbids an empty source file, maybe this comment will make it happy */
 #endif
