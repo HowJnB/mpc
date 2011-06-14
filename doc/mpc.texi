@@ -990,6 +990,8 @@ rounded according to @var{rnd}, with only one final rounding.
 
 @deftypefun int mpc_sqrt (mpc_t @var{rop}, mpc_t @var{op}, mpc_rnd_t @var{rnd})
 Set @var{rop} to the square root of @var{op} rounded according to @var{rnd}.
+The returned value @var{rop} has a non-negative real part, and if its real
+part is zero, a non-negative imaginary part.
 @end deftypefun
 
 @deftypefun int mpc_pow (mpc_t @var{rop}, mpc_t @var{op1}, mpc_t @var{op2}, mpc_rnd_t @var{rnd})
