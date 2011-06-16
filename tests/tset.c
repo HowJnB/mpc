@@ -38,6 +38,11 @@ MA 02111-1307, USA. */
 #include <locale.h>
 #endif
 
+/* see https://gforge.inria.fr/tracker/index.php?func=detail&aid=12829&group_id=131&atid=607 */
+#ifdef __sun /* Solaris complex.h is broken */
+#define _Imaginary_I      (__extension__ 1.0iF)
+#endif
+
 #include "mpc-tests.h"
 
 #define PRINT_ERROR(function_name, precision, a)                \
