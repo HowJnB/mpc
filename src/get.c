@@ -33,12 +33,6 @@ MA 02111-1307, USA. */
 #include <stdio.h> /* for sprintf, fprintf */
 #include <ctype.h>
 #include <string.h>
-
-/* see https://gforge.inria.fr/tracker/index.php?func=detail&aid=12829&group_id=131&atid=607 */
-#ifdef __sun /* Solaris complex.h is broken */
-#define _Imaginary_I      (__extension__ 1.0iF)
-#endif
-
 #include "mpc-impl.h"
 
 #ifdef HAVE_COMPLEX_H
