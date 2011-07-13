@@ -19,6 +19,66 @@ along with the MPC Library; see the file COPYING.LIB.  If not, write to
 the Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston,
 MA 02111-1307, USA. */
 
+
+#
+# SYNOPSIS
+#
+#
+MPC_COMPLEX_H
+#
+# DESCRIPTION
+#
+# Check whether complex.h is usable; if yes, define HAVE_COMPLEX_H.
+# On solaris, one also needs the libm; in that case, it is added to LIB,
+# and HAVE_LIBM is defined.
+#
+AC_DEFUN([MPC_COMPLEX_H], [
+   AC_CHECK_HEADER(
+      [complex.h],
+      [
+         m4_define(
+            [MPC_CONFTEST],
+            [
+               AC_LANG_PROGRAM(
+                  [[#include <complex.h>]],
+                  [[complex double x = 1.0 + 2.0 * I; return (creal (x) + cimag (x));]]
+               )
+            ]
+         )
+
+         AC_MSG_CHECKING(whether creal and cimag can be used without libm)
+         AC_LINK_IFELSE(
+            [MPC_CONFTEST],
+            [
+               AC_MSG_RESULT([yes])
+               AC_DEFINE([HAVE_COMPLEX_H], [1], [complex.h present and usable])
+            ],
+            [
+               AC_MSG_RESULT([no])
+               AC_CHECK_LIB([m], [creal],
+                  [
+                     AC_MSG_CHECKING(whether creal and cimag can be used with libm)
+                     AC_LINK_IFELSE(
+                        [MPC_CONFTEST],
+                        [
+                           AC_MSG_RESULT([yes])
+                           LIBS="-lm $LIBS"
+                           AC_DEFINE([HAVE_LIBM], [1], [libm needed for creal])
+                           AC_DEFINE([HAVE_COMPLEX_H], [1], [complex.h present and usable])
+                        ],
+                        [
+                           AC_MSG_RESULT([no])
+                        ]
+                     )
+                  ]
+               )
+            ]
+         )
+      ]
+   )
+])
+
+
 #
 # SYNOPSIS
 #

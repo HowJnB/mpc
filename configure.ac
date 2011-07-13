@@ -121,32 +121,15 @@ esac
 
 # Checks for header files.
 AC_HEADER_STDC
-AC_CHECK_HEADERS([complex.h locale.h inttypes.h stdint.h limits.h unistd.h sys/time.h])
+AC_CHECK_HEADERS([locale.h inttypes.h stdint.h limits.h unistd.h sys/time.h])
 AC_HEADER_TIME
+MPC_COMPLEX_H
 
 # Checks for typedefs, structures, and compiler characteristics.
 AC_C_CONST
 AC_TYPE_SIZE_T
 
 # Checks for libraries.
-AC_CHECK_HEADERS(
-   [complex.h],
-   [
-   AC_MSG_CHECKING(whether creal and cimag can be used without libm)
-   AC_LINK_IFELSE(
-      [AC_LANG_PROGRAM(
-         [[#include <complex.h>]],
-         [[complex double x = 1.0 + 2.0 * I; return (creal (x) + cimag (x));]]
-      )],
-      [AC_MSG_RESULT([yes])],
-      [
-         AC_MSG_RESULT([no])
-         AC_CHECK_LIB([m], [creal])
-      ]
-      )
-   ]
-   )
-
 AC_CHECK_LIB([gmp], [__gmpz_init],
              [LIBS="-lgmp $LIBS"],
              [AC_MSG_ERROR([libgmp not found or uses a different ABI.])])
