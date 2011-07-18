@@ -144,7 +144,7 @@ AC_LINK_IFELSE(
         [AC_MSG_RESULT(yes)],
         [
         AC_MSG_RESULT(no)
-        AC_MSG_ERROR([libmpfr not found or uses a different ABI.])
+        AC_MSG_ERROR([libmpfr not found or uses a different ABI (including static vs shared issue).])
         ])
 
 # Check for a recent GMP
