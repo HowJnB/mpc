@@ -132,7 +132,7 @@ AC_TYPE_SIZE_T
 # Checks for libraries.
 AC_CHECK_LIB([gmp], [__gmpz_init],
              [LIBS="-lgmp $LIBS"],
-             [AC_MSG_ERROR([libgmp not found or uses a different ABI.])])
+             [AC_MSG_ERROR([libgmp not found or uses a different ABI (including static vs shared).])])
 
 AC_MSG_CHECKING(for MPFR)
 LIBS="-lmpfr $LIBS"
@@ -144,7 +144,7 @@ AC_LINK_IFELSE(
         [AC_MSG_RESULT(yes)],
         [
         AC_MSG_RESULT(no)
-        AC_MSG_ERROR([libmpfr not found or uses a different ABI (including static vs shared issue).])
+        AC_MSG_ERROR([libmpfr not found or uses a different ABI (including static vs shared).])
         ])
 
 # Check for a recent GMP
