@@ -112,13 +112,6 @@ if test -z "$user_redefine_cc" ; then
 fi
 
 
-# Configs for Windows DLLs
-case $host in
-  *-*-cygwin* | *-*-mingw* | *-*-pw32* | *-*-os2*)
-     MPC_WINDOWS
-esac
-
-
 # Checks for header files.
 AC_HEADER_STDC
 AC_CHECK_HEADERS([locale.h inttypes.h stdint.h limits.h unistd.h sys/time.h])
@@ -196,6 +189,14 @@ AS_IF([test "x$enable_logging" = "xyes"],
            [AC_MSG_ERROR([Library dl not found, logging impossible])])
        ]
      )
+
+
+# Configs for Windows DLLs
+case $host in
+  *-*-cygwin* | *-*-mingw* | *-*-pw32* | *-*-os2*)
+     MPC_WINDOWS
+esac
+
 
 # Checks if compiler accepts warning flags.
 MPC_PROG_CC_WARNINGCFLAGS([WARNINGCFLAGS])

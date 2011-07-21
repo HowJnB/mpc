@@ -192,9 +192,9 @@ MPC_WINDOWS
 # It also disables the tests involving the linking with LIBGMP if DLL
 #
 AC_DEFUN([MPC_WINDOWS], [
-   AC_MSG_CHECKING(for DLL/static GMP)
    if test "$enable_shared" = yes; then
      LDFLAGS="$LDFLAGS -Wl,-no-undefined"
+     AC_MSG_CHECKING(for DLL/static gmp)
      AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[
 #include "gmp.h"
 #if !__GMP_LIBGMP_DLL
@@ -204,6 +204,7 @@ error
      ]], [[]])],[AC_MSG_RESULT(DLL)],[
   AC_MSG_RESULT(static)
   AC_MSG_ERROR([gmp is not available as a DLL: use --enable-static --disable-shared]) ])
+     AC_MSG_CHECKING(for DLL/static mpfr)
      AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[
 #include "mpfr.h"
 #if !__GMP_LIBGMP_DLL
@@ -212,7 +213,7 @@ error
 #endif
      ]], [[]])],[AC_MSG_RESULT(DLL)],[
   AC_MSG_RESULT(static)
-  AC_MSG_ERROR([gmp is not available as a DLL: use --enable-static --disable-shared]) ])
+  AC_MSG_ERROR([mpfr is not available as a DLL: use --enable-static --disable-shared]) ])
    else
      AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[
 #include "gmp.h"
