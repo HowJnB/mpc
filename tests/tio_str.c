@@ -19,7 +19,7 @@ along with the MPC Library; see the file COPYING.LIB.  If not, write to
 the Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston,
 MA 02111-1307, USA. */
 
-#define  _XOPEN_SOURCE /* for fileno */
+#define  _XOPEN_SOURCE 600 /* for fileno */
 #include <stdio.h>
 #include <string.h>
 
