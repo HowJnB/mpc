@@ -103,7 +103,7 @@ AC_COMPILE_IFELSE([AC_LANG_SOURCE([[
 #include "gmp.h"
 ]])],[AC_MSG_RESULT(yes)],[
  AC_MSG_RESULT(no)
- AC_MSG_ERROR([gmp.h can't be found, or is unusable.])
+ AC_MSG_ERROR([gmp.h cannot be found or is unusable.])
 ])
 
 # Check for GMP CFLAGS in gmp.h
@@ -199,7 +199,7 @@ esac
 
 
 # Checks if compiler accepts warning flags.
-MPC_PROG_CC_WARNINGCFLAGS([WARNINGCFLAGS])
+MPC_C_CHECK_WARNINGCFLAGS
 
 # Checks for gcc version, result in GCC_VERSION inside config.log, for instance
 AX_GCC_VERSION

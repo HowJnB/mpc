@@ -87,15 +87,11 @@ AC_DEFUN([MPC_COMPLEX_H], [
 #
 # DESCRIPTION
 #
-# Checks if the C compiler accepts the flag FLAG together with the flags
-# already contained in ACCUMULATOR.
-# If yes, adds it to ACCUMULATOR.
+# Checks if the C compiler accepts the flag FLAG
+# If yes, adds it to CFLAGS.
 
 AC_DEFUN([MPC_C_CHECK_FLAG], [
-   old_CFLAGS="$CFLAGS"
-   CFLAGS="$CFLAGS $$2"
-   AX_C_CHECK_FLAG($1,,,[$2="$$2 $1"])
-   CFLAGS="$old_CFLAGS"
+   AX_C_CHECK_FLAG($1,,,[CFLAGS="$CFLAGS $1"])
 ])
 
 
@@ -103,14 +99,14 @@ AC_DEFUN([MPC_C_CHECK_FLAG], [
 # SYNOPSIS
 #
 #
-# MPC_PROG_CC_WARNINGFLAG([WARNINGCFLAGS])
+# MPC_C_CHECK_WARNINGFLAGS
 #
 # DESCRIPTION
 #
 # For development version only: Checks if gcc accepts warning flags.
-# Put accepted ones into WARNINGCFLAGS ($1).
+# Adds accepted ones to CFLAGS.
 #
-AC_DEFUN([MPC_PROG_CC_WARNINGCFLAGS], [
+AC_DEFUN([MPC_C_CHECK_WARNINGCFLAGS], [
   AC_REQUIRE([AC_PROG_GREP])
   if echo $VERSION | grep -c dev >/dev/null 2>&1 ; then
     if test "x$GCC" = "xyes" -a "x$compiler" != "xicc" -a "x$compiler" != "xg++"; then
@@ -118,20 +114,19 @@ AC_DEFUN([MPC_PROG_CC_WARNINGCFLAGS], [
          *darwin*) ;;
          *) MPC_C_CHECK_FLAG(-D_FORTIFY_SOURCE=2,$1) ;;
       esac
-      MPC_C_CHECK_FLAG(-g,$1)
-      MPC_C_CHECK_FLAG(-std=c99,$1)
-      MPC_C_CHECK_FLAG(-pedantic,$1)
-      MPC_C_CHECK_FLAG(-Wno-long-long,$1)
-      MPC_C_CHECK_FLAG(-Wall,$1)
-      MPC_C_CHECK_FLAG(-Wextra,$1)
-      MPC_C_CHECK_FLAG(-Werror,$1)
-      MPC_C_CHECK_FLAG(-Wdeclaration-after-statement,$1)
-      MPC_C_CHECK_FLAG(-Wundef,$1)
-      MPC_C_CHECK_FLAG(-Wshadow,$1)
-      MPC_C_CHECK_FLAG(-Wstrict-prototypes,$1)
-      MPC_C_CHECK_FLAG(-Wmissing-prototypes,$1)
-      MPC_C_CHECK_FLAG(-Wno-unused-value,$1)
-      AC_SUBST($1)
+      MPC_C_CHECK_FLAG(-g)
+      MPC_C_CHECK_FLAG(-std=c99)
+      MPC_C_CHECK_FLAG(-pedantic)
+      MPC_C_CHECK_FLAG(-Wno-long-long)
+      MPC_C_CHECK_FLAG(-Wall)
+      MPC_C_CHECK_FLAG(-Wextra)
+      MPC_C_CHECK_FLAG(-Werror)
+      MPC_C_CHECK_FLAG(-Wdeclaration-after-statement)
+      MPC_C_CHECK_FLAG(-Wundef)
+      MPC_C_CHECK_FLAG(-Wshadow)
+      MPC_C_CHECK_FLAG(-Wstrict-prototypes)
+      MPC_C_CHECK_FLAG(-Wmissing-prototypes)
+      MPC_C_CHECK_FLAG(-Wno-unused-value)
     fi
   fi
 ])

@@ -1,5 +1,5 @@
 ## Makefile.am -- Process this file with automake to produce Makefile.in
-AM_CFLAGS=@WARNINGCFLAGS@
+
 AM_CPPFLAGS = -I$(top_srcdir)/src
 LDADD = libmpc-tests.la $(top_builddir)/src/libmpc.la
 # LOADLIBES (documented in the "GNU make" manual and equivalent to LDLIBS)

@@ -1,5 +1,4 @@
 ## src/Makefile.am -- Process this file with automake to produce Makefile.in
-AM_CFLAGS=@WARNINGCFLAGS@
 
 lib_LTLIBRARIES = libmpc.la
 libmpc_la_LDFLAGS = -version-info 2:0:0
