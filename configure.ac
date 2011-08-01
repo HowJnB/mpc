@@ -111,6 +111,9 @@ if test -z "$user_redefine_cc" ; then
    MPC_GMP_CC_CFLAGS
 fi
 
+# Check if compiler accepts warning flags and add them to CFLAGS
+MPC_C_CHECK_WARNINGCFLAGS
+
 
 # Checks for header files.
 AC_HEADER_STDC
@@ -123,6 +126,10 @@ AC_C_CONST
 AC_TYPE_SIZE_T
 
 # Checks for libraries.
+AC_CHECK_FUNCS([gettimeofday localeconv setlocale])
+AC_CHECK_FUNCS([dup dup2 fileno],,
+        [AC_DEFINE([NO_STREAM_REDIRECTION],1,[Do not check mpc_out_str on stdout])])
+
 AC_CHECK_LIB([gmp], [__gmpz_init],
              [LIBS="-lgmp $LIBS"],
              [AC_MSG_ERROR([libgmp not found or uses a different ABI (including static vs shared).])])
@@ -198,22 +205,12 @@ case $host in
 esac
 
 
-# Checks if compiler accepts warning flags.
-MPC_C_CHECK_WARNINGCFLAGS
 
 # Checks for gcc version, result in GCC_VERSION inside config.log, for instance
 AX_GCC_VERSION
 AC_DEFINE_UNQUOTED([MPC_GCC], ["$GCC"], [Gcc yes or no])
 AC_DEFINE_UNQUOTED([MPC_CC], ["$CC"], [C compiler])
 AC_DEFINE_UNQUOTED([MPC_GCC_VERSION], ["$GCC_VERSION"], [Version of gcc])
-
-# Checks for library functions with warning flags.
-old_cflags=$CFLAGS
-CFLAGS="$CFLAGS $WARNINGCFLAGS"
-AC_CHECK_FUNCS([gettimeofday localeconv setlocale])
-AC_CHECK_FUNCS([dup dup2 fileno],,
-        [AC_DEFINE([NO_STREAM_REDIRECTION],1,[Do not check mpc_out_str on stdout])])
-CFLAGS=$old_cflags
 
 AC_CONFIG_FILES([Makefile src/Makefile tests/Makefile doc/Makefile])
 AC_OUTPUT
