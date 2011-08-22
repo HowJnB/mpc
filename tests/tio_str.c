@@ -27,7 +27,7 @@ MA 02111-1307, USA. */
 #ifdef HAVE_UNISTD_H
 #include <unistd.h>
 #else
-#define STDIN_FILENO 1
+#define STDIN_FILENO 0
 #define STDOUT_FILENO 1
 #endif
 
