@@ -19,7 +19,6 @@ along with the MPC Library; see the file COPYING.LIB.  If not, write to
 the Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston,
 MA 02111-1307, USA. */
 
-#define  _XOPEN_SOURCE 600 /* for fileno */
 #include <stdio.h>
 #include <string.h>
 
@@ -27,6 +26,9 @@ MA 02111-1307, USA. */
 
 #ifdef HAVE_UNISTD_H
 #include <unistd.h>
+#else
+#define STDIN_FILENO 1
+#define STDOUT_FILENO 1
 #endif
 
 extern unsigned long line_number;
@@ -165,7 +167,7 @@ check_stdout (mpc_ptr read_number, mpc_ptr expected)
   size_t sz;
 
   fflush(stdout);
-  fd = dup(fileno(stdout));
+  fd = dup(STDOUT_FILENO);
   if (freopen(tmp_file, "w", stdout) == NULL)
   {
      printf ("mpc_inp_str cannot redirect stdout\n");
@@ -173,12 +175,12 @@ check_stdout (mpc_ptr read_number, mpc_ptr expected)
   }
   mpc_out_str (NULL, 2, 0, expected, MPC_RNDNN);
   fflush(stdout);
-  dup2(fd, fileno(stdout));
+  dup2(fd, STDOUT_FILENO);
   close(fd);
   clearerr(stdout);
 
   fflush(stdin);
-  fd = dup(fileno(stdin));
+  fd = dup(STDIN_FILENO);
   if (freopen(tmp_file, "r", stdin) == NULL)
   {
      printf ("mpc_inp_str cannot redirect stdout\n");
@@ -201,7 +203,7 @@ check_stdout (mpc_ptr read_number, mpc_ptr expected)
       exit (1);
     }
   fflush(stdin);
-  dup2(fd, fileno(stdin));
+  dup2(fd, STDIN_FILENO);
   close(fd);
   clearerr(stdin);
 }

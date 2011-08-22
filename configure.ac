@@ -127,7 +127,7 @@ AC_TYPE_SIZE_T
 
 # Checks for libraries.
 AC_CHECK_FUNCS([gettimeofday localeconv setlocale])
-AC_CHECK_FUNCS([dup dup2 fileno],,
+AC_CHECK_FUNCS([dup dup2],,
         [AC_DEFINE([NO_STREAM_REDIRECTION],1,[Do not check mpc_out_str on stdout])])
 
 AC_CHECK_LIB([gmp], [__gmpz_init],
