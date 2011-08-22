@@ -157,7 +157,7 @@ check_io_str (mpc_ptr read_number, mpc_ptr expected)
     }
 }
 
-#ifndef NO_STREAM_REDIRECTION
+#ifndef MPC_NO_STREAM_REDIRECTION
 /* test out_str with stream=NULL */
 static void
 check_stdout (mpc_ptr read_number, mpc_ptr expected)
@@ -207,7 +207,7 @@ check_stdout (mpc_ptr read_number, mpc_ptr expected)
   close(fd);
   clearerr(stdin);
 }
-#endif /* NO_STREAM_REDIRECTION */
+#endif /* MPC_NO_STREAM_REDIRECTION */
 
 int
 main (void)
