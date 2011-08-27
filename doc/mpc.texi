@@ -99,7 +99,7 @@ into another language, under the above conditions for modified versions.
 @headings double
 
 @ifnottex
-@node Top, Copying, (dir), (dir)
+@node Top
 
 @top GNU MPC
 
@@ -127,8 +127,7 @@ Complex Library, version @value{VERSION}
 @end macro
 @end ifnottex
 
-@node Copying, Introduction to GNU MPC, Top, Top
-@comment  node-name, next, previous,  up
+@node Copying
 @unnumbered GNU MPC Copying Conditions
 @cindex Copying conditions
 @cindex Conditions for copying GNU MPC
@@ -143,8 +142,7 @@ WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
 or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Lesser General Public
 License for more details.
 
-@node Introduction to GNU MPC, Installing GNU MPC, Copying, Top
-@comment  node-name,  next,  previous,  up
+@node Introduction to GNU MPC
 @chapter Introduction to GNU MPC
 
 
@@ -161,8 +159,7 @@ yourself, you need to read @ref{Installing GNU MPC}, too.
 The remainder of the manual can be used for later reference, although it is
 probably a good idea to skim through it.
 
-@node Installing GNU MPC, Reporting Bugs, Introduction to GNU MPC, Top
-@comment  node-name,  next,  previous,  up
+@node Installing GNU MPC
 @chapter Installing GNU MPC
 @cindex Installation
 
@@ -222,7 +219,7 @@ followed by the second one and so on. Finally, for each argument, the
 precisions of its real and imaginary part are specified and the argument
 itself is printed in hexadecimal via the function
 @code{mpc_out_str}
-(@pxref{string-io,,String and Stream Input and Output}).
+(@pxref{String and Stream Input and Output}).
 
 Use @samp{./configure --help} for an exhaustive list of parameters.
 
@@ -319,8 +316,7 @@ Please report any other problems you encounter to
 @samp{mpc-discuss@@lists.gforge.inria.fr}.
 @xref{Reporting Bugs}.
 
-@node Reporting Bugs, GNU MPC Basics, Installing GNU MPC, Top
-@comment  node-name,  next,  previous,  up
+@node Reporting Bugs
 @chapter Reporting Bugs
 @cindex Reporting bugs
 
@@ -352,8 +348,7 @@ Send your bug report to: @samp{mpc-discuss@@lists.gforge.inria.fr}.
 If you think something in this manual is unclear, or downright incorrect, or if
 the language needs to be improved, please send a note to the same address.
 
-@node GNU MPC Basics, Complex Functions, Reporting Bugs, Top
-@comment  node-name,  next,  previous,  up
+@node GNU MPC Basics
 @chapter GNU MPC Basics
 
 
@@ -489,8 +484,7 @@ value as those specified for the corresponding function in the ISO C99
 standard.
 
 
-@node Complex Functions, Contributors, GNU MPC Basics, Top
-@comment  node-name,  next,  previous,  up
+@node Complex Functions
 @chapter Complex Functions
 @cindex Complex functions
 
@@ -527,8 +521,7 @@ different word size.
 * Internals::
 @end menu
 
-@node Initializing Complex Numbers, Assigning Complex Numbers, Complex Functions, Complex Functions
-@comment  node-name,  next,  previous,  up
+@node Initializing Complex Numbers
 @section Initialization Functions
 
 An @code{mpc_t} object must be initialized before storing the first value in
@@ -591,8 +584,7 @@ via @var{pi}.
 @end deftypefun
 
 
-@node Assigning Complex Numbers, Converting Complex Numbers, Initializing Complex Numbers, Complex Functions
-@comment  node-name,  next,  previous,  up
+@node Assigning Complex Numbers
 @section Assignment Functions
 @cindex Complex assignment functions
 
@@ -658,7 +650,7 @@ the precisions of the two parts; or use a temporary variable.
 @end deftypefun
 
 For functions assigning complex variables from strings or input streams,
-@pxref{string-io,,String and Stream Input and Output}.
+@pxref{String and Stream Input and Output}.
 
 @deftypefun void mpc_set_nan (mpc_t @var{rop})
 Set @var{rop} to Nan+i*NaN.
@@ -672,8 +664,7 @@ third auxiliary variable.
 @end deftypefun
 
 
-@node Converting Complex Numbers, String and Stream Input and Output, Assigning Complex Numbers, Complex Functions
-@comment  node-name,  next,  previous,  up
+@node Converting Complex Numbers
 @section Conversion Functions
 @cindex Conversion functions
 
@@ -687,14 +678,12 @@ Convert @var{op} to a C complex number, using the rounding mode @var{rnd}.
 
 
 For functions converting complex variables to strings or stream output,
-@pxref{string-io,,String and Stream Input and Output}.
+@pxref{String and Stream Input and Output}.
 
 
-@node String and Stream Input and Output, Complex Comparison, Converting Complex Numbers, Complex Functions
-@comment  node-name,  next,  previous,  up
-@cindex String and stream input and output
-@anchor{string-io}
+@node String and Stream Input and Output
 @section String and Stream Input and Output
+@cindex String and stream input and output
 
 @deftypefun int mpc_strtoc (mpc_t @var{rop}, const char *@var{nptr}, char **@var{endptr}, int @var{base}, mpc_rnd_t @var{rnd})
 Read a complex number from a string @var{nptr} in base @var{base}, rounded to
@@ -821,11 +810,10 @@ Return the number of characters written.
 @end deftypefun
 
 
-@node Complex Comparison, Projection & Decomposing, String and Stream Input and Output, Complex Functions
-@comment  node-name,  next,  previous,  up
+@node Complex Comparison
+@section Comparison Functions
 @cindex Complex comparisons functions
 @cindex Comparison functions
-@section Comparison Functions
 
 @deftypefn Function int mpc_cmp (mpc_t @var{op1}, mpc_t @var{op2})
 @deftypefnx Function int mpc_cmp_si_si (mpc_t @var{op1}, long int @var{op2r}, long int @var{op2i})
@@ -847,8 +835,7 @@ with @code{mpc_cmp (op1, op2) == 0}.
 @end deftypefn
 
 
-@node Projection & Decomposing, Basic Arithmetic, Complex Comparison, Complex Functions
-@comment  node-name,  next,  previous,  up
+@node Projection & Decomposing
 @section Projection and Decomposing Functions
 @cindex Projection and Decomposing Functions
 
@@ -883,8 +870,7 @@ zero with the same sign as the imaginary part of @var{op}.
 @end deftypefn
 
 
-@node Basic Arithmetic, Power Functions and Logarithm, Projection & Decomposing, Complex Functions
-@comment  node-name,  next,  previous,  up
+@node Basic Arithmetic
 @section Basic Arithmetic Functions
 @cindex Complex arithmetic functions
 @cindex Arithmetic functions
@@ -982,8 +968,7 @@ Set @var{rop} to @var{op1} times @var{op2} plus @var{op3},
 rounded according to @var{rnd}, with only one final rounding.
 @end deftypefun
 
-@node Power Functions and Logarithm, Trigonometric Functions, Basic Arithmetic, Complex Functions
-@comment  node-name,  next,  previous,  up
+@node Power Functions and Logarithm
 @section Power Functions and Logarithm
 @cindex Power functions
 @cindex Logarithm
@@ -1022,8 +1007,7 @@ so that the imaginary part of the result lies in
 @end deftypefun
 
 
-@node Trigonometric Functions, Miscellaneous Complex Functions, Power Functions and Logarithm, Complex Functions
-@comment  node-name,  next,  previous,  up
+@node Trigonometric Functions
 @section Trigonometric Functions
 @cindex Trigonometric functions
 
@@ -1080,8 +1064,7 @@ rounded according to @var{rnd} with the precision of @var{rop}.
 The branch cut of @var{mpc_acosh} is @math{(-\infty, 1)}.
 @end deftypefun
 
-@node Miscellaneous Complex Functions, Advanced Functions, Trigonometric Functions, Complex Functions
-@comment  node-name,  next,  previous,  up
+@node Miscellaneous Complex Functions
 @section Miscellaneous Functions
 @cindex Miscellaneous complex functions
 
@@ -1131,8 +1114,7 @@ Here is an example of how to check the GNU MPC version at compile time:
 @end example
 @end deftypefn
 
-@node Advanced Functions, Internals, Miscellaneous Complex Functions, Complex Functions
-@comment  node-name,  next,  previous,  up
+@node Advanced Functions
 @section Advanced Functions
 
 @defmac GNU MPC_SET_X_Y (@var{real_suffix}, @var{imag_suffix}, @var{rop}, @var{real}, @var{imag}, @var{rnd})
@@ -1157,8 +1139,7 @@ int mpc_set_ui_fr (mpc_t rop, long int re, double im, mpc_rnd_t rnd)
 @end defmac
 
 
-@node Internals,  , Advanced Functions, Complex Functions
-@comment  node-name,  next,  previous,  up
+@node Internals
 @section Internals
 
 These macros and
@@ -1171,8 +1152,7 @@ The macro @code{GNU MPC_MAX_PREC(z)} gives the maximum of the precisions
 of the real and imaginary parts of a complex number.
 
 
-@node Contributors, References, Complex Functions, Top
-@comment  node-name,  next,  previous,  up
+@node Contributors
 @unnumbered Contributors
 
 The main developers of the GNU MPC library are Andreas Enge,
@@ -1181,8 +1161,7 @@ Patrick P@'elissier has helped cleaning up the code.
 Marc Helbling contributed the @code{mpc_ui_sub} and
 @code{mpc_ui_ui_sub} functions.
 
-@node References, Concept Index, Contributors, Top
-@comment  node-name,  next,  previous,  up
+@node References
 @unnumbered References
 
 @itemize @bullet
@@ -1212,13 +1191,11 @@ ISO/IEC 9899:1999, Programming languages — C.
 
 @end itemize
 
-@node Concept Index, Function Index, References, Top
-@comment  node-name,  next,  previous,  up
+@node Concept Index
 @unnumbered Concept Index
 @printindex cp
 
-@node Function Index,  , Concept Index, Top
-@comment  node-name,  next,  previous,  up
+@node Function Index
 @unnumbered Function and Type Index
 @printindex fn
 
