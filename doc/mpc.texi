@@ -24,6 +24,15 @@ entitled ``GNU Free Documentation License.''
 @end quotation
 @end copying
 
+@iftex
+@afourpaper
+@end iftex
+@tex
+\global\parindent=0pt
+\global\parskip=8pt
+\global\baselineskip=13pt
+@end tex
+
 @dircategory GNU Packages
 @direntry
 * mpc: (mpc)Multiple Precision Complex Library.
@@ -384,12 +393,12 @@ life.
 
 @section Rounding Modes
 
-A complex rounding mode is of the form @code{GNU MPC_RNDxy} where
+A complex rounding mode is of the form @code{MPC_RNDxy} where
 @code{x} and @code{y} are one of @code{N} (to nearest), @code{Z} (towards
 zero), @code{U} (towards plus infinity), @code{D} (towards minus infinity).
 The first letter refers to the rounding mode for the real part,
 and the second one for the imaginary part.
-For example @code{GNU MPC_RNDZU} indicates to round the real part towards zero,
+For example @code{MPC_RNDZU} indicates to round the real part towards zero,
 and the imaginary part towards plus infinity.
 
 The @samp{round to nearest} mode works as in the IEEE P754 standard: in case
@@ -405,8 +414,8 @@ to (100)=4 with a precision of two bits, and not to (110)=6.
 Most GNU MPC functions have a return value of type @code{int}, which is used
 to indicate the position of the rounded real and imaginary parts with respect
 to the exact (infinite precision) values.
-If this integer is @code{i}, the macros @code{GNU MPC_INEX_RE(i)} and
-@code{GNU MPC_INEX_IM(i)} give 0 if the corresponding rounded value is exact,
+If this integer is @code{i}, the macros @code{MPC_INEX_RE(i)} and
+@code{MPC_INEX_IM(i)} give 0 if the corresponding rounded value is exact,
 a negative value if the rounded value is less than the exact one,
 and a positive value if it is greater than the exact one.
 Similarly, functions computing a result of type @code{mpfr_t}
@@ -415,7 +424,7 @@ whether the rounded value is the same, larger or smaller then
 the exact result.
 
 Some functions, such as @code{mpc_sin_cos}, compute two complex results;
-the macros @code{GNU MPC_INEX1(i)} and @code{GNU MPC_INEX2(i)}, applied to
+the macros @code{MPC_INEX1(i)} and @code{MPC_INEX2(i)}, applied to
 the return value @code{i} of such a function, yield the exactness value
 corresponding to the first or the second computed value, respectively.
 
@@ -546,7 +555,7 @@ Similarly, functions with parameters of type @code{complex} or
 @code{long complex} are defined only if @code{<complex.h>} is included
 @emph{before} @file{mpc.h}.
 If you need assignment functions that are not in the current API, you can
-define them using the @code{GNU MPC_SET_X_Y} macro (@pxref{Advanced Functions}).
+define them using the @code{MPC_SET_X_Y} macro (@pxref{Advanced Functions}).
 
 @deftypefun int mpc_set (mpc_t @var{rop}, mpc_t @var{op}, mpc_rnd_t @var{rnd})
 Set the value of @var{rop} from @var{op}, rounded to the precision of @var{rop}
@@ -769,8 +778,8 @@ Return the number of characters written.
 
 Compare @var{op1} and @var{op2}, where in the case of @code{mpc_cmp_si_si},
 @var{op2} is taken to be @var{op2r} + i @var{op2i}.
-The return value @var{c} can be decomposed into @code{x = GNU MPC_INEX_RE(c)}
-and @code{y = GNU MPC_INEX_IM(c)}, such that @var{x} is
+The return value @var{c} can be decomposed into @code{x = MPC_INEX_RE(c)}
+and @code{y = MPC_INEX_IM(c)}, such that @var{x} is
 positive if the real part of @var{op1} is greater than that of @var{op2},
 zero if both real parts are equal, and negative if the real part of @var{op1}
 is less than that of @var{op2}, and likewise for @var{y}.
@@ -1029,20 +1038,20 @@ the GMP manual.
 Return the GNU MPC version, as a null-terminated string.
 @end deftypefun
 
-@defmac GNU MPC_VERSION
-@defmacx GNU MPC_VERSION_MAJOR
-@defmacx GNU MPC_VERSION_MINOR
-@defmacx GNU MPC_VERSION_PATCHLEVEL
-@defmacx GNU MPC_VERSION_STRING
-@code{GNU MPC_VERSION} is the version of GNU MPC as a preprocessing constant.
-@code{GNU MPC_VERSION_MAJOR}, @code{GNU MPC_VERSION_MINOR} and
-@code{GNU MPC_VERSION_PATCHLEVEL} are respectively the major, minor and
+@defmac MPC_VERSION
+@defmacx MPC_VERSION_MAJOR
+@defmacx MPC_VERSION_MINOR
+@defmacx MPC_VERSION_PATCHLEVEL
+@defmacx MPC_VERSION_STRING
+@code{MPC_VERSION} is the version of GNU MPC as a preprocessing constant.
+@code{MPC_VERSION_MAJOR}, @code{MPC_VERSION_MINOR} and
+@code{MPC_VERSION_PATCHLEVEL} are respectively the major, minor and
 patch level of GNU MPC version, as preprocessing constants.
-@code{GNU MPC_VERSION_STRING} is the version as a string constant, which
+@code{MPC_VERSION_STRING} is the version as a string constant, which
 can be compared to the result of @code{mpc_get_version} to check at
 run time the header file and library used match:
 @example
-if (strcmp (mpc_get_version (), GNU MPC_VERSION_STRING))
+if (strcmp (mpc_get_version (), MPC_VERSION_STRING))
   fprintf (stderr, "Warning: header and library do not match\n");
 @end example
 Note: Obtaining different strings is not necessarily an error, as in
@@ -1051,12 +1060,12 @@ dynamically linked with a newer GNU MPC library version (if allowed by the
 library versioning system).
 @end defmac
 
-@deftypefn Macro long GNU MPC_VERSION_NUM (@var{major}, @var{minor}, @var{patchlevel})
-Create an integer in the same format as used by @code{GNU MPC_VERSION} from the
+@deftypefn Macro long MPC_VERSION_NUM (@var{major}, @var{minor}, @var{patchlevel})
+Create an integer in the same format as used by @code{MPC_VERSION} from the
 given @var{major}, @var{minor} and @var{patchlevel}.
 Here is an example of how to check the GNU MPC version at compile time:
 @example
-#if (!defined(GNU MPC_VERSION) || (GNU MPC_VERSION<GNU MPC_VERSION_NUM(2,1,0)))
+#if (!defined(MPC_VERSION) || (MPC_VERSION<MPC_VERSION_NUM(2,1,0)))
 # error "Wrong GNU MPC version."
 #endif
 @end example
@@ -1065,8 +1074,8 @@ Here is an example of how to check the GNU MPC version at compile time:
 @node Advanced Functions
 @section Advanced Functions
 
-@defmac GNU MPC_SET_X_Y (@var{real_suffix}, @var{imag_suffix}, @var{rop}, @var{real}, @var{imag}, @var{rnd})
-The macro GNU MPC_SET_X_Y is designed to serve as the body of an assignment
+@defmac MPC_SET_X_Y (@var{real_suffix}, @var{imag_suffix}, @var{rop}, @var{real}, @var{imag}, @var{rnd})
+The macro MPC_SET_X_Y is designed to serve as the body of an assignment
 function and cannot be used by itself.
 The @var{real_suffix} and @var{imag_suffix} parameters are the
 types of the real and imaginary part, that is, the @code{x} in the
@@ -1082,7 +1091,7 @@ Value}).
 For instance, you can define mpc_set_ui_fr as follows:
 @example
 int mpc_set_ui_fr (mpc_t rop, long int re, double im, mpc_rnd_t rnd)
-    GNU MPC_SET_X_Y (ui, fr, rop, re, im, rnd);
+    MPC_SET_X_Y (ui, fr, rop, re, im, rnd);
 @end example
 @end defmac
 
@@ -1096,7 +1105,7 @@ but may be useful for users too.
 However, no upward compatibility is guaranteed.
 You need to include @code{mpc-impl.h} to use them.
 
-The macro @code{GNU MPC_MAX_PREC(z)} gives the maximum of the precisions
+The macro @code{MPC_MAX_PREC(z)} gives the maximum of the precisions
 of the real and imaginary parts of a complex number.
 
 
