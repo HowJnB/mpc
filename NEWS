@@ -1,4 +1,5 @@
-Recent changes:
+Changes in version 1.0:
+  - License change: LGPLv3+ for code, GFDLv1.3+ for documentation
   - Bug fixes:
     - mul now returns correct results even if there are over- or underflows
       during the computation
@@ -112,3 +113,11 @@ Changes in version 0.5 ("Aconitum neomontanum"):
      - hyperbolic functions: cosh, sinh, tanh
   - Bug fixes:
     - sqrt with directed rounding
+
+
+Copyright (C) 2008, 2009, 2010, 2011 INRIA
+
+Copying and distribution of this file, with or without modification,
+are permitted in any medium without royalty provided the copyright
+notice and this notice are preserved. This file is offered as-is,
+without any warranty.

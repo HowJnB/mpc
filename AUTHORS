@@ -4,3 +4,5 @@ Main authors:
    Paul Zimmermann
 
 Mickaël Gastineau has contributed the file Makefile.vc.
+
+File tests/memory.c taken from GNU MPFR, version 3.0.1.
