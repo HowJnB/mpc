@@ -164,8 +164,6 @@ specify an alternative installation location instead of
 
 To enable checking for memory leaks using @command{valgrind} during
 @code{make check}, add the parameter @code{--enable-valgrind-tests}.
-This can only be used on static libraries, so you need to pass
-@code{--disable-shared} at the same time.
 
 If for debugging purposes you wish to log calls to GNU MPC functions from
 within your code, add the parameter @samp{--enable-logging}.

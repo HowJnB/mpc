@@ -19,6 +19,9 @@
 
 AM_CPPFLAGS = -I$(top_srcdir)/src
 LDADD = libmpc-tests.la $(top_builddir)/src/libmpc.la
+# let libtool create an executable instead of a shell script
+# useful for tests with valgrind
+AM_LDFLAGS = -no-install
 # LOADLIBES (documented in the "GNU make" manual and equivalent to LDLIBS)
 # enables to compile a program foo.c in the test directory by simply doing
 # "make foo".
