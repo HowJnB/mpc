@@ -147,9 +147,11 @@ AC_LINK_IFELSE(
         ])
 
 # Check for a recent GMP
-# Note: the fat builds are broken in GMP 4.3.2 and GMP 5.0.0
-# (at least on 64-bit Core 2 under Linux)
-# http://gmplib.org/list-archives/gmp-bugs/2011-August/002345.html
+# We only guarantee that with a *functional* and recent enough GMP version,
+# MPC will compile; we do not guarantee that GMP will compile.
+# In particular fat builds are broken in GMP 4.3.2 and GMP 5.0.0
+# (at least on 64-bit Core 2 under Linux),
+# see http://gmplib.org/list-archives/gmp-bugs/2011-August/002345.html.
 AC_MSG_CHECKING(for recent GMP)
 AC_COMPILE_IFELSE(
         [AC_LANG_SOURCE(
@@ -168,6 +170,7 @@ error
 
 # Check for a recent MPFR: we require MPFR 2.4.2 so that the tests
 # in log.dat pass
+# The same remark as above for GMP applies.
 AC_MSG_CHECKING(for recent MPFR)
 AC_COMPILE_IFELSE(
         [AC_LANG_SOURCE(
