@@ -150,7 +150,7 @@ AC_LINK_IFELSE(
 # We only guarantee that with a *functional* and recent enough GMP version,
 # MPC will compile; we do not guarantee that GMP will compile.
 # In particular fat builds are broken in GMP 4.3.2 and GMP 5.0.0
-# (at least on 64-bit Core 2 under Linux),
+# (at least on 64-bit Core 2 under GNU/Linux),
 # see http://gmplib.org/list-archives/gmp-bugs/2011-August/002345.html.
 AC_MSG_CHECKING(for recent GMP)
 AC_COMPILE_IFELSE(
