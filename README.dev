@@ -14,8 +14,8 @@ Required versions:
 Creating a new release
 ----------------------
 
- 1) Check compilation with gmp 4.3.2 and mpfr 2.4.2, with and without
-    --enable-valgrind-tests.
+ 1) Check compilation with latest gmp and mpfr, with gmp 4.3.2 and mpfr 2.4.2;
+    with and without "--enable-valgrind-tests --disable-shared".
  2) Check the version number in configure.ac ("AC_INIT (mpc, _version_...)"),
     INSTALL, src/get_version.c, src/mpc.h (remove suffix "-dev" in
     MPC_VERSION_STRING) and Makefile.vc.

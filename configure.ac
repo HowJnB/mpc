@@ -82,7 +82,19 @@ AC_ARG_ENABLE([logging],
               esac
              ]
              )
-gl_VALGRIND_TESTS
+AC_ARG_ENABLE([valgrind-tests],
+             [AC_HELP_STRING([--enable-valgrind-tests],
+                             [run checks through valgrind for static library (default = no)])],
+             [case $enableval in
+                 yes) AS_IF([test "x$enable_shared" != "xno"],
+                            [AC_MSG_ERROR([Valgrind checks do not work with shared libraries; use --enable-valgrind-tests only with --disable-shared])],
+                            [gl_VALGRIND_TESTS]
+                           ) ;;
+                 no)  ;;
+                 *)   AC_MSG_ERROR([Bad value for --enable-valgrind-tests: Use yes or no]) ;;
+              esac
+             ]
+             )
 
 # Setup CC and CFLAGS
 AC_PROG_CC
