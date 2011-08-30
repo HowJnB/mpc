@@ -19,12 +19,11 @@ along with this program. If not, see http://www.gnu.org/licenses/ .
 */
 
 #include <stdio.h>
-#include <string.h>
 
 #include "mpc-tests.h"
 
 #ifdef HAVE_UNISTD_H
-#include <unistd.h>
+#include <unistd.h> /* for dup, dup2, STDIN_FILENO and STDOUT_FILENO */
 #else
 #define STDIN_FILENO 0
 #define STDOUT_FILENO 1
@@ -165,22 +164,22 @@ check_stdout (mpc_ptr read_number, mpc_ptr expected)
   int fd;
   size_t sz;
 
-  fflush(stdout);
-  fd = dup(STDOUT_FILENO);
-  if (freopen(tmp_file, "w", stdout) == NULL)
+  fflush (stdout);
+  fd = dup (STDOUT_FILENO);
+  if (freopen (tmp_file, "w", stdout) == NULL)
   {
      printf ("mpc_inp_str cannot redirect stdout\n");
      exit (1);
   }
   mpc_out_str (NULL, 2, 0, expected, MPC_RNDNN);
-  fflush(stdout);
-  dup2(fd, STDOUT_FILENO);
-  close(fd);
-  clearerr(stdout);
+  fflush (stdout);
+  dup2 (fd, STDOUT_FILENO);
+  close (fd);
+  clearerr (stdout);
 
-  fflush(stdin);
-  fd = dup(STDIN_FILENO);
-  if (freopen(tmp_file, "r", stdin) == NULL)
+  fflush (stdin);
+  fd = dup (STDIN_FILENO);
+  if (freopen (tmp_file, "r", stdin) == NULL)
   {
      printf ("mpc_inp_str cannot redirect stdout\n");
      exit (1);
@@ -201,10 +200,10 @@ check_stdout (mpc_ptr read_number, mpc_ptr expected)
       MPC_OUT (expected);
       exit (1);
     }
-  fflush(stdin);
-  dup2(fd, STDIN_FILENO);
-  close(fd);
-  clearerr(stdin);
+  fflush (stdin);
+  dup2 (fd, STDIN_FILENO);
+  close (fd);
+  clearerr (stdin);
 }
 #endif /* MPC_NO_STREAM_REDIRECTION */
 
