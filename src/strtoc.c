@@ -23,7 +23,8 @@ along with this program. If not, see http://www.gnu.org/licenses/ .
 #include "mpc-impl.h"
 
 static void
-skip_whitespace (const char **p) {
+skip_whitespace (const char **p)
+{
    /* TODO: This function had better be inlined, but it is unclear whether
       the hassle to get this implemented across all platforms is worth it. */
    while (isspace ((unsigned char) **p))
@@ -31,7 +32,8 @@ skip_whitespace (const char **p) {
 }
 
 int
-mpc_strtoc (mpc_ptr rop, const char *nptr, char **endptr, int base, mpc_rnd_t rnd) {
+mpc_strtoc (mpc_ptr rop, const char *nptr, char **endptr, int base, mpc_rnd_t rnd)
+{
    const char *p;
    char *end;
    int bracketed = 0;

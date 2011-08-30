@@ -24,7 +24,8 @@ along with this program. If not, see http://www.gnu.org/licenses/ .
 #include "mpc-impl.h"
 
 static size_t
-skip_whitespace (FILE *stream) {
+skip_whitespace (FILE *stream)
+{
    int c = getc (stream);
    size_t size = 0;
    while (c != EOF && isspace ((unsigned char) c)) {
