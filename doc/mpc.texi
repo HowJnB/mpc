@@ -162,6 +162,9 @@ Another useful parameter is @samp{--prefix}, which can be used to
 specify an alternative installation location instead of
 @file{/usr/local}; see @samp{make install} below.
 
+To enable checking for memory leaks using @command{valgrind} during
+@code{make check}, add the parameter @code{--enable-valgrind-tests}.
+
 If for debugging purposes you wish to log calls to GNU MPC functions from
 within your code, add the parameter @samp{--enable-logging}.
 In your code, replace the inclusion of @file{mpc.h} by @file{mpc-log.h}

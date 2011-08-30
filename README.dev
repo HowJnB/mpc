@@ -14,26 +14,24 @@ Required versions:
 Creating a new release
 ----------------------
 
- 1) Run all tests with valgrind and check no memory leak remains:
-       for f in .libs/lt-t*; do valgrind $f; done
- 2) Check compilation with gmp 4.3.2 and mpfr 2.4.2.
- 3) Check the version number in configure.ac ("AC_INIT (mpc, _version_...)"),
+ 1) Check compilation with gmp 4.3.2 and mpfr 2.4.2.
+ 2) Check the version number in configure.ac ("AC_INIT (mpc, _version_...)"),
     INSTALL, src/get_version.c, src/mpc.h (remove suffix "-dev" in
     MPC_VERSION_STRING) and Makefile.vc.
- 4) Verify that the API version in src/Makefile.am is correct.
- 5) Check that NEWS, BUGS and TODO are up to date, and that the minimal
+ 3) Verify that the API version in src/Makefile.am is correct.
+ 4) Check that NEWS, BUGS and TODO are up to date, and that the minimal
     version numbers of gmp and mpfr in configure.ac, INSTALL and
     doc/mpc.texi are correct.
- 6) Execute "autoreconf; touch doc/mpc.texi; make distcheck".
+ 5) Execute "autoreconf; touch doc/mpc.texi; make distcheck".
     This updates the date and version number in doc/version.texi and
     creates the tarball for distribution.
- 7) Create an svn tag from inside the svn root:
+ 6) Create an svn tag from inside the svn root:
     svn cp trunk tags/VERSION
- 8) Update the web page on the server.
+ 7) Update the web page on the server.
     The html documentation is created with
        makeinfo --html --no-split mpc.texi
     and the resulting mpc.html is copied to content_html.php.
- 9) After the release, update the version number in configure.ac, INSTALL,
+ 8) After the release, update the version number in configure.ac, INSTALL,
     src/get_version.c, src/mpc.h and Makefile.vc.
-10) Potentially increase the API version in src/Makefile.am.
-11) Commit the changes to svn.
+ 9) Potentially increase the API version in src/Makefile.am.
+10) Commit the changes to svn.
