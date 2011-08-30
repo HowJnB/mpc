@@ -41,6 +41,7 @@ exp.dat fma.dat fr_div.dat fr_sub.dat inp_str.dat log.dat mul.dat mul_fr.dat  \
 neg.dat norm.dat pow.dat pow_si.dat pow_ui.dat proj.dat sin.dat sinh.dat      \
 sqr.dat sqrt.dat strtoc.dat sub.dat sub_fr.dat tan.dat tanh.dat
 
+TESTS_ENVIRONMENT = $(VALGRIND)
 TESTS = $(check_PROGRAMS)
 CLEANFILES = mpc_test
 

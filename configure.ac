@@ -82,7 +82,16 @@ AC_ARG_ENABLE([logging],
               esac
              ]
              )
-
+AC_ARG_ENABLE([valgrind],
+             [AC_HELP_STRING([--enable-valgrind],
+                             [enable valgrind for make check (default = no)])],
+             [case $enableval in
+                 yes) AC_CHECK_PROG([VALGRIND], [valgrind], [valgrind -q --error-exitcode=1]) ;;
+                 no)  ;;
+                 *)   AC_MSG_ERROR([Bad value for --enable-valgrind: Use yes or no]) ;;
+              esac
+             ]
+             )
 
 # Setup CC and CFLAGS
 AC_PROG_CC
@@ -201,7 +210,6 @@ AS_IF([test "x$enable_logging" = "xyes"],
            [AC_MSG_ERROR([Library dl not found, logging impossible])])
        ]
      )
-
 
 # Configs for Windows DLLs
 case $host in
