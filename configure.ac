@@ -22,7 +22,8 @@ along with this program. If not, see http://www.gnu.org/licenses/ .
 # Process this file with autoconf to produce a configure script.
 
 AC_PREREQ(2.61)
-AC_INIT(mpc, 1.0.0-dev, mpc-discuss@lists.gforge.inria.fr)
+define([svnversion], esyscmd([svnversion -n]))
+AC_INIT(mpc, 1.0.0-dev-svnversion, mpc-discuss@lists.gforge.inria.fr)
 AC_CONFIG_SRCDIR([src/mpc-impl.h])
 AC_CONFIG_HEADER([config.h])
 
