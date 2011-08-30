@@ -57,13 +57,10 @@ along with this program. If not, see http://www.gnu.org/licenses/ .
    gmp_randstate_t rands) in your tests
    - add test_end at the end the test function */
 extern gmp_randstate_t  rands;
-extern char             rands_initialized;
 
 extern void test_start (void);
 extern void test_end (void);
-
 extern void test_default_random (mpc_ptr, mp_exp_t, mp_exp_t, unsigned int, unsigned int);
-extern unsigned long urandomm_ui (unsigned long);
 
 
 /** COMPARISON FUNCTIONS **/

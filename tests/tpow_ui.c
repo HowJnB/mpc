@@ -28,10 +28,8 @@ compare_mpc_pow (mpfr_prec_t pmax, int iter, unsigned long nbits)
   mpc_t x, y, z, t;
   unsigned long n;
   int i, inex_pow, inex_pow_ui;
-  gmp_randstate_t state;
   mpc_rnd_t rnd;
 
-  gmp_randinit_default (state);
   mpc_init3 (y, sizeof (unsigned long) * CHAR_BIT, MPFR_PREC_MIN);
   for (p = MPFR_PREC_MIN; p <= pmax; p++)
     for (i = 0; i < iter; i++)
@@ -39,8 +37,8 @@ compare_mpc_pow (mpfr_prec_t pmax, int iter, unsigned long nbits)
         mpc_init2 (x, p);
         mpc_init2 (z, p);
         mpc_init2 (t, p);
-        mpc_urandom (x, state);
-        n = gmp_urandomb_ui (state, nbits); /* 0 <= n < 2^nbits */
+        mpc_urandom (x, rands);
+        n = gmp_urandomb_ui (rands, nbits); /* 0 <= n < 2^nbits */
         mpc_set_ui (y, n, MPC_RNDNN);
         for (rnd = 0; rnd < 16; rnd ++)
           {
@@ -73,7 +71,6 @@ compare_mpc_pow (mpfr_prec_t pmax, int iter, unsigned long nbits)
         mpc_clear (t);
       }
   mpc_clear (y);
-  gmp_randclear (state);
 }
 
 int

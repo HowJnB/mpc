@@ -22,7 +22,8 @@ along with this program. If not, see http://www.gnu.org/licenses/ .
 #include <stdlib.h>
 #include "mpc-tests.h"
 
-static void cmpsqr (mpc_srcptr x, mpc_rnd_t rnd)
+static void
+cmpsqr (mpc_srcptr x, mpc_rnd_t rnd)
    /* computes the square of x with the specific function or by simple     */
    /* multiplication using the rounding mode rnd and compares the results  */
    /* and return values.                                                   */

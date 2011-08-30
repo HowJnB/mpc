@@ -40,7 +40,7 @@ along with this program. If not, see http://www.gnu.org/licenses/ .
 #endif
 
 gmp_randstate_t  rands;
-char             rands_initialized;
+static char      rands_initialized;
 
 void
 test_start (void)
