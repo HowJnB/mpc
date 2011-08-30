@@ -147,6 +147,9 @@ AC_LINK_IFELSE(
         ])
 
 # Check for a recent GMP
+# Note: the fat builds are broken in GMP 4.3.2 and GMP 5.0.0
+# (at least on 64-bit Core 2 under Linux)
+# http://gmplib.org/list-archives/gmp-bugs/2011-August/002345.html
 AC_MSG_CHECKING(for recent GMP)
 AC_COMPILE_IFELSE(
         [AC_LANG_SOURCE(
