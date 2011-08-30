@@ -1,4 +1,8 @@
 From Andreas Enge 30 August 2011:
+move static tests from tdiv, tpow_fr, tadd_fr, tpow_z, ttan, tui_div
+to data files
+
+From Andreas Enge 30 August 2011:
 As soon as dependent on mpfr>=3, remove auxiliary functions from
 get_version.c and update mpc.h.
 
