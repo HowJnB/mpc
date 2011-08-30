@@ -23,6 +23,7 @@ along with this program. If not, see http://www.gnu.org/licenses/ .
 #include "mpc-tests.h"
 
 #ifdef HAVE_UNISTD_H
+#define _POSIX_C_SOURCE /* apparently needed on Darwin */
 #include <unistd.h> /* for dup, dup2, STDIN_FILENO and STDOUT_FILENO */
 #else
 #define STDIN_FILENO 0
