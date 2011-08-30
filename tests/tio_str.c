@@ -240,7 +240,7 @@ main (void)
       check_io_str (z, x);
     }
 
-#ifndef NO_STREAM_REDIRECTION
+#ifndef MPC_NO_STREAM_REDIRECTION
   mpc_set_si_si (x, 1, -4, MPC_RNDNN);
   mpc_div_ui (x, x, 3, MPC_RNDDU);
 
