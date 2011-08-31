@@ -413,22 +413,26 @@ mpc_mul_karatsuba (mpc_ptr rop, mpc_srcptr op1, mpc_srcptr op2, mpc_rnd_t rnd)
   /* now |a| >= |b| and |c| >= |d| */
   prec = MPC_MAX_PREC(rop);
 
-  mpfr_init2 (u, 2);
   mpfr_init2 (v, prec_v = mpfr_get_prec (a) + mpfr_get_prec (d));
   mpfr_init2 (w, prec_w = mpfr_get_prec (b) + mpfr_get_prec (c));
+  mpfr_init2 (u, 2);
   mpfr_init2 (x, 2);
 
   inexact = mpfr_mul (v, a, d, GMP_RNDN);
-  if (inexact)
+  if (inexact) {
      /* over- or underflow */
-     return mpc_mul_naive (rop, op1, op2, rnd);
+    ok = 0;
+    goto clear;
+  }
   if (mul_a == -1)
     mpfr_neg (v, v, GMP_RNDN);
 
   inexact = mpfr_mul (w, b, c, GMP_RNDN);
-  if (inexact)
+  if (inexact) {
      /* over- or underflow */
-     return mpc_mul_naive (rop, op1, op2, rnd);
+     ok = 0;
+     goto clear;
+  }
   if (mul_c == -1)
     mpfr_neg (w, w, GMP_RNDN);
 
@@ -565,6 +569,7 @@ mpc_mul_karatsuba (mpc_ptr rop, mpc_srcptr op1, mpc_srcptr op2, mpc_rnd_t rnd)
       mpc_set (rop, result, MPC_RNDNN);
    }
 
+clear:
    mpfr_clear (u);
    mpfr_clear (v);
    mpfr_clear (w);

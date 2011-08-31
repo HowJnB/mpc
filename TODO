@@ -1,3 +1,8 @@
+From Andreas Enge 31 August 2011:
+implement mul_karatsuba with three multiplications at precision around p,
+instead of two at precision 2*p and one at precision p
+requires analysis of error propagation
+
 From Andreas Enge 30 August 2011:
 move static tests from tdiv, tpow_fr, tadd_fr, tpow_z, ttan, tui_div
 to data files
