@@ -11,10 +11,6 @@ From Andreas Enge 30 August 2011:
 As soon as dependent on mpfr>=3, remove auxiliary functions from
 get_version.c and update mpc.h.
 
-From Andreas Enge 23 February 2011:
-rewrite sqr following the structure of mul to make sure that intermediate
-over- and underflows are handled correctly
-
 Bench:
 - from Andreas Enge 9 June 2009:
   Scripts and web page comparing timings with different systems,

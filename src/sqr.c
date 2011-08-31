@@ -225,8 +225,5 @@ mpc_sqr (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
    if (rop == op)
       mpfr_clear (x);
 
-   inex_re = mpfr_check_range (MPC_RE(rop), inex_re, MPC_RND_RE (rnd));
-   inex_im = mpfr_check_range (MPC_IM(rop), inex_im, MPC_RND_IM (rnd));
-
    return MPC_INEX (inex_re, inex_im);
 }
