@@ -118,8 +118,9 @@ tests_reallocate (void *ptr, size_t old_size, size_t new_size)
     {
       /* Note: we should use the standard %zu to print sizes, but
          this is not supported by old C implementations. */
-      printf ("tests_reallocate(): bad old size %lu, should be %lu\n",
-              (unsigned long) old_size, (unsigned long) h->size);
+      printf ("tests_reallocate(): bad old size %lu at 0x%lX, should be %lu\n",
+              (unsigned long) old_size, (unsigned long) ptr,
+              (unsigned long) h->size);
       abort ();
     }
 
@@ -163,8 +164,9 @@ tests_free (void *ptr, size_t size)
     {
       /* Note: we should use the standard %zu to print sizes, but
          this is not supported by old C implementations. */
-      printf ("tests_free(): bad size %lu, should be %lu\n",
-              (unsigned long) size, (unsigned long) h->size);
+      printf ("tests_free(): bad size %lu at 0x%lX, should be %lu\n",
+              (unsigned long) size, (unsigned long) ptr,
+              (unsigned long) h->size);
       abort ();
     }
 
