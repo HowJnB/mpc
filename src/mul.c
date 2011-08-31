@@ -488,10 +488,7 @@ mpc_mul_karatsuba (mpc_ptr rop, mpc_srcptr op1, mpc_srcptr op2, mpc_rnd_t rnd)
                       /* +1 is necessary for a potential carry */
 	     /* ensure we do not use a too large precision */
 	     if (prec_x > prec_u)
-             {
-                printf ("XXX\n");
                prec_x = prec_u;
-             }
 	     if (prec_x > prec)
 	       mpfr_prec_round (x, prec_x, GMP_RNDN);
 	   }
