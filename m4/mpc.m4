@@ -135,7 +135,7 @@ AC_DEFUN([MPC_C_CHECK_WARNINGCFLAGS], [
 # SYNOPSIS
 #
 #
-MPC_GMP_CC_CFLAGS
+# MPC_GMP_CC_CFLAGS
 #
 # DESCRIPTION
 #
@@ -240,4 +240,25 @@ error
   AC_MSG_ERROR([gmp is only available as a DLL: use --disable-static --enable-shared]) ])
   fi
   ;;
+])
+
+
+#
+# SYNOPSIS
+#
+#
+# MPC_SVNVERSION
+#
+# DESCRIPTION
+#
+# If current version string contains "dev", substitutes svn version into
+# SVNVERSION
+#
+AC_DEFUN([MPC_SVNVERSION], [
+   if echo $VERSION | grep -c dev >/dev/null 2>&1 ; then
+      AC_MSG_CHECKING([for current svn version])
+      SVNVERSION=esyscmd([svnversion -n])
+      AC_SUBST([SVNVERSION])
+      AC_MSG_RESULT([$SVNVERSION])
+   fi
 ])

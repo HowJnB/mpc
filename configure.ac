@@ -22,8 +22,7 @@ along with this program. If not, see http://www.gnu.org/licenses/ .
 # Process this file with autoconf to produce a configure script.
 
 AC_PREREQ(2.61)
-define([svnversion], esyscmd([svnversion -n]))
-AC_INIT(mpc, 1.0.0-dev-svnversion, mpc-discuss@lists.gforge.inria.fr)
+AC_INIT(mpc, 1.0.0-dev, mpc-discuss@lists.gforge.inria.fr)
 AC_CONFIG_SRCDIR([src/mpc-impl.h])
 AC_CONFIG_HEADER([config.h])
 
@@ -218,13 +217,14 @@ case $host in
      MPC_WINDOWS
 esac
 
-
-
 # Checks for gcc version, result in GCC_VERSION inside config.log, for instance
 AX_GCC_VERSION
 AC_DEFINE_UNQUOTED([MPC_GCC], ["$GCC"], [Gcc yes or no])
 AC_DEFINE_UNQUOTED([MPC_CC], ["$CC"], [C compiler])
 AC_DEFINE_UNQUOTED([MPC_GCC_VERSION], ["$GCC_VERSION"], [Version of gcc])
+
+# Looks for svn version if the version string contains "dev"
+MPC_SVNVERSION
 
 AC_CONFIG_FILES([Makefile src/Makefile tests/Makefile doc/Makefile])
 AC_OUTPUT

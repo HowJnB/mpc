@@ -19,6 +19,9 @@
 
 ACLOCAL_AMFLAGS = -I m4
 
+# version number for distribution tarball
+VERSION = @VERSION@@SVNVERSION@
+
 SUBDIRS = src tests doc
 
 EXTRA_HEADERS = src/mpc-log.h
