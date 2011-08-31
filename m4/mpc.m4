@@ -256,9 +256,12 @@ error
 #
 AC_DEFUN([MPC_SVNVERSION], [
    if echo $VERSION | grep -c dev >/dev/null 2>&1 ; then
-      AC_MSG_CHECKING([for current svn version])
-      SVNVERSION=esyscmd([svnversion -n])
-      AC_SUBST([SVNVERSION])
-      AC_MSG_RESULT([$SVNVERSION])
+      AC_CHECK_PROG([HASSVNVERSION], [svnversion], [yes], [no])
+      AS_IF([test "x$HASSVNVERSION" = "xyes"], [
+         AC_MSG_CHECKING([for current svn version])
+         SVNVERSION=esyscmd([svnversion -n])
+         AC_SUBST([SVNVERSION])
+         AC_MSG_RESULT([$SVNVERSION])
+      ])
    fi
 ])
