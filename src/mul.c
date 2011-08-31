@@ -418,13 +418,17 @@ mpc_mul_karatsuba (mpc_ptr rop, mpc_srcptr op1, mpc_srcptr op2, mpc_rnd_t rnd)
   mpfr_init2 (w, prec_w = mpfr_get_prec (b) + mpfr_get_prec (c));
   mpfr_init2 (x, 2);
 
-  inexact = mpfr_mul (v, a, d, GMP_RNDN); /* exact if no underflow/overflow */
-  MPC_ASSERT(inexact == 0);
+  inexact = mpfr_mul (v, a, d, GMP_RNDN);
+  if (inexact)
+     /* over- or underflow */
+     return mpc_mul_naive (rop, op1, op2, rnd);
   if (mul_a == -1)
     mpfr_neg (v, v, GMP_RNDN);
 
-  inexact = mpfr_mul (w, b, c, GMP_RNDN); /* exact if no underflow/overflow */
-  MPC_ASSERT(inexact == 0);
+  inexact = mpfr_mul (w, b, c, GMP_RNDN);
+  if (inexact)
+     /* over- or underflow */
+     return mpc_mul_naive (rop, op1, op2, rnd);
   if (mul_c == -1)
     mpfr_neg (w, w, GMP_RNDN);
 
