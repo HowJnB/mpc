@@ -342,10 +342,11 @@ mpc_mul_naive (mpc_ptr z, mpc_srcptr x, mpc_srcptr y, mpc_rnd_t rnd)
 }
 
 
-/* Karatsuba multiplication, with 3 real multiplies */
 int
 mpc_mul_karatsuba (mpc_ptr rop, mpc_srcptr op1, mpc_srcptr op2, mpc_rnd_t rnd)
 {
+   /* computes rop=op1*op2 by a Karatsuba algorithm, where op1 and op2 
+      are assumed to be finite and without zero parts                  */
   mpfr_srcptr a, b, c, d;
   int mul_i, ok, inexact, mul_a, mul_c, inex_re = 0, inex_im = 0, sign_x, sign_u;
   mpfr_t u, v, w, x;
@@ -481,17 +482,16 @@ mpc_mul_karatsuba (mpc_ptr rop, mpc_srcptr op1, mpc_srcptr op2, mpc_rnd_t rnd)
 	 if (inexact == 0)
 	   {
 	     mpfr_prec_t prec_x;
-             if (mpfr_zero_p(v))
-               prec_x = prec_w;
-             else if (mpfr_zero_p(w))
-               prec_x = prec_v;
-             else
-                 prec_x = SAFE_ABS (mpfr_exp_t, mpfr_get_exp (v) - mpfr_get_exp (w))
-                          + MPC_MAX (prec_v, prec_w) + 1;
-                 /* +1 is necessary for a potential carry */
+             /* v and w are different from 0, so mpfr_get_exp is safe to use */
+             prec_x = SAFE_ABS (mpfr_exp_t, mpfr_get_exp (v) - mpfr_get_exp (w))
+                      + MPC_MAX (prec_v, prec_w) + 1;
+                      /* +1 is necessary for a potential carry */
 	     /* ensure we do not use a too large precision */
 	     if (prec_x > prec_u)
+             {
+                printf ("XXX\n");
                prec_x = prec_u;
+             }
 	     if (prec_x > prec)
 	       mpfr_prec_round (x, prec_x, GMP_RNDN);
 	   }
