@@ -345,7 +345,7 @@ mpc_mul_naive (mpc_ptr z, mpc_srcptr x, mpc_srcptr y, mpc_rnd_t rnd)
 int
 mpc_mul_karatsuba (mpc_ptr rop, mpc_srcptr op1, mpc_srcptr op2, mpc_rnd_t rnd)
 {
-   /* computes rop=op1*op2 by a Karatsuba algorithm, where op1 and op2 
+   /* computes rop=op1*op2 by a Karatsuba algorithm, where op1 and op2
       are assumed to be finite and without zero parts                  */
   mpfr_srcptr a, b, c, d;
   int mul_i, ok, inexact, mul_a, mul_c, inex_re = 0, inex_im = 0, sign_x, sign_u;
