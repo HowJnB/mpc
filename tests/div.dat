@@ -1,6 +1,6 @@
 # Data file for mpc_div.
 #
-# Copyright (C) 2008, 2009, 2010 INRIA
+# Copyright (C) 2008, 2009, 2010, 2011 INRIA
 #
 # This file is part of GNU MPC.
 #
@@ -2426,3 +2426,12 @@
 
 # overflow (reported by Emmanuel Thome)
 - + 250 -inf 250 +inf 250 1 250 0 250 -1e-164895850 250 -1e-164895850 N N
+
+# small exact/inexact examples
++ + 10 0b1.01010001 10 -0b1.1000101@-6   10 973 10 964  10 725 10 745 N N
+0 0 10 -14 10 9   10 -837 10 637  10 63 10 -5 N N
+0 0 2 2 2 -1   2 4 2 3  2 1 2 2 N N
++ - 4 1.375 4 1.25   4 15 4 14  4 11 4 0 N N
+
+# Bug 20080923
++ + 4 0b11@527 4 -0b111@-489   4 -0b11@-206 4 0  4 -0b1@-733 4 -0b101@-1750 N Z

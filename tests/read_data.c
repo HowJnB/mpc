@@ -421,8 +421,8 @@ check_compatible (int inex, mpfr_t expected, mpfr_rnd_t rnd, const char *s)
 {
   if ((rnd == GMP_RNDU && inex == -1) ||
       (rnd == GMP_RNDD && inex == +1) ||
-      (rnd == GMP_RNDZ && mpfr_signbit (expected) == 0 && inex == +1) ||
-      (rnd == GMP_RNDZ && mpfr_signbit (expected) == 1 && inex == -1))
+      (rnd == GMP_RNDZ && !mpfr_signbit (expected) && inex == +1) ||
+      (rnd == GMP_RNDZ && mpfr_signbit (expected) && inex == -1))
     {
       if (s != NULL)
         printf ("Incompatible ternary value '%c' (%s part) in file '%s' line %lu\n",
