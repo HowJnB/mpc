@@ -186,5 +186,7 @@ main (void)
 
   reuse_bug ();
 
+  test_end ();
+
   return 0;
 }
