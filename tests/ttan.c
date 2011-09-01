@@ -197,53 +197,6 @@ pure_imaginary_argument (void)
   mpfr_clear (y);
 }
 
-static void
-check_53 (void)
-{
-  mpc_t z;
-  mpc_t tan_z;
-  mpc_t t;
-
-  mpc_init2 (z, 53);
-  mpc_init2 (tan_z, 53);
-  mpc_init2 (t, 53);
-
-  /* Let's play around the poles */
-  /* x = Re(z) = Pi/2 rounded to nearest to 53 bits precision */
-  /* y = Im(z) = Pi/2 - Re(z) rounded to nearest to 53 bits precision */
-  mpfr_set_str (MPC_RE (z), "3243F6A8885A30p-53", 16, GMP_RNDN);
-  mpfr_set_str (MPC_IM (z), "11A62633145C07p-106", 16, GMP_RNDN);
-  mpfr_set_str (MPC_RE (t), "1D02967C31CDB5", 16, GMP_RNDN);
-  mpfr_set_str (MPC_IM (t), "1D02967C31CDB5", 16, GMP_RNDN);
-  mpc_tan (tan_z, z, MPC_RNDNN);
-  if (mpc_cmp (tan_z, t) != 0)
-    TEST_FAILED ("mpc_tan", z, tan_z, t, MPC_RNDNN);
-
-  mpfr_set_str (MPC_RE (t), "1D02967C31CDB4", 16, GMP_RNDN);
-  mpc_tan (tan_z, z, MPC_RNDDU);
-  if (mpc_cmp (tan_z, t) != 0)
-    TEST_FAILED ("mpc_tan", z, tan_z, t, MPC_RNDDU);
-
-  mpfr_set_str (MPC_IM (t), "1D02967C31CDB4", 16, GMP_RNDN);
-  mpc_tan (tan_z, z, MPC_RNDZD);
-  if (mpc_cmp (tan_z, t) != 0)
-    TEST_FAILED ("mpc_tan", z, tan_z, t, MPC_RNDZD);
-
-  /* Re(z) = x + 2^(-52) */
-  /* Im(z) = y - 2^(-52) */
-  mpfr_set_str (MPC_RE (z), "1921FB54442D19p-52", 16, GMP_RNDN);
-  mpfr_set_str (MPC_IM (z), "-172CECE675D1FDp-105", 16, GMP_RNDN);
-  mpfr_set_str (MPC_RE (t), "-B0BD0AA4A3B3D", 16, GMP_RNDN);
-  mpfr_set_str (MPC_IM (t), "-B0BD0AA4A3B3D", 16, GMP_RNDN);
-  mpc_tan (tan_z, z, MPC_RNDNN);
-  if (mpc_cmp (tan_z, t) != 0)
-    TEST_FAILED ("mpc_tan", z, tan_z, t, MPC_RNDNN);
-
-  mpc_clear (t);
-  mpc_clear (tan_z);
-  mpc_clear (z);
-}
-
 int
 main (void)
 {
@@ -256,7 +209,6 @@ main (void)
 
   pure_real_argument ();
   pure_imaginary_argument ();
-  check_53 ();
 
   test_end ();
 

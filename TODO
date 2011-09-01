@@ -4,9 +4,6 @@ instead of two at precision 2*p and one at precision p
 requires analysis of error propagation
 
 From Andreas Enge 30 August 2011:
-move static tests from tpow_z, ttan, tui_div to data files
-
-From Andreas Enge 30 August 2011:
 As soon as dependent on mpfr>=3, remove auxiliary functions from
 get_version.c and update mpc.h.
 
