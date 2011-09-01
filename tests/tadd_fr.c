@@ -65,7 +65,7 @@ main (void)
   check_ternary_value (1024, 1);
 
   data_check (f, "add_fr.dat");
-  tgeneric (f, 2, 1024, 7, -1);
+  tgeneric (f, 2, 1024, 7, 10);
 
   test_end ();
   return 0;

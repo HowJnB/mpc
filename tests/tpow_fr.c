@@ -23,23 +23,11 @@ along with this program. If not, see http://www.gnu.org/licenses/ .
 int
 main (void)
 {
-  mpc_t z;
-  mpfr_t f;
-
+  DECL_FUNC (CCF, f, mpc_pow_fr);
   test_start ();
 
-  mpc_init2 (z, 5);
-  mpfr_init2 (f, 3);
-  mpc_set_ui_ui (z, 3, 2, MPC_RNDNN);
-  mpfr_set_ui (f, 3, GMP_RNDN);
-  mpc_pow_fr (z, z, f, MPC_RNDNN);
-  if (mpc_cmp_si_si (z, -9, 46) != 0)
-    {
-      printf ("Error for mpc_pow_fr (1)\n");
-      exit (1);
-    }
-  mpc_clear (z);
-  mpfr_clear (f);
+  data_check (f, "pow_fr.dat");
+  tgeneric (f, 2, 1024, 7, 10);
 
   test_end ();
 
