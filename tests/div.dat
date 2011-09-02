@@ -2424,9 +2424,6 @@
 0 0 7    1 7    1   7    1 7    1  7    1 7   +0 N N
 0 0 7    1 7   +0   7    1 7    1  7    1 7    1 N N
 
-# overflow (reported by Emmanuel Thome)
-- + 250 -inf 250 +inf 250 1 250 0 250 -1e-164895850 250 -1e-164895850 N N
-
 # small exact/inexact examples
 - - 10 0b1.01010001 10 -0b1.1000101@-6   10 973 10 964  10 725 10 745 N N
 0 0 10 -14 10 9   10 -837 10 637  10 63 10 -5 N N
@@ -2438,5 +2435,32 @@
 
 # potential intermediate over- or underflow
 0 0 10 1 10 0  10 0 10 0b1@536870912 10 0 10 0b1@536870912  N N
+0 0 10 1 10 0  10 0b1@536870912 10 0 10 0b1@536870912 10 0 N N
+
+# overflow (reported by Emmanuel Thome)
+- + 250 -inf 250 +inf 250 1 250 0 250 -1e-164895850 250 -1e-164895850 N N
+
+# cases that should yield 1, but cannot be handled due to intermediate
+# over- or underflows
+# current result: (@NaN@ 0)
 #0 0 10 1 10 0  10 1 10 0b1@536870912 10 1 10 0b1@536870912  N N
+# current result: (@Inf@ 0)
 #0 0 10 1 10 0  10 1 10 0b1@-536870913 10 1 10 0b1@-536870913  N N
+# current result: (@NaN@ 0)
+#0 0 10 1 10 0  10 0b1@536870912 10 0b1@536870912 10 0b1@536870912 10 0b1@536870912  N N
+# current result: (@NaN@ 0)
+#0 0 10 1 10 0  10 0b1@-536870913 10 0b1@-536870913 10 0b1@-536870913 10 0b1@-536870913  N N
+# current result: (@Inf@ 0)
+#0 0 10 1 10 0  10 0b1@536870912 10 0b1@-536870913 10 0b1@536870912 10 0b1@-536870913  N N
+# cases that should yield i, but cannot be handled due to intermediate
+# over- or underflows
+# current result: (0 @NaN@)
+#0 0 10 0 10 1  10 -0b1@536870912 10 1 10 1 10 0b1@536870912  N N
+# current result: (@NaN@ @Inf@)
+#0 0 10 0 10 1  10 -0b1@-536870913 10 1 10 1 10 0b1@-536870913  N N
+# current result: (0 @NaN@)
+#0 0 10 0 10 1  10 -0b1@536870912 10 0b1@536870912 10 0b1@536870912 10 0b1@536870912  N N
+# current result: (@NaN@ @NaN@)
+#0 0 10 0 10 1  10 -0b1@-536870913 10 0b1@-536870913 10 0b1@-536870913 10 0b1@-536870913  N N
+# current result: (@NaN@ @Inf@)
+#0 0 10 0 10 1  10 -0b1@-536870913 10 0b1@536870912 10 0b1@536870912 10 0b1@-536870913  N N

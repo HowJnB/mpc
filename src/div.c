@@ -18,7 +18,7 @@ You should have received a copy of the GNU Lesser General Public License
 along with this program. If not, see http://www.gnu.org/licenses/ .
 */
 
-#include <stdio.h>
+#include <stdio.h> /* for MPC_ASSERT */
 #include "mpc-impl.h"
 
 static int
@@ -228,7 +228,7 @@ mpc_div (mpc_ptr a, mpc_srcptr b, mpc_srcptr c, mpc_rnd_t rnd)
    mpfr_t q;
    mpfr_prec_t prec;
    int inex, inexact_prod, inexact_norm, inexact_re, inexact_im, loops = 0;
-   int underflow_norm, overflow_norm;
+   int underflow_norm, overflow_norm, underflow_prod, overflow_prod;
    int underflow_re, overflow_re, underflow_im = 0, overflow_im = 0;
    mpfr_rnd_t rnd_re = MPC_RND_RE (rnd), rnd_im = MPC_RND_IM (rnd);
 
@@ -284,9 +284,27 @@ mpc_div (mpc_ptr a, mpc_srcptr b, mpc_srcptr c, mpc_rnd_t rnd)
          /* to obtain divisions by 0 later on */
 
       /* now compute b*conjugate(c) */
+      mpfr_clear_underflow ();
+      mpfr_clear_overflow ();
       inexact_prod = mpc_mul (res, b, c_conj, MPC_RNDZZ);
       inexact_re = MPC_INEX_RE (inexact_prod);
       inexact_im = MPC_INEX_IM (inexact_prod);
+      underflow_prod = mpfr_underflow_p ();
+      overflow_prod = mpfr_overflow_p ();
+         /* unfortunately, does not distinguish between under-/overflow
+            in real or imaginary parts
+            hopefully, the side-effects of mpc_mul do indeed raise the
+            mpfr exceptions
+            FIXME: handling of under- and overflows here and in the
+            following is not totally rigorous and just a best effort to
+            salvage almost hopeless situations                          */
+      if (overflow_prod) {
+         if (!mpfr_zero_p (MPC_RE (res)))
+            mpfr_set_inf (MPC_RE (res), mpfr_sgn (MPC_RE (res)));
+         if (!mpfr_zero_p (MPC_IM (res)))
+            mpfr_set_inf (MPC_IM (res), mpfr_sgn (MPC_IM (res)));
+      }
+            
 
       /* divide the product by the norm */
       if (inexact_norm == 0 && (inexact_re == 0 || inexact_im == 0)) {
@@ -316,7 +334,6 @@ mpc_div (mpc_ptr a, mpc_srcptr b, mpc_srcptr c, mpc_rnd_t rnd)
       else {
          /* The division is inexact, so for efficiency reasons we invert q */
          /* only once and multiply by the inverse. */
-         /* We do not decide about the sign of the difference. */
          if (mpfr_ui_div (q, 1ul, q, GMP_RNDZ) || inexact_norm) {
              /* if 1/q is inexact, the approximations of the real and
                 imaginary part below will be inexact, unless RE(res)
@@ -347,26 +364,28 @@ mpc_div (mpc_ptr a, mpc_srcptr b, mpc_srcptr c, mpc_rnd_t rnd)
          }
       }
    }
-   while ((!ok_re || !ok_im) && !underflow_norm && !overflow_norm);
+   while ((!ok_re || !ok_im) && !underflow_norm && !overflow_norm
+                             && !underflow_prod && !overflow_prod);
 
    inex = mpc_set (a, res, rnd);
    inexact_re = MPC_INEX_RE (inex);
    inexact_im = MPC_INEX_IM (inex);
    
    /* fix values and inexact flags in case of overflow/underflow */
-   if (overflow_re || underflow_norm) {
+   /* FIXME: heuristic, certainly does not cover all cases */
+   if (overflow_re || (underflow_norm && !underflow_prod)) {
       mpfr_set_inf (MPC_RE (a), mpfr_sgn (MPC_RE (res)));
       inexact_re = mpfr_sgn (MPC_RE (res));
    }
-   else if (underflow_re || overflow_norm) {
+   else if (underflow_re || (overflow_norm && !overflow_prod)) {
       mpfr_set_zero (MPC_RE (a), mpfr_sgn (MPC_RE (res)));
       inexact_re = -mpfr_sgn (MPC_RE (res));
    }
-   if (overflow_im || underflow_norm) {
+   if (overflow_im || (underflow_norm && !underflow_prod)) {
       mpfr_set_inf (MPC_IM (a), mpfr_sgn (MPC_IM (res)));
       inexact_im = mpfr_sgn (MPC_IM (res));
    }
-   else if (underflow_im || overflow_norm) {
+   else if (underflow_im || (overflow_norm && !overflow_prod)) {
       mpfr_set_zero (MPC_IM (a), mpfr_sgn (MPC_IM (res)));
       inexact_im = -mpfr_sgn (MPC_IM (res));
    }
