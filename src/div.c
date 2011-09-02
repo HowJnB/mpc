@@ -1,6 +1,6 @@
 /* mpc_div -- Divide two complex numbers.
 
-Copyright (C) 2002, 2003, 2004, 2005, 2008, 2009, 2010 INRIA
+Copyright (C) 2002, 2003, 2004, 2005, 2008, 2009, 2010, 2011 INRIA
 
 This file is part of GNU MPC.
 
@@ -227,9 +227,10 @@ mpc_div (mpc_ptr a, mpc_srcptr b, mpc_srcptr c, mpc_rnd_t rnd)
    mpc_t res, c_conj;
    mpfr_t q;
    mpfr_prec_t prec;
-   int inexact_prod, inexact_norm, inexact_re, inexact_im, loops = 0;
+   int inex, inexact_prod, inexact_norm, inexact_re, inexact_im, loops = 0;
    int underflow_norm, overflow_norm;
    int underflow_re, overflow_re, underflow_im = 0, overflow_im = 0;
+   mpfr_rnd_t rnd_re = MPC_RND_RE (rnd), rnd_im = MPC_RND_IM (rnd);
 
    /* According to the C standard G.3, there are three types of numbers:   */
    /* finite (both parts are usual real numbers; contains 0), infinite     */
@@ -299,7 +300,7 @@ mpc_div (mpc_ptr a, mpc_srcptr b, mpc_srcptr c, mpc_rnd_t rnd)
          overflow_re = mpfr_overflow_p ();
          ok_re = !inexact_re || underflow_re || overflow_re
                  || mpfr_can_round (MPC_RE (res), prec - 4, GMP_RNDZ,
-                                    MPC_RND_RE(rnd), MPC_PREC_RE(a));
+                    GMP_RNDZ, MPC_PREC_RE(a) + (rnd_re == GMP_RNDN));
 
          if (ok_re) /* compute imaginary part */ {
             mpfr_clear_underflow ();
@@ -308,8 +309,8 @@ mpc_div (mpc_ptr a, mpc_srcptr b, mpc_srcptr c, mpc_rnd_t rnd)
             underflow_im = mpfr_underflow_p ();
             overflow_im = mpfr_overflow_p ();
             ok_im = !inexact_im || underflow_im || overflow_im
-                    || mpfr_can_round (MPC_IM (res), prec - 4, GMP_RNDZ,
-                                       MPC_RND_IM(rnd), MPC_PREC_IM(a));
+                    || mpfr_can_round (MPC_IM (res), prec - 4, GMP_RNDN,
+                       GMP_RNDZ, MPC_PREC_IM(a) + (rnd_im == GMP_RNDN));
          }
       }
       else {
@@ -331,7 +332,7 @@ mpc_div (mpc_ptr a, mpc_srcptr b, mpc_srcptr c, mpc_rnd_t rnd)
          overflow_re = mpfr_overflow_p ();
          ok_re = !inexact_re || underflow_re || overflow_re
                  || mpfr_can_round (MPC_RE (res), prec - 4, GMP_RNDZ,
-                                    MPC_RND_RE(rnd), MPC_PREC_RE(a));
+                    GMP_RNDZ, MPC_PREC_RE(a) + (rnd_re == GMP_RNDN));
 
          if (ok_re) /* compute imaginary part */ {
             mpfr_clear_underflow ();
@@ -342,14 +343,16 @@ mpc_div (mpc_ptr a, mpc_srcptr b, mpc_srcptr c, mpc_rnd_t rnd)
             overflow_im = mpfr_overflow_p ();
             ok_im = !inexact_im || underflow_im || overflow_im
                     || mpfr_can_round (MPC_IM (res), prec - 4, GMP_RNDZ,
-                                       MPC_RND_IM(rnd), MPC_PREC_IM(a));
+                       GMP_RNDZ, MPC_PREC_IM(a) + (rnd_im == GMP_RNDN));
          }
       }
    }
    while ((!ok_re || !ok_im) && !underflow_norm && !overflow_norm);
 
-   mpc_set (a, res, rnd);
-
+   inex = mpc_set (a, res, rnd);
+   inexact_re = MPC_INEX_RE (inex);
+   inexact_im = MPC_INEX_IM (inex);
+   
    /* fix values and inexact flags in case of overflow/underflow */
    if (overflow_re || underflow_norm) {
       mpfr_set_inf (MPC_RE (a), mpfr_sgn (MPC_RE (res)));

@@ -881,11 +881,6 @@ Set @var{rop} to the square of @var{op} rounded according to @var{rnd}.
 @deftypefunx int mpc_ui_div (mpc_t @var{rop}, unsigned long int @var{op1}, mpc_t @var{op2}, mpc_rnd_t @var{rnd})
 @deftypefunx int mpc_fr_div (mpc_t @var{rop}, mpfr_t @var{op1}, mpc_t @var{op2}, mpc_rnd_t @var{rnd})
 Set @var{rop} to @var{op1}/@var{op2} rounded according to @var{rnd}.
-For @code{mpc_div}, @code{mpc_ui_div} and @code{mpc_fr_div}, the usual
-semantics of the return value is not yet implemented. We only guarantee
-that a return value of 0 indicates an exact result.
-But exact results may lead to a non-zero return value, and the sign of a
-non-zero return value is not significant.
 @end deftypefun
 
 @deftypefun int mpc_neg (mpc_t @var{rop}, mpc_t @var{op}, mpc_rnd_t @var{rnd})
@@ -902,7 +897,6 @@ if @var{rop} and @var{op} are the same variable.
 @deftypefun int mpc_abs (mpfr_t @var{rop}, mpc_t @var{op}, mpfr_rnd_t @var{rnd})
 Set the floating-point number @var{rop} to the absolute value of @var{op},
 rounded in the direction @var{rnd}.
-The returned value is zero iff the result is exact.
 @end deftypefun
 
 @deftypefun int mpc_norm (mpfr_t @var{rop}, mpc_t @var{op}, mpfr_rnd_t @var{rnd})

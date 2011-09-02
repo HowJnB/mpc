@@ -4,8 +4,10 @@ Changes in version 1.0:
   - Bug fixes:
     - mul and norm now return correct results even if there are over- or
       underflows during the computation
-    - asin, proj, sqr: wrong result when input variable has infinite part and
-      equals output variable
+    - div now returns a value indicating the effective rounding direction,
+      as the other functions.
+    - asin, proj, sqr: Wrong result when input variable has infinite part and
+      equals output variable is corrected.
 
 Changes in version 0.9:
   - New functions:
