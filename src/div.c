@@ -375,5 +375,4 @@ mpc_div (mpc_ptr a, mpc_srcptr b, mpc_srcptr c, mpc_rnd_t rnd)
    mpfr_clear (q);
 
    return (MPC_INEX (inexact_re, inexact_im));
-      /* Only exactness vs. inexactness is tested, not the sign. */
 }
