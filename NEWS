@@ -2,8 +2,8 @@ Changes in version 1.0:
   - First release as a GNU package
   - License change: LGPLv3+ for code, GFDLv1.3+ for documentation
   - Bug fixes:
-    - mul now returns correct results even if there are over- or underflows
-      during the computation
+    - mul and norm now return correct results even if there are over- or
+      underflows during the computation
     - asin, proj, sqr: wrong result when input variable has infinite part and
       equals output variable
 
