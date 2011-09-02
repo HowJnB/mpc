@@ -20,14 +20,15 @@ along with this program. If not, see http://www.gnu.org/licenses/ .
 
 #include "mpc-impl.h"
 
-/* the rounding mode is mpfr_rnd_t here since we return an mpfr number */
+/* a <- norm(b) = b * conj(b)
+   (the rounding mode is mpfr_rnd_t here since we return an mpfr number) */
 int
 mpc_norm (mpfr_ptr a, mpc_srcptr b, mpfr_rnd_t rnd)
 {
    int inexact;
 
    /* handling of special values; consistent with abs in that
-      norm = abs^2; so norm (+-inf, nan) = norm (nan, +-inf) = +inf */
+      norm = abs^2; so norm (+-inf, xxx) = norm (xxx, +-inf) = +inf */
    if (!mpc_fin_p (b))
          return mpc_abs (a, b, rnd);
    else if (mpfr_zero_p (MPC_RE (b))) {
@@ -37,7 +38,7 @@ mpc_norm (mpfr_ptr a, mpc_srcptr b, mpfr_rnd_t rnd)
          return mpfr_sqr (a, MPC_IM (b), rnd);
    }
    else if (mpfr_zero_p (MPC_IM (b)))
-      return mpfr_sqr (a, MPC_RE (b), rnd);
+     return mpfr_sqr (a, MPC_RE (b), rnd); /* Re(b) <> 0 */
 
    else /* everything finite and non-zero */ {
       mpfr_t u, v, res;
@@ -69,38 +70,47 @@ mpc_norm (mpfr_ptr a, mpc_srcptr b, mpfr_rnd_t rnd)
 
          mpfr_set_prec (u, prec_u);
          mpfr_set_prec (v, prec_v);
-         mpfr_set_prec (res, prec);
 
          inexact  = mpfr_sqr (u, MPC_RE(b), GMP_RNDD); /* err <= 1 ulp in prec */
          inexact |= mpfr_sqr (v, MPC_IM(b), GMP_RNDD); /* err <= 1 ulp in prec */
-         if (loops < max_loops)
-            inexact |= mpfr_add (res, u, v, GMP_RNDD); /* err <= 3 ulp in prec */
 
-      } while (loops < max_loops
-               && inexact
+         /* If loops = max_loops, inexact should be 0 here, except in case
+               of underflow or overflow.
+            If loops < max_loops and inexact is zero, we can exit the
+            while-loop since it only remains to add u and v into a. */
+         if (inexact != 0)
+           {
+             mpfr_set_prec (res, prec);
+             mpfr_add (res, u, v, GMP_RNDD); /* err <= 3 ulp in prec */
+           }
+
+      } while (loops < max_loops && inexact != 0
                && !mpfr_can_round (res, prec - 2, GMP_RNDD, GMP_RNDU,
                                    mpfr_get_prec (a) + (rnd == GMP_RNDN)));
 
-      if (mpfr_overflow_p ()) {
+      if (inexact == 0) /* squarings were exact, nor underflow nor overflow */
+         inexact = mpfr_add (a, u, v, rnd);
+      /* if there was an overflow in Re(b)^2 or Im(b)^2 or their sum,
+         since the norm is larger, there is an overflow for the norm */
+      else if (mpfr_overflow_p ()) {
          /* replace by "correctly rounded overflow" */
          mpfr_set_ui (a, 1ul, GMP_RNDN);
          inexact = mpfr_mul_2ui (a, a, mpfr_get_emax (), rnd);
       }
       else if (mpfr_underflow_p ()) {
+        /* necessarily one of the squarings did underflow (otherwise their
+           sum could not underflow), thus one of u, v is zero */
          /* squarings were exact except for underflow */
          inexact = mpfr_add (a, u, v, rnd);
          if (!inexact) {
             if (rnd == GMP_RNDN || rnd == GMP_RNDD || rnd == GMP_RNDZ)
                inexact = -1;
-            else {
+            else { /* rounding up */
                mpfr_nextabove (a);
                inexact = 1;
             }
          }
       }
-      else if (loops == max_loops)
-         /* squarings were exact */
-         inexact = mpfr_add (a, u, v, rnd);
       else /* no problems, ternary value due to mpfr_can_round trick */
          inexact = mpfr_set (a, res, rnd);
 
