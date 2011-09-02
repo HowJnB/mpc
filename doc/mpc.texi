@@ -909,8 +909,6 @@ The returned value is zero iff the result is exact.
 Set the floating-point number @var{rop} to the norm of @var{op}
 (i.e., the square of its absolute value),
 rounded in the direction @var{rnd}.
-The returned value is zero iff the result is exact.
-Note that the destination is of type @code{mpfr_t}, not @code{mpc_t}.
 @end deftypefun
 
 @deftypefun int mpc_mul_2exp (mpc_t @var{rop}, mpc_t @var{op1}, unsigned long int @var{op2}, mpc_rnd_t @var{rnd})

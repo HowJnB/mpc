@@ -1,4 +1,5 @@
 Changes in version 1.0:
+  - First release as a GNU package
   - License change: LGPLv3+ for code, GFDLv1.3+ for documentation
   - Bug fixes:
     - mul now returns correct results even if there are over- or underflows

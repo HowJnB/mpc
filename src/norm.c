@@ -1,6 +1,6 @@
 /* mpc_norm -- Square of the norm of a complex number.
 
-Copyright (C) 2002, 2005, 2008, 2009, 2010 INRIA
+Copyright (C) 2002, 2005, 2008, 2009, 2010, 2011 INRIA
 
 This file is part of GNU MPC.
 
@@ -24,67 +24,90 @@ along with this program. If not, see http://www.gnu.org/licenses/ .
 int
 mpc_norm (mpfr_ptr a, mpc_srcptr b, mpfr_rnd_t rnd)
 {
-  mpfr_t u, v;
-  mpfr_prec_t prec;
-  int inexact, overflow, underflow;
+   int inexact;
 
-  prec = mpfr_get_prec (a);
+   /* handling of special values; consistent with abs in that
+      norm = abs^2; so norm (+-inf, nan) = norm (nan, +-inf) = +inf */
+   if (!mpc_fin_p (b))
+         return mpc_abs (a, b, rnd);
+   else if (mpfr_zero_p (MPC_RE (b))) {
+      if (mpfr_zero_p (MPC_IM (b)))
+         return mpfr_set_ui (a, 0, rnd); /* +0 */
+      else
+         return mpfr_sqr (a, MPC_IM (b), rnd);
+   }
+   else if (mpfr_zero_p (MPC_IM (b)))
+      return mpfr_sqr (a, MPC_RE (b), rnd);
 
-  /* handling of special values; consistent with abs in that
-     norm = abs^2; so norm (+-inf, nan) = norm (nan, +-inf) = +inf */
-  if (   (mpfr_nan_p (MPC_RE (b)) || mpfr_nan_p (MPC_IM (b)))
-      || (mpfr_inf_p (MPC_RE (b)) || mpfr_inf_p (MPC_IM (b))))
-      return mpc_abs (a, b, rnd);
+   else /* everything finite and non-zero */ {
+      mpfr_t u, v, res;
+      mpfr_prec_t prec, prec_u, prec_v;
+      int loops;
+      const int max_loops = 2;
+         /* switch to exact squarings when loops==max_loops */
 
-  mpfr_init (u);
-  mpfr_init (v);
+      prec = mpfr_get_prec (a);
 
-  if (!mpfr_zero_p(MPC_RE(b)) && !mpfr_zero_p(MPC_IM(b)) &&
-      2 * SAFE_ABS (mpfr_exp_t,
-                    mpfr_get_exp (MPC_RE (b)) - mpfr_get_exp (MPC_IM (b)))
-      > (mpfr_exp_t)prec)
-    /* If real and imaginary part have very different magnitudes, then the */
-    /* generic code increases the precision too much. Instead, compute the */
-    /* squarings _exactly_.                                                */
-  {
-     mpfr_set_prec (u, 2 * MPC_PREC_RE (b));
-     mpfr_set_prec (v, 2 * MPC_PREC_IM (b));
-     mpfr_sqr (u, MPC_RE (b), GMP_RNDN);
-     mpfr_sqr (v, MPC_IM (b), GMP_RNDN);
-     inexact = mpfr_add (a, u, v, rnd);
-  }
-  else if (mpfr_zero_p(MPC_RE(b)) && mpfr_zero_p(MPC_IM(b)))
-    {
-      inexact = mpfr_set_ui (a, 0, rnd);
-    }
-  else
-  {
-    do
-      {
-        prec += mpc_ceil_log2 (prec) + 3;
+      mpfr_init (u);
+      mpfr_init (v);
+      mpfr_init (res);
 
-        mpfr_set_prec (u, prec);
-        mpfr_set_prec (v, prec);
+      loops = 0;
+      mpfr_clear_underflow ();
+      mpfr_clear_overflow ();
+      do {
+         loops++;
+         prec += mpc_ceil_log2 (prec) + 3;
+         if (loops >= max_loops) {
+            prec_u = 2 * MPC_PREC_RE (b);
+            prec_v = 2 * MPC_PREC_IM (b);
+         }
+         else {
+            prec_u = MPC_MIN (prec, 2 * MPC_PREC_RE (b));
+            prec_v = MPC_MIN (prec, 2 * MPC_PREC_IM (b));
+         }
 
-        inexact = mpfr_sqr (u, MPC_RE(b), GMP_RNDN);  /* err<=1/2ulp */
-        inexact |= mpfr_sqr (v, MPC_IM(b), GMP_RNDN); /* err<=1/2ulp*/
-        inexact |= mpfr_add (u, u, v, GMP_RNDN);      /* err <= 3/2 ulps */
+         mpfr_set_prec (u, prec_u);
+         mpfr_set_prec (v, prec_v);
+         mpfr_set_prec (res, prec);
 
-        overflow = mpfr_inf_p (u);
-        underflow = mpfr_zero_p (u);
+         inexact  = mpfr_sqr (u, MPC_RE(b), GMP_RNDD); /* err <= 1 ulp in prec */
+         inexact |= mpfr_sqr (v, MPC_IM(b), GMP_RNDD); /* err <= 1 ulp in prec */
+         if (loops < max_loops)
+            inexact |= mpfr_add (res, u, v, GMP_RNDD); /* err <= 3 ulp in prec */
+
+      } while (loops < max_loops
+               && inexact
+               && !mpfr_can_round (res, prec - 2, GMP_RNDD, GMP_RNDU,
+                                   mpfr_get_prec (a) + (rnd == GMP_RNDN)));
+
+      if (mpfr_overflow_p ()) {
+         /* replace by "correctly rounded overflow" */
+         mpfr_set_ui (a, 1ul, GMP_RNDN);
+         inexact = mpfr_mul_2ui (a, a, mpfr_get_emax (), rnd);
       }
-    while (!overflow && !underflow && inexact &&
-           mpfr_can_round (u, prec - 2, GMP_RNDN, rnd, mpfr_get_prec (a)) == 0);
+      else if (mpfr_underflow_p ()) {
+         /* squarings were exact except for underflow */
+         inexact = mpfr_add (a, u, v, rnd);
+         if (!inexact) {
+            if (rnd == GMP_RNDN || rnd == GMP_RNDD || rnd == GMP_RNDZ)
+               inexact = -1;
+            else {
+               mpfr_nextabove (a);
+               inexact = 1;
+            }
+         }
+      }
+      else if (loops == max_loops)
+         /* squarings were exact */
+         inexact = mpfr_add (a, u, v, rnd);
+      else /* no problems, ternary value due to mpfr_can_round trick */
+         inexact = mpfr_set (a, res, rnd);
 
-    inexact |= mpfr_set (a, u, rnd);
+      mpfr_clear (u);
+      mpfr_clear (v);
+      mpfr_clear (res);
+   }
 
-    if (overflow)
-      inexact = 1;
-    if (underflow)
-      inexact = -1;
-  }
-  mpfr_clear (u);
-  mpfr_clear (v);
-
-  return inexact;
+   return inexact;
 }

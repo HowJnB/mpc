@@ -3,7 +3,7 @@ return the exact ternary value in mpc_div:
 - for directed rounding modes it is easy (assuming we are able to detect
   exact cases)
 - rounding to nearest to n bits is equivalent to directed rounding to n+1 bits
-Also for mpc_norm and mpc_abs.
+Also for mpc_abs.
 
 From Andreas Enge 31 August 2011:
 implement mul_karatsuba with three multiplications at precision around p,
@@ -16,6 +16,8 @@ rewrite fma more efficiently to work with lower (close to target) precision
 From Andreas Enge 30 August 2011:
 As soon as dependent on mpfr>=3, remove auxiliary functions from
 get_version.c and update mpc.h.
+Use MPFR_RND? instead of GMP_RND?, and remove workarounds for MPFR_RNDA from
+mpc-impl.h.
 
 Bench:
 - from Andreas Enge 9 June 2009:

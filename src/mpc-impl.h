@@ -32,6 +32,7 @@ along with this program. If not, see http://www.gnu.org/licenses/ .
  * Miscellaneous useful macros
  */
 
+#define MPC_MIN(h,i) ((h) < (i) ? (h) : (i))
 #define MPC_MAX(h,i) ((h) > (i) ? (h) : (i))
 
 /* Safe absolute value (to avoid possible integer overflow) */
