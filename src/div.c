@@ -18,6 +18,7 @@ You should have received a copy of the GNU Lesser General Public License
 along with this program. If not, see http://www.gnu.org/licenses/ .
 */
 
+#include <stdio.h>
 #include "mpc-impl.h"
 
 static int
@@ -227,6 +228,8 @@ mpc_div (mpc_ptr a, mpc_srcptr b, mpc_srcptr c, mpc_rnd_t rnd)
    mpfr_t q;
    mpfr_prec_t prec;
    int inexact_prod, inexact_norm, inexact_re, inexact_im, loops = 0;
+   int underflow_norm, overflow_norm;
+   int underflow_re, overflow_re, underflow_im = 0, overflow_im = 0;
 
    /* According to the C standard G.3, there are three types of numbers:   */
    /* finite (both parts are usual real numbers; contains 0), infinite     */
@@ -262,135 +265,108 @@ mpc_div (mpc_ptr a, mpc_srcptr b, mpc_srcptr c, mpc_rnd_t rnd)
    MPC_IM (c_conj)[0] = MPC_IM (c)[0];
    MPFR_CHANGE_SIGN (MPC_IM (c_conj));
 
-   do
-   {
+   do {
       loops ++;
       prec += loops <= 2 ? mpc_ceil_log2 (prec) + 5 : prec / 2;
 
       mpc_set_prec (res, prec);
       mpfr_set_prec (q, prec);
 
-      /* first compute norm(c)^2 */
-      inexact_norm = mpc_norm (q, c, GMP_RNDD);
+      /* first compute norm(c) */
+      mpfr_clear_underflow ();
+      mpfr_clear_overflow ();
+      inexact_norm = mpc_norm (q, c, GMP_RNDU);
+      underflow_norm = mpfr_underflow_p ();
+      overflow_norm = mpfr_overflow_p ();
+      if (underflow_norm)
+         mpfr_set_ui (q, 0ul, GMP_RNDN);
+         /* to obtain divisions by 0 later on */
 
       /* now compute b*conjugate(c) */
-      /* We need rounding away from zero for both the real and the imagin-  */
-      /* ary part; then the final result is also rounded away from zero.    */
-      /* The error is less than 1 ulp. Since this is not implemented in     */
-      /* mpc, we round towards zero and add 1 ulp to the absolute values    */
-      /* if they are not exact. */
       inexact_prod = mpc_mul (res, b, c_conj, MPC_RNDZZ);
       inexact_re = MPC_INEX_RE (inexact_prod);
       inexact_im = MPC_INEX_IM (inexact_prod);
-      if (inexact_re != 0)
-         MPFR_ADD_ONE_ULP (MPC_RE (res));
-      if (inexact_im != 0)
-         MPFR_ADD_ONE_ULP (MPC_IM (res));
 
       /* divide the product by the norm */
-      if (inexact_norm == 0 && (inexact_re == 0 || inexact_im == 0))
-      {
+      if (inexact_norm == 0 && (inexact_re == 0 || inexact_im == 0)) {
          /* The division has good chances to be exact in at least one part.   */
          /* Since this can cause problems when not rounding to the nearest,   */
          /* we use the division code of mpfr, which handles the situation.    */
-         if (MPFR_SIGN (MPC_RE (res)) > 0)
-         {
-            inexact_re |= mpfr_div (MPC_RE (res), MPC_RE (res), q, GMP_RNDU);
-            ok_re = mpfr_inf_p (MPC_RE (res)) || mpfr_zero_p (MPC_RE (res)) ||
-              mpfr_can_round (MPC_RE (res), prec - 4, GMP_RNDU,
-                              MPC_RND_RE(rnd), MPC_PREC_RE(a));
-         }
-         else
-         {
-            inexact_re |= mpfr_div (MPC_RE (res), MPC_RE (res), q, GMP_RNDD);
-            ok_re = mpfr_inf_p (MPC_RE (res)) || mpfr_zero_p (MPC_RE (res)) ||
-              mpfr_can_round (MPC_RE (res), prec - 4, GMP_RNDD,
-                              MPC_RND_RE(rnd), MPC_PREC_RE(a));
-         }
+         mpfr_clear_underflow ();
+         mpfr_clear_overflow ();
+         inexact_re |= mpfr_div (MPC_RE (res), MPC_RE (res), q, GMP_RNDZ);
+         underflow_re = mpfr_underflow_p ();
+         overflow_re = mpfr_overflow_p ();
+         ok_re = !inexact_re || underflow_re || overflow_re
+                 || mpfr_can_round (MPC_RE (res), prec - 4, GMP_RNDZ,
+                                    MPC_RND_RE(rnd), MPC_PREC_RE(a));
 
-         if (ok_re || !inexact_re) /* compute imaginary part */
-         {
-            if (MPFR_SIGN (MPC_IM (res)) > 0)
-            {
-               inexact_im |= mpfr_div (MPC_IM (res), MPC_IM (res), q, GMP_RNDU);
-               ok_im = mpfr_can_round (MPC_IM (res), prec - 4, GMP_RNDU,
+         if (ok_re) /* compute imaginary part */ {
+            mpfr_clear_underflow ();
+            mpfr_clear_overflow ();
+            inexact_im |= mpfr_div (MPC_IM (res), MPC_IM (res), q, GMP_RNDZ);
+            underflow_im = mpfr_underflow_p ();
+            overflow_im = mpfr_overflow_p ();
+            ok_im = !inexact_im || underflow_im || overflow_im
+                    || mpfr_can_round (MPC_IM (res), prec - 4, GMP_RNDZ,
                                        MPC_RND_IM(rnd), MPC_PREC_IM(a));
-            }
-            else
-            {
-               inexact_im |= mpfr_div (MPC_IM (res), MPC_IM (res), q, GMP_RNDD);
-               ok_im = mpfr_can_round (MPC_IM (res), prec - 4, GMP_RNDD,
-                                       MPC_RND_IM(rnd), MPC_PREC_IM(a));
-            }
          }
       }
-      else
-      {
+      else {
          /* The division is inexact, so for efficiency reasons we invert q */
          /* only once and multiply by the inverse. */
          /* We do not decide about the sign of the difference. */
-         if (mpfr_ui_div (q, 1, q, GMP_RNDU) || inexact_norm)
-           {
+         if (mpfr_ui_div (q, 1ul, q, GMP_RNDZ) || inexact_norm) {
              /* if 1/q is inexact, the approximations of the real and
                 imaginary part below will be inexact, unless RE(res)
                 or IM(res) is zero */
              inexact_re = inexact_re || !mpfr_zero_p (MPC_RE (res));
              inexact_im = inexact_im || !mpfr_zero_p (MPC_IM (res));
-           }
-         if (MPFR_SIGN (MPC_RE (res)) > 0)
-         {
-           inexact_re = mpfr_mul (MPC_RE (res), MPC_RE (res), q, GMP_RNDU)
-             || inexact_re;
-           ok_re = mpfr_inf_p (MPC_RE (res)) || mpfr_zero_p (MPC_RE (res)) ||
-             mpfr_can_round (MPC_RE (res), prec - 4, GMP_RNDU,
-                             MPC_RND_RE(rnd), MPC_PREC_RE(a));
          }
-         else
-         {
-           inexact_re = mpfr_mul (MPC_RE (res), MPC_RE (res), q, GMP_RNDD)
-             || inexact_re;
-           ok_re = mpfr_inf_p (MPC_RE (res)) || mpfr_zero_p (MPC_RE (res)) ||
-             mpfr_can_round (MPC_RE (res), prec - 4, GMP_RNDD,
-                             MPC_RND_RE(rnd), MPC_PREC_RE(a));
-         }
+         mpfr_clear_underflow ();
+         mpfr_clear_overflow ();
+         inexact_re = mpfr_mul (MPC_RE (res), MPC_RE (res), q, GMP_RNDZ)
+            || inexact_re;
+         underflow_re = mpfr_underflow_p ();
+         overflow_re = mpfr_overflow_p ();
+         ok_re = !inexact_re || underflow_re || overflow_re
+                 || mpfr_can_round (MPC_RE (res), prec - 4, GMP_RNDZ,
+                                    MPC_RND_RE(rnd), MPC_PREC_RE(a));
 
-         if (ok_re) /* compute imaginary part */
-         {
-            if (MPFR_SIGN (MPC_IM (res)) > 0)
-            {
-              inexact_im = mpfr_mul (MPC_IM (res), MPC_IM (res), q, GMP_RNDU)
-                || inexact_im;
-              ok_im = mpfr_can_round (MPC_IM (res), prec - 4, GMP_RNDU,
-                                      MPC_RND_IM(rnd), MPC_PREC_IM(a));
-            }
-            else
-            {
-              inexact_im = mpfr_mul (MPC_IM (res), MPC_IM (res), q, GMP_RNDD)
-                || inexact_im;
-              ok_im = mpfr_can_round (MPC_IM (res), prec - 4, GMP_RNDD,
-                                      MPC_RND_IM(rnd), MPC_PREC_IM(a));
-            }
+         if (ok_re) /* compute imaginary part */ {
+            mpfr_clear_underflow ();
+            mpfr_clear_overflow ();
+            inexact_im = mpfr_mul (MPC_IM (res), MPC_IM (res), q, GMP_RNDZ)
+               || inexact_im;
+            underflow_im = mpfr_underflow_p ();
+            overflow_im = mpfr_overflow_p ();
+            ok_im = !inexact_im || underflow_im || overflow_im
+                    || mpfr_can_round (MPC_IM (res), prec - 4, GMP_RNDZ,
+                                       MPC_RND_IM(rnd), MPC_PREC_IM(a));
          }
       }
-
-      /* check for overflow or underflow on the imaginary part */
-      if (ok_im == 0 &&
-          (mpfr_inf_p (MPC_IM (res)) || mpfr_zero_p (MPC_IM (res))))
-        ok_im = 1;
    }
-   while ((!ok_re && inexact_re) || (!ok_im && inexact_im));
+   while ((!ok_re || !ok_im) && !underflow_norm && !overflow_norm);
 
    mpc_set (a, res, rnd);
 
-   /* fix inexact flags in case of overflow/underflow */
-   if (mpfr_inf_p (MPC_RE (res)))
-     inexact_re = mpfr_sgn (MPC_RE (res));
-   else if (mpfr_zero_p (MPC_RE (res)))
-     inexact_re = -mpfr_sgn (MPC_RE (res));
-   if (mpfr_inf_p (MPC_IM (res)))
-     inexact_im = mpfr_sgn (MPC_IM (res));
-   else if (mpfr_zero_p (MPC_IM (res)))
-     inexact_im = -mpfr_sgn (MPC_IM (res));
+   /* fix values and inexact flags in case of overflow/underflow */
+   if (overflow_re || underflow_norm) {
+      mpfr_set_inf (MPC_RE (a), mpfr_sgn (MPC_RE (res)));
+      inexact_re = mpfr_sgn (MPC_RE (res));
+   }
+   else if (underflow_re || overflow_norm) {
+      mpfr_set_zero (MPC_RE (a), mpfr_sgn (MPC_RE (res)));
+      inexact_re = -mpfr_sgn (MPC_RE (res));
+   }
+   if (overflow_im || underflow_norm) {
+      mpfr_set_inf (MPC_IM (a), mpfr_sgn (MPC_IM (res)));
+      inexact_im = mpfr_sgn (MPC_IM (res));
+   }
+   else if (underflow_im || overflow_norm) {
+      mpfr_set_zero (MPC_IM (a), mpfr_sgn (MPC_IM (res)));
+      inexact_im = -mpfr_sgn (MPC_IM (res));
+   }
 
    mpc_clear (res);
    mpfr_clear (q);

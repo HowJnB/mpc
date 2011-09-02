@@ -3,7 +3,6 @@ return the exact ternary value in mpc_div:
 - for directed rounding modes it is easy (assuming we are able to detect
   exact cases)
 - rounding to nearest to n bits is equivalent to directed rounding to n+1 bits
-Also for mpc_abs.
 
 From Andreas Enge 31 August 2011:
 implement mul_karatsuba with three multiplications at precision around p,
