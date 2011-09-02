@@ -22,8 +22,8 @@ along with this program. If not, see http://www.gnu.org/licenses/ .
 
 static int
 mpc_div_zero (mpc_ptr a, mpc_srcptr z, mpc_srcptr w, mpc_rnd_t rnd)
+/* Assumes w==0, implementation according to C99 G.5.1.8 */
 {
-   /* Assumes w==0, implementation according to C99 G.5.1.8 */
    int sign = MPFR_SIGNBIT (MPC_RE (w));
    mpfr_t infty;
    mpfr_set_inf (infty, sign);
@@ -34,9 +34,9 @@ mpc_div_zero (mpc_ptr a, mpc_srcptr z, mpc_srcptr w, mpc_rnd_t rnd)
 
 static int
 mpc_div_inf_fin (mpc_ptr rop, mpc_srcptr z, mpc_srcptr w)
+/* Assumes w finite and non-zero and z infinite; implementation
+   according to C99 G.5.1.8                                     */
 {
-   /* Assumes w finite and non-zero and z infinite; implementation
-      according to C99 G.5.1.8                                     */
    int a, b, x, y;
 
    a = (mpfr_inf_p (MPC_RE (z)) ? MPFR_SIGNBIT (MPC_RE (z)) : 0);
@@ -100,9 +100,9 @@ mpc_div_inf_fin (mpc_ptr rop, mpc_srcptr z, mpc_srcptr w)
 
 static int
 mpc_div_fin_inf (mpc_ptr rop, mpc_srcptr z, mpc_srcptr w)
+/* Assumes z finite and w infinite; implementation according to
+   C99 G.5.1.8                                                  */
 {
-   /* Assumes z finite and w infinite; implementation according to
-      C99 G.5.1.8                                                  */
    mpfr_t c, d, a, b, x, y, zero;
 
    mpfr_init2 (c, 2); /* needed to hold a signed zero, +1 or -1 */
@@ -142,6 +142,83 @@ mpc_div_fin_inf (mpc_ptr rop, mpc_srcptr z, mpc_srcptr w)
 }
 
 
+static int
+mpc_div_real (mpc_ptr rop, mpc_srcptr z, mpc_srcptr w, mpc_rnd_t rnd)
+/* Assumes z finite and w finite and non-zero, with imaginary part
+   of w a signed zero.                                             */
+{
+   int inex_re, inex_im;
+   /* save signs of operands in case there are overlaps */
+   int zrs = MPFR_SIGNBIT (MPC_RE (z));
+   int zis = MPFR_SIGNBIT (MPC_IM (z));
+   int wrs = MPFR_SIGNBIT (MPC_RE (w));
+   int wis = MPFR_SIGNBIT (MPC_IM (w));
+
+   /* warning: rop may overlap with z,w so treat the imaginary part first */
+   inex_im = mpfr_div (MPC_IM(rop), MPC_IM(z), MPC_RE(w), MPC_RND_IM(rnd));
+   inex_re = mpfr_div (MPC_RE(rop), MPC_RE(z), MPC_RE(w), MPC_RND_RE(rnd));
+
+   /* correct signs of zeroes if necessary, which does not affect the
+      inexact flags                                                    */
+   if (mpfr_zero_p (MPC_RE (rop)))
+      mpfr_setsign (MPC_RE (rop), MPC_RE (rop), (zrs != wrs && zis != wis),
+         GMP_RNDN); /* exact */
+   if (mpfr_zero_p (MPC_IM (rop)))
+      mpfr_setsign (MPC_IM (rop), MPC_IM (rop), (zis != wrs && zrs == wis),
+         GMP_RNDN);
+
+   return MPC_INEX(inex_re, inex_im);
+}
+
+
+static int
+mpc_div_imag (mpc_ptr rop, mpc_srcptr z, mpc_srcptr w, mpc_rnd_t rnd)
+/* Assumes z finite and w finite and non-zero, with real part
+   of w a signed zero.                                        */
+{
+   int inex_re, inex_im;
+   int overlap = (rop == z) || (rop == w);
+   int imag_z = mpfr_zero_p (MPC_RE (z));
+   mpfr_t wloc;
+   mpc_t tmprop;
+   mpc_ptr dest = (overlap) ? tmprop : rop;
+   /* save signs of operands in case there are overlaps */
+   int zrs = MPFR_SIGNBIT (MPC_RE (z));
+   int zis = MPFR_SIGNBIT (MPC_IM (z));
+   int wrs = MPFR_SIGNBIT (MPC_RE (w));
+   int wis = MPFR_SIGNBIT (MPC_IM (w));
+
+   if (overlap)
+      mpc_init3 (tmprop, MPC_PREC_RE (rop), MPC_PREC_IM (rop));
+
+   wloc[0] = MPC_IM(w)[0]; /* copies mpfr struct IM(w) into wloc */
+   inex_re = mpfr_div (MPC_RE(dest), MPC_IM(z), wloc, MPC_RND_RE(rnd));
+   mpfr_neg (wloc, wloc, GMP_RNDN);
+   /* changes the sign only in wloc, not in w; no need to correct later */
+   inex_im = mpfr_div (MPC_IM(dest), MPC_RE(z), wloc, MPC_RND_IM(rnd));
+
+   if (overlap) {
+      /* Note: we could use mpc_swap here, but this might cause problems
+         if rop and tmprop have been allocated using different methods, since
+         it will swap the significands of rop and tmprop. See
+         http://lists.gforge.inria.fr/pipermail/mpc-discuss/2009-August/000504.html */
+      mpc_set (rop, tmprop, MPC_RNDNN); /* exact */
+      mpc_clear (tmprop);
+   }
+
+   /* correct signs of zeroes if necessary, which does not affect the
+      inexact flags                                                    */
+   if (mpfr_zero_p (MPC_RE (rop)))
+      mpfr_setsign (MPC_RE (rop), MPC_RE (rop), (zrs != wrs && zis != wis),
+         GMP_RNDN); /* exact */
+   if (imag_z)
+      mpfr_setsign (MPC_IM (rop), MPC_IM (rop), (zis != wrs && zrs == wis),
+         GMP_RNDN);
+
+   return MPC_INEX(inex_re, inex_im);
+}
+
+
 int
 mpc_div (mpc_ptr a, mpc_srcptr b, mpc_srcptr c, mpc_rnd_t rnd)
 {
@@ -150,12 +227,6 @@ mpc_div (mpc_ptr a, mpc_srcptr b, mpc_srcptr c, mpc_rnd_t rnd)
    mpfr_t q;
    mpfr_prec_t prec;
    int inexact_prod, inexact_norm, inexact_re, inexact_im, loops = 0;
-
-   /* save signs of operands in case there are overlaps */
-   int brs = MPFR_SIGNBIT (MPC_RE (b));
-   int bis = MPFR_SIGNBIT (MPC_IM (b));
-   int crs = MPFR_SIGNBIT (MPC_RE (c));
-   int cis = MPFR_SIGNBIT (MPC_IM (c));
 
    /* According to the C standard G.3, there are three types of numbers:   */
    /* finite (both parts are usual real numbers; contains 0), infinite     */
@@ -168,78 +239,19 @@ mpc_div (mpc_ptr a, mpc_srcptr b, mpc_srcptr c, mpc_rnd_t rnd)
    /* a real; we handle it separately instead.                             */
    if (mpc_zero_p (c))
       return mpc_div_zero (a, b, c, rnd);
-   else {
-      if (mpc_inf_p (b) && mpc_fin_p (c))
+   else if (mpc_inf_p (b) && mpc_fin_p (c))
          return mpc_div_inf_fin (a, b, c);
-      else if (mpc_fin_p (b) && mpc_inf_p (c))
+   else if (mpc_fin_p (b) && mpc_inf_p (c))
          return mpc_div_fin_inf (a, b, c);
-      else if (!mpc_fin_p (b) || !mpc_fin_p (c)) {
-         mpfr_set_nan (MPC_RE (a));
-         mpfr_set_nan (MPC_IM (a));
-         return MPC_INEX (0, 0);
-      }
+   else if (!mpc_fin_p (b) || !mpc_fin_p (c)) {
+      mpc_set_nan (a);
+      return MPC_INEX (0, 0);
    }
-
-   /* check for real divisor */
-   if (mpfr_zero_p(MPC_IM(c))) /* (re_b+i*im_b)/c = re_b/c + i * (im_b/c) */
-   {
-      /* warning: a may overlap with b,c so treat the imaginary part first */
-      inexact_im = mpfr_div (MPC_IM(a), MPC_IM(b), MPC_RE(c), MPC_RND_IM(rnd));
-      inexact_re = mpfr_div (MPC_RE(a), MPC_RE(b), MPC_RE(c), MPC_RND_RE(rnd));
-
-      /* correct signs of zeroes if necessary, which does not affect the
-         inexact flags                                                    */
-      if (mpfr_zero_p (MPC_RE (a)))
-         mpfr_setsign (MPC_RE (a), MPC_RE (a), (brs != crs && bis != cis),
-            GMP_RNDN); /* exact */
-      if (mpfr_zero_p (MPC_IM (a)))
-         mpfr_setsign (MPC_IM (a), MPC_IM (a), (bis != crs && brs == cis),
-            GMP_RNDN);
-
-      return MPC_INEX(inexact_re, inexact_im);
-   }
-
-   /* check for purely imaginary divisor */
-   if (mpfr_zero_p(MPC_RE(c)))
-   {
-      /* (re_b+i*im_b)/(i*c) = im_b/c - i * (re_b/c) */
-      int overlap = (a == b) || (a == c);
-      int imag_b = mpfr_zero_p (MPC_RE (b));
-      mpfr_t cloc;
-      mpc_t tmpa;
-      mpc_ptr dest = (overlap) ? tmpa : a;
-
-      if (overlap)
-         mpc_init3 (tmpa, MPC_PREC_RE (a), MPC_PREC_IM (a));
-
-      cloc[0] = MPC_IM(c)[0]; /* copies mpfr struct IM(c) into cloc */
-      inexact_re = mpfr_div (MPC_RE(dest), MPC_IM(b), cloc, MPC_RND_RE(rnd));
-      mpfr_neg (cloc, cloc, GMP_RNDN);
-      /* changes the sign only in cloc, not in c; no need to correct later */
-      inexact_im = mpfr_div (MPC_IM(dest), MPC_RE(b), cloc, MPC_RND_IM(rnd));
-
-      if (overlap)
-        {
-          /* Note: we could use mpc_swap here, but this might cause problems
-             if a and tmpa have been allocated using different methods, since
-             it will swap the significands of a and tmpa. See http://
-         lists.gforge.inria.fr/pipermail/mpc-discuss/2009-August/000504.html */
-          mpc_set (a, tmpa, MPC_RNDNN); /* exact */
-          mpc_clear (tmpa);
-        }
-
-      /* correct signs of zeroes if necessary, which does not affect the
-         inexact flags                                                    */
-      if (mpfr_zero_p (MPC_RE (a)))
-         mpfr_setsign (MPC_RE (a), MPC_RE (a), (brs != crs && bis != cis),
-            GMP_RNDN); /* exact */
-      if (imag_b)
-         mpfr_setsign (MPC_IM (a), MPC_IM (a), (bis != crs && brs == cis),
-            GMP_RNDN);
-
-      return MPC_INEX(inexact_re, inexact_im);
-   }
-
+   else if (mpfr_zero_p(MPC_IM(c)))
+      return mpc_div_real (a, b, c, rnd);
+   else if (mpfr_zero_p(MPC_RE(c)))
+      return mpc_div_imag (a, b, c, rnd);
+      
    prec = MPC_MAX_PREC(a);
 
    mpc_init2 (res, 2);

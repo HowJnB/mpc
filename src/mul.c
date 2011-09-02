@@ -172,7 +172,7 @@ mul_imag (mpc_ptr z, mpc_srcptr x, mpc_srcptr y, mpc_rnd_t rnd)
 
 
 static int
-mpfr_fmam (mpfr_ptr z, mpfr_srcptr a, mpfr_srcptr b, mpfr_srcptr c,
+mpfr_fmma (mpfr_ptr z, mpfr_srcptr a, mpfr_srcptr b, mpfr_srcptr c,
            mpfr_srcptr d, int sign, mpfr_rnd_t rnd)
 {
    /* Computes z = ab+cd if sign >= 0, or z = ab-cd if sign < 0.
@@ -329,9 +329,9 @@ mpc_mul_naive (mpc_ptr z, mpc_srcptr x, mpc_srcptr y, mpc_rnd_t rnd)
    else
       rop [0] = z [0];
 
-   inex = MPC_INEX (mpfr_fmam (MPC_RE (rop), MPC_RE (x), MPC_RE (y), MPC_IM (x),
+   inex = MPC_INEX (mpfr_fmma (MPC_RE (rop), MPC_RE (x), MPC_RE (y), MPC_IM (x),
                                MPC_IM (y), -1, MPC_RND_RE (rnd)),
-                    mpfr_fmam (MPC_IM (rop), MPC_RE (x), MPC_IM (y), MPC_IM (x),
+                    mpfr_fmma (MPC_IM (rop), MPC_RE (x), MPC_IM (y), MPC_IM (x),
                                MPC_RE (y), +1, MPC_RND_IM (rnd)));
 
    mpc_set (z, rop, MPC_RNDNN);
