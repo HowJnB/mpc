@@ -351,7 +351,7 @@ mpc_div (mpc_ptr a, mpc_srcptr b, mpc_srcptr c, mpc_rnd_t rnd)
          if (ok_re) /* compute imaginary part */ {
             mpfr_clear_underflow ();
             mpfr_clear_overflow ();
-            inexact_im != mpfr_mul (MPC_IM (res), MPC_IM (res), q, GMP_RNDZ);
+            inexact_im |= mpfr_mul (MPC_IM (res), MPC_IM (res), q, GMP_RNDZ);
             underflow_im = mpfr_underflow_p ();
             overflow_im = mpfr_overflow_p ();
             ok_im = !inexact_im || underflow_im || overflow_im
