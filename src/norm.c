@@ -18,6 +18,7 @@ You should have received a copy of the GNU Lesser General Public License
 along with this program. If not, see http://www.gnu.org/licenses/ .
 */
 
+#include <stdio.h>    /* for MPC_ASSERT */
 #include "mpc-impl.h"
 
 /* a <- norm(b) = b * conj(b)
@@ -99,17 +100,54 @@ mpc_norm (mpfr_ptr a, mpc_srcptr b, mpfr_rnd_t rnd)
       }
       else if (mpfr_underflow_p ()) {
         /* necessarily one of the squarings did underflow (otherwise their
-           sum could not underflow), thus one of u, v is zero */
-         /* squarings were exact except for underflow */
-         inexact = mpfr_add (a, u, v, rnd);
-         if (!inexact) {
-            if (rnd == GMP_RNDN || rnd == GMP_RNDD || rnd == GMP_RNDZ)
-               inexact = -1;
-            else { /* rounding up */
-               mpfr_nextabove (a);
-               inexact = 1;
-            }
-         }
+           sum could not underflow), thus one of u, v is zero. */
+        mpfr_exp_t emin = mpfr_get_emin ();
+
+        if (mpfr_zero_p (u) && !mpfr_zero_p (v))
+          mpfr_swap (u, v);
+
+        /* now either both u and v are zero, or only v */
+
+        /* If v is zero, thus Im(b)^2 < 2^(emin-1), then if ulp(u) >=
+           2^(emin+1), which implies u exact, rounding u+Im(b)^2 is equivalent
+           to rounding u+2^(emin-1). */
+        if (!mpfr_zero_p (u) && mpfr_get_exp (u) - 2 * prec_u > emin)
+          {
+            mpfr_set_prec (v, MPFR_PREC_MIN);
+            mpfr_set_ui_2exp (v, 1, emin - 1, GMP_RNDZ);
+            inexact = mpfr_add (a, u, v, rnd);
+          }
+        else /* ulp(u) <= 2^emin */
+          {
+            mpfr_exp_t exp_re, exp_im, exp_min, scale, ulp_re, ulp_im, ulp_min;
+            mpfr_prec_t prec_res;
+
+            /* scale Re(b) and Im(b) so that Re(b)^2 and Im(b)^2 are computed
+               exactly, and also their sum */
+            exp_re = mpfr_get_exp (MPC_RE(b));
+            exp_im = mpfr_get_exp (MPC_IM(b));
+            exp_min = (exp_re <= exp_im) ? exp_re : exp_im;
+            scale = (emin + 1) / 2 - exp_min;
+            mpfr_mul_2ui (u, MPC_RE(b), scale, GMP_RNDZ);
+            mpfr_mul_2ui (v, MPC_IM(b), scale, GMP_RNDZ);
+            mpfr_sqr (u, u, GMP_RNDZ);
+            mpfr_sqr (v, v, GMP_RNDZ);
+            /* if there was an overflow with the scaled values, then the
+               inputs had a huge precision, we don't deal with that corner
+               case */
+            MPC_ASSERT (mpfr_overflow_p () == 0);
+            ulp_re = exp_re - MPC_PREC_RE (b);
+            ulp_im = exp_im - MPC_PREC_IM (b);
+            ulp_min = (ulp_re <= ulp_im) ? ulp_re : ulp_im;
+            prec_res = ((exp_re >= exp_im) ? exp_re : exp_im) - ulp_min;
+            prec_res = 2 * prec_res + 1; /* +1 is because there might be
+                                            an exponent shift */
+            mpfr_set_prec (res, prec_res);
+            inexact = mpfr_add (res, u, v, GMP_RNDZ);
+            MPC_ASSERT (inexact == 0);
+            inexact = mpfr_set (a, res, rnd);
+            inexact = mpfr_div_2ui (a, res, 2 * scale, rnd);
+          }
       }
       else /* no problems, ternary value due to mpfr_can_round trick */
          inexact = mpfr_set (a, res, rnd);
