@@ -2,10 +2,10 @@ Changes in version 1.0:
   - First release as a GNU package
   - License change: LGPLv3+ for code, GFDLv1.3+ for documentation
   - Bug fixes:
+    - div and norm now return a value indicating the effective rounding
+      direction, as the other functions.
     - mul and norm now return correct results even if there are over- or
       underflows during the computation
-    - div now returns a value indicating the effective rounding direction,
-      as the other functions.
     - asin, proj, sqr: Wrong result when input variable has infinite part and
       equals output variable is corrected.
 

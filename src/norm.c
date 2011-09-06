@@ -79,17 +79,17 @@ mpc_norm (mpfr_ptr a, mpc_srcptr b, mpfr_rnd_t rnd)
                of underflow or overflow.
             If loops < max_loops and inexact is zero, we can exit the
             while-loop since it only remains to add u and v into a. */
-         if (inexact != 0)
-           {
+         if (inexact) {
              mpfr_set_prec (res, prec);
              mpfr_add (res, u, v, GMP_RNDD); /* err <= 3 ulp in prec */
-           }
+         }
 
       } while (loops < max_loops && inexact != 0
                && !mpfr_can_round (res, prec - 2, GMP_RNDD, GMP_RNDU,
                                    mpfr_get_prec (a) + (rnd == GMP_RNDN)));
 
-      if (inexact == 0) /* squarings were exact, nor underflow nor overflow */
+      if (!inexact)
+         /* squarings were exact, neither underflow nor overflow */
          inexact = mpfr_add (a, u, v, rnd);
       /* if there was an overflow in Re(b)^2 or Im(b)^2 or their sum,
          since the norm is larger, there is an overflow for the norm */
@@ -99,55 +99,63 @@ mpc_norm (mpfr_ptr a, mpc_srcptr b, mpfr_rnd_t rnd)
          inexact = mpfr_mul_2ui (a, a, mpfr_get_emax (), rnd);
       }
       else if (mpfr_underflow_p ()) {
-        /* necessarily one of the squarings did underflow (otherwise their
-           sum could not underflow), thus one of u, v is zero. */
-        mpfr_exp_t emin = mpfr_get_emin ();
+         /* necessarily one of the squarings did underflow (otherwise their
+            sum could not underflow), thus one of u, v is zero. */
+         mpfr_exp_t emin = mpfr_get_emin ();
 
-        if (mpfr_zero_p (u) && !mpfr_zero_p (v))
-          mpfr_swap (u, v);
+         /* Now either both u and v are zero, or u is zero and v exact,
+            or v is zero and u exact.
+            In the latter case, Im(b)^2 < 2^(emin-1).
+            If ulp(u) >= 2^(emin+1) and norm(b) is not exactly
+            representable at the target precision, then rounding u+Im(b)^2
+            is equivalent to rounding u+2^(emin-1).
+            For instance, if exp(u)>0 and the target precision is smaller
+            than about |emin|, the norm is not representable. To make the
+            scaling in the "else" case work without underflow, we test
+            whether exp(u) is larger than a small negative number instead.
+            The second case is handled analogously.                        */
+         if (!mpfr_zero_p (u) && mpfr_get_exp (u) - 2 * prec_u > emin
+             && mpfr_get_exp (u) > -10) {
+               mpfr_set_prec (v, MPFR_PREC_MIN);
+               mpfr_set_ui_2exp (v, 1, emin - 1, GMP_RNDZ);
+               inexact = mpfr_add (a, u, v, rnd);
+         }
+         else if (!mpfr_zero_p (v) && mpfr_get_exp (v) - 2 * prec_v > emin
+             && mpfr_get_exp (v) > -10) {
+               mpfr_set_prec (u, MPFR_PREC_MIN);
+               mpfr_set_ui_2exp (u, 1, emin - 1, GMP_RNDZ);
+               inexact = mpfr_add (a, u, v, rnd);
+         }
+         else {
+            unsigned long int scale, exp_re, exp_im;
+            int inex_underflow;
 
-        /* now either both u and v are zero, or only v */
+            /* scale the input to an average exponent close to 0 */
+            exp_re = (unsigned long int) (-mpfr_get_exp (MPC_RE (b)));
+            exp_im = (unsigned long int) (-mpfr_get_exp (MPC_IM (b)));
+            scale = exp_re / 2 + exp_im / 2 + (exp_re % 2 + exp_im % 2) / 2;
+               /* (exp_re + exp_im) / 2, computed in a way avoiding
+                  integer overflow                                  */
+            if (mpfr_zero_p (u)) {
+               /* recompute the scaled value exactly */
+               mpfr_mul_2ui (u, MPC_RE (b), scale, GMP_RNDN);
+               mpfr_sqr (u, u, GMP_RNDN);
+            }
+            else /* just scale */
+               mpfr_mul_2ui (u, u, 2*scale, GMP_RNDN);
+            if (mpfr_zero_p (v)) {
+               mpfr_mul_2ui (v, MPC_IM (b), scale, GMP_RNDN);
+               mpfr_sqr (v, v, GMP_RNDN);
+            }
+            else
+               mpfr_mul_2ui (v, v, 2*scale, GMP_RNDN);
 
-        /* If v is zero, thus Im(b)^2 < 2^(emin-1), then if ulp(u) >=
-           2^(emin+1), which implies u exact, rounding u+Im(b)^2 is equivalent
-           to rounding u+2^(emin-1). */
-        if (!mpfr_zero_p (u) && mpfr_get_exp (u) - 2 * prec_u > emin)
-          {
-            mpfr_set_prec (v, MPFR_PREC_MIN);
-            mpfr_set_ui_2exp (v, 1, emin - 1, GMP_RNDZ);
             inexact = mpfr_add (a, u, v, rnd);
-          }
-        else /* ulp(u) <= 2^emin */
-          {
-            mpfr_exp_t exp_re, exp_im, exp_min, scale, ulp_re, ulp_im, ulp_min;
-            mpfr_prec_t prec_res;
-
-            /* scale Re(b) and Im(b) so that Re(b)^2 and Im(b)^2 are computed
-               exactly, and also their sum */
-            exp_re = mpfr_get_exp (MPC_RE(b));
-            exp_im = mpfr_get_exp (MPC_IM(b));
-            exp_min = (exp_re <= exp_im) ? exp_re : exp_im;
-            scale = (emin + 1) / 2 - exp_min;
-            mpfr_mul_2ui (u, MPC_RE(b), scale, GMP_RNDZ);
-            mpfr_mul_2ui (v, MPC_IM(b), scale, GMP_RNDZ);
-            mpfr_sqr (u, u, GMP_RNDZ);
-            mpfr_sqr (v, v, GMP_RNDZ);
-            /* if there was an overflow with the scaled values, then the
-               inputs had a huge precision, we don't deal with that corner
-               case */
-            MPC_ASSERT (mpfr_overflow_p () == 0);
-            ulp_re = exp_re - MPC_PREC_RE (b);
-            ulp_im = exp_im - MPC_PREC_IM (b);
-            ulp_min = (ulp_re <= ulp_im) ? ulp_re : ulp_im;
-            prec_res = ((exp_re >= exp_im) ? exp_re : exp_im) - ulp_min;
-            prec_res = 2 * prec_res + 1; /* +1 is because there might be
-                                            an exponent shift */
-            mpfr_set_prec (res, prec_res);
-            inexact = mpfr_add (res, u, v, GMP_RNDZ);
-            MPC_ASSERT (inexact == 0);
-            inexact = mpfr_set (a, res, rnd);
-            inexact = mpfr_div_2ui (a, res, 2 * scale, rnd);
-          }
+            mpfr_clear_underflow ();
+            inex_underflow = mpfr_div_2ui (a, a, 2*scale, rnd);
+            if (mpfr_underflow_p ())
+               inexact = inex_underflow;
+         }
       }
       else /* no problems, ternary value due to mpfr_can_round trick */
          inexact = mpfr_set (a, res, rnd);
