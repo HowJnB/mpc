@@ -93,17 +93,17 @@ AC_ARG_ENABLE([valgrind-tests],
              ]
              )
 
+# Check for user specification of CC or CFLAGS
+if test -n "$CFLAGS" || test -n "$CC" ; then
+   user_redefine_cc_or_cflags=yes
+fi
+
 # Setup CC and CFLAGS
 AC_PROG_CC
 AC_LANG(C)
 
 # Set up LibTool
 AC_PROG_LIBTOOL
-
-# Check for user specification of CC or CFLAGS
-if test -n "$CFLAGS" || test -n "$CC" ; then
-   user_redefine_cc=yes
-fi
 
 # Check GMP Header
 AC_MSG_CHECKING(for gmp.h)
@@ -115,7 +115,7 @@ AC_COMPILE_IFELSE([AC_LANG_SOURCE([[
 ])
 
 # Check for GMP CFLAGS in gmp.h
-if test -z "$user_redefine_cc" ; then
+if test -z "$user_redefine_cc_or_cflags" ; then
    MPC_GMP_CC_CFLAGS
 fi
 

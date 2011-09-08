@@ -142,10 +142,10 @@ AC_DEFUN([MPC_C_CHECK_WARNINGCFLAGS], [
 # Checks if CC and CFLAGS can be extracted from gmp.h
 #
 AC_DEFUN([MPC_GMP_CC_CFLAGS], [
-   AC_MSG_CHECKING(for CC and CFLAGS in gmp.h)
    AC_PROG_CPP
    AC_PROG_EGREP
    AC_PROG_SED
+   AC_MSG_CHECKING(for CC and CFLAGS in gmp.h)
    # Get CC
    echo "#include \"gmp.h\"" >  conftest.c
    echo "MPC_OPTION __GMP_CC"           >> conftest.c
