@@ -625,7 +625,7 @@ reuse_ccf (mpc_function* function, mpc_srcptr z, mpfr_srcptr x, mpc_ptr got,
   function->pointer.CCF (got, got, x, MPC_RNDNN);
   if (!same_mpc_value (got, expected, ks))
     {
-      printf ("Reuse error for %s(z, z, x) for\n", function->name);
+      printf ("Reuse error for %s(z, z, x, RNDNN) for\n", function->name);
       MPC_OUT (z);
       MPFR_OUT (x);
       MPC_OUT (expected);

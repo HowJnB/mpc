@@ -164,6 +164,8 @@ fix_sign (mpc_t z, int sign_eps, int sign_a, mpfr_t y)
    should be called again with a larger value of maxprec).
 
    Assume one of Re(x) or Im(x) is non-zero, and y is non-zero (y is real).
+
+   Warning: z and x might be the same variable.
 */
 static int
 mpc_pow_exact (mpc_ptr z, mpc_srcptr x, mpfr_srcptr y, mpc_rnd_t rnd,
@@ -173,6 +175,9 @@ mpc_pow_exact (mpc_ptr z, mpc_srcptr x, mpfr_srcptr y, mpc_rnd_t rnd,
   mpz_t my, a, b, c, d, u;
   unsigned long int t;
   int ret = -2;
+  int sign_rex = mpfr_signbit (MPC_RE(x));
+  int sign_imx = mpfr_signbit (MPC_IM(x));
+  int x_imag = mpfr_zero_p (MPC_RE(x));
 
   mpz_init (my);
   mpz_init (a);
@@ -188,7 +193,7 @@ mpc_pow_exact (mpc_ptr z, mpc_srcptr x, mpfr_srcptr y, mpc_rnd_t rnd,
   mpz_tdiv_q_2exp (my, my, t);
   /* y = my*2^ey */
 
-  if (mpfr_zero_p (MPC_RE(x)))
+  if (x_imag)
     {
       mpz_set_ui (c, 0);
       ec = 0;
@@ -203,7 +208,7 @@ mpc_pow_exact (mpc_ptr z, mpc_srcptr x, mpfr_srcptr y, mpc_rnd_t rnd,
   else
     {
       ed = mpfr_get_z_exp (d, MPC_IM(x));
-      if (mpfr_zero_p (MPC_RE(x)))
+      if (x_imag)
         ec = ed;
     }
   /* x = c*2^ec + I * d*2^ed */
@@ -400,8 +405,8 @@ mpc_pow_exact (mpc_ptr z, mpc_srcptr x, mpfr_srcptr y, mpc_rnd_t rnd,
   mpz_clear (d);
   mpz_clear (u);
 
-  if (ret >= 0 && mpfr_zero_p (MPC_RE(x)))
-    fix_sign (z, mpfr_signbit (MPC_RE(x)), mpfr_signbit (MPC_IM(x)), y);
+  if (ret >= 0 && x_imag)
+    fix_sign (z, sign_rex, sign_imx, y);
 
   return ret;
 }
