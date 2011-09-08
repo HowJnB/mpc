@@ -99,7 +99,7 @@ mpc_perfect_square_p (mpz_t a, mpz_t b, mpz_t c, mpz_t d)
    Assume y is an integer (does nothing otherwise).
 */
 static void
-fix_sign (mpc_t z, int sign_eps, int sign_a, mpfr_t y)
+fix_sign (mpc_ptr z, int sign_eps, int sign_a, mpfr_srcptr y)
 {
   int ymod4 = -1;
   mpfr_exp_t ey;
