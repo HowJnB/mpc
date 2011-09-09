@@ -140,56 +140,52 @@ AC_DEFUN([MPC_C_CHECK_WARNINGCFLAGS], [
 # DESCRIPTION
 #
 # Checks if CC and CFLAGS can be extracted from gmp.h
+# essentially copied from mpfr
 #
 AC_DEFUN([MPC_GMP_CC_CFLAGS], [
-   AC_PROG_CPP
    AC_PROG_EGREP
    AC_PROG_SED
    AC_MSG_CHECKING(for CC and CFLAGS in gmp.h)
-   # Get CC
-   echo "#include \"gmp.h\"" >  conftest.c
-   echo "MPC_OPTION __GMP_CC"           >> conftest.c
-   GMP_CC=`$CPP $CPPFLAGS conftest.c 2> /dev/null | $EGREP MPC_OPTION | $SED -e 's/MPC_OPTION //g' | $SED -e 's/"//g'`
-   #Get CFLAGS
-   echo "#include \"gmp.h\"" >  conftest.c
-   echo "MPC_OPTION __GMP_CFLAGS"           >> conftest.c
-   GMP_CFLAGS=`$CPP $CPPFLAGS conftest.c 2> /dev/null | $EGREP MPC_OPTION | $SED -e 's/MPC_OPTION //g'| $SED -e 's/"//g'`
-   rm -f conftest.c
+   # AC_PROG_CPP triggers the search for a C compiler; use hack instead
+   for cpp in /lib/cpp gcc cc c99
+   do
+      test $cpp = /lib/cpp || cpp="$cpp -E"
+      echo foo > conftest.c
+      if $cpp $CPPFLAGS conftest.c > /dev/null 2> /dev/null ; then
+         # Get CC
+         echo "#include \"gmp.h\"" >  conftest.c
+         echo "MPFR_OPTION __GMP_CC"           >> conftest.c
+         GMP_CC=`$cpp $CPPFLAGS conftest.c 2> /dev/null | $EGREP MPFR_OPTION | $SED -e 's/MPFR_OPTION //g;s/ *" *//g'`
+         # Get CFLAGS
+         echo "#include \"gmp.h\"" >  conftest.c
+         echo "MPFR_OPTION __GMP_CFLAGS"           >> conftest.c
+         GMP_CFLAGS=`$cpp $CPPFLAGS conftest.c 2> /dev/null | $EGREP MPFR_OPTION | $SED -e 's/MPFR_OPTION //g;s/ *" *//g'`
+         break
+      fi
+   done
+
    if test "x$GMP_CFLAGS" = "x__GMP_CFLAGS" -o "x$GMP_CC" = "x__GMP_CC" ; then
       AC_MSG_RESULT(no)
-      GMP_CFLAGS=
       GMP_CC=
+      GMP_CFLAGS=
    else
       AC_MSG_RESULT(yes [CC=$GMP_CC CFLAGS=$GMP_CFLAGS])
    fi
 
-   dnl Check for validity of CC and CFLAGS obtained from gmp.h
-   if test -n "$GMP_CFLAGS" ; then
-      old_cflags=$CFLAGS
-      old_cc=$CC
-      CFLAGS=$GMP_CFLAGS
-      CC=$GMP_CC
+   # Check for validity of CC and CFLAGS obtained from gmp.h
+   if test -n "$GMP_CC$GMP_CFLAGS" ; then
       AC_MSG_CHECKING(for CC=$GMP_CC and CFLAGS=$GMP_CFLAGS)
-      AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[/*hello*/]],[[/*world*/]])], [
+      echo "int main (void) { return 0; }" > conftest.c
+      if $GMP_CC $GMP_CFLAGS -o conftest conftest.c 2> /dev/null ; then
          AC_MSG_RESULT(yes)
-         ], [
+         CC=$GMP_CC
+         CFLAGS=$GMP_CFLAGS
+      else
          AC_MSG_RESULT(no)
-         CFLAGS=$old_cflags
-         CC=$old_cc
-      ])
-      dnl CC may have changed. Recheck for GCC.
-      AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[
-   #ifndef __GNUC__
-   #error "GCC Not Found"
-   error
-   #endif
-      ]])], [
-      GCC=yes
-      ], [
-      GCC=no
-      ])
+      fi
    fi
 
+   rm -f conftest*
 ])
 
 

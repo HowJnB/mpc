@@ -93,9 +93,9 @@ AC_ARG_ENABLE([valgrind-tests],
              ]
              )
 
-# Check for user specification of CC or CFLAGS
-if test -n "$CFLAGS" || test -n "$CC" ; then
-   user_redefine_cc_or_cflags=yes
+# Check for CC and CFLAGS in gmp.h unless the user specified one of them
+if test -z $CC -a -z $CFLAGS; then
+   MPC_GMP_CC_CFLAGS
 fi
 
 # Setup CC and CFLAGS
@@ -113,11 +113,6 @@ AC_COMPILE_IFELSE([AC_LANG_SOURCE([[
  AC_MSG_RESULT(no)
  AC_MSG_ERROR([gmp.h cannot be found or is unusable.])
 ])
-
-# Check for GMP CFLAGS in gmp.h
-if test -z "$user_redefine_cc_or_cflags" ; then
-   MPC_GMP_CC_CFLAGS
-fi
 
 # Check if compiler accepts warning flags and add them to CFLAGS
 MPC_C_CHECK_WARNINGCFLAGS
