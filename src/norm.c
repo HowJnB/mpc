@@ -114,13 +114,15 @@ mpc_norm (mpfr_ptr a, mpc_srcptr b, mpfr_rnd_t rnd)
             scaling in the "else" case work without underflow, we test
             whether exp(u) is larger than a small negative number instead.
             The second case is handled analogously.                        */
-         if (!mpfr_zero_p (u) && mpfr_get_exp (u) - 2 * prec_u > emin
+         if (!mpfr_zero_p (u)
+             && mpfr_get_exp (u) - 2 * (mpfr_exp_t) prec_u > emin
              && mpfr_get_exp (u) > -10) {
                mpfr_set_prec (v, MPFR_PREC_MIN);
                mpfr_set_ui_2exp (v, 1, emin - 1, GMP_RNDZ);
                inexact = mpfr_add (a, u, v, rnd);
          }
-         else if (!mpfr_zero_p (v) && mpfr_get_exp (v) - 2 * prec_v > emin
+         else if (!mpfr_zero_p (v)
+             && mpfr_get_exp (v) - 2 * (mpfr_exp_t) prec_v > emin
              && mpfr_get_exp (v) > -10) {
                mpfr_set_prec (u, MPFR_PREC_MIN);
                mpfr_set_ui_2exp (u, 1, emin - 1, GMP_RNDZ);
