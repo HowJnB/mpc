@@ -212,7 +212,7 @@ case $host in
      MPC_WINDOWS
 esac
 
-# Checks for gcc version, result in GCC_VERSION inside config.log, for instance
+# Checks for gcc version, result in variables MPC_GCC etc. inside config.log
 AX_GCC_VERSION
 AC_DEFINE_UNQUOTED([MPC_GCC], ["$GCC"], [Gcc yes or no])
 AC_DEFINE_UNQUOTED([MPC_CC], ["$CC"], [C compiler])
