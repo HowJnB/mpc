@@ -121,8 +121,7 @@ check_io_str (mpc_ptr read_number, mpc_ptr expected)
 
   if (!(fp = fopen (tmp_file, "w")))
     {
-      printf ("Error: Could not open file %s\n", tmp_file);
-
+      printf ("Error: Could not open file %s in write mode\n", tmp_file);
       exit (1);
     }
 
@@ -131,8 +130,7 @@ check_io_str (mpc_ptr read_number, mpc_ptr expected)
 
   if (!(fp = fopen (tmp_file, "r")))
     {
-      printf ("Error: Could not open file %s\n", tmp_file);
-
+      printf ("Error: Could not open file %s in read mode\n", tmp_file);
       exit (1);
     };
   if (mpc_inp_str (read_number, fp, &sz, 10, MPC_RNDNN) == -1)
