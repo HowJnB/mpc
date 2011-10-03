@@ -172,6 +172,11 @@ tests_free (void *ptr, size_t size)
   struct header  **hp = tests_free_find (ptr);
   struct header  *h = *hp;
 
+#ifdef TEST_MEMORY
+  if (ptr == (void*) TEST_MEMORY)
+    fprintf (stderr, "tests_free: free %zu at 0x%lX\n",
+             size, (unsigned long) ptr);
+#endif
   if (h->size != size)
     {
       /* Note: we should use the standard %zu to print sizes, but
