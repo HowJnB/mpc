@@ -27,8 +27,6 @@ http://www.gnu.org/licenses/ or write to the Free Software Foundation, Inc.,
 #include <limits.h>
 #include "gmp.h"
 
-#define TEST_MEMORY 0x1002001D0
-
 #define __gmp_default_allocate malloc
 #define __gmp_default_reallocate(p,old,new) realloc(p,new)
 #define __gmp_default_free(p,size) free(p)
@@ -92,11 +90,6 @@ tests_allocate (size_t size)
 
   h->size = size;
   h->ptr = __gmp_default_allocate (size);
-#ifdef TEST_MEMORY
-  if (h->ptr == (void*) TEST_MEMORY)
-    fprintf (stderr, "tests_allocate: allocated %zu at 0x%lX\n",
-             size, (unsigned long) h->ptr);
-#endif
   return h->ptr;
 }
 
@@ -133,11 +126,6 @@ tests_reallocate (void *ptr, size_t old_size, size_t new_size)
 
   h->size = new_size;
   h->ptr = __gmp_default_reallocate (ptr, old_size, new_size);
-#ifdef TEST_MEMORY
-  if (h->ptr == (void*) TEST_MEMORY)
-    fprintf (stderr, "tests_reallocate: reallocated from %zu to %zu at 0x%lX\n",
-             old_size, new_size, (unsigned long) h->ptr);
-#endif
   return h->ptr;
 }
 
@@ -172,11 +160,6 @@ tests_free (void *ptr, size_t size)
   struct header  **hp = tests_free_find (ptr);
   struct header  *h = *hp;
 
-#ifdef TEST_MEMORY
-  if (ptr == (void*) TEST_MEMORY)
-    fprintf (stderr, "tests_free: free %zu at 0x%lX\n",
-             size, (unsigned long) ptr);
-#endif
   if (h->size != size)
     {
       /* Note: we should use the standard %zu to print sizes, but
