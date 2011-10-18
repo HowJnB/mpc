@@ -1,6 +1,6 @@
 /* random.c -- Handle seed for random numbers.
 
-Copyright (C) 2008, 2009, 2010 INRIA
+// Copyright (C) 2008, 2009, 2010, 2011 INRIA
 
 This file is part of GNU MPC.
 
@@ -47,11 +47,6 @@ test_start (void)
 {
   char *environment_seed;
   unsigned long seed;
-
-  /* if we use valgrind, no need to have our own memory check */
-#ifndef MPC_USE_VALGRIND
-  tests_memory_start ();
-#endif
 
   if (rands_initialized)
     {
@@ -101,9 +96,6 @@ test_end (void)
       gmp_randclear (rands);
     }
   mpfr_free_cache ();
-#ifndef MPC_USE_VALGRIND
-  tests_memory_end ();
-#endif
 }
 
 /* Set z to a non zero value random value with absolute values of Re(z) and
