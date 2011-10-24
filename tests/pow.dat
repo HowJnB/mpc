@@ -436,3 +436,8 @@
 + + 2 -0 2 -0 2 3 2 -1 28 -744261116 2 +0 N N
 - + 2 +0 2 -0 2 4 2 3 28 -744261116 2 +0 N N
 - - 2 +0 2 +0 2 4 2 -3 28 -744261116 2 +0 N N
+
+# bug found by the automatic builds on
+# http://hydra.nixos.org/build/1469029/log/raw (only happens for z = x^y when
+# z and y are the same variable)
+- 0 2 0x3p-5 2 -0 2 +0 2 0x3p-2 2 8 2 +0 N N

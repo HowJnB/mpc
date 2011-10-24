@@ -165,7 +165,7 @@ fix_sign (mpc_ptr z, int sign_eps, int sign_a, mpfr_srcptr y)
 
    Assume one of Re(x) or Im(x) is non-zero, and y is non-zero (y is real).
 
-   Warning: z and x might be the same variable.
+   Warning: z and x might be the same variable, same for Re(z) or Im(z) and y.
 */
 static int
 mpc_pow_exact (mpc_ptr z, mpc_srcptr x, mpfr_srcptr y, mpc_rnd_t rnd,
@@ -178,6 +178,15 @@ mpc_pow_exact (mpc_ptr z, mpc_srcptr x, mpfr_srcptr y, mpc_rnd_t rnd,
   int sign_rex = mpfr_signbit (MPC_RE(x));
   int sign_imx = mpfr_signbit (MPC_IM(x));
   int x_imag = mpfr_zero_p (MPC_RE(x));
+  int z_is_y = 0;
+  mpfr_t copy_of_y;
+
+  if (mpc_realref (z) == y || mpc_imagref (z) == y)
+    {
+      z_is_y = 1;
+      mpfr_init2 (copy_of_y, mpfr_get_prec (y));
+      mpfr_set (copy_of_y, y, GMP_RNDN);
+    }
 
   mpz_init (my);
   mpz_init (a);
@@ -406,7 +415,10 @@ mpc_pow_exact (mpc_ptr z, mpc_srcptr x, mpfr_srcptr y, mpc_rnd_t rnd,
   mpz_clear (u);
 
   if (ret >= 0 && x_imag)
-    fix_sign (z, sign_rex, sign_imx, y);
+    fix_sign (z, sign_rex, sign_imx, (z_is_y) ? copy_of_y : y);
+
+  if (z_is_y)
+    mpfr_clear (copy_of_y);
 
   return ret;
 }
