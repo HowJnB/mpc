@@ -166,6 +166,8 @@ fix_sign (mpc_ptr z, int sign_eps, int sign_a, mpfr_srcptr y)
    Assume one of Re(x) or Im(x) is non-zero, and y is non-zero (y is real).
 
    Warning: z and x might be the same variable, same for Re(z) or Im(z) and y.
+
+   In case -1 or -2 is returned, z is not modified.
 */
 static int
 mpc_pow_exact (mpc_ptr z, mpc_srcptr x, mpfr_srcptr y, mpc_rnd_t rnd,
@@ -651,7 +653,7 @@ mpc_pow (mpc_ptr z, mpc_srcptr x, mpc_srcptr y, mpc_rnd_t rnd)
       int ret_exp;
       mpfr_exp_t dr, di;
       mpfr_prec_t q=0;
-         /* to avoid warning message, real initialisation below */
+      /* to avoid warning message, real initialisation below */
 
       mpc_log (t, x, MPC_RNDNN);
       mpc_mul (t, t, y, MPC_RNDNN);
@@ -751,6 +753,9 @@ mpc_pow (mpc_ptr z, mpc_srcptr x, mpc_srcptr y, mpc_rnd_t rnd)
         || (cx1 == 0 && sign_imx != mpfr_signbit (MPC_RE (y)))
         || (cx1 > 0 && mpfr_signbit (MPC_IM (y)));
 
+      /* copy RE(y) to n since if z==y we will destroy Re(y) below */
+      mpfr_set_prec (n, mpfr_get_prec (MPC_RE (y)));
+      mpfr_set (n, MPC_RE (y), GMP_RNDN);
       ret = mpfr_set (MPC_RE(z), MPC_RE(u), MPC_RND_RE(rnd));
       if (y_real && (x_real || x_imag))
         {
@@ -758,7 +763,7 @@ mpc_pow (mpc_ptr z, mpc_srcptr x, mpc_srcptr y, mpc_rnd_t rnd)
              for example when y comes from pow_fr, but in case Im(y) is +0 or
              -0, we might get different results */
           mpfr_set_ui (MPC_IM (z), 0, MPC_RND_IM (rnd));
-          fix_sign (z, sign_rex, sign_imx, MPC_RE (y));
+          fix_sign (z, sign_rex, sign_imx, n);
           ret = MPC_INEX(ret, 0); /* imaginary part is exact */
         }
       else
@@ -774,13 +779,18 @@ mpc_pow (mpc_ptr z, mpc_srcptr x, mpc_srcptr y, mpc_rnd_t rnd)
   else if (z_imag)
     {
       ret = mpfr_set (MPC_IM(z), MPC_IM(u), MPC_RND_IM(rnd));
-      if (y_real && (x_real || x_imag))
+      /* if z is imaginary and y real, then x cannot be real */
+      if (y_real && x_imag)
         {
           int sign_rex = mpfr_signbit (MPC_RE (x));
-          int sign_imx = mpfr_signbit (MPC_IM (x));
 
+          /* If z overlaps with y we set Re(z) before checking Re(y) below,
+             but in that case y=0, which was dealt with above. */
           mpfr_set_ui (MPC_RE (z), 0, MPC_RND_RE (rnd));
-          fix_sign (z, sign_rex, sign_imx, MPC_RE (y));
+          /* Note: fix_sign only does something when y is an integer,
+             then necessarily y = 1 or 3 (mod 4), and in that case the
+             sign of Im(x) is irrelevant. */
+          fix_sign (z, sign_rex, 0, MPC_RE (y));
           ret = MPC_INEX(0, ret);
         }
       else
