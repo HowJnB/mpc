@@ -20,6 +20,37 @@ along with this program. If not, see http://www.gnu.org/licenses/ .
 
 #include "mpc-tests.h"
 
+#if 1
+static void
+reuse_bug (void)
+{
+   /* bug found by the automatic builds on
+      http://hydra.nixos.org/build/1469029/log/raw */
+   mpc_t x, y, z;
+   mp_prec_t prec = 1087;
+
+   mpc_init2 (x, prec);
+   mpc_init2 (y, prec);
+   mpc_init2 (z, prec);
+   
+   mpfr_set_ui (MPC_RE (x), 0ul, GMP_RNDN);
+   mpfr_set_ui_2exp (MPC_IM (x), 3ul, -2, GMP_RNDN);
+   mpc_set_ui (y, 8ul, MPC_RNDNN);
+
+   mpc_pow (z, x, y, MPC_RNDNN);
+   mpc_pow (y, x, y, MPC_RNDNN);
+   if (mpfr_signbit (MPC_IM (y)) == 0 && mpfr_signbit (MPC_IM (z)) != 0) {
+      printf ("Error: regression, reuse_bug reproduced\n");
+      exit (1);
+   }
+
+   mpc_clear (x);
+   mpc_clear (y);
+   mpc_clear (z);
+}
+#endif
+
+
 int
 main (void)
 {
@@ -29,6 +60,8 @@ main (void)
 
   data_check (f, "pow.dat");
   tgeneric (f, 2, 1024, 7, 10);
+
+  reuse_bug ();
 
   test_end ();
 

@@ -926,7 +926,7 @@ tgeneric (mpc_function function, mpfr_prec_t prec_min,
       mpc_init2 (z3, prec_max);
       mpc_init2 (z4, prec_max);
       mpc_init2 (zzzz, 4*prec_max);
-      special_cases = 9;
+      special_cases = 8;
       break;
     case CCCC:
       mpc_init2 (z2, prec_max);
@@ -1034,13 +1034,6 @@ tgeneric (mpc_function function, mpfr_prec_t prec_min,
               break;
             case 8:
               mpfr_set_inf (MPC_IM (z2), +1);
-              break;
-            case 9: /* bug found by the automatic builds on
-                       http://hydra.nixos.org/build/1469029/log/raw */
-              mpfr_set_ui (MPC_RE (z1), 0, GMP_RNDN);
-              mpfr_set_ui_2exp (MPC_IM (z1), 3, -2, GMP_RNDN);
-              mpfr_set_ui (MPC_RE (z2), 8, GMP_RNDN);
-              mpfr_set_ui (MPC_IM (z2), 0, GMP_RNDN);
               break;
             }
           break;
