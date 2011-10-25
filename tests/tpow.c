@@ -20,14 +20,13 @@ along with this program. If not, see http://www.gnu.org/licenses/ .
 
 #include "mpc-tests.h"
 
-#if 1
 static void
 reuse_bug (void)
 {
    /* bug found by the automatic builds on
       http://hydra.nixos.org/build/1469029/log/raw */
    mpc_t x, y, z;
-   mp_prec_t prec = 1087;
+   mp_prec_t prec = 2;
 
    mpc_init2 (x, prec);
    mpc_init2 (y, prec);
@@ -48,7 +47,6 @@ reuse_bug (void)
    mpc_clear (y);
    mpc_clear (z);
 }
-#endif
 
 
 int
