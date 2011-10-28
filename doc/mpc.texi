@@ -1120,7 +1120,7 @@ Version 4.2.4, @url{http://gmplib.org/}.
 
 @item
 Guillaume Hanrot, Vincent Lef@`evre, Patrick P@'elissier, Paul Zimmermann et al.
-@code{mpfr} -- A library for multiple-precision floating-point               computations with exact rounding.
+@code{mpfr} -- A library for multiple-precision floating-point computations with exact rounding.
 Version 2.4.1, @url{http://www.mpfr.org}.
 
 @item
@@ -1143,7 +1143,7 @@ ISO/IEC 9899:1999, Programming languages — C.
 @printindex cp
 
 @node Function Index
-@unnumbered Function and Type Index
+@unnumbered Function Index
 @printindex fn
 
 @node GNU Free Documentation License
