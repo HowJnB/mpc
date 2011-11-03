@@ -120,7 +120,15 @@ typedef __gmp_const __mpc_struct *mpc_srcptr;
 # define __MPC_PROTO(x) ()
 #endif
 
-/* Support for WINDOWS DLL, see the thread http://lists.gforge.inria.fr/pipermail/mpc-discuss/2011-April/000871.html */
+/* Support for WINDOWS DLL, see
+   http://lists.gforge.inria.fr/pipermail/mpc-discuss/2011-November/000990.html;
+   when building the DLL, export symbols, otherwise behave as GMP           */
+#if defined (__MPC_WITHIN_MPC) && __GMP_LIBGMP_DLL
+#define __MPC_DECLSPEC __GMP_DECLSPEC_EXPORT
+#else
+#define __MPC_DECLSPEC __GMP_DECLSPEC
+#endif
+
 #if __GMP_LIBGMP_DLL
 # define __MPC_DECLSPEC __GMP_DECLSPEC_EXPORT
 #else

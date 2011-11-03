@@ -18,8 +18,8 @@ You should have received a copy of the GNU Lesser General Public License
 along with this program. If not, see http://www.gnu.org/licenses/ .
 */
 
-#ifndef MPC_TESTS_H
-#define MPC_TESTS_H
+#ifndef __MPC_TESTS_H
+#define __MPC_TESTS_H
 
 #include <stdio.h>
 #include <ctype.h>
@@ -188,4 +188,4 @@ extern void read_mpc (FILE *fp, mpc_ptr z, known_signs_t *ks);
 #define TERNARY_ERROR 254
    /* special value to indicate that an error occurred in an mpc function */
 
-#endif /* MPC_TESTS_H */
+#endif /* __MPC_TESTS_H */
