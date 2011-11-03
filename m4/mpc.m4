@@ -198,12 +198,12 @@ AC_DEFUN([MPC_GMP_CC_CFLAGS], [
 # DESCRIPTION
 #
 # Additional checks on windows
-# libtool requires "--no-undefined" for win32 dll
+# libtool requires "-no-undefined" for win32 dll
 # It also disables the tests involving the linking with LIBGMP if DLL
 #
 AC_DEFUN([MPC_WINDOWS], [
    if test "$enable_shared" = yes; then
-     LDFLAGS="$LDFLAGS -Wl,--no-undefined"
+     MPC_LDFLAGS="$MPC_LDFLAGS -no-undefined"
      AC_MSG_CHECKING(for DLL/static gmp)
      AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[
 #include "gmp.h"

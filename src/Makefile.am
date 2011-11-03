@@ -18,7 +18,7 @@
 ## along with this program. If not, see http://www.gnu.org/licenses/ .
 
 lib_LTLIBRARIES = libmpc.la
-libmpc_la_LDFLAGS = -version-info 2:0:0
+libmpc_la_LDFLAGS = $(MPC_LDFLAGS) -version-info 2:0:0
 libmpc_la_SOURCES = mpc-impl.h abs.c acos.c acosh.c add.c add_fr.c         \
   add_si.c add_ui.c arg.c asin.c asinh.c atan.c atanh.c clear.c cmp.c      \
   cmp_si_si.c conj.c cos.c cosh.c div_2exp.c div.c div_fr.c div_ui.c exp.c \

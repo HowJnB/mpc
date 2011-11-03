@@ -207,6 +207,8 @@ AS_IF([test "x$enable_logging" = "xyes"],
      )
 
 # Configs for Windows DLLs
+AC_SUBST(MPC_LDFLAGS)
+AC_LIBTOOL_WIN32_DLL
 case $host in
   *-*-cygwin* | *-*-mingw* | *-*-pw32* | *-*-os2*)
      MPC_WINDOWS
