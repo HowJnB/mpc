@@ -129,12 +129,6 @@ typedef __gmp_const __mpc_struct *mpc_srcptr;
 #define __MPC_DECLSPEC __GMP_DECLSPEC
 #endif
 
-#if __GMP_LIBGMP_DLL
-# define __MPC_DECLSPEC __GMP_DECLSPEC_EXPORT
-#else
-# define __MPC_DECLSPEC __GMP_DECLSPEC
-#endif
-
 #if defined (__cplusplus)
 extern "C" {
 #endif
