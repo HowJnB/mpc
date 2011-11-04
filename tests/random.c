@@ -22,11 +22,10 @@ along with this program. If not, see http://www.gnu.org/licenses/ .
    test_end at the end.
    These are an adaptation of those of MPFR. */
 
+#include "config.h"
 #include <stdlib.h>
-
 #include "mpc-tests.h"
 
-#include "config.h"
 
 #ifdef TIME_WITH_SYS_TIME
 # include <sys/time.h>

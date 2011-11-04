@@ -28,8 +28,10 @@ along with this program. If not, see http://www.gnu.org/licenses/ .
 #define __MPC_WITHIN_MPC 1
 #endif
 
-#include <stdlib.h>
 #include "config.h"
+#ifdef HAVE_STDLIB_H
+#include <stdlib.h>
+#endif
 #include "mpc.h"
 
 #define MPC_RE(x) ((x)->re)
