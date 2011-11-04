@@ -33,6 +33,20 @@ along with this program. If not, see http://www.gnu.org/licenses/ .
 #define MPC_MAX_PREC(x) MPC_MAX(MPC_PREC_RE(x), MPC_PREC_IM(x))
 #define MPC_MAX(h,i) ((h) > (i) ? (h) : (i))
 
+#define MPC_ASSERT(expr)                                        \
+  do {                                                          \
+    if (!(expr))                                                \
+      {                                                         \
+        fprintf (stderr, "%s:%d: MPC assertion failed: %s\n",   \
+                 __FILE__, __LINE__, #expr);                    \
+        abort();                                                \
+      }                                                         \
+  } while (0)
+
+__MPC_DECLSPEC int  mpc_mul_naive __MPC_PROTO ((mpc_ptr, mpc_srcptr, mpc_srcptr, mpc_rnd_t));
+__MPC_DECLSPEC int  mpc_mul_karatsuba __MPC_PROTO ((mpc_ptr, mpc_srcptr, mpc_srcptr, mpc_rnd_t));
+/* end pieces copied from mpc-impl.h */
+
 #define MPC_OUT(x)                                              \
 do {                                                            \
   printf (#x "[%lu,%lu]=", (unsigned long int) MPC_PREC_RE (x), \
@@ -47,22 +61,6 @@ do {                                                            \
   mpfr_out_str (stdout, 2, 0, x, GMP_RNDN);                     \
   printf ("\n");                                                \
 } while (0)
-
-#define MPC_ASSERT(expr)                                        \
-  do {                                                          \
-    if (!(expr))                                                \
-      {                                                         \
-        fprintf (stderr, "%s:%d: MPC assertion failed: %s\n",   \
-                 __FILE__, __LINE__, #expr);                    \
-        abort();                                                \
-      }                                                         \
-  } while (0)
-
-__MPC_DECLSPEC int  mpc_mul_naive __MPC_PROTO ((mpc_ptr, mpc_srcptr, mpc_srcptr, mpc_rnd_t));
-__MPC_DECLSPEC int  mpc_mul_karatsuba __MPC_PROTO ((mpc_ptr, mpc_srcptr, mpc_srcptr, mpc_rnd_t));
-
-
-/* end pieces copied from mpc-impl.h */
 
 
 #define MPC_INEX_STR(inex)                      \
