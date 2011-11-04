@@ -21,13 +21,6 @@ along with this program. If not, see http://www.gnu.org/licenses/ .
 #ifndef __MPC_IMPL_H
 #define __MPC_IMPL_H
 
-/* If mpc-impl.h is included, we are either in the library build or in the
-   tests. Define __MPC_WITHIN_MPC in the first case, since Windows DLL needs
-   different export/import directives. Without effect outside Windows DLL.   */
-#ifndef __MPC_TESTS_H
-#define __MPC_WITHIN_MPC 1
-#endif
-
 #include "config.h"
 #ifdef HAVE_STDLIB_H
 #include <stdlib.h>
