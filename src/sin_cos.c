@@ -37,38 +37,38 @@ mpc_sin_cos_nonfinite (mpc_ptr rop_sin, mpc_ptr rop_cos, mpc_srcptr op,
       op_loc [0] = op [0];
 
    if (rop_sin != NULL) {
-      if (mpfr_nan_p (MPC_RE (op_loc)) || mpfr_nan_p (MPC_IM (op_loc))) {
+      if (mpfr_nan_p (mpc_realref (op_loc)) || mpfr_nan_p (mpc_imagref (op_loc))) {
          mpc_set (rop_sin, op_loc, rnd_sin);
-         if (mpfr_nan_p (MPC_IM (op_loc))) {
+         if (mpfr_nan_p (mpc_imagref (op_loc))) {
             /* sin(x +i*NaN) = NaN +i*NaN, except for x=0 */
             /* sin(-0 +i*NaN) = -0 +i*NaN */
             /* sin(+0 +i*NaN) = +0 +i*NaN */
-            if (!mpfr_zero_p (MPC_RE (op_loc)))
-               mpfr_set_nan (MPC_RE (rop_sin));
+            if (!mpfr_zero_p (mpc_realref (op_loc)))
+               mpfr_set_nan (mpc_realref (rop_sin));
          }
          else /* op = NaN + i*y */
-            if (!mpfr_inf_p (MPC_IM (op_loc)) && !mpfr_zero_p (MPC_IM (op_loc)))
+            if (!mpfr_inf_p (mpc_imagref (op_loc)) && !mpfr_zero_p (mpc_imagref (op_loc)))
             /* sin(NaN -i*Inf) = NaN -i*Inf */
             /* sin(NaN -i*0) = NaN -i*0 */
             /* sin(NaN +i*0) = NaN +i*0 */
             /* sin(NaN +i*Inf) = NaN +i*Inf */
             /* sin(NaN +i*y) = NaN +i*NaN, when 0<|y|<Inf */
-            mpfr_set_nan (MPC_IM (rop_sin));
+            mpfr_set_nan (mpc_imagref (rop_sin));
       }
-      else if (mpfr_inf_p (MPC_RE (op_loc))) {
-         mpfr_set_nan (MPC_RE (rop_sin));
+      else if (mpfr_inf_p (mpc_realref (op_loc))) {
+         mpfr_set_nan (mpc_realref (rop_sin));
 
-         if (!mpfr_inf_p (MPC_IM (op_loc)) && !mpfr_zero_p (MPC_IM (op_loc)))
+         if (!mpfr_inf_p (mpc_imagref (op_loc)) && !mpfr_zero_p (mpc_imagref (op_loc)))
             /* sin(+/-Inf +i*y) = NaN +i*NaN, when 0<|y|<Inf */
-            mpfr_set_nan (MPC_IM (rop_sin));
+            mpfr_set_nan (mpc_imagref (rop_sin));
          else
             /* sin(+/-Inf -i*Inf) = NaN -i*Inf */
             /* sin(+/-Inf +i*Inf) = NaN +i*Inf */
             /* sin(+/-Inf -i*0) = NaN -i*0 */
             /* sin(+/-Inf +i*0) = NaN +i*0 */
-            mpfr_set (MPC_IM (rop_sin), MPC_IM (op_loc), MPC_RND_IM (rnd_sin));
+            mpfr_set (mpc_imagref (rop_sin), mpc_imagref (op_loc), MPC_RND_IM (rnd_sin));
       }
-      else if (mpfr_zero_p (MPC_RE (op_loc))) {
+      else if (mpfr_zero_p (mpc_realref (op_loc))) {
          /* sin(-0 -i*Inf) = -0 -i*Inf */
          /* sin(+0 -i*Inf) = +0 -i*Inf */
          /* sin(-0 +i*Inf) = -0 +i*Inf */
@@ -81,46 +81,46 @@ mpc_sin_cos_nonfinite (mpc_ptr rop_sin, mpc_ptr rop_cos, mpc_srcptr op,
          mpfr_t s, c;
          mpfr_init2 (s, 2);
          mpfr_init2 (c, 2);
-         mpfr_sin_cos (s, c, MPC_RE (op_loc), GMP_RNDZ);
-         mpfr_set_inf (MPC_RE (rop_sin), MPFR_SIGN (s));
-         mpfr_set_inf (MPC_IM (rop_sin), MPFR_SIGN (c)*MPFR_SIGN (MPC_IM (op_loc)));
+         mpfr_sin_cos (s, c, mpc_realref (op_loc), GMP_RNDZ);
+         mpfr_set_inf (mpc_realref (rop_sin), MPFR_SIGN (s));
+         mpfr_set_inf (mpc_imagref (rop_sin), MPFR_SIGN (c)*MPFR_SIGN (mpc_imagref (op_loc)));
          mpfr_clear (s);
          mpfr_clear (c);
       }
    }
 
    if (rop_cos != NULL) {
-      if (mpfr_nan_p (MPC_RE (op_loc))) {
+      if (mpfr_nan_p (mpc_realref (op_loc))) {
          /* cos(NaN + i * NaN) = NaN + i * NaN */
          /* cos(NaN - i * Inf) = +Inf + i * NaN */
          /* cos(NaN + i * Inf) = +Inf + i * NaN */
          /* cos(NaN - i * 0) = NaN - i * 0 */
          /* cos(NaN + i * 0) = NaN + i * 0 */
          /* cos(NaN + i * y) = NaN + i * NaN, when y != 0 */
-         if (mpfr_inf_p (MPC_IM (op_loc)))
-            mpfr_set_inf (MPC_RE (rop_cos), +1);
+         if (mpfr_inf_p (mpc_imagref (op_loc)))
+            mpfr_set_inf (mpc_realref (rop_cos), +1);
          else
-            mpfr_set_nan (MPC_RE (rop_cos));
+            mpfr_set_nan (mpc_realref (rop_cos));
 
-         if (mpfr_zero_p (MPC_IM (op_loc)))
-            mpfr_set (MPC_IM (rop_cos), MPC_IM (op_loc), MPC_RND_IM (rnd_cos));
+         if (mpfr_zero_p (mpc_imagref (op_loc)))
+            mpfr_set (mpc_imagref (rop_cos), mpc_imagref (op_loc), MPC_RND_IM (rnd_cos));
          else
-            mpfr_set_nan (MPC_IM (rop_cos));
+            mpfr_set_nan (mpc_imagref (rop_cos));
       }
-      else if (mpfr_nan_p (MPC_IM (op_loc))) {
+      else if (mpfr_nan_p (mpc_imagref (op_loc))) {
           /* cos(-Inf + i * NaN) = NaN + i * NaN */
           /* cos(+Inf + i * NaN) = NaN + i * NaN */
           /* cos(-0 + i * NaN) = NaN - i * 0 */
           /* cos(+0 + i * NaN) = NaN + i * 0 */
           /* cos(x + i * NaN) = NaN + i * NaN, when x != 0 */
-         if (mpfr_zero_p (MPC_RE (op_loc)))
-            mpfr_set (MPC_IM (rop_cos), MPC_RE (op_loc), MPC_RND_IM (rnd_cos));
+         if (mpfr_zero_p (mpc_realref (op_loc)))
+            mpfr_set (mpc_imagref (rop_cos), mpc_realref (op_loc), MPC_RND_IM (rnd_cos));
          else
-            mpfr_set_nan (MPC_IM (rop_cos));
+            mpfr_set_nan (mpc_imagref (rop_cos));
 
-         mpfr_set_nan (MPC_RE (rop_cos));
+         mpfr_set_nan (mpc_realref (rop_cos));
       }
-      else if (mpfr_inf_p (MPC_RE (op_loc))) {
+      else if (mpfr_inf_p (mpc_realref (op_loc))) {
          /* cos(-Inf -i*Inf) = cos(+Inf +i*Inf) = -Inf +i*NaN */
          /* cos(-Inf +i*Inf) = cos(+Inf -i*Inf) = +Inf +i*NaN */
          /* cos(-Inf -i*0) = cos(+Inf +i*0) = NaN -i*0 */
@@ -128,28 +128,28 @@ mpc_sin_cos_nonfinite (mpc_ptr rop_sin, mpc_ptr rop_cos, mpc_srcptr op,
          /* cos(-Inf +i*y) = cos(+Inf +i*y) = NaN +i*NaN, when y != 0 */
 
          const int same_sign =
-            mpfr_signbit (MPC_RE (op_loc)) == mpfr_signbit (MPC_IM (op_loc));
+            mpfr_signbit (mpc_realref (op_loc)) == mpfr_signbit (mpc_imagref (op_loc));
 
-         if (mpfr_inf_p (MPC_IM (op_loc)))
-            mpfr_set_inf (MPC_RE (rop_cos), (same_sign ? -1 : +1));
+         if (mpfr_inf_p (mpc_imagref (op_loc)))
+            mpfr_set_inf (mpc_realref (rop_cos), (same_sign ? -1 : +1));
          else
-            mpfr_set_nan (MPC_RE (rop_cos));
+            mpfr_set_nan (mpc_realref (rop_cos));
 
-         if (mpfr_zero_p (MPC_IM (op_loc)))
-            mpfr_setsign (MPC_IM (rop_cos), MPC_IM (op_loc), same_sign,
+         if (mpfr_zero_p (mpc_imagref (op_loc)))
+            mpfr_setsign (mpc_imagref (rop_cos), mpc_imagref (op_loc), same_sign,
                           MPC_RND_IM(rnd_cos));
          else
-            mpfr_set_nan (MPC_IM (rop_cos));
+            mpfr_set_nan (mpc_imagref (rop_cos));
       }
-      else if (mpfr_zero_p (MPC_RE (op_loc))) {
+      else if (mpfr_zero_p (mpc_realref (op_loc))) {
          /* cos(-0 -i*Inf) = cos(+0 +i*Inf) = +Inf -i*0 */
          /* cos(-0 +i*Inf) = cos(+0 -i*Inf) = +Inf +i*0 */
          const int same_sign =
-            mpfr_signbit (MPC_RE (op_loc)) == mpfr_signbit (MPC_IM (op_loc));
+            mpfr_signbit (mpc_realref (op_loc)) == mpfr_signbit (mpc_imagref (op_loc));
 
-         mpfr_setsign (MPC_IM (rop_cos), MPC_RE (op_loc), same_sign,
+         mpfr_setsign (mpc_imagref (rop_cos), mpc_realref (op_loc), same_sign,
                        MPC_RND_IM (rnd_cos));
-         mpfr_set_inf (MPC_RE (rop_cos), +1);
+         mpfr_set_inf (mpc_realref (rop_cos), +1);
       }
       else {
          /* cos(x -i*Inf) = +Inf*cos(x) +i*Inf*sin(x), when x != 0 */
@@ -157,10 +157,10 @@ mpc_sin_cos_nonfinite (mpc_ptr rop_sin, mpc_ptr rop_cos, mpc_srcptr op,
          mpfr_t s, c;
          mpfr_init2 (c, 2);
          mpfr_init2 (s, 2);
-         mpfr_sin_cos (s, c, MPC_RE (op_loc), GMP_RNDN);
-         mpfr_set_inf (MPC_RE (rop_cos), mpfr_sgn (c));
-         mpfr_set_inf (MPC_IM (rop_cos),
-            (mpfr_sgn (MPC_IM (op_loc)) == mpfr_sgn (s) ? -1 : +1));
+         mpfr_sin_cos (s, c, mpc_realref (op_loc), GMP_RNDN);
+         mpfr_set_inf (mpc_realref (rop_cos), mpfr_sgn (c));
+         mpfr_set_inf (mpc_imagref (rop_cos),
+            (mpfr_sgn (mpc_imagref (op_loc)) == mpfr_sgn (s) ? -1 : +1));
          mpfr_clear (s);
          mpfr_clear (c);
       }
@@ -184,7 +184,7 @@ mpc_sin_cos_real (mpc_ptr rop_sin, mpc_ptr rop_cos, mpc_srcptr op,
          by definition, for not computed values.                         */
    mpfr_t s, c;
    int inex_s, inex_c;
-   int sign_im = mpfr_signbit (MPC_IM (op));
+   int sign_im = mpfr_signbit (mpc_imagref (op));
 
    /* sin(x +-0*i) = sin(x) +-0*i*sign(cos(x)) */
    /* cos(x +-i*0) = cos(x) -+i*0*sign(sin(x)) */
@@ -196,24 +196,24 @@ mpc_sin_cos_real (mpc_ptr rop_sin, mpc_ptr rop_cos, mpc_srcptr op,
       mpfr_init2 (c, MPC_PREC_RE (rop_cos));
    else
       mpfr_init2 (c, 2);
-   inex_s = mpfr_sin (s, MPC_RE (op), MPC_RND_RE (rnd_sin));
-   inex_c = mpfr_cos (c, MPC_RE (op), MPC_RND_RE (rnd_cos));
+   inex_s = mpfr_sin (s, mpc_realref (op), MPC_RND_RE (rnd_sin));
+   inex_c = mpfr_cos (c, mpc_realref (op), MPC_RND_RE (rnd_cos));
       /* We cannot use mpfr_sin_cos since we may need two distinct rounding
          modes and the exact return values. If we need only the sign, an
          arbitrary rounding mode will work.                                 */
 
    if (rop_sin != NULL) {
-      mpfr_set (MPC_RE (rop_sin), s, GMP_RNDN); /* exact */
+      mpfr_set (mpc_realref (rop_sin), s, GMP_RNDN); /* exact */
       inex_sin_re = inex_s;
-      mpfr_set_zero (MPC_IM (rop_sin),
+      mpfr_set_zero (mpc_imagref (rop_sin),
          (     ( sign_im && !mpfr_signbit(c))
             || (!sign_im &&  mpfr_signbit(c)) ? -1 : 1));
    }
 
    if (rop_cos != NULL) {
-      mpfr_set (MPC_RE (rop_cos), c, GMP_RNDN); /* exact */
+      mpfr_set (mpc_realref (rop_cos), c, GMP_RNDN); /* exact */
       inex_cos_re = inex_c;
-      mpfr_set_zero (MPC_IM (rop_cos),
+      mpfr_set_zero (mpc_imagref (rop_cos),
          (     ( sign_im &&  mpfr_signbit(s))
             || (!sign_im && !mpfr_signbit(s)) ? -1 : 1));
    }
@@ -245,19 +245,19 @@ mpc_sin_cos_imag (mpc_ptr rop_sin, mpc_ptr rop_cos, mpc_srcptr op,
 
    if (rop_sin != NULL) {
       /* sin(+-O +i*y) = +-0 +i*sinh(y) */
-      mpfr_set (MPC_RE(rop_sin), MPC_RE(op_loc), GMP_RNDN);
-      inex_sin_im = mpfr_sinh (MPC_IM(rop_sin), MPC_IM(op_loc), MPC_RND_IM(rnd_sin));
+      mpfr_set (mpc_realref(rop_sin), mpc_realref(op_loc), GMP_RNDN);
+      inex_sin_im = mpfr_sinh (mpc_imagref(rop_sin), mpc_imagref(op_loc), MPC_RND_IM(rnd_sin));
    }
 
    if (rop_cos != NULL) {
       /* cos(-0 - i * y) = cos(+0 + i * y) = cosh(y) - i * 0,
          cos(-0 + i * y) = cos(+0 - i * y) = cosh(y) + i * 0,
          where y > 0 */
-      inex_cos_re = mpfr_cosh (MPC_RE (rop_cos), MPC_IM (op_loc), MPC_RND_RE (rnd_cos));
+      inex_cos_re = mpfr_cosh (mpc_realref (rop_cos), mpc_imagref (op_loc), MPC_RND_RE (rnd_cos));
 
-      mpfr_set_ui (MPC_IM (rop_cos), 0ul, MPC_RND_IM (rnd_cos));
-      if (mpfr_signbit (MPC_RE (op_loc)) ==  mpfr_signbit (MPC_IM (op_loc)))
-         MPFR_CHANGE_SIGN (MPC_IM (rop_cos));
+      mpfr_set_ui (mpc_imagref (rop_cos), 0ul, MPC_RND_IM (rnd_cos));
+      if (mpfr_signbit (mpc_realref (op_loc)) ==  mpfr_signbit (mpc_imagref (op_loc)))
+         MPFR_CHANGE_SIGN (mpc_imagref (rop_cos));
    }
 
    if (overlap)
@@ -276,9 +276,9 @@ mpc_sin_cos (mpc_ptr rop_sin, mpc_ptr rop_cos, mpc_srcptr op,
 {
    if (!mpc_fin_p (op))
       return mpc_sin_cos_nonfinite (rop_sin, rop_cos, op, rnd_sin, rnd_cos);
-   else if (mpfr_zero_p (MPC_IM (op)))
+   else if (mpfr_zero_p (mpc_imagref (op)))
       return mpc_sin_cos_real (rop_sin, rop_cos, op, rnd_sin, rnd_cos);
-   else if (mpfr_zero_p (MPC_RE (op)))
+   else if (mpfr_zero_p (mpc_realref (op)))
       return mpc_sin_cos_imag (rop_sin, rop_cos, op, rnd_sin, rnd_cos);
    else {
       /* let op = a + i*b, then sin(op) = sin(a)*cosh(b) + i*cos(a)*sinh(b)
@@ -325,8 +325,8 @@ mpc_sin_cos (mpc_ptr rop_sin, mpc_ptr rop_cos, mpc_srcptr op,
          mpfr_set_prec (sch, prec);
          mpfr_set_prec (csh, prec);
 
-         mpfr_sin_cos (s, c, MPC_RE(op), GMP_RNDN);
-         mpfr_sinh_cosh (sh, ch, MPC_IM(op), GMP_RNDN);
+         mpfr_sin_cos (s, c, mpc_realref(op), GMP_RNDN);
+         mpfr_sinh_cosh (sh, ch, mpc_imagref(op), GMP_RNDN);
 
          if (rop_sin != NULL) {
             /* real part of sine */
@@ -367,10 +367,10 @@ mpc_sin_cos (mpc_ptr rop_sin, mpc_ptr rop_cos, mpc_srcptr op,
       } while (ok == 0);
 
       if (rop_sin != NULL) {
-         inex_re = mpfr_set (MPC_RE (rop_sin), sch, MPC_RND_RE (rnd_sin));
+         inex_re = mpfr_set (mpc_realref (rop_sin), sch, MPC_RND_RE (rnd_sin));
          if (mpfr_inf_p (sch))
             inex_re = mpfr_sgn (sch);
-         inex_im = mpfr_set (MPC_IM (rop_sin), csh, MPC_RND_IM (rnd_sin));
+         inex_im = mpfr_set (mpc_imagref (rop_sin), csh, MPC_RND_IM (rnd_sin));
          if (mpfr_inf_p (csh))
             inex_im = mpfr_sgn (csh);
          inex_sin = MPC_INEX (inex_re, inex_im);
@@ -379,10 +379,10 @@ mpc_sin_cos (mpc_ptr rop_sin, mpc_ptr rop_cos, mpc_srcptr op,
          inex_sin = MPC_INEX (0,0); /* return exact if not computed */
 
       if (rop_cos != NULL) {
-         inex_re = mpfr_set (MPC_RE (rop_cos), c, MPC_RND_RE (rnd_cos));
+         inex_re = mpfr_set (mpc_realref (rop_cos), c, MPC_RND_RE (rnd_cos));
          if (mpfr_inf_p (c))
             inex_re = mpfr_sgn (c);
-         inex_im = mpfr_set (MPC_IM (rop_cos), s, MPC_RND_IM (rnd_cos));
+         inex_im = mpfr_set (mpc_imagref (rop_cos), s, MPC_RND_IM (rnd_cos));
          if (mpfr_inf_p (s))
             inex_im = mpfr_sgn (s);
          inex_cos = MPC_INEX (inex_re, inex_im);

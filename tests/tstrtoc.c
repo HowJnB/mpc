@@ -92,8 +92,8 @@ check_file (const char* file_name)
       read_mpc_rounding_mode (fp, &rnd);
 
       /* 2. convert string at the same precision as the expected result */
-      mpfr_set_prec (MPC_RE (got), MPC_PREC_RE (expected));
-      mpfr_set_prec (MPC_IM (got), MPC_PREC_IM (expected));
+      mpfr_set_prec (mpc_realref (got), MPC_PREC_RE (expected));
+      mpfr_set_prec (mpc_imagref (got), MPC_PREC_IM (expected));
       inex = mpc_strtoc (got, str, &end, base, rnd);
 
       /* 3. compare this result with the expected one */
@@ -145,8 +145,8 @@ check_null (void)
   mpc_init2 (z, 53);
 
   inex = mpc_strtoc (z, NULL, &end, 10, MPC_RNDNN);
-  if (end != NULL || inex != -1 || mpfr_nan_p (MPC_RE (z)) == 0
-      || mpfr_nan_p (MPC_IM (z)) == 0)
+  if (end != NULL || inex != -1 || mpfr_nan_p (mpc_realref (z)) == 0
+      || mpfr_nan_p (mpc_imagref (z)) == 0)
     {
       printf ("Error: mpc_strtoc(z, NULL) with a NULL pointer should fail"
               " and the z value should be set to NaN +I*NaN\ngot ");

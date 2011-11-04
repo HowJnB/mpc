@@ -1,6 +1,6 @@
 /* mpc_log -- Take the logarithm of a complex number.
 
-Copyright (C) 2008, 2009, 2010 INRIA
+Copyright (C) 2008, 2009, 2010, 2011 INRIA
 
 This file is part of GNU MPC.
 
@@ -31,58 +31,58 @@ mpc_log (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd){
 
    /* special values: NaN and infinities */
    if (!mpc_fin_p (op)) {
-      if (mpfr_nan_p (MPC_RE (op))) {
-         if (mpfr_inf_p (MPC_IM (op)))
-            mpfr_set_inf (MPC_RE (rop), +1);
+      if (mpfr_nan_p (mpc_realref (op))) {
+         if (mpfr_inf_p (mpc_imagref (op)))
+            mpfr_set_inf (mpc_realref (rop), +1);
          else
-            mpfr_set_nan (MPC_RE (rop));
-         mpfr_set_nan (MPC_IM (rop));
+            mpfr_set_nan (mpc_realref (rop));
+         mpfr_set_nan (mpc_imagref (rop));
          inex_im = 0; /* Inf/NaN is exact */
       }
-      else if (mpfr_nan_p (MPC_IM (op))) {
-         if (mpfr_inf_p (MPC_RE (op)))
-            mpfr_set_inf (MPC_RE (rop), +1);
+      else if (mpfr_nan_p (mpc_imagref (op))) {
+         if (mpfr_inf_p (mpc_realref (op)))
+            mpfr_set_inf (mpc_realref (rop), +1);
          else
-            mpfr_set_nan (MPC_RE (rop));
-         mpfr_set_nan (MPC_IM (rop));
+            mpfr_set_nan (mpc_realref (rop));
+         mpfr_set_nan (mpc_imagref (rop));
          inex_im = 0; /* Inf/NaN is exact */
       }
       else /* We have an infinity in at least one part. */ {
-         inex_im = mpfr_atan2 (MPC_IM (rop), MPC_IM (op), MPC_RE (op),
+         inex_im = mpfr_atan2 (mpc_imagref (rop), mpc_imagref (op), mpc_realref (op),
                                MPC_RND_IM (rnd));
-         mpfr_set_inf (MPC_RE (rop), +1);
+         mpfr_set_inf (mpc_realref (rop), +1);
       }
       return MPC_INEX(0, inex_im);
    }
 
    /* special cases: real and purely imaginary numbers */
-   re_cmp = mpfr_cmp_ui (MPC_RE (op), 0);
-   im_cmp = mpfr_cmp_ui (MPC_IM (op), 0);
+   re_cmp = mpfr_cmp_ui (mpc_realref (op), 0);
+   im_cmp = mpfr_cmp_ui (mpc_imagref (op), 0);
    if (im_cmp == 0) {
       if (re_cmp == 0) {
-         inex_im = mpfr_atan2 (MPC_IM (rop), MPC_IM (op), MPC_RE (op),
+         inex_im = mpfr_atan2 (mpc_imagref (rop), mpc_imagref (op), mpc_realref (op),
                                MPC_RND_IM (rnd));
-         mpfr_set_inf (MPC_RE (rop), -1);
+         mpfr_set_inf (mpc_realref (rop), -1);
          inex_re = 0; /* -Inf is exact */
       }
       else if (re_cmp > 0) {
-         inex_re = mpfr_log (MPC_RE (rop), MPC_RE (op), MPC_RND_RE (rnd));
-         inex_im = mpfr_set (MPC_IM (rop), MPC_IM (op), MPC_RND_IM (rnd));
+         inex_re = mpfr_log (mpc_realref (rop), mpc_realref (op), MPC_RND_RE (rnd));
+         inex_im = mpfr_set (mpc_imagref (rop), mpc_imagref (op), MPC_RND_IM (rnd));
       }
       else {
          /* op = x + 0*y; let w = -x = |x| */
          int negative_zero;
          mpfr_rnd_t rnd_im;
 
-         negative_zero = mpfr_signbit (MPC_IM (op));
+         negative_zero = mpfr_signbit (mpc_imagref (op));
          if (negative_zero)
             rnd_im = INV_RND (MPC_RND_IM (rnd));
          else
             rnd_im = MPC_RND_IM (rnd);
-         w [0] = *MPC_RE (op);
+         w [0] = *mpc_realref (op);
          MPFR_CHANGE_SIGN (w);
-         inex_re = mpfr_log (MPC_RE (rop), w, MPC_RND_RE (rnd));
-         inex_im = mpfr_const_pi (MPC_IM (rop), rnd_im);
+         inex_re = mpfr_log (mpc_realref (rop), w, MPC_RND_RE (rnd));
+         inex_im = mpfr_const_pi (mpc_imagref (rop), rnd_im);
          if (negative_zero) {
             mpc_conj (rop, rop, MPC_RNDNN);
             inex_im = -inex_im;
@@ -92,19 +92,19 @@ mpc_log (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd){
    }
    else if (re_cmp == 0) {
       if (im_cmp > 0) {
-         inex_re = mpfr_log (MPC_RE (rop), MPC_IM (op), MPC_RND_RE (rnd));
-         inex_im = mpfr_const_pi (MPC_IM (rop), MPC_RND_IM (rnd));
+         inex_re = mpfr_log (mpc_realref (rop), mpc_imagref (op), MPC_RND_RE (rnd));
+         inex_im = mpfr_const_pi (mpc_imagref (rop), MPC_RND_IM (rnd));
          /* division by 2 does not change the ternary flag */
-         mpfr_div_2ui (MPC_IM (rop), MPC_IM (rop), 1, GMP_RNDN);
+         mpfr_div_2ui (mpc_imagref (rop), mpc_imagref (rop), 1, GMP_RNDN);
       }
       else {
-         w [0] = *MPC_IM (op);
+         w [0] = *mpc_imagref (op);
          MPFR_CHANGE_SIGN (w);
-         inex_re = mpfr_log (MPC_RE (rop), w, MPC_RND_RE (rnd));
-         inex_im = mpfr_const_pi (MPC_IM (rop), INV_RND (MPC_RND_IM (rnd)));
+         inex_re = mpfr_log (mpc_realref (rop), w, MPC_RND_RE (rnd));
+         inex_im = mpfr_const_pi (mpc_imagref (rop), INV_RND (MPC_RND_IM (rnd)));
          /* division by 2 does not change the ternary flag */
-         mpfr_div_2ui (MPC_IM (rop), MPC_IM (rop), 1, GMP_RNDN);
-         mpfr_neg (MPC_IM (rop), MPC_IM (rop), GMP_RNDN);
+         mpfr_div_2ui (mpc_imagref (rop), mpc_imagref (rop), 1, GMP_RNDN);
+         mpfr_neg (mpc_imagref (rop), mpc_imagref (rop), GMP_RNDN);
          inex_im = -inex_im; /* negate the ternary flag */
       }
       return MPC_INEX(inex_re, inex_im);
@@ -141,11 +141,11 @@ mpc_log (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd){
    } while (ok == 0);
 
    /* imaginary part */
-   inex_im = mpfr_atan2 (MPC_IM (rop), MPC_IM (op), MPC_RE (op),
+   inex_im = mpfr_atan2 (mpc_imagref (rop), mpc_imagref (op), mpc_realref (op),
                          MPC_RND_IM (rnd));
 
    /* set the real part; cannot be done before when rop==op */
-   inex_re = mpfr_div_2ui (MPC_RE(rop), w, 1ul, MPC_RND_RE (rnd));
+   inex_re = mpfr_div_2ui (mpc_realref(rop), w, 1ul, MPC_RND_RE (rnd));
    mpfr_clear (w);
    return MPC_INEX(inex_re, inex_im);
 }

@@ -412,8 +412,8 @@ read_mpfr (FILE *fp, mpfr_ptr x, int *known_sign)
 void
 read_mpc (FILE *fp, mpc_ptr z, known_signs_t *ks)
 {
-  read_mpfr (fp, MPC_RE (z), ks == NULL ? NULL : &ks->re);
-  read_mpfr (fp, MPC_IM (z), ks == NULL ? NULL : &ks->im);
+  read_mpfr (fp, mpc_realref (z), ks == NULL ? NULL : &ks->re);
+  read_mpfr (fp, mpc_imagref (z), ks == NULL ? NULL : &ks->im);
 }
 
 static void
@@ -444,8 +444,8 @@ read_cc (FILE *fp, int *inex_re, int *inex_im, mpc_ptr expected,
   read_mpc (fp, expected, signs);
   read_mpc (fp, op, NULL);
   read_mpc_rounding_mode (fp, rnd);
-  check_compatible (*inex_re, MPC_RE(expected), MPC_RND_RE(*rnd), "real");
-  check_compatible (*inex_im, MPC_IM(expected), MPC_RND_IM(*rnd), "imag");
+  check_compatible (*inex_re, mpc_realref(expected), MPC_RND_RE(*rnd), "real");
+  check_compatible (*inex_im, mpc_imagref(expected), MPC_RND_IM(*rnd), "imag");
 }
 
 static void
@@ -471,8 +471,8 @@ read_ccc (FILE *fp, int *inex_re, int *inex_im, mpc_ptr expected,
   read_mpc (fp, op1, NULL);
   read_mpc (fp, op2, NULL);
   read_mpc_rounding_mode (fp, rnd);
-  check_compatible (*inex_re, MPC_RE(expected), MPC_RND_RE(*rnd), "real");
-  check_compatible (*inex_im, MPC_IM(expected), MPC_RND_IM(*rnd), "imag");
+  check_compatible (*inex_re, mpc_realref(expected), MPC_RND_RE(*rnd), "real");
+  check_compatible (*inex_im, mpc_imagref(expected), MPC_RND_IM(*rnd), "imag");
 }
 
 /* read lines of data for function with three mpc_t inputs and one mpc_t
@@ -490,8 +490,8 @@ read_cccc (FILE *fp, int *inex_re, int *inex_im, mpc_ptr expected,
   read_mpc (fp, op2, NULL);
   read_mpc (fp, op3, NULL);
   read_mpc_rounding_mode (fp, rnd);
-  check_compatible (*inex_re, MPC_RE(expected), MPC_RND_RE(*rnd), "real");
-  check_compatible (*inex_im, MPC_IM(expected), MPC_RND_IM(*rnd), "imag");
+  check_compatible (*inex_re, mpc_realref(expected), MPC_RND_RE(*rnd), "real");
+  check_compatible (*inex_im, mpc_imagref(expected), MPC_RND_IM(*rnd), "imag");
 }
 
 static void
@@ -505,8 +505,8 @@ read_cfc (FILE *fp, int *inex_re, int *inex_im, mpc_ptr expected,
   read_mpfr (fp, op1, NULL);
   read_mpc (fp, op2, NULL);
   read_mpc_rounding_mode (fp, rnd);
-  check_compatible (*inex_re, MPC_RE(expected), MPC_RND_RE(*rnd), "real");
-  check_compatible (*inex_im, MPC_IM(expected), MPC_RND_IM(*rnd), "imag");
+  check_compatible (*inex_re, mpc_realref(expected), MPC_RND_RE(*rnd), "real");
+  check_compatible (*inex_im, mpc_imagref(expected), MPC_RND_IM(*rnd), "imag");
 }
 
 static void
@@ -520,8 +520,8 @@ read_ccf (FILE *fp, int *inex_re, int *inex_im, mpc_ptr expected,
   read_mpc (fp, op1, NULL);
   read_mpfr (fp, op2, NULL);
   read_mpc_rounding_mode (fp, rnd);
-  check_compatible (*inex_re, MPC_RE(expected), MPC_RND_RE(*rnd), "real");
-  check_compatible (*inex_im, MPC_IM(expected), MPC_RND_IM(*rnd), "imag");
+  check_compatible (*inex_re, mpc_realref(expected), MPC_RND_RE(*rnd), "real");
+  check_compatible (*inex_im, mpc_imagref(expected), MPC_RND_IM(*rnd), "imag");
 }
 
 static void
@@ -535,8 +535,8 @@ read_ccu (FILE *fp, int *inex_re, int *inex_im, mpc_ptr expected,
   read_mpc (fp, op1, NULL);
   read_uint (fp, op2);
   read_mpc_rounding_mode (fp, rnd);
-  check_compatible (*inex_re, MPC_RE(expected), MPC_RND_RE(*rnd), "real");
-  check_compatible (*inex_im, MPC_IM(expected), MPC_RND_IM(*rnd), "imag");
+  check_compatible (*inex_re, mpc_realref(expected), MPC_RND_RE(*rnd), "real");
+  check_compatible (*inex_im, mpc_imagref(expected), MPC_RND_IM(*rnd), "imag");
 }
 
 static void
@@ -550,8 +550,8 @@ read_ccs (FILE *fp, int *inex_re, int *inex_im, mpc_ptr expected,
   read_mpc (fp, op1, NULL);
   read_sint (fp, op2);
   read_mpc_rounding_mode (fp, rnd);
-  check_compatible (*inex_re, MPC_RE(expected), MPC_RND_RE(*rnd), "real");
-  check_compatible (*inex_im, MPC_IM(expected), MPC_RND_IM(*rnd), "imag");
+  check_compatible (*inex_re, mpc_realref(expected), MPC_RND_RE(*rnd), "real");
+  check_compatible (*inex_im, mpc_imagref(expected), MPC_RND_IM(*rnd), "imag");
 }
 
 /* data_check (function, data_file_name) checks function results against
@@ -650,8 +650,8 @@ data_check (mpc_function function, const char *file_name)
 
         case CC: /* example mpc_log */
           read_cc (fp, &inex_re, &inex_im, z1, &signs, z2, &rnd);
-          mpfr_set_prec (MPC_RE (z3), MPC_PREC_RE (z1));
-          mpfr_set_prec (MPC_IM (z3), MPC_PREC_IM (z1));
+          mpfr_set_prec (mpc_realref (z3), MPC_PREC_RE (z1));
+          mpfr_set_prec (mpc_imagref (z3), MPC_PREC_IM (z1));
           inex = function.pointer.CC (z3, z2, rnd);
           if (!MPC_INEX_CMP (inex_re, inex_im, inex)
               || !same_mpc_value (z3, z1, signs))
@@ -677,8 +677,8 @@ data_check (mpc_function function, const char *file_name)
 
         case C_CC: /* example mpc_mul */
           read_ccc (fp, &inex_re, &inex_im, z1, &signs, z2, z3, &rnd);
-          mpfr_set_prec (MPC_RE(z4), MPC_PREC_RE (z1));
-          mpfr_set_prec (MPC_IM(z4), MPC_PREC_IM (z1));
+          mpfr_set_prec (mpc_realref(z4), MPC_PREC_RE (z1));
+          mpfr_set_prec (mpc_imagref(z4), MPC_PREC_IM (z1));
           inex = function.pointer.C_CC (z4, z2, z3, rnd);
           if (!MPC_INEX_CMP (inex_re, inex_im, inex)
               || !same_mpc_value (z4, z1, signs))
@@ -737,8 +737,8 @@ data_check (mpc_function function, const char *file_name)
           read_cccc (fp, &inex_re, &inex_im, z1, &signs, z2, z3, z4, &rnd);
 	  /* z1 is the expected value, z2, z3, z4 are the inputs, and z5 is
 	     the computed value */
-          mpfr_set_prec (MPC_RE(z5), MPC_PREC_RE (z1));
-          mpfr_set_prec (MPC_IM(z5), MPC_PREC_IM (z1));
+          mpfr_set_prec (mpc_realref(z5), MPC_PREC_RE (z1));
+          mpfr_set_prec (mpc_imagref(z5), MPC_PREC_IM (z1));
           inex = function.pointer.CCCC (z5, z2, z3, z4, rnd);
           if (!MPC_INEX_CMP (inex_re, inex_im, inex)
               || !same_mpc_value (z5, z1, signs))
@@ -799,8 +799,8 @@ data_check (mpc_function function, const char *file_name)
 
         case CFC: /* example mpc_fr_div */
           read_cfc (fp, &inex_re, &inex_im, z1, &signs, x1, z2, &rnd);
-          mpfr_set_prec (MPC_RE(z3), MPC_PREC_RE (z1));
-          mpfr_set_prec (MPC_IM(z3), MPC_PREC_IM (z1));
+          mpfr_set_prec (mpc_realref(z3), MPC_PREC_RE (z1));
+          mpfr_set_prec (mpc_imagref(z3), MPC_PREC_IM (z1));
           inex = function.pointer.CFC (z3, x1, z2, rnd);
           if (!MPC_INEX_CMP (inex_re, inex_im, inex)
               || !same_mpc_value (z3, z1, signs))
@@ -830,8 +830,8 @@ data_check (mpc_function function, const char *file_name)
 
         case CCF: /* example mpc_mul_fr */
           read_ccf (fp, &inex_re, &inex_im, z1, &signs, z2, x1, &rnd);
-          mpfr_set_prec (MPC_RE(z3), MPC_PREC_RE (z1));
-          mpfr_set_prec (MPC_IM(z3), MPC_PREC_IM (z1));
+          mpfr_set_prec (mpc_realref(z3), MPC_PREC_RE (z1));
+          mpfr_set_prec (mpc_imagref(z3), MPC_PREC_IM (z1));
           inex = function.pointer.CCF (z3, z2, x1, rnd);
           if (!MPC_INEX_CMP (inex_re, inex_im, inex)
               || !same_mpc_value (z3, z1, signs))
@@ -861,8 +861,8 @@ data_check (mpc_function function, const char *file_name)
 
         case CCU: /* example mpc_pow_ui */
           read_ccu (fp, &inex_re, &inex_im, z1, &signs, z2, &ui, &rnd);
-          mpfr_set_prec (MPC_RE(z3), MPC_PREC_RE (z1));
-          mpfr_set_prec (MPC_IM(z3), MPC_PREC_IM (z1));
+          mpfr_set_prec (mpc_realref(z3), MPC_PREC_RE (z1));
+          mpfr_set_prec (mpc_imagref(z3), MPC_PREC_IM (z1));
           inex = function.pointer.CCU (z3, z2, ui, rnd);
           if (!MPC_INEX_CMP (inex_re, inex_im, inex)
               || !same_mpc_value (z3, z1, signs))
@@ -889,8 +889,8 @@ data_check (mpc_function function, const char *file_name)
 
         case CCS: /* example mpc_pow_si */
           read_ccs (fp, &inex_re, &inex_im, z1, &signs, z2, &si, &rnd);
-          mpfr_set_prec (MPC_RE(z3), MPC_PREC_RE (z1));
-          mpfr_set_prec (MPC_IM(z3), MPC_PREC_IM (z1));
+          mpfr_set_prec (mpc_realref(z3), MPC_PREC_RE (z1));
+          mpfr_set_prec (mpc_imagref(z3), MPC_PREC_IM (z1));
           inex = function.pointer.CCS (z3, z2, si, rnd);
           if (!MPC_INEX_CMP (inex_re, inex_im, inex)
               || !same_mpc_value (z3, z1, signs))

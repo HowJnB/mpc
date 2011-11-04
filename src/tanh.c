@@ -1,6 +1,6 @@
 /* mpc_tanh -- hyperbolic tangent of a complex number.
 
-Copyright (C) 2008, 2009 INRIA
+Copyright (C) 2008, 2009, 2011 INRIA
 
 This file is part of GNU MPC.
 
@@ -31,16 +31,16 @@ mpc_tanh (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
   /* z := conj(-i * op) and rop = conj(-i * tan(z)), in other words, we have
      to switch real and imaginary parts. Let us set them without copying
      significands. */
-  MPC_RE (z)[0] = MPC_IM (op)[0];
-  MPC_IM (z)[0] = MPC_RE (op)[0];
-  MPC_RE (tan_z)[0] = MPC_IM (rop)[0];
-  MPC_IM (tan_z)[0] = MPC_RE (rop)[0];
+  mpc_realref (z)[0] = mpc_imagref (op)[0];
+  mpc_imagref (z)[0] = mpc_realref (op)[0];
+  mpc_realref (tan_z)[0] = mpc_imagref (rop)[0];
+  mpc_imagref (tan_z)[0] = mpc_realref (rop)[0];
 
   inex = mpc_tan (tan_z, z, RNDC (MPC_RND_IM (rnd), MPC_RND_RE (rnd)));
 
   /* tan_z and rop parts share the same significands, copy the rest now. */
-  MPC_RE (rop)[0] = MPC_IM (tan_z)[0];
-  MPC_IM (rop)[0] = MPC_RE (tan_z)[0];
+  mpc_realref (rop)[0] = mpc_imagref (tan_z)[0];
+  mpc_imagref (rop)[0] = mpc_realref (tan_z)[0];
 
   /* swap inexact flags for real and imaginary parts */
   return MPC_INEX (MPC_INEX_IM (inex), MPC_INEX_RE (inex));

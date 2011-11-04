@@ -1,6 +1,6 @@
 /* mpc_swap -- Swap two complex numbers.
 
-Copyright (C) 2009 INRIA
+Copyright (C) 2009, 2011 INRIA
 
 This file is part of GNU MPC.
 
@@ -24,6 +24,6 @@ void
 mpc_swap (mpc_ptr a, mpc_ptr b)
 {
   /* assumes real and imaginary parts do not overlap */
-  mpfr_swap (MPC_RE(a), MPC_RE(b));
-  mpfr_swap (MPC_IM(a), MPC_IM(b));
+  mpfr_swap (mpc_realref(a), mpc_realref(b));
+  mpfr_swap (mpc_imagref(a), mpc_imagref(b));
 }

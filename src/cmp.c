@@ -1,6 +1,6 @@
 /* mpc_cmp -- Compare two complex numbers.
 
-Copyright (C) 2002, 2009, 2010 INRIA
+Copyright (C) 2002, 2009, 2010, 2011 INRIA
 
 This file is part of GNU MPC.
 
@@ -26,8 +26,8 @@ mpc_cmp (mpc_srcptr a, mpc_srcptr b)
 {
   int cmp_re, cmp_im;
 
-  cmp_re = mpfr_cmp (MPC_RE(a), MPC_RE(b));
-  cmp_im = mpfr_cmp (MPC_IM(a), MPC_IM(b));
+  cmp_re = mpfr_cmp (mpc_realref(a), mpc_realref(b));
+  cmp_im = mpfr_cmp (mpc_imagref(a), mpc_imagref(b));
 
   return MPC_INEX(cmp_re, cmp_im);
 }

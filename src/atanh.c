@@ -1,6 +1,6 @@
 /* mpc_atanh -- inverse hyperbolic tangent of a complex number.
 
-Copyright (C) 2009 INRIA
+Copyright (C) 2009, 2011 INRIA
 
 This file is part of GNU MPC.
 
@@ -28,9 +28,9 @@ mpc_atanh (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
   mpfr_t tmp;
   mpc_t z, a;
 
-  MPC_RE (z)[0] = MPC_IM (op)[0];
-  MPC_IM (z)[0] = MPC_RE (op)[0];
-  MPFR_CHANGE_SIGN (MPC_RE (z));
+  mpc_realref (z)[0] = mpc_imagref (op)[0];
+  mpc_imagref (z)[0] = mpc_realref (op)[0];
+  MPFR_CHANGE_SIGN (mpc_realref (z));
 
   /* Note reversal of precisions due to later multiplication by -i */
   mpc_init3 (a, MPC_PREC_IM(rop), MPC_PREC_RE(rop));
@@ -39,10 +39,10 @@ mpc_atanh (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
                    RNDC (INV_RND (MPC_RND_IM (rnd)), MPC_RND_RE (rnd)));
 
   /* change a to -i*a, i.e., x+i*y to y-i*x */
-  tmp[0] = MPC_RE (a)[0];
-  MPC_RE (a)[0] = MPC_IM (a)[0];
-  MPC_IM (a)[0] = tmp[0];
-  MPFR_CHANGE_SIGN (MPC_IM (a));
+  tmp[0] = mpc_realref (a)[0];
+  mpc_realref (a)[0] = mpc_imagref (a)[0];
+  mpc_imagref (a)[0] = tmp[0];
+  MPFR_CHANGE_SIGN (mpc_imagref (a));
 
   mpc_set (rop, a, rnd);
 

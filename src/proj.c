@@ -25,8 +25,8 @@ mpc_proj (mpc_ptr a, mpc_srcptr b, mpc_rnd_t rnd)
 {
    if (mpc_inf_p (b)) {
       /* infinities project to +Inf +i* copysign(0.0, cimag(z)) */
-      mpfr_set_inf (MPC_RE (a), +1);
-      mpfr_set_zero (MPC_IM (a), (mpfr_signbit (MPC_IM (b)) ? -1 : 1));
+      mpfr_set_inf (mpc_realref (a), +1);
+      mpfr_set_zero (mpc_imagref (a), (mpfr_signbit (mpc_imagref (b)) ? -1 : 1));
       return MPC_INEX (0, 0);
    }
    else

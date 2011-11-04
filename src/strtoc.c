@@ -1,6 +1,6 @@
 /* mpc_strtoc -- Read a complex number from a string.
 
-Copyright (C) 2009, 2010 INRIA
+Copyright (C) 2009, 2010, 2011 INRIA
 
 This file is part of GNU MPC.
 
@@ -51,20 +51,20 @@ mpc_strtoc (mpc_ptr rop, const char *nptr, char **endptr, int base, mpc_rnd_t rn
       ++p;
    }
 
-   inex_re = mpfr_strtofr (MPC_RE(rop), p, &end, base, MPC_RND_RE (rnd));
+   inex_re = mpfr_strtofr (mpc_realref(rop), p, &end, base, MPC_RND_RE (rnd));
    if (end == p)
       goto error;
    p = end;
 
    if (!bracketed)
-     inex_im = mpfr_set_ui (MPC_IM (rop), 0ul, GMP_RNDN);
+     inex_im = mpfr_set_ui (mpc_imagref (rop), 0ul, GMP_RNDN);
    else {
      if (!isspace ((unsigned char)*p))
          goto error;
 
       skip_whitespace (&p);
 
-      inex_im = mpfr_strtofr (MPC_IM(rop), p, &end, base, MPC_RND_IM (rnd));
+      inex_im = mpfr_strtofr (mpc_imagref(rop), p, &end, base, MPC_RND_IM (rnd));
       if (end == p)
          goto error;
       p = end;
@@ -83,7 +83,7 @@ mpc_strtoc (mpc_ptr rop, const char *nptr, char **endptr, int base, mpc_rnd_t rn
 error:
    if (endptr != NULL)
      *endptr = (char*) nptr;
-   mpfr_set_nan (MPC_RE (rop));
-   mpfr_set_nan (MPC_IM (rop));
+   mpfr_set_nan (mpc_realref (rop));
+   mpfr_set_nan (mpc_imagref (rop));
    return -1;
 }

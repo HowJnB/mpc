@@ -149,13 +149,13 @@ reuse_bug (void)
   /* reuse bug found by Paul Zimmermann 20081021 */
   mpc_init2 (z1, 2);
   /* RE (z1^2) overflows, IM(z^2) = -0 */
-  mpfr_set_str (MPC_RE (z1), "0.11", 2, GMP_RNDN);
-  mpfr_mul_2si (MPC_RE (z1), MPC_RE (z1), mpfr_get_emax (), GMP_RNDN);
-  mpfr_set_ui (MPC_IM (z1), 0, GMP_RNDN);
+  mpfr_set_str (mpc_realref (z1), "0.11", 2, GMP_RNDN);
+  mpfr_mul_2si (mpc_realref (z1), mpc_realref (z1), mpfr_get_emax (), GMP_RNDN);
+  mpfr_set_ui (mpc_imagref (z1), 0, GMP_RNDN);
   mpc_conj (z1, z1, MPC_RNDNN);
   mpc_sqr (z1, z1, MPC_RNDNN);
-  if (!mpfr_inf_p (MPC_RE (z1)) || mpfr_signbit (MPC_RE (z1))
-      ||!mpfr_zero_p (MPC_IM (z1)) || !mpfr_signbit (MPC_IM (z1)))
+  if (!mpfr_inf_p (mpc_realref (z1)) || mpfr_signbit (mpc_realref (z1))
+      ||!mpfr_zero_p (mpc_imagref (z1)) || !mpfr_signbit (mpc_imagref (z1)))
     {
       printf ("Error: Regression, bug 20081021 reproduced\n");
       MPC_OUT (z1);

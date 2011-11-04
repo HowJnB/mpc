@@ -1,6 +1,6 @@
 /* mpc_set_str -- Convert a string into a complex number.
 
-Copyright (C) 2009, 2010 INRIA
+Copyright (C) 2009, 2010, 2011 INRIA
 
 This file is part of GNU MPC.
 
@@ -36,7 +36,7 @@ mpc_set_str (mpc_t z, const char *str, int base, mpc_rnd_t rnd)
         return inex;
   }
 
-  mpfr_set_nan (MPC_RE (z));
-  mpfr_set_nan (MPC_IM (z));
+  mpfr_set_nan (mpc_realref (z));
+  mpfr_set_nan (mpc_imagref (z));
   return -1;
 }

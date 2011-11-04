@@ -129,7 +129,7 @@ fix_sign (mpc_ptr z, int sign_eps, int sign_a, mpfr_srcptr y)
   else /* y is not an integer */
     goto end;
 
-  if (mpfr_zero_p (MPC_RE(z)))
+  if (mpfr_zero_p (mpc_realref(z)))
     {
       /* we assume y is always integer in that case (FIXME: prove it):
          (eps+I*a)^y = +0 + I*a^y for y = 1 mod 4 and sign_eps = 0
@@ -137,9 +137,9 @@ fix_sign (mpc_ptr z, int sign_eps, int sign_a, mpfr_srcptr y)
       MPC_ASSERT (ymod4 == 1 || ymod4 == 3);
       if ((ymod4 == 3 && sign_eps == 0) ||
           (ymod4 == 1 && sign_eps == 1))
-        mpfr_neg (MPC_RE(z), MPC_RE(z), GMP_RNDZ);
+        mpfr_neg (mpc_realref(z), mpc_realref(z), GMP_RNDZ);
     }
-  else if (mpfr_zero_p (MPC_IM(z)))
+  else if (mpfr_zero_p (mpc_imagref(z)))
     {
       /* we assume y is always integer in that case (FIXME: prove it):
          (eps+I*a)^y =  a^y - 0*I for y = 0 mod 4 and sign_a = sign_eps
@@ -147,7 +147,7 @@ fix_sign (mpc_ptr z, int sign_eps, int sign_a, mpfr_srcptr y)
       MPC_ASSERT (ymod4 == 0 || ymod4 == 2);
       if ((ymod4 == 0 && sign_a == sign_eps) ||
           (ymod4 == 2 && sign_a != sign_eps))
-        mpfr_neg (MPC_IM(z), MPC_IM(z), GMP_RNDZ);
+        mpfr_neg (mpc_imagref(z), mpc_imagref(z), GMP_RNDZ);
     }
 
  end:
@@ -177,9 +177,9 @@ mpc_pow_exact (mpc_ptr z, mpc_srcptr x, mpfr_srcptr y, mpc_rnd_t rnd,
   mpz_t my, a, b, c, d, u;
   unsigned long int t;
   int ret = -2;
-  int sign_rex = mpfr_signbit (MPC_RE(x));
-  int sign_imx = mpfr_signbit (MPC_IM(x));
-  int x_imag = mpfr_zero_p (MPC_RE(x));
+  int sign_rex = mpfr_signbit (mpc_realref(x));
+  int sign_imx = mpfr_signbit (mpc_imagref(x));
+  int x_imag = mpfr_zero_p (mpc_realref(x));
   int z_is_y = 0;
   mpfr_t copy_of_y;
 
@@ -210,15 +210,15 @@ mpc_pow_exact (mpc_ptr z, mpc_srcptr x, mpfr_srcptr y, mpc_rnd_t rnd,
       ec = 0;
     }
   else
-    ec = mpfr_get_z_exp (c, MPC_RE(x));
-  if (mpfr_zero_p (MPC_IM(x)))
+    ec = mpfr_get_z_exp (c, mpc_realref(x));
+  if (mpfr_zero_p (mpc_imagref(x)))
     {
       mpz_set_ui (d, 0);
       ed = ec;
     }
   else
     {
-      ed = mpfr_get_z_exp (d, MPC_IM(x));
+      ed = mpfr_get_z_exp (d, mpc_imagref(x));
       if (x_imag)
         ec = ed;
     }
@@ -403,10 +403,10 @@ mpc_pow_exact (mpc_ptr z, mpc_srcptr x, mpfr_srcptr y, mpc_rnd_t rnd,
         goto end;
     }
 
-  ret = mpfr_set_z (MPC_RE(z), a, MPC_RND_RE(rnd));
-  ret = MPC_INEX(ret, mpfr_set_z (MPC_IM(z), b, MPC_RND_IM(rnd)));
-  mpfr_mul_2si (MPC_RE(z), MPC_RE(z), ed, MPC_RND_RE(rnd));
-  mpfr_mul_2si (MPC_IM(z), MPC_IM(z), ed, MPC_RND_IM(rnd));
+  ret = mpfr_set_z (mpc_realref(z), a, MPC_RND_RE(rnd));
+  ret = MPC_INEX(ret, mpfr_set_z (mpc_imagref(z), b, MPC_RND_IM(rnd)));
+  mpfr_mul_2si (mpc_realref(z), mpc_realref(z), ed, MPC_RND_RE(rnd));
+  mpfr_mul_2si (mpc_imagref(z), mpc_imagref(z), ed, MPC_RND_IM(rnd));
 
  end:
   mpz_clear (my);
@@ -484,15 +484,15 @@ mpc_pow (mpc_ptr z, mpc_srcptr x, mpc_srcptr y, mpc_rnd_t rnd)
   mpc_t t, u;
   mpfr_prec_t p, pr, pi, maxprec;
 
-  x_real = mpfr_zero_p (MPC_IM(x));
-  y_real = mpfr_zero_p (MPC_IM(y));
+  x_real = mpfr_zero_p (mpc_imagref(x));
+  y_real = mpfr_zero_p (mpc_imagref(y));
 
-  if (y_real && mpfr_zero_p (MPC_RE(y))) /* case y zero */
+  if (y_real && mpfr_zero_p (mpc_realref(y))) /* case y zero */
     {
-      if (x_real && mpfr_zero_p (MPC_RE(x))) /* 0^0 = NaN +i*NaN */
+      if (x_real && mpfr_zero_p (mpc_realref(x))) /* 0^0 = NaN +i*NaN */
         {
-          mpfr_set_nan (MPC_RE(z));
-          mpfr_set_nan (MPC_IM(z));
+          mpfr_set_nan (mpc_realref(z));
+          mpfr_set_nan (mpc_imagref(z));
           return 0;
         }
       else /* x^0 = 1 +/- i*0 even for x=NaN see algorithms.tex for the
@@ -511,10 +511,10 @@ mpc_pow (mpc_ptr z, mpc_srcptr x, mpc_srcptr y, mpc_rnd_t rnd)
           if (cx1 == 0 && inex != 0)
             cx1 = -inex;
 
-          sign_zi = (cx1 < 0 && mpfr_signbit (MPC_IM (y)) == 0)
+          sign_zi = (cx1 < 0 && mpfr_signbit (mpc_imagref (y)) == 0)
             || (cx1 == 0
-                && mpfr_signbit (MPC_IM (x)) != mpfr_signbit (MPC_RE (y)))
-            || (cx1 > 0 && mpfr_signbit (MPC_IM (y)));
+                && mpfr_signbit (mpc_imagref (x)) != mpfr_signbit (mpc_realref (y)))
+            || (cx1 > 0 && mpfr_signbit (mpc_imagref (y)));
 
           /* warning: mpc_set_ui_ui does not set Im(z) to -0 if Im(rnd)=RNDD */
           ret = mpc_set_ui_ui (z, 1, 0, rnd);
@@ -540,7 +540,7 @@ mpc_pow (mpc_ptr z, mpc_srcptr x, mpc_srcptr y, mpc_rnd_t rnd)
 
   if (x_real) /* case x real */
     {
-      if (mpfr_zero_p (MPC_RE(x))) /* x is zero */
+      if (mpfr_zero_p (mpc_realref(x))) /* x is zero */
         {
           /* special values: exp(y*log(x)) */
           mpc_init2 (u, 2);
@@ -552,11 +552,11 @@ mpc_pow (mpc_ptr z, mpc_srcptr x, mpc_srcptr y, mpc_rnd_t rnd)
         }
 
       /* Special case 1^y = 1 */
-      if (mpfr_cmp_ui (MPC_RE(x), 1) == 0)
+      if (mpfr_cmp_ui (mpc_realref(x), 1) == 0)
         {
           int s1, s2;
-          s1 = mpfr_signbit (MPC_RE (y));
-          s2 = mpfr_signbit (MPC_IM (x));
+          s1 = mpfr_signbit (mpc_realref (y));
+          s2 = mpfr_signbit (mpc_imagref (x));
 
           ret = mpc_set_ui (z, +1, rnd);
           /* the sign of the zero imaginary part is known in some cases (see
@@ -576,15 +576,15 @@ mpc_pow (mpc_ptr z, mpc_srcptr x, mpc_srcptr y, mpc_rnd_t rnd)
       /* x^y is real when:
          (a) x is real and y is integer
          (b) x is real non-negative and y is real */
-      if (y_real && (mpfr_integer_p (MPC_RE(y)) ||
-                     mpfr_cmp_ui (MPC_RE(x), 0) >= 0))
+      if (y_real && (mpfr_integer_p (mpc_realref(y)) ||
+                     mpfr_cmp_ui (mpc_realref(x), 0) >= 0))
         {
           int s1, s2;
-          s1 = mpfr_signbit (MPC_RE (y));
-          s2 = mpfr_signbit (MPC_IM (x));
+          s1 = mpfr_signbit (mpc_realref (y));
+          s2 = mpfr_signbit (mpc_imagref (x));
 
-          ret = mpfr_pow (MPC_RE(z), MPC_RE(x), MPC_RE(y), MPC_RND_RE(rnd));
-          ret = MPC_INEX(ret, mpfr_set_ui (MPC_IM(z), 0, MPC_RND_IM(rnd)));
+          ret = mpfr_pow (mpc_realref(z), mpc_realref(x), mpc_realref(y), MPC_RND_RE(rnd));
+          ret = MPC_INEX(ret, mpfr_set_ui (mpc_imagref(z), 0, MPC_RND_IM(rnd)));
 
           /* the sign of the zero imaginary part is known in some cases
              (see algorithm.tex). In such cases we have (x +s*0i)^(y+/-0i)
@@ -595,20 +595,20 @@ mpc_pow (mpc_ptr z, mpc_srcptr x, mpc_srcptr y, mpc_rnd_t rnd)
              because mpfr_set_ui(z_i, 0, rnd) always sets z_i to +0.
           */
           if (MPC_RND_IM(rnd) == GMP_RNDD || s1 != s2)
-            mpfr_neg (MPC_IM(z), MPC_IM(z), MPC_RND_IM(rnd));
+            mpfr_neg (mpc_imagref(z), mpc_imagref(z), MPC_RND_IM(rnd));
           goto end;
         }
 
       /* (-1)^(n+I*t) is real for n integer and t real */
-      if (mpfr_cmp_si (MPC_RE(x), -1) == 0 && mpfr_integer_p (MPC_RE(y)))
+      if (mpfr_cmp_si (mpc_realref(x), -1) == 0 && mpfr_integer_p (mpc_realref(y)))
         z_real = 1;
 
       /* for x real, x^y is imaginary when:
          (a) x is negative and y is half-an-integer
          (b) x = -1 and Re(y) is half-an-integer
       */
-      if (mpfr_cmp_ui (MPC_RE(x), 0) < 0 && is_odd (MPC_RE(y), 1) &&
-          (y_real || mpfr_cmp_si (MPC_RE(x), -1) == 0))
+      if (mpfr_cmp_ui (mpc_realref(x), 0) < 0 && is_odd (mpc_realref(y), 1) &&
+          (y_real || mpfr_cmp_si (mpc_realref(x), -1) == 0))
         z_imag = 1;
     }
   else /* x non real */
@@ -617,26 +617,26 @@ mpc_pow (mpc_ptr z, mpc_srcptr x, mpc_srcptr y, mpc_rnd_t rnd)
        I^(n+t*I) and (-I)^(n+t*I) are imaginary for n odd and t real
        (s*I)^n is real for n even and imaginary for n odd */
     if ((mpc_cmp_si_si (x, 0, 1) == 0 || mpc_cmp_si_si (x, 0, -1) == 0 ||
-         (mpfr_cmp_ui (MPC_RE(x), 0) == 0 && y_real)) &&
-        mpfr_integer_p (MPC_RE(y)))
+         (mpfr_cmp_ui (mpc_realref(x), 0) == 0 && y_real)) &&
+        mpfr_integer_p (mpc_realref(y)))
       { /* x is I or -I, and Re(y) is an integer */
-        if (is_odd (MPC_RE(y), 0))
+        if (is_odd (mpc_realref(y), 0))
           z_imag = 1; /* Re(y) odd: z is imaginary */
         else
           z_real = 1; /* Re(y) even: z is real */
       }
     else /* (t+/-t*I)^(2n) is imaginary for n odd and real for n even */
-      if (mpfr_cmpabs (MPC_RE(x), MPC_IM(x)) == 0 && y_real &&
-          mpfr_integer_p (MPC_RE(y)) && is_odd (MPC_RE(y), 0) == 0)
+      if (mpfr_cmpabs (mpc_realref(x), mpc_imagref(x)) == 0 && y_real &&
+          mpfr_integer_p (mpc_realref(y)) && is_odd (mpc_realref(y), 0) == 0)
         {
-          if (is_odd (MPC_RE(y), -1)) /* y/2 is odd */
+          if (is_odd (mpc_realref(y), -1)) /* y/2 is odd */
             z_imag = 1;
           else
             z_real = 1;
         }
 
-  pr = mpfr_get_prec (MPC_RE(z));
-  pi = mpfr_get_prec (MPC_IM(z));
+  pr = mpfr_get_prec (mpc_realref(z));
+  pi = mpfr_get_prec (mpc_imagref(z));
   p = (pr > pi) ? pr : pi;
   p += 12; /* experimentally, seems to give less than 10% of failures in
               Ziv's strategy; probably wrong now since q is not computed      */
@@ -647,7 +647,7 @@ mpc_pow (mpc_ptr z, mpc_srcptr x, mpc_srcptr y, mpc_rnd_t rnd)
   pr += MPC_RND_RE(rnd) == GMP_RNDN;
   pi += MPC_RND_IM(rnd) == GMP_RNDN;
   maxprec = MPC_MAX_PREC (z);
-  x_imag = mpfr_zero_p (MPC_RE(x));
+  x_imag = mpfr_zero_p (mpc_realref(x));
   for (loop = 0;; loop++)
     {
       int ret_exp;
@@ -660,9 +660,9 @@ mpc_pow (mpc_ptr z, mpc_srcptr x, mpc_srcptr y, mpc_rnd_t rnd)
 
       if (loop == 0) {
          /* compute q such that |Re (y log x)|, |Im (y log x)| < 2^q */
-         q = mpfr_get_exp (MPC_RE(t)) > 0 ? mpfr_get_exp (MPC_RE(t)) : 0;
-         if (mpfr_get_exp (MPC_IM(t)) > (mpfr_exp_t) q)
-            q = mpfr_get_exp (MPC_IM(t));
+         q = mpfr_get_exp (mpc_realref(t)) > 0 ? mpfr_get_exp (mpc_realref(t)) : 0;
+         if (mpfr_get_exp (mpc_imagref(t)) > (mpfr_exp_t) q)
+            q = mpfr_get_exp (mpc_imagref(t));
       }
 
       mpfr_clear_overflow ();
@@ -679,9 +679,9 @@ mpc_pow (mpc_ptr z, mpc_srcptr x, mpc_srcptr y, mpc_rnd_t rnd)
          exponent difference between the real and imaginary parts. We assume
          either the real or the imaginary part of u is not zero.
       */
-      dr = mpfr_zero_p (MPC_RE(u)) ? mpfr_get_exp (MPC_IM(u))
-        : mpfr_get_exp (MPC_RE(u));
-      di = mpfr_zero_p (MPC_IM(u)) ? dr : mpfr_get_exp (MPC_IM(u));
+      dr = mpfr_zero_p (mpc_realref(u)) ? mpfr_get_exp (mpc_imagref(u))
+        : mpfr_get_exp (mpc_realref(u));
+      di = mpfr_zero_p (mpc_imagref(u)) ? dr : mpfr_get_exp (mpc_imagref(u));
       if (dr > di)
         {
           di = dr - di;
@@ -696,15 +696,15 @@ mpc_pow (mpc_ptr z, mpc_srcptr x, mpc_srcptr y, mpc_rnd_t rnd)
          (see algorithms.tex) plus one due to the exponent difference: if
          z = a + I*b, where the relative error on z is at most 2^(-p), and
          EXP(a) = EXP(b) + k, the relative error on b is at most 2^(k-p) */
-      if ((z_imag || (p > q + 3 + dr && mpfr_can_round (MPC_RE(u), p - q - 3 - dr, GMP_RNDN, GMP_RNDZ, pr))) &&
-          (z_real || (p > q + 3 + di && mpfr_can_round (MPC_IM(u), p - q - 3 - di, GMP_RNDN, GMP_RNDZ, pi))))
+      if ((z_imag || (p > q + 3 + dr && mpfr_can_round (mpc_realref(u), p - q - 3 - dr, GMP_RNDN, GMP_RNDZ, pr))) &&
+          (z_real || (p > q + 3 + di && mpfr_can_round (mpc_imagref(u), p - q - 3 - di, GMP_RNDN, GMP_RNDZ, pi))))
         break;
 
       /* if Re(u) is not known to be zero, assume it is a normal number, i.e.,
          neither zero, Inf or NaN, otherwise we might enter an infinite loop */
-      MPC_ASSERT (z_imag || mpfr_number_p (MPC_RE(u)));
+      MPC_ASSERT (z_imag || mpfr_number_p (mpc_realref(u)));
       /* idem for Im(u) */
-      MPC_ASSERT (z_real || mpfr_number_p (MPC_IM(u)));
+      MPC_ASSERT (z_real || mpfr_number_p (mpc_imagref(u)));
 
       if (ret == -2) /* we did not yet call mpc_pow_exact, or it aborted
                         because intermediate computations had > maxprec bits */
@@ -713,7 +713,7 @@ mpc_pow (mpc_ptr z, mpc_srcptr x, mpc_srcptr y, mpc_rnd_t rnd)
           if (y_real)
             {
               maxprec *= 2;
-              ret = mpc_pow_exact (z, x, MPC_RE(y), rnd, maxprec);
+              ret = mpc_pow_exact (z, x, mpc_realref(y), rnd, maxprec);
               if (ret != -1 && ret != -2)
                 goto exact;
             }
@@ -741,34 +741,34 @@ mpc_pow (mpc_ptr z, mpc_srcptr x, mpc_srcptr y, mpc_rnd_t rnd)
          cx1 > 0 if |x| > 1
       */
 
-      sign_rex = mpfr_signbit (MPC_RE (x));
-      sign_imx = mpfr_signbit (MPC_IM (x));
+      sign_rex = mpfr_signbit (mpc_realref (x));
+      sign_imx = mpfr_signbit (mpc_imagref (x));
       mpfr_init (n);
       inex = mpc_norm (n, x, GMP_RNDN);
       cx1 = mpfr_cmp_ui (n, 1);
       if (cx1 == 0 && inex != 0)
         cx1 = -inex;
 
-      sign_zi = (cx1 < 0 && mpfr_signbit (MPC_IM (y)) == 0)
-        || (cx1 == 0 && sign_imx != mpfr_signbit (MPC_RE (y)))
-        || (cx1 > 0 && mpfr_signbit (MPC_IM (y)));
+      sign_zi = (cx1 < 0 && mpfr_signbit (mpc_imagref (y)) == 0)
+        || (cx1 == 0 && sign_imx != mpfr_signbit (mpc_realref (y)))
+        || (cx1 > 0 && mpfr_signbit (mpc_imagref (y)));
 
       /* copy RE(y) to n since if z==y we will destroy Re(y) below */
-      mpfr_set_prec (n, mpfr_get_prec (MPC_RE (y)));
-      mpfr_set (n, MPC_RE (y), GMP_RNDN);
-      ret = mpfr_set (MPC_RE(z), MPC_RE(u), MPC_RND_RE(rnd));
+      mpfr_set_prec (n, mpfr_get_prec (mpc_realref (y)));
+      mpfr_set (n, mpc_realref (y), GMP_RNDN);
+      ret = mpfr_set (mpc_realref(z), mpc_realref(u), MPC_RND_RE(rnd));
       if (y_real && (x_real || x_imag))
         {
           /* FIXME: with y_real we assume Im(y) is really 0, which is the case
              for example when y comes from pow_fr, but in case Im(y) is +0 or
              -0, we might get different results */
-          mpfr_set_ui (MPC_IM (z), 0, MPC_RND_IM (rnd));
+          mpfr_set_ui (mpc_imagref (z), 0, MPC_RND_IM (rnd));
           fix_sign (z, sign_rex, sign_imx, n);
           ret = MPC_INEX(ret, 0); /* imaginary part is exact */
         }
       else
         {
-          ret = MPC_INEX (ret, mpfr_set_ui (MPC_IM (z), 0, MPC_RND_IM (rnd)));
+          ret = MPC_INEX (ret, mpfr_set_ui (mpc_imagref (z), 0, MPC_RND_IM (rnd)));
           /* warning: mpfr_set_ui does not set Im(z) to -0 if Im(rnd) = RNDD */
           if (MPC_RND_IM (rnd) == GMP_RNDD || sign_zi)
             mpc_conj (z, z, MPC_RNDNN);
@@ -778,23 +778,23 @@ mpc_pow (mpc_ptr z, mpc_srcptr x, mpc_srcptr y, mpc_rnd_t rnd)
     }
   else if (z_imag)
     {
-      ret = mpfr_set (MPC_IM(z), MPC_IM(u), MPC_RND_IM(rnd));
+      ret = mpfr_set (mpc_imagref(z), mpc_imagref(u), MPC_RND_IM(rnd));
       /* if z is imaginary and y real, then x cannot be real */
       if (y_real && x_imag)
         {
-          int sign_rex = mpfr_signbit (MPC_RE (x));
+          int sign_rex = mpfr_signbit (mpc_realref (x));
 
           /* If z overlaps with y we set Re(z) before checking Re(y) below,
              but in that case y=0, which was dealt with above. */
-          mpfr_set_ui (MPC_RE (z), 0, MPC_RND_RE (rnd));
+          mpfr_set_ui (mpc_realref (z), 0, MPC_RND_RE (rnd));
           /* Note: fix_sign only does something when y is an integer,
              then necessarily y = 1 or 3 (mod 4), and in that case the
              sign of Im(x) is irrelevant. */
-          fix_sign (z, sign_rex, 0, MPC_RE (y));
+          fix_sign (z, sign_rex, 0, mpc_realref (y));
           ret = MPC_INEX(0, ret);
         }
       else
-        ret = MPC_INEX(mpfr_set_ui (MPC_RE(z), 0, MPC_RND_RE(rnd)), ret);
+        ret = MPC_INEX(mpfr_set_ui (mpc_realref(z), 0, MPC_RND_RE(rnd)), ret);
     }
   else
     ret = mpc_set (z, u, rnd);

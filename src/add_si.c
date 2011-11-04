@@ -25,8 +25,8 @@ mpc_add_si (mpc_ptr rop, mpc_srcptr op1, long int op2, mpc_rnd_t rnd)
 {
    int inex_re, inex_im;
 
-   inex_re = mpfr_add_si (MPC_RE (rop), MPC_RE (op1), op2, MPC_RND_RE (rnd));
-   inex_im = mpfr_set (MPC_IM (rop), MPC_IM (op1), MPC_RND_IM (rnd));
+   inex_re = mpfr_add_si (mpc_realref (rop), mpc_realref (op1), op2, MPC_RND_RE (rnd));
+   inex_im = mpfr_set (mpc_imagref (rop), mpc_imagref (op1), MPC_RND_IM (rnd));
 
    return MPC_INEX (inex_re, inex_im);
 }

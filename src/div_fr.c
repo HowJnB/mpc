@@ -1,6 +1,6 @@
 /* mpc_div_fr -- Divide a complex number by a floating-point number.
 
-Copyright (C) 2002, 2008, 2009, 2010 INRIA
+Copyright (C) 2002, 2008, 2009, 2010, 2011 INRIA
 
 This file is part of GNU MPC.
 
@@ -26,12 +26,12 @@ mpc_div_fr (mpc_ptr a, mpc_srcptr b, mpfr_srcptr c, mpc_rnd_t rnd)
   int inex_re, inex_im;
   mpfr_t real;
 
-  /* We have to use temporary variable in case c=MPC_RE (a). */
+  /* We have to use temporary variable in case c=mpc_realref (a). */
   mpfr_init2 (real, MPC_PREC_RE (a));
 
-  inex_re = mpfr_div (real, MPC_RE(b), c, MPC_RND_RE(rnd));
-  inex_im = mpfr_div (MPC_IM(a), MPC_IM(b), c, MPC_RND_IM(rnd));
-  mpfr_set (MPC_RE (a), real, GMP_RNDN);
+  inex_re = mpfr_div (real, mpc_realref(b), c, MPC_RND_RE(rnd));
+  inex_im = mpfr_div (mpc_imagref(a), mpc_imagref(b), c, MPC_RND_IM(rnd));
+  mpfr_set (mpc_realref (a), real, GMP_RNDN);
 
   mpfr_clear (real);
 

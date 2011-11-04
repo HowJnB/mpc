@@ -1,6 +1,6 @@
 /* tpow_fr -- test file for mpc_pow_fr.
 
-Copyright (C) 2009 INRIA
+Copyright (C) 2009, 2011 INRIA
 
 This file is part of GNU MPC.
 
@@ -35,8 +35,8 @@ test_reuse (void)
   mpfr_set_ui (y, 512, GMP_RNDN);
   inex = mpc_pow_fr (z, z, y, MPC_RNDNN);
   if (MPC_INEX_RE(inex) != 0 || MPC_INEX_IM(inex) != 0 ||
-      mpfr_cmp_ui_2exp (MPC_RE(z), 1, -2048) != 0 ||
-      mpfr_cmp_ui (MPC_IM(z), 0) != 0 || mpfr_signbit (MPC_IM(z)) == 0)
+      mpfr_cmp_ui_2exp (mpc_realref(z), 1, -2048) != 0 ||
+      mpfr_cmp_ui (mpc_imagref(z), 0) != 0 || mpfr_signbit (mpc_imagref(z)) == 0)
     {
       printf ("Error in test_reuse, wrong ternary value or output\n");
       printf ("inex=(%d %d)\n", MPC_INEX_RE(inex), MPC_INEX_IM(inex));

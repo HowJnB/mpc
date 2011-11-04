@@ -1,6 +1,6 @@
 /* mpc_real -- Get the real part of a complex number.
 
-Copyright (C) 2008, 2009 INRIA
+Copyright (C) 2008, 2009, 2011 INRIA
 
 This file is part of GNU MPC.
 
@@ -23,5 +23,5 @@ along with this program. If not, see http://www.gnu.org/licenses/ .
 int
 mpc_real (mpfr_ptr a, mpc_srcptr b, mpfr_rnd_t rnd)
 {
-  return mpfr_set (a, MPC_RE (b), rnd);
+  return mpfr_set (a, mpc_realref (b), rnd);
 }

@@ -1,6 +1,6 @@
 /* comparisons.c -- Comparison functions.
 
-Copyright (C) 2008, 2009 INRIA
+Copyright (C) 2008, 2009, 2011 INRIA
 
 This file is part of GNU MPC.
 
@@ -40,6 +40,6 @@ same_mpfr_value (mpfr_ptr got, mpfr_ptr ref, int known_sign)
 int
 same_mpc_value (mpc_ptr got, mpc_ptr ref, known_signs_t known_signs)
 {
-   return    same_mpfr_value (MPC_RE (got), MPC_RE (ref), known_signs.re)
-          && same_mpfr_value (MPC_IM (got), MPC_IM (ref), known_signs.im);
+   return    same_mpfr_value (mpc_realref (got), mpc_realref (ref), known_signs.re)
+          && same_mpfr_value (mpc_imagref (got), mpc_imagref (ref), known_signs.im);
 }

@@ -1,6 +1,6 @@
 /* mpc_out_str -- Output a complex number on a given stream.
 
-Copyright (C) 2009 INRIA
+Copyright (C) 2009, 2011 INRIA
 
 This file is part of GNU MPC.
 
@@ -30,9 +30,9 @@ mpc_out_str (FILE *stream, int base, size_t n, mpc_srcptr op, mpc_rnd_t rnd) {
       stream = stdout; /* fprintf does not allow NULL as first argument */
 
    fprintf (stream, "(");
-   size += mpfr_out_str (stream, base, n, MPC_RE(op), MPC_RND_RE(rnd));
+   size += mpfr_out_str (stream, base, n, mpc_realref(op), MPC_RND_RE(rnd));
    fprintf (stream, " ");
-   size += mpfr_out_str (stream, base, n, MPC_IM(op), MPC_RND_RE(rnd));
+   size += mpfr_out_str (stream, base, n, mpc_imagref(op), MPC_RND_RE(rnd));
    fprintf (stream, ")");
 
    return size;

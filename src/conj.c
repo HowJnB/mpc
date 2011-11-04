@@ -1,6 +1,6 @@
 /* mpc_conj -- Conjugate of a complex number.
 
-Copyright (C) 2002, 2009 INRIA
+Copyright (C) 2002, 2009, 2011 INRIA
 
 This file is part of GNU MPC.
 
@@ -25,8 +25,8 @@ mpc_conj (mpc_ptr a, mpc_srcptr b, mpc_rnd_t rnd)
 {
   int inex_re, inex_im;
 
-  inex_re = mpfr_set (MPC_RE(a), MPC_RE(b), MPC_RND_RE(rnd));
-  inex_im = mpfr_neg (MPC_IM(a), MPC_IM(b), MPC_RND_IM(rnd));
+  inex_re = mpfr_set (mpc_realref(a), mpc_realref(b), MPC_RND_RE(rnd));
+  inex_im = mpfr_neg (mpc_imagref(a), mpc_imagref(b), MPC_RND_IM(rnd));
 
   return MPC_INEX(inex_re, inex_im);
 }

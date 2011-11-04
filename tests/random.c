@@ -122,7 +122,7 @@ test_default_random (mpc_ptr z, mpfr_exp_t emin, mpfr_exp_t emax,
   do
     {
       mpc_urandom (z, rands);
-    } while (mpfr_zero_p (MPC_RE (z)) || mpfr_zero_p (MPC_IM (z)));
+    } while (mpfr_zero_p (mpc_realref (z)) || mpfr_zero_p (mpc_imagref (z)));
 
   if (zero_probability > 256)
     zero_probability = 256;
@@ -140,21 +140,21 @@ test_default_random (mpc_ptr z, mpfr_exp_t emin, mpfr_exp_t emax,
           zero_im_p = !zero_re_p;
         }
       if (zero_re_p)
-        mpfr_set_ui (MPC_RE (z), 0, GMP_RNDN);
+        mpfr_set_ui (mpc_realref (z), 0, GMP_RNDN);
       if (zero_im_p)
-        mpfr_set_ui (MPC_IM (z), 0, GMP_RNDN);
+        mpfr_set_ui (mpc_imagref (z), 0, GMP_RNDN);
     }
-  if (!mpfr_zero_p (MPC_RE (z)))
-    mpfr_set_exp (MPC_RE (z), (mpfr_exp_t) gmp_urandomm_ui (rands, range) + emin);
+  if (!mpfr_zero_p (mpc_realref (z)))
+    mpfr_set_exp (mpc_realref (z), (mpfr_exp_t) gmp_urandomm_ui (rands, range) + emin);
 
-  if (!mpfr_zero_p (MPC_IM (z)))
-    mpfr_set_exp (MPC_IM (z), (mpfr_exp_t) gmp_urandomm_ui (rands, range) + emin);
+  if (!mpfr_zero_p (mpc_imagref (z)))
+    mpfr_set_exp (mpc_imagref (z), (mpfr_exp_t) gmp_urandomm_ui (rands, range) + emin);
 
   if (negative_probability > 256)
     negative_probability = 256;
   r = gmp_urandomb_ui (rands, 16);
   if ((r & 0xFF) < negative_probability)
-    mpfr_neg (MPC_RE (z), MPC_RE (z), GMP_RNDN);
+    mpfr_neg (mpc_realref (z), mpc_realref (z), GMP_RNDN);
   if (((r>>8) & 0xFF) < negative_probability)
-    mpfr_neg (MPC_IM (z), MPC_IM (z), GMP_RNDN);
+    mpfr_neg (mpc_imagref (z), mpc_imagref (z), GMP_RNDN);
 }

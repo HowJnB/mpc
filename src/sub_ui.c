@@ -1,6 +1,6 @@
 /* mpc_sub_ui -- Add a complex number and an unsigned long int.
 
-Copyright (C) 2002, 2009 INRIA
+Copyright (C) 2002, 2009, 2011 INRIA
 
 This file is part of GNU MPC.
 
@@ -26,8 +26,8 @@ mpc_sub_ui (mpc_ptr a, mpc_srcptr b, unsigned long int c, mpc_rnd_t rnd)
 {
   int inex_re, inex_im;
 
-  inex_re = mpfr_sub_ui (MPC_RE(a), MPC_RE(b), c, MPC_RND_RE(rnd));
-  inex_im = mpfr_set (MPC_IM(a), MPC_IM(b), MPC_RND_IM(rnd));
+  inex_re = mpfr_sub_ui (mpc_realref(a), mpc_realref(b), c, MPC_RND_RE(rnd));
+  inex_im = mpfr_set (mpc_imagref(a), mpc_imagref(b), MPC_RND_IM(rnd));
 
   return MPC_INEX(inex_re, inex_im);
 }

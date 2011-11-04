@@ -34,13 +34,13 @@ reuse_bug (void)
        mpc_init2 (y, prec);
        mpc_init2 (z, prec);
    
-       mpfr_set_ui (MPC_RE (x), 0ul, GMP_RNDN);
-       mpfr_set_ui_2exp (MPC_IM (x), 3ul, -2, GMP_RNDN);
+       mpfr_set_ui (mpc_realref (x), 0ul, GMP_RNDN);
+       mpfr_set_ui_2exp (mpc_imagref (x), 3ul, -2, GMP_RNDN);
        mpc_set_ui (y, 8ul, MPC_RNDNN);
 
        mpc_pow (z, x, y, MPC_RNDNN);
        mpc_pow (y, x, y, MPC_RNDNN);
-       if (mpfr_signbit (MPC_IM (y)) != mpfr_signbit (MPC_IM (z)))
+       if (mpfr_signbit (mpc_imagref (y)) != mpfr_signbit (mpc_imagref (z)))
          {
            printf ("Error: regression, reuse_bug reproduced\n");
            exit (1);

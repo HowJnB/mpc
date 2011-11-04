@@ -1,4 +1,4 @@
-/* treimf -- test file for mpc_realref and mpc_imagref.
+/* treimref -- test file for mpc_realref and mpc_imagref.
 
 Copyright (C) 2009 INRIA
 

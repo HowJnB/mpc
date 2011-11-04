@@ -1,6 +1,6 @@
 /* tui_div -- test file for mpc_ui_div.
 
-Copyright (C) 2008 INRIA
+Copyright (C) 2008, 2011 INRIA
 
 This file is part of GNU MPC.
 
@@ -41,11 +41,11 @@ special (void)
     }
 
   /* 0/(-1-0*I) should give (-0, +0) */
-  mpfr_set_str (MPC_RE(a), "-1", 10, GMP_RNDN);
-  mpfr_set_str (MPC_IM(a), "-0", 10, GMP_RNDN);
+  mpfr_set_str (mpc_realref(a), "-1", 10, GMP_RNDN);
+  mpfr_set_str (mpc_imagref(a), "-0", 10, GMP_RNDN);
   mpc_ui_div (b, 0, a, MPC_RNDNN);
-  if ((mpc_cmp_si_si (b, 0, 0) != 0) || (MPFR_SIGN (MPC_RE(b)) > 0)
-      || (MPFR_SIGN (MPC_IM(b)) < 0))
+  if ((mpc_cmp_si_si (b, 0, 0) != 0) || (MPFR_SIGN (mpc_realref(b)) > 0)
+      || (MPFR_SIGN (mpc_imagref(b)) < 0))
     {
       printf ("0/(-1,-0) failed\n");
       printf ("expected (-0,+0)\n");
@@ -70,8 +70,8 @@ special (void)
   /* problem reported by Timo Hartmann with mpc-0.7, 21 Oct 2009 */
   mpc_set_ui_ui (a, 4, 0, MPC_RNDNN);
   mpc_ui_div (b, 1, a, MPC_RNDNN);
-  if (mpfr_cmp_ui_2exp (MPC_RE(b), 1, -2) != 0 ||
-      mpfr_cmp_ui (MPC_IM(b), 0) != 0 || mpfr_signbit (MPC_IM(b)) != 0)
+  if (mpfr_cmp_ui_2exp (mpc_realref(b), 1, -2) != 0 ||
+      mpfr_cmp_ui (mpc_imagref(b), 0) != 0 || mpfr_signbit (mpc_imagref(b)) != 0)
     {
       printf ("1/(4,0) failed\n");
       printf ("expected (1/4,0)\n");

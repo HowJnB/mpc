@@ -1,6 +1,6 @@
 /* mpc_add_fr -- Add a complex number and a floating-point number.
 
-Copyright (C) 2002, 2009 INRIA
+Copyright (C) 2002, 2009, 2011 INRIA
 
 This file is part of GNU MPC.
 
@@ -26,8 +26,8 @@ mpc_add_fr (mpc_ptr a, mpc_srcptr b, mpfr_srcptr c, mpc_rnd_t rnd)
 {
   int inex_re, inex_im;
 
-  inex_re = mpfr_add (MPC_RE(a), MPC_RE(b), c, MPC_RND_RE(rnd));
-  inex_im = mpfr_set (MPC_IM(a), MPC_IM(b), MPC_RND_IM(rnd));
+  inex_re = mpfr_add (mpc_realref(a), mpc_realref(b), c, MPC_RND_RE(rnd));
+  inex_im = mpfr_set (mpc_imagref(a), mpc_imagref(b), MPC_RND_IM(rnd));
 
   return MPC_INEX(inex_re, inex_im);
 }

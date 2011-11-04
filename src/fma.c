@@ -46,45 +46,45 @@ mpc_fma (mpc_ptr r, mpc_srcptr a, mpc_srcptr b, mpc_srcptr c, mpc_rnd_t rnd)
   mpfr_prec_t pre12, pre13, pre23, pim12, pim13, pim23;
   int inex_re, inex_im;
 
-  mpfr_init2 (rea_reb, mpfr_get_prec (MPC_RE(a)) + mpfr_get_prec (MPC_RE(b)));
-  mpfr_init2 (rea_imb, mpfr_get_prec (MPC_RE(a)) + mpfr_get_prec (MPC_IM(b)));
-  mpfr_init2 (ima_reb, mpfr_get_prec (MPC_IM(a)) + mpfr_get_prec (MPC_RE(b)));
-  mpfr_init2 (ima_imb, mpfr_get_prec (MPC_IM(a)) + mpfr_get_prec (MPC_IM(b)));
+  mpfr_init2 (rea_reb, mpfr_get_prec (mpc_realref(a)) + mpfr_get_prec (mpc_realref(b)));
+  mpfr_init2 (rea_imb, mpfr_get_prec (mpc_realref(a)) + mpfr_get_prec (mpc_imagref(b)));
+  mpfr_init2 (ima_reb, mpfr_get_prec (mpc_imagref(a)) + mpfr_get_prec (mpc_realref(b)));
+  mpfr_init2 (ima_imb, mpfr_get_prec (mpc_imagref(a)) + mpfr_get_prec (mpc_imagref(b)));
 
-  mpfr_mul (rea_reb, MPC_RE(a), MPC_RE(b), GMP_RNDZ); /* exact */
-  mpfr_mul (rea_imb, MPC_RE(a), MPC_IM(b), GMP_RNDZ); /* exact */
-  mpfr_mul (ima_reb, MPC_IM(a), MPC_RE(b), GMP_RNDZ); /* exact */
-  mpfr_mul (ima_imb, MPC_IM(a), MPC_IM(b), GMP_RNDZ); /* exact */
+  mpfr_mul (rea_reb, mpc_realref(a), mpc_realref(b), GMP_RNDZ); /* exact */
+  mpfr_mul (rea_imb, mpc_realref(a), mpc_imagref(b), GMP_RNDZ); /* exact */
+  mpfr_mul (ima_reb, mpc_imagref(a), mpc_realref(b), GMP_RNDZ); /* exact */
+  mpfr_mul (ima_imb, mpc_imagref(a), mpc_imagref(b), GMP_RNDZ); /* exact */
 
   /* Re(r) <- rea_reb - ima_imb + Re(c) */
 
   pre12 = bound_prec_addsub (rea_reb, ima_imb); /* bound on exact precision for
 						   rea_reb - ima_imb */
-  pre13 = bound_prec_addsub (rea_reb, MPC_RE(c));
+  pre13 = bound_prec_addsub (rea_reb, mpc_realref(c));
   /* bound for rea_reb + Re(c) */
-  pre23 = bound_prec_addsub (ima_imb, MPC_RE(c));
+  pre23 = bound_prec_addsub (ima_imb, mpc_realref(c));
   /* bound for ima_imb - Re(c) */
   if (pre12 <= pre13 && pre12 <= pre23) /* (rea_reb - ima_imb) + Re(c) */
     {
       mpfr_init2 (tmp, pre12);
       mpfr_sub (tmp, rea_reb, ima_imb, GMP_RNDZ); /* exact */
-      inex_re = mpfr_add (MPC_RE(r), tmp, MPC_RE(c), MPC_RND_RE(rnd));
+      inex_re = mpfr_add (mpc_realref(r), tmp, mpc_realref(c), MPC_RND_RE(rnd));
       /* the only possible bad overlap is between r and c, but since we are
 	 only touching the real part of both, it is ok */
     }
   else if (pre13 <= pre23) /* (rea_reb + Re(c)) - ima_imb */
     {
       mpfr_init2 (tmp, pre13);
-      mpfr_add (tmp, rea_reb, MPC_RE(c), GMP_RNDZ); /* exact */
-      inex_re = mpfr_sub (MPC_RE(r), tmp, ima_imb, MPC_RND_RE(rnd));
+      mpfr_add (tmp, rea_reb, mpc_realref(c), GMP_RNDZ); /* exact */
+      inex_re = mpfr_sub (mpc_realref(r), tmp, ima_imb, MPC_RND_RE(rnd));
       /* the only possible bad overlap is between r and c, but since we are
 	 only touching the real part of both, it is ok */
     }
   else /* rea_reb + (Re(c) - ima_imb) */
     {
       mpfr_init2 (tmp, pre23);
-      mpfr_sub (tmp, MPC_RE(c), ima_imb, GMP_RNDZ); /* exact */
-      inex_re = mpfr_add (MPC_RE(r), tmp, rea_reb, MPC_RND_RE(rnd));
+      mpfr_sub (tmp, mpc_realref(c), ima_imb, GMP_RNDZ); /* exact */
+      inex_re = mpfr_add (mpc_realref(r), tmp, rea_reb, MPC_RND_RE(rnd));
       /* the only possible bad overlap is between r and c, but since we are
 	 only touching the real part of both, it is ok */
     }
@@ -92,31 +92,31 @@ mpc_fma (mpc_ptr r, mpc_srcptr a, mpc_srcptr b, mpc_srcptr c, mpc_rnd_t rnd)
   /* Im(r) <- rea_imb + ima_reb + Im(c) */
   pim12 = bound_prec_addsub (rea_imb, ima_reb); /* bound on exact precision for
 						   rea_imb + ima_reb */
-  pim13 = bound_prec_addsub (rea_imb, MPC_IM(c));
+  pim13 = bound_prec_addsub (rea_imb, mpc_imagref(c));
   /* bound for rea_imb + Im(c) */
-  pim23 = bound_prec_addsub (ima_reb, MPC_IM(c));
+  pim23 = bound_prec_addsub (ima_reb, mpc_imagref(c));
   /* bound for ima_reb + Im(c) */
   if (pim12 <= pim13 && pim12 <= pim23) /* (rea_imb + ima_reb) + Im(c) */
     {
       mpfr_set_prec (tmp, pim12);
       mpfr_add (tmp, rea_imb, ima_reb, GMP_RNDZ); /* exact */
-      inex_im = mpfr_add (MPC_IM(r), tmp, MPC_IM(c), MPC_RND_IM(rnd));
+      inex_im = mpfr_add (mpc_imagref(r), tmp, mpc_imagref(c), MPC_RND_IM(rnd));
       /* the only possible bad overlap is between r and c, but since we are
 	 only touching the imaginary part of both, it is ok */
     }
   else if (pim13 <= pim23) /* (rea_imb + Im(c)) + ima_reb */
     {
       mpfr_set_prec (tmp, pim13);
-      mpfr_add (tmp, rea_imb, MPC_IM(c), GMP_RNDZ); /* exact */
-      inex_im = mpfr_add (MPC_IM(r), tmp, ima_reb, MPC_RND_IM(rnd));
+      mpfr_add (tmp, rea_imb, mpc_imagref(c), GMP_RNDZ); /* exact */
+      inex_im = mpfr_add (mpc_imagref(r), tmp, ima_reb, MPC_RND_IM(rnd));
       /* the only possible bad overlap is between r and c, but since we are
 	 only touching the imaginary part of both, it is ok */
     }
   else /* rea_imb + (Im(c) + ima_reb) */
     {
       mpfr_set_prec (tmp, pre23);
-      mpfr_add (tmp, MPC_IM(c), ima_reb, GMP_RNDZ); /* exact */
-      inex_im = mpfr_add (MPC_IM(r), tmp, rea_imb, MPC_RND_IM(rnd));
+      mpfr_add (tmp, mpc_imagref(c), ima_reb, GMP_RNDZ); /* exact */
+      inex_im = mpfr_add (mpc_imagref(r), tmp, rea_imb, MPC_RND_IM(rnd));
       /* the only possible bad overlap is between r and c, but since we are
 	 only touching the imaginary part of both, it is ok */
     }

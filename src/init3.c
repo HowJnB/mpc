@@ -1,6 +1,6 @@
 /* mpc_init3 -- Initialize a complex variable with given precisions.
 
-Copyright (C) 2002, 2009 INRIA
+Copyright (C) 2002, 2009, 2011 INRIA
 
 This file is part of GNU MPC.
 
@@ -23,6 +23,6 @@ along with this program. If not, see http://www.gnu.org/licenses/ .
 void
 mpc_init3 (mpc_t x, mpfr_prec_t prec_re, mpfr_prec_t prec_im)
 {
-  mpfr_init2 (MPC_RE(x), prec_re);
-  mpfr_init2 (MPC_IM(x), prec_im);
+  mpfr_init2 (mpc_realref(x), prec_re);
+  mpfr_init2 (mpc_imagref(x), prec_im);
 }

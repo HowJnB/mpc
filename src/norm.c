@@ -32,14 +32,14 @@ mpc_norm (mpfr_ptr a, mpc_srcptr b, mpfr_rnd_t rnd)
       norm = abs^2; so norm (+-inf, xxx) = norm (xxx, +-inf) = +inf */
    if (!mpc_fin_p (b))
          return mpc_abs (a, b, rnd);
-   else if (mpfr_zero_p (MPC_RE (b))) {
-      if (mpfr_zero_p (MPC_IM (b)))
+   else if (mpfr_zero_p (mpc_realref (b))) {
+      if (mpfr_zero_p (mpc_imagref (b)))
          return mpfr_set_ui (a, 0, rnd); /* +0 */
       else
-         return mpfr_sqr (a, MPC_IM (b), rnd);
+         return mpfr_sqr (a, mpc_imagref (b), rnd);
    }
-   else if (mpfr_zero_p (MPC_IM (b)))
-     return mpfr_sqr (a, MPC_RE (b), rnd); /* Re(b) <> 0 */
+   else if (mpfr_zero_p (mpc_imagref (b)))
+     return mpfr_sqr (a, mpc_realref (b), rnd); /* Re(b) <> 0 */
 
    else /* everything finite and non-zero */ {
       mpfr_t u, v, res;
@@ -72,8 +72,8 @@ mpc_norm (mpfr_ptr a, mpc_srcptr b, mpfr_rnd_t rnd)
          mpfr_set_prec (u, prec_u);
          mpfr_set_prec (v, prec_v);
 
-         inexact  = mpfr_sqr (u, MPC_RE(b), GMP_RNDD); /* err <= 1 ulp in prec */
-         inexact |= mpfr_sqr (v, MPC_IM(b), GMP_RNDD); /* err <= 1 ulp in prec */
+         inexact  = mpfr_sqr (u, mpc_realref(b), GMP_RNDD); /* err <= 1 ulp in prec */
+         inexact |= mpfr_sqr (v, mpc_imagref(b), GMP_RNDD); /* err <= 1 ulp in prec */
 
          /* If loops = max_loops, inexact should be 0 here, except in case
                of underflow or overflow.
@@ -133,20 +133,20 @@ mpc_norm (mpfr_ptr a, mpc_srcptr b, mpfr_rnd_t rnd)
             int inex_underflow;
 
             /* scale the input to an average exponent close to 0 */
-            exp_re = (unsigned long int) (-mpfr_get_exp (MPC_RE (b)));
-            exp_im = (unsigned long int) (-mpfr_get_exp (MPC_IM (b)));
+            exp_re = (unsigned long int) (-mpfr_get_exp (mpc_realref (b)));
+            exp_im = (unsigned long int) (-mpfr_get_exp (mpc_imagref (b)));
             scale = exp_re / 2 + exp_im / 2 + (exp_re % 2 + exp_im % 2) / 2;
                /* (exp_re + exp_im) / 2, computed in a way avoiding
                   integer overflow                                  */
             if (mpfr_zero_p (u)) {
                /* recompute the scaled value exactly */
-               mpfr_mul_2ui (u, MPC_RE (b), scale, GMP_RNDN);
+               mpfr_mul_2ui (u, mpc_realref (b), scale, GMP_RNDN);
                mpfr_sqr (u, u, GMP_RNDN);
             }
             else /* just scale */
                mpfr_mul_2ui (u, u, 2*scale, GMP_RNDN);
             if (mpfr_zero_p (v)) {
-               mpfr_mul_2ui (v, MPC_IM (b), scale, GMP_RNDN);
+               mpfr_mul_2ui (v, mpc_imagref (b), scale, GMP_RNDN);
                mpfr_sqr (v, v, GMP_RNDN);
             }
             else

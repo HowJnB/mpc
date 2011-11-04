@@ -32,14 +32,14 @@ check_different_precisions(void)
   mpc_init2(got, 128);
 
   /* change precision of one part */
-  mpfr_set_prec (MPC_IM (z), 32);
-  mpfr_set_prec (MPC_IM (expected), 32);
-  mpfr_set_prec (MPC_IM (got), 32);
+  mpfr_set_prec (mpc_imagref (z), 32);
+  mpfr_set_prec (mpc_imagref (expected), 32);
+  mpfr_set_prec (mpc_imagref (got), 32);
 
-  mpfr_set_str (MPC_RE (z), "0x100000000fp-32", 16, GMP_RNDN);
-  mpfr_set_str (MPC_IM (z), "-1", 2, GMP_RNDN);
-  mpfr_set_str (MPC_RE (expected), "+1", 2, GMP_RNDN);
-  mpfr_set_str (MPC_IM (expected), "0x100000000fp-32", 16, GMP_RNDN);
+  mpfr_set_str (mpc_realref (z), "0x100000000fp-32", 16, GMP_RNDN);
+  mpfr_set_str (mpc_imagref (z), "-1", 2, GMP_RNDN);
+  mpfr_set_str (mpc_realref (expected), "+1", 2, GMP_RNDN);
+  mpfr_set_str (mpc_imagref (expected), "0x100000000fp-32", 16, GMP_RNDN);
 
   mpc_set (got, z, MPC_RNDNN);
   res = mpc_mul_i (got, got, +1, MPC_RNDNN);

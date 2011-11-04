@@ -1,6 +1,6 @@
 /* mpc_pow_ui -- Raise a complex number to an integer power.
 
-Copyright (C) 2009, 2010 INRIA
+Copyright (C) 2009, 2010, 2011 INRIA
 
 This file is part of GNU MPC.
 
@@ -53,7 +53,7 @@ mpc_pow_usi (mpc_ptr z, mpc_srcptr x, unsigned long y, int sign,
    int loop, done;
 
    /* let mpc_pow deal with special values */
-   if (!mpc_fin_p (x) || mpfr_zero_p (MPC_RE (x)) || mpfr_zero_p (MPC_IM(x))
+   if (!mpc_fin_p (x) || mpfr_zero_p (mpc_realref (x)) || mpfr_zero_p (mpc_imagref(x))
        || y == 0)
       return mpc_pow_usi_naive (z, x, y, sign, rnd);
    /* easy special cases */
@@ -67,8 +67,8 @@ mpc_pow_usi (mpc_ptr z, mpc_srcptr x, unsigned long y, int sign,
       return mpc_sqr (z, x, rnd);
    /* let mpc_pow treat potential over- and underflows */
    else {
-      mpfr_exp_t exp_r = mpfr_get_exp (MPC_RE (x)),
-                 exp_i = mpfr_get_exp (MPC_IM (x));
+      mpfr_exp_t exp_r = mpfr_get_exp (mpc_realref (x)),
+                 exp_i = mpfr_get_exp (mpc_imagref (x));
       if (   MPC_MAX (exp_r, exp_i) > mpfr_get_emax () / (mpfr_exp_t) y
              /* heuristic for overflow */
           || MPC_MAX (-exp_r, -exp_i) > (-mpfr_get_emin ()) / (mpfr_exp_t) y
@@ -113,7 +113,7 @@ mpc_pow_usi (mpc_ptr z, mpc_srcptr x, unsigned long y, int sign,
       if (sign < 0)
          mpc_ui_div (t, 1ul, t, MPC_RNDNN);
 
-      if (mpfr_zero_p (MPC_RE(t)) || mpfr_zero_p (MPC_IM(t))) {
+      if (mpfr_zero_p (mpc_realref(t)) || mpfr_zero_p (mpc_imagref(t))) {
          inex = mpc_pow_usi_naive (z, x, y, sign, rnd);
             /* since mpfr_get_exp() is not defined for zero */
          done = 1;
@@ -124,16 +124,16 @@ mpc_pow_usi (mpc_ptr z, mpc_srcptr x, unsigned long y, int sign,
          mpfr_exp_t diff;
          mpfr_prec_t er, ei;
 
-         diff = mpfr_get_exp (MPC_RE(t)) - mpfr_get_exp (MPC_IM(t));
+         diff = mpfr_get_exp (mpc_realref(t)) - mpfr_get_exp (mpc_imagref(t));
          /* the factor on the real part is 2+2^(-diff+2) <= 4 for diff >= 1
             and < 2^(-diff+3) for diff <= 0 */
          er = (diff >= 1) ? l0 + 3 : l0 + (-diff) + 3;
          /* the factor on the imaginary part is 2+2^(diff+2) <= 4 for diff <= -1
             and < 2^(diff+3) for diff >= 0 */
          ei = (diff <= -1) ? l0 + 3 : l0 + diff + 3;
-         if (mpfr_can_round (MPC_RE(t), p - er, GMP_RNDZ, GMP_RNDZ,
+         if (mpfr_can_round (mpc_realref(t), p - er, GMP_RNDZ, GMP_RNDZ,
                               MPC_PREC_RE(z) + (MPC_RND_RE(rnd) == GMP_RNDN))
-               && mpfr_can_round (MPC_IM(t), p - ei, GMP_RNDZ, GMP_RNDZ,
+               && mpfr_can_round (mpc_imagref(t), p - ei, GMP_RNDZ, GMP_RNDZ,
                               MPC_PREC_IM(z) + (MPC_RND_IM(rnd) == GMP_RNDN))) {
             inex = mpc_set (z, t, rnd);
             done = 1;

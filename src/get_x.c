@@ -215,8 +215,8 @@ mpc_get_str (int base, size_t n, mpc_srcptr op, mpc_rnd_t rnd)
   if (base < 2 || base > 36)
     return NULL;
 
-  real_str = get_pretty_str (base, n, MPC_RE (op), MPC_RND_RE (rnd));
-  imag_str = get_pretty_str (base, n, MPC_IM (op), MPC_RND_IM (rnd));
+  real_str = get_pretty_str (base, n, mpc_realref (op), MPC_RND_RE (rnd));
+  imag_str = get_pretty_str (base, n, mpc_imagref (op), MPC_RND_IM (rnd));
 
   needed_size = strlen (real_str) + strlen (imag_str) + 4;
 

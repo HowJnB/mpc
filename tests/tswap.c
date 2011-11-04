@@ -37,10 +37,10 @@ main (void)
 
    mpc_swap (x, y);
 
-   if (   mpfr_get_prec (MPC_RE (x)) != mpfr_get_prec (MPC_RE (y2))
-       || mpfr_get_prec (MPC_IM (x)) != mpfr_get_prec (MPC_IM (y2))
-       || mpfr_get_prec (MPC_RE (y)) != mpfr_get_prec (MPC_RE (x2))
-       || mpfr_get_prec (MPC_IM (y)) != mpfr_get_prec (MPC_IM (x2))
+   if (   mpfr_get_prec (mpc_realref (x)) != mpfr_get_prec (mpc_realref (y2))
+       || mpfr_get_prec (mpc_imagref (x)) != mpfr_get_prec (mpc_imagref (y2))
+       || mpfr_get_prec (mpc_realref (y)) != mpfr_get_prec (mpc_realref (x2))
+       || mpfr_get_prec (mpc_imagref (y)) != mpfr_get_prec (mpc_imagref (x2))
        || mpc_cmp (x, y2) != 0
        || mpc_cmp (y, x2) != 0)
       exit (1);

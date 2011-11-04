@@ -1,6 +1,6 @@
 /* mpc_add -- Add two complex numbers.
 
-Copyright (C) 2002, 2009 INRIA
+Copyright (C) 2002, 2009, 2011 INRIA
 
 This file is part of GNU MPC.
 
@@ -26,8 +26,8 @@ mpc_add (mpc_ptr a, mpc_srcptr b, mpc_srcptr c, mpc_rnd_t rnd)
 {
   int inex_re, inex_im;
 
-  inex_re = mpfr_add (MPC_RE(a), MPC_RE(b), MPC_RE(c), MPC_RND_RE(rnd));
-  inex_im = mpfr_add (MPC_IM(a), MPC_IM(b), MPC_IM(c), MPC_RND_IM(rnd));
+  inex_re = mpfr_add (mpc_realref(a), mpc_realref(b), mpc_realref(c), MPC_RND_RE(rnd));
+  inex_im = mpfr_add (mpc_imagref(a), mpc_imagref(b), mpc_imagref(c), MPC_RND_IM(rnd));
 
   return MPC_INEX(inex_re, inex_im);
 }

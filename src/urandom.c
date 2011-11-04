@@ -1,7 +1,7 @@
 /* mpc_urandom -- Generate a random complex number uniformly distributed in
    the interval [0,1[.
 
-Copyright (C) 2008, 2009 INRIA
+Copyright (C) 2008, 2009, 2011 INRIA
 
 This file is part of GNU MPC.
 
@@ -26,7 +26,7 @@ mpc_urandom (mpc_ptr a, gmp_randstate_t state)
 {
   int r, i;
 
-  r = mpfr_urandomb (MPC_RE(a), state);
-  i = mpfr_urandomb (MPC_IM(a), state);
+  r = mpfr_urandomb (mpc_realref(a), state);
+  i = mpfr_urandomb (mpc_imagref(a), state);
   return r && i;
 }

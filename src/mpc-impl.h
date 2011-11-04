@@ -18,8 +18,8 @@ You should have received a copy of the GNU Lesser General Public License
 along with this program. If not, see http://www.gnu.org/licenses/ .
 */
 
-#ifndef __MPC_IMPL_H
-#define __MPC_IMPL_H
+#ifndef __mpc_imagrefPL_H
+#define __mpc_imagrefPL_H
 
 /* If mpc-impl.h is included, we are either in the library build or in the
    tests. Define __MPC_WITHIN_MPC in the first case, since Windows DLL needs
@@ -33,9 +33,6 @@ along with this program. If not, see http://www.gnu.org/licenses/ .
 #include <stdlib.h>
 #endif
 #include "mpc.h"
-
-#define MPC_RE(x) ((x)->re)
-#define MPC_IM(x) ((x)->im)
 
 /*
  * Miscellaneous useful macros
@@ -106,22 +103,22 @@ __MPC_DECLSPEC int mpfr_regular_p __MPC_PROTO ((mpfr_srcptr));
  * MPC macros
  */
 
-#define MPC_PREC_RE(x) (mpfr_get_prec(MPC_RE(x)))
-#define MPC_PREC_IM(x) (mpfr_get_prec(MPC_IM(x)))
+#define MPC_PREC_RE(x) (mpfr_get_prec(mpc_realref(x)))
+#define MPC_PREC_IM(x) (mpfr_get_prec(mpc_imagref(x)))
 #define MPC_MAX_PREC(x) MPC_MAX(MPC_PREC_RE(x), MPC_PREC_IM(x))
 
 #define INV_RND(r) \
    (((r) == GMP_RNDU) ? GMP_RNDD : (((r) == GMP_RNDD) ? GMP_RNDU : (r)))
 
-#define mpc_inf_p(z) (mpfr_inf_p(MPC_RE(z))||mpfr_inf_p(MPC_IM(z)))
+#define mpc_inf_p(z) (mpfr_inf_p(mpc_realref(z))||mpfr_inf_p(mpc_imagref(z)))
    /* Convention in C99 (G.3): z is regarded as an infinity if at least one of
       its parts is infinite */
-#define mpc_zero_p(z) (mpfr_zero_p(MPC_RE(z))&&mpfr_zero_p(MPC_IM(z)))
+#define mpc_zero_p(z) (mpfr_zero_p(mpc_realref(z))&&mpfr_zero_p(mpc_imagref(z)))
    /* Convention in C99 (G.3): z is regarded as a zero if each of its parts is
       a zero */
-#define mpc_fin_p(z) (mpfr_number_p(MPC_RE(z))&&mpfr_number_p(MPC_IM(z)))
+#define mpc_fin_p(z) (mpfr_number_p(mpc_realref(z))&&mpfr_number_p(mpc_imagref(z)))
    /* Convention in C99 (G.3): z is regarded as finite if both its parts are */
-#define mpc_nan_p(z) ((mpfr_nan_p(MPC_RE(z)) && !mpfr_inf_p(MPC_IM(z))) || (mpfr_nan_p(MPC_IM(z)) && !mpfr_inf_p(MPC_RE(z))))
+#define mpc_nan_p(z) ((mpfr_nan_p(mpc_realref(z)) && !mpfr_inf_p(mpc_imagref(z))) || (mpfr_nan_p(mpc_imagref(z)) && !mpfr_inf_p(mpc_realref(z))))
    /* Consider as NaN all other numbers containing at least one NaN */
 
 

@@ -1,6 +1,6 @@
-/* mpc_imag -- Get the real part of a complex number.
+/* mpc_imag -- Get the imaginary part of a complex number.
 
-Copyright (C) 2008, 2009 INRIA
+Copyright (C) 2008, 2009, 2011 INRIA
 
 This file is part of GNU MPC.
 
@@ -23,5 +23,5 @@ along with this program. If not, see http://www.gnu.org/licenses/ .
 int
 mpc_imag (mpfr_ptr a, mpc_srcptr b, mpfr_rnd_t rnd)
 {
-  return mpfr_set (a, MPC_IM (b), rnd);
+  return mpfr_set (a, mpc_imagref (b), rnd);
 }

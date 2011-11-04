@@ -1,6 +1,6 @@
 /* mpc_inp_str -- Input a complex number from a given stream.
 
-Copyright (C) 2009, 2010 INRIA
+Copyright (C) 2009, 2010, 2011 INRIA
 
 This file is part of GNU MPC.
 
@@ -230,8 +230,8 @@ mpc_rnd_t rnd_mode)
 
 error:
    if (inex == -1) {
-      mpfr_set_nan (MPC_RE(rop));
-      mpfr_set_nan (MPC_IM(rop));
+      mpfr_set_nan (mpc_realref(rop));
+      mpfr_set_nan (mpc_imagref(rop));
    }
    if (read != NULL)
      *read = white + nread;

@@ -1,6 +1,6 @@
 /* mpc_cosh -- hyperbolic cosine of a complex number.
 
-Copyright (C)  2008, 2009 INRIA
+Copyright (C)  2008, 2009, 2011 INRIA
 
 This file is part of GNU MPC.
 
@@ -27,9 +27,9 @@ mpc_cosh (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
   mpc_t z;
 
   /* z = i*op without copying significand */
-  MPC_RE (z)[0] = MPC_IM (op)[0];
-  MPC_IM (z)[0] = MPC_RE (op)[0];
-  MPFR_CHANGE_SIGN (MPC_RE (z));
+  mpc_realref (z)[0] = mpc_imagref (op)[0];
+  mpc_imagref (z)[0] = mpc_realref (op)[0];
+  MPFR_CHANGE_SIGN (mpc_realref (z));
 
   return mpc_cos (rop, z, rnd);
 }

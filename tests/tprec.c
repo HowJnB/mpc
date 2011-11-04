@@ -1,6 +1,6 @@
 /* tprec -- Test file for mpc_set_prec, mpc_get_prec and mpc_get_prec2.
 
-Copyright (C) 2009 INRIA
+Copyright (C) 2009, 2011 INRIA
 
 This file is part of GNU MPC.
 
@@ -32,8 +32,8 @@ main (void)
   for (prec = 2; prec <= 1000; prec++)
     {
       /* check set_prec/get_prec */
-      mpfr_set_prec (MPC_RE (z), prec);
-      mpfr_set_prec (MPC_IM (z), prec + 1);
+      mpfr_set_prec (mpc_realref (z), prec);
+      mpfr_set_prec (mpc_imagref (z), prec + 1);
       if (mpc_get_prec (z) != 0)
         {
           printf ("Error in mpc_get_prec for prec (re) = %lu, "

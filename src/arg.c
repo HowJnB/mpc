@@ -1,6 +1,6 @@
 /* mpc_arg -- Get the argument of a complex number.
 
-Copyright (C) 2008, 2009 INRIA
+Copyright (C) 2008, 2009, 2011 INRIA
 
 This file is part of GNU MPC.
 
@@ -23,5 +23,5 @@ along with this program. If not, see http://www.gnu.org/licenses/ .
 int
 mpc_arg (mpfr_ptr a, mpc_srcptr b, mpfr_rnd_t rnd)
 {
-  return mpfr_atan2 (a, MPC_IM (b), MPC_RE (b), rnd);
+  return mpfr_atan2 (a, mpc_imagref (b), mpc_realref (b), rnd);
 }

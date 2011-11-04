@@ -35,32 +35,32 @@ mpc_sqr (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
 
    /* special values: NaN and infinities */
    if (!mpc_fin_p (op)) {
-      if (mpfr_nan_p (MPC_RE (op)) || mpfr_nan_p (MPC_IM (op))) {
-         mpfr_set_nan (MPC_RE (rop));
-         mpfr_set_nan (MPC_IM (rop));
+      if (mpfr_nan_p (mpc_realref (op)) || mpfr_nan_p (mpc_imagref (op))) {
+         mpfr_set_nan (mpc_realref (rop));
+         mpfr_set_nan (mpc_imagref (rop));
       }
-      else if (mpfr_inf_p (MPC_RE (op))) {
-         if (mpfr_inf_p (MPC_IM (op))) {
-            mpfr_set_inf (MPC_IM (rop),
-                          MPFR_SIGN (MPC_RE (op)) * MPFR_SIGN (MPC_IM (op)));
-            mpfr_set_nan (MPC_RE (rop));
+      else if (mpfr_inf_p (mpc_realref (op))) {
+         if (mpfr_inf_p (mpc_imagref (op))) {
+            mpfr_set_inf (mpc_imagref (rop),
+                          MPFR_SIGN (mpc_realref (op)) * MPFR_SIGN (mpc_imagref (op)));
+            mpfr_set_nan (mpc_realref (rop));
          }
          else {
-            if (mpfr_zero_p (MPC_IM (op)))
-               mpfr_set_nan (MPC_IM (rop));
+            if (mpfr_zero_p (mpc_imagref (op)))
+               mpfr_set_nan (mpc_imagref (rop));
             else
-               mpfr_set_inf (MPC_IM (rop),
-                             MPFR_SIGN (MPC_RE (op)) * MPFR_SIGN (MPC_IM (op)));
-            mpfr_set_inf (MPC_RE (rop), +1);
+               mpfr_set_inf (mpc_imagref (rop),
+                             MPFR_SIGN (mpc_realref (op)) * MPFR_SIGN (mpc_imagref (op)));
+            mpfr_set_inf (mpc_realref (rop), +1);
          }
       }
       else /* IM(op) is infinity, RE(op) is not */ {
-         if (mpfr_zero_p (MPC_RE (op)))
-            mpfr_set_nan (MPC_IM (rop));
+         if (mpfr_zero_p (mpc_realref (op)))
+            mpfr_set_nan (mpc_imagref (rop));
          else
-            mpfr_set_inf (MPC_IM (rop),
-                          MPFR_SIGN (MPC_RE (op)) * MPFR_SIGN (MPC_IM (op)));
-         mpfr_set_inf (MPC_RE (rop), -1);
+            mpfr_set_inf (mpc_imagref (rop),
+                          MPFR_SIGN (mpc_realref (op)) * MPFR_SIGN (mpc_imagref (op)));
+         mpfr_set_inf (mpc_realref (rop), -1);
       }
       return MPC_INEX (0, 0); /* exact */
    }
@@ -68,21 +68,21 @@ mpc_sqr (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
    prec = MPC_MAX_PREC(rop);
 
    /* first check for real resp. purely imaginary number */
-   if (mpfr_zero_p (MPC_IM(op)))
+   if (mpfr_zero_p (mpc_imagref(op)))
    {
-      int same_sign = mpfr_signbit (MPC_RE (op)) == mpfr_signbit (MPC_IM (op));
-      inex_re = mpfr_sqr (MPC_RE(rop), MPC_RE(op), MPC_RND_RE(rnd));
-      inex_im = mpfr_set_ui (MPC_IM(rop), 0ul, GMP_RNDN);
+      int same_sign = mpfr_signbit (mpc_realref (op)) == mpfr_signbit (mpc_imagref (op));
+      inex_re = mpfr_sqr (mpc_realref(rop), mpc_realref(op), MPC_RND_RE(rnd));
+      inex_im = mpfr_set_ui (mpc_imagref(rop), 0ul, GMP_RNDN);
       if (!same_sign)
         mpc_conj (rop, rop, MPC_RNDNN);
       return MPC_INEX(inex_re, inex_im);
    }
-   if (mpfr_zero_p (MPC_RE(op)))
+   if (mpfr_zero_p (mpc_realref(op)))
    {
-      int same_sign = mpfr_signbit (MPC_RE (op)) == mpfr_signbit (MPC_IM (op));
-      inex_re = -mpfr_sqr (MPC_RE(rop), MPC_IM(op), INV_RND (MPC_RND_RE(rnd)));
-      mpfr_neg (MPC_RE(rop), MPC_RE(rop), GMP_RNDN);
-      inex_im = mpfr_set_ui (MPC_IM(rop), 0ul, GMP_RNDN);
+      int same_sign = mpfr_signbit (mpc_realref (op)) == mpfr_signbit (mpc_imagref (op));
+      inex_re = -mpfr_sqr (mpc_realref(rop), mpc_imagref(op), INV_RND (MPC_RND_RE(rnd)));
+      mpfr_neg (mpc_realref(rop), mpc_realref(rop), GMP_RNDN);
+      inex_im = mpfr_set_ui (mpc_imagref(rop), 0ul, GMP_RNDN);
       if (!same_sign)
         mpc_conj (rop, rop, MPC_RNDNN);
       return MPC_INEX(inex_re, inex_im);
@@ -92,14 +92,14 @@ mpc_sqr (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
    /* exactly with the standard formulae instead, even if this means an    */
    /* additional multiplication.                                           */
    if (SAFE_ABS (mpfr_exp_t,
-                 mpfr_get_exp (MPC_RE (op)) - mpfr_get_exp (MPC_IM (op)))
+                 mpfr_get_exp (mpc_realref (op)) - mpfr_get_exp (mpc_imagref (op)))
        > (mpfr_exp_t) MPC_MAX_PREC (op) / 2)
    {
       mpfr_init2 (u, 2*MPC_PREC_RE (op));
       mpfr_init2 (v, 2*MPC_PREC_IM (op));
 
-      mpfr_sqr (u, MPC_RE (op), GMP_RNDN);
-      mpfr_sqr (v, MPC_IM (op), GMP_RNDN); /* both are exact */
+      mpfr_sqr (u, mpc_realref (op), GMP_RNDN);
+      mpfr_sqr (v, mpc_imagref (op), GMP_RNDN); /* both are exact */
       inex_im = mpfr_mul (rop->im, op->re, op->im, MPC_RND_IM (rnd));
       mpfr_mul_2exp (rop->im, rop->im, 1, GMP_RNDN);
       inex_re = mpfr_sub (rop->re, u, v, MPC_RND_RE (rnd));
@@ -135,15 +135,15 @@ mpc_sqr (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
       /* The error is bounded above by 1 ulp.                             */
       /* We first let inexact be 1 if the real part is not computed       */
       /* exactly and determine the sign later.                            */
-      inexact =    ROUND_AWAY (mpfr_add (u, x, MPC_IM (op), MPFR_RNDA), u)
-                 | ROUND_AWAY (mpfr_sub (v, x, MPC_IM (op), MPFR_RNDA), v);
+      inexact =    ROUND_AWAY (mpfr_add (u, x, mpc_imagref (op), MPFR_RNDA), u)
+                 | ROUND_AWAY (mpfr_sub (v, x, mpc_imagref (op), MPFR_RNDA), v);
 
       /* compute the real part as u*v, rounded away                    */
       /* determine also the sign of inex_re                            */
       if (mpfr_sgn (u) == 0 || mpfr_sgn (v) == 0)
         {
           /* as we have rounded away, the result is exact */
-          mpfr_set_ui (MPC_RE (rop), 0, GMP_RNDN);
+          mpfr_set_ui (mpc_realref (rop), 0, GMP_RNDN);
           inex_re = 0;
           ok = 1;
         }
@@ -156,15 +156,15 @@ mpc_sqr (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
           MPC_ASSERT (mpfr_get_exp (u) != emin);
           if (mpfr_inf_p (u))
             {
-              /* let MPC_RE(rop) be a "correctly rounded overflow" */
-              inex_re = mpfr_set_ui_2exp (MPC_RE (rop), 1, emax, MPC_RND_RE (rnd));
+              /* let mpc_realref(rop) be a "correctly rounded overflow" */
+              inex_re = mpfr_set_ui_2exp (mpc_realref (rop), 1, emax, MPC_RND_RE (rnd));
               break;
             }
           ok = (!inexact) | mpfr_can_round (u, prec - 3, GMP_RNDU, GMP_RNDZ,
                MPC_PREC_RE (rop) + (MPC_RND_RE (rnd) == GMP_RNDN));
           if (ok)
             {
-              inex_re = mpfr_set (MPC_RE (rop), u, MPC_RND_RE (rnd));
+              inex_re = mpfr_set (mpc_realref (rop), u, MPC_RND_RE (rnd));
               if (inex_re == 0)
                 /* remember that u was already rounded */
                 inex_re = inexact;
@@ -184,11 +184,11 @@ mpc_sqr (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
               if (rnd_re == GMP_RNDZ || rnd_re == GMP_RNDN ||
                   rnd_re == GMP_RNDU)
                 {
-                  mpfr_set_ui (MPC_RE (rop), 0, rnd_re);
+                  mpfr_set_ui (mpc_realref (rop), 0, rnd_re);
                   inex_re = 1;
                 }
               else /* round down or away from zero */ {
-                mpfr_set (MPC_RE (rop), u, rnd_re);
+                mpfr_set (mpc_realref (rop), u, rnd_re);
                 inex_re = -1;
               }
               break;
@@ -197,7 +197,7 @@ mpc_sqr (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
                MPC_PREC_RE (rop) + (MPC_RND_RE (rnd) == GMP_RNDN));
           if (ok)
             {
-              inex_re = mpfr_set (MPC_RE (rop), u, MPC_RND_RE (rnd));
+              inex_re = mpfr_set (mpc_realref (rop), u, MPC_RND_RE (rnd));
               if (inex_re == 0)
                 inex_re = inexact;
             }
@@ -206,17 +206,17 @@ mpc_sqr (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
    while (!ok);
 
    /* compute the imaginary part as 2*x*y, which is always possible */
-   if (mpfr_get_exp (x) + mpfr_get_exp(MPC_IM (op)) <= emin + 1)
+   if (mpfr_get_exp (x) + mpfr_get_exp(mpc_imagref (op)) <= emin + 1)
      {
        mpfr_mul_2ui (x, x, 1, GMP_RNDN);
-       inex_im = mpfr_mul (MPC_IM (rop), x, MPC_IM (op), MPC_RND_IM (rnd));
+       inex_im = mpfr_mul (mpc_imagref (rop), x, mpc_imagref (op), MPC_RND_IM (rnd));
      }
    else
      {
-       inex_im = mpfr_mul (MPC_IM (rop), x, MPC_IM (op), MPC_RND_IM (rnd));
+       inex_im = mpfr_mul (mpc_imagref (rop), x, mpc_imagref (op), MPC_RND_IM (rnd));
        /* checks that no underflow occurs (an overflow can occur here) */
-       MPC_ASSERT (mpfr_zero_p (MPC_IM (rop)) == 0);
-       mpfr_mul_2ui (MPC_IM (rop), MPC_IM (rop), 1, GMP_RNDN);
+       MPC_ASSERT (mpfr_zero_p (mpc_imagref (rop)) == 0);
+       mpfr_mul_2ui (mpc_imagref (rop), mpc_imagref (rop), 1, GMP_RNDN);
      }
 
    mpfr_clear (u);

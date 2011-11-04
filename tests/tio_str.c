@@ -78,8 +78,8 @@ check_file (const char* file_name)
       /* 2. read string at the same precision as the expected result */
       while (nextchar != '"')
         nextchar = getc (fp);
-      mpfr_set_prec (MPC_RE (got), MPC_PREC_RE (expected));
-      mpfr_set_prec (MPC_IM (got), MPC_PREC_IM (expected));
+      mpfr_set_prec (mpc_realref (got), MPC_PREC_RE (expected));
+      mpfr_set_prec (mpc_imagref (got), MPC_PREC_IM (expected));
       inex = mpc_inp_str (got, fp, &size, base, rnd);
 
       /* 3. compare this result with the expected one */
@@ -230,8 +230,8 @@ main (void)
       mpc_set_si_si (x, -1, 1, MPC_RNDNN);
       check_io_str (z, x);
 
-      mpfr_set_inf (MPC_RE(x), -1);
-      mpfr_set_inf (MPC_IM(x), +1);
+      mpfr_set_inf (mpc_realref(x), -1);
+      mpfr_set_inf (mpc_imagref(x), +1);
       check_io_str (z, x);
 
       test_default_random (x,  -1024, 1024, 128, 25);

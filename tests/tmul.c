@@ -118,15 +118,15 @@ check_regular (void)
      imaginary part */
   mpc_set_prec (x, 7);
   mpc_set_prec (y, 7);
-  mpfr_set_str (MPC_RE (x), "0xB4p+733", 16, GMP_RNDN);
-  mpfr_set_str (MPC_IM (x), "0x90p+244", 16, GMP_RNDN);
-  mpfr_set_str (MPC_RE (y), "0xECp-146", 16, GMP_RNDN);
-  mpfr_set_str (MPC_IM (y), "0xACp-471", 16, GMP_RNDN);
+  mpfr_set_str (mpc_realref (x), "0xB4p+733", 16, GMP_RNDN);
+  mpfr_set_str (mpc_imagref (x), "0x90p+244", 16, GMP_RNDN);
+  mpfr_set_str (mpc_realref (y), "0xECp-146", 16, GMP_RNDN);
+  mpfr_set_str (mpc_imagref (y), "0xACp-471", 16, GMP_RNDN);
   cmpmul (x, y, MPC_RNDNN);
-  mpfr_set_str (MPC_RE (x), "0xB4p+733", 16, GMP_RNDN);
-  mpfr_set_str (MPC_IM (x), "0x90p+244", 16, GMP_RNDN);
-  mpfr_set_str (MPC_RE (y), "0xACp-471", 16, GMP_RNDN);
-  mpfr_set_str (MPC_IM (y), "-0xECp-146", 16, GMP_RNDN);
+  mpfr_set_str (mpc_realref (x), "0xB4p+733", 16, GMP_RNDN);
+  mpfr_set_str (mpc_imagref (x), "0x90p+244", 16, GMP_RNDN);
+  mpfr_set_str (mpc_realref (y), "0xACp-471", 16, GMP_RNDN);
+  mpfr_set_str (mpc_imagref (y), "-0xECp-146", 16, GMP_RNDN);
   cmpmul (x, y, MPC_RNDNN);
 
   for (prec = 2; prec < 1000; prec = (mpfr_prec_t) (prec * 1.1 + 1))
