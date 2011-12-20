@@ -28,6 +28,9 @@ along with this program. If not, see http://www.gnu.org/licenses/ .
 #include <stdint.h>
 #endif
 
+#define __MPC_LIBRARY_BUILD
+   /* to indicate we are inside the library build; needed here since mpc-log.h
+      includes mpc.h and not mpc-impl.h */
 #include "mpc-log.h"
 
 #ifdef HAVE_DLFCN_H

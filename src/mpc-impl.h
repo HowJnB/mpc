@@ -20,6 +20,8 @@ along with this program. If not, see http://www.gnu.org/licenses/ .
 
 #ifndef __MPC_IMPL_H
 #define __MPC_IMPL_H
+#define __MPC_LIBRARY_BUILD
+   /* to indicate we are inside the library build */
 
 #include "config.h"
 #ifdef HAVE_STDLIB_H
