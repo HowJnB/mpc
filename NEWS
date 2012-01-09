@@ -1,6 +1,9 @@
 Changes in version 1.0:
   - First release as a GNU package
   - License change: LGPLv3+ for code, GFDLv1.3+ for documentation
+  - 0^0, which returned (NaN,NaN) previously, now returns (1,0),
+    with the sign of the imaginary part of the result being the opposite of
+    the sign of the imaginary part of the exponent
   - Bug fixes:
     - div and norm now return a value indicating the effective rounding
       direction, as the other functions.

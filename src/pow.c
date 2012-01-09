@@ -489,10 +489,36 @@ mpc_pow (mpc_ptr z, mpc_srcptr x, mpc_srcptr y, mpc_rnd_t rnd)
 
   if (y_real && mpfr_zero_p (mpc_realref(y))) /* case y zero */
     {
-      if (x_real && mpfr_zero_p (mpc_realref(x))) /* 0^0 = NaN +i*NaN */
+      if (x_real && mpfr_zero_p (mpc_realref(x)))
         {
-          mpfr_set_nan (mpc_realref(z));
-          mpfr_set_nan (mpc_imagref(z));
+          /* we define 0^0 to be (1, -sign(Im(y))*0) since the real part is
+             coherent with MPFR where 0^0 gives 1, and the sign of the
+             imaginary part is the most frequent one obtained for random
+             tiny x and y, for example with the following Sage program:
+             D = dict()
+             for sa in [-1,1]:
+               for sb in [-1,1]:
+                 for sc in [-1,1]:
+                   for sd in [-1,1]:
+                     D[(sa,sb,sc,sd)] = [0,0]
+             def tiny():
+               return (random() - 0.5) * 1e-3
+             for n in range(10^4):
+               a = tiny()
+               b = tiny()
+               c = tiny()
+               d = tiny()
+               x = a+I*b
+               y = c+I*d
+               z = x^y
+               t = sign(a),sign(b),sign(c),sign(d)
+               if sign(z.imag()) == 1:
+                 D[t] = [D[t][0],D[t][1]+1]
+               else:
+                 D[t] = [D[t][0]+1,D[t][1]] */
+          mpfr_set_ui (mpc_realref(z), 1, GMP_RNDZ);
+          mpfr_set_zero (mpc_imagref(z),
+                         mpfr_signbit (mpc_imagref(y)) ? 1 : -1);
           return 0;
         }
       else /* x^0 = 1 +/- i*0 even for x=NaN see algorithms.tex for the

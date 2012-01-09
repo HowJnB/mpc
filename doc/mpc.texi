@@ -947,6 +947,8 @@ to @var{rnd}.
 For @code{mpc_pow_d}, @code{mpc_pow_ld}, @code{mpc_pow_si}, @code{mpc_pow_ui},
 @code{mpc_pow_z} and @code{mpc_pow_fr},
 the imaginary part of @var{op2} is considered as +0.
+When both @var{op1} and @var{op2} are zero, the result has real part 1,
+and imaginary part 0, with sign being the opposite of that of @var{op2}.
 @end deftypefun
 
 @deftypefun int mpc_exp (mpc_t @var{rop}, mpc_t @var{op}, mpc_rnd_t @var{rnd})
