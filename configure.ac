@@ -94,7 +94,11 @@ AC_ARG_ENABLE([valgrind-tests],
              )
 
 # Check for CC and CFLAGS in gmp.h unless the user specified one of them
-if test -z $CC -a -z $CFLAGS; then
+# look for EGREP and SED here, see continued problem
+# at http://lists.gforge.inria.fr/pipermail/mpc-discuss/2012-January/001056.html
+AC_PROG_EGREP
+AC_PROG_SED
+if test -z $CC && test -z $CFLAGS; then
    MPC_GMP_CC_CFLAGS
 fi
 

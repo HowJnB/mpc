@@ -143,8 +143,6 @@ AC_DEFUN([MPC_C_CHECK_WARNINGCFLAGS], [
 # essentially copied from mpfr
 #
 AC_DEFUN([MPC_GMP_CC_CFLAGS], [
-   AC_PROG_EGREP
-   AC_PROG_SED
    AC_MSG_CHECKING(for CC and CFLAGS in gmp.h)
    # AC_PROG_CPP triggers the search for a C compiler; use hack instead
    for cpp in /lib/cpp gcc cc c99
