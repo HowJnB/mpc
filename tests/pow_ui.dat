@@ -1,6 +1,6 @@
 # Data file for mpc_pow_ui.
 #
-# Copyright (C) 2010, 2011 INRIA
+# Copyright (C) 2010, 2011, 2012 INRIA
 #
 # This file is part of GNU MPC.
 #
@@ -34,8 +34,8 @@
 0 0 53 +inf 53  nan    53 -inf 53   +1  +1 N N
 0 0 53 +inf 53  nan    53 -inf 53   -1  +1 N N
 
-0 0 53   +1 53   -0    53   +0 53   +0  +0 N N
-0 0 53    0 53    0    53   +0 53   +0  +1 N N
+0 0 53   +1 53   +0    53   +0 53   +0  +0 N N
+0 0 53   +0 53   +0    53   +0 53   +0  +1 N N
 
 0 0 53   +1 53   +0    53   +0 53   +1  +0 N N
 0 0 53   +1 53   -0    53   +0 53   +1  +0 N D
