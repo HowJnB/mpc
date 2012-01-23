@@ -18,8 +18,6 @@ You should have received a copy of the GNU Lesser General Public License
 along with this program. If not, see http://www.gnu.org/licenses/ .
 */
 
-/* #include <stdlib.h> */
-
 #include "mpc-tests.h"
 
 /* Warning: unlike the MPFR macro (defined in mpfr-impl.h), this one returns
