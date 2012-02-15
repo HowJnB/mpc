@@ -98,7 +98,7 @@ AC_ARG_ENABLE([valgrind-tests],
 # at http://lists.gforge.inria.fr/pipermail/mpc-discuss/2012-January/001056.html
 AC_PROG_EGREP
 AC_PROG_SED
-if test -z $CC && test -z $CFLAGS; then
+if test -z "$CC" && test -z "$CFLAGS"; then
    MPC_GMP_CC_CFLAGS
 fi
 
