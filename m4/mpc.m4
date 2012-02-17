@@ -45,7 +45,7 @@ AC_DEFUN([MPC_COMPLEX_H], [
             ]
          )
 
-         AC_MSG_CHECKING(whether creal and cimag can be used without libm)
+         AC_MSG_CHECKING([whether creal, cimag and I can be used without additional library])
          AC_LINK_IFELSE(
             [MPC_CONFTEST],
             [
@@ -54,19 +54,17 @@ AC_DEFUN([MPC_COMPLEX_H], [
             ],
             [
                AC_MSG_RESULT([no])
-               AC_CHECK_LIB([m], [creal],
+               AC_SEARCH_LIBS([creal], [m],
                   [
-                     AC_MSG_CHECKING(whether creal and cimag can be used with libm)
+                     AC_MSG_CHECKING([whether creal and cimag can be used with additional library])
                      AC_LINK_IFELSE(
                         [MPC_CONFTEST],
                         [
                            AC_MSG_RESULT([yes])
-                           LIBS="-lm $LIBS"
-                           AC_DEFINE([HAVE_LIBM], [1], [libm needed for creal])
                            AC_DEFINE([HAVE_COMPLEX_H], [1], [complex.h present and usable])
                         ],
                         [
-                           AC_MSG_RESULT([no])
+                           AC_MSG_RESULT([no, build without support for C complex numbers])
                         ]
                      )
                   ]
