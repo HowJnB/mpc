@@ -28,8 +28,6 @@ along with this program. If not, see http://www.gnu.org/licenses/ .
 # DESCRIPTION
 #
 # Check whether complex.h is usable; if yes, define HAVE_COMPLEX_H.
-# On solaris, one also needs the libm; in that case, it is added to LIB,
-# and HAVE_LIBM is defined.
 #
 AC_DEFUN([MPC_COMPLEX_H], [
    AC_CHECK_HEADER(
@@ -46,6 +44,7 @@ AC_DEFUN([MPC_COMPLEX_H], [
          )
 
          AC_SEARCH_LIBS([creal], [m])
+            /* needed on Solaris */
          AC_MSG_CHECKING([whether creal, cimag and I can be used])
          AC_LINK_IFELSE(
             [MPC_CONFTEST],
