@@ -1,6 +1,6 @@
 /* mpc.m4
 
-Copyright (C) 2008, 2009, 2010, 2011 INRIA
+Copyright (C) 2008, 2009, 2010, 2011, 2012 INRIA
 
 This file is part of GNU MPC.
 
@@ -45,7 +45,8 @@ AC_DEFUN([MPC_COMPLEX_H], [
             ]
          )
 
-         AC_MSG_CHECKING([whether creal, cimag and I can be used without additional library])
+         AC_SEARCH_LIBS([creal], [m])
+         AC_MSG_CHECKING([whether creal, cimag and I can be used])
          AC_LINK_IFELSE(
             [MPC_CONFTEST],
             [
@@ -53,22 +54,7 @@ AC_DEFUN([MPC_COMPLEX_H], [
                AC_DEFINE([HAVE_COMPLEX_H], [1], [complex.h present and usable])
             ],
             [
-               AC_MSG_RESULT([no])
-               AC_SEARCH_LIBS([creal], [m],
-                  [
-                     AC_MSG_CHECKING([whether creal and cimag can be used with additional library])
-                     AC_LINK_IFELSE(
-                        [MPC_CONFTEST],
-                        [
-                           AC_MSG_RESULT([yes])
-                           AC_DEFINE([HAVE_COMPLEX_H], [1], [complex.h present and usable])
-                        ],
-                        [
-                           AC_MSG_RESULT([no, build without support for C complex numbers])
-                        ]
-                     )
-                  ]
-               )
+               AC_MSG_RESULT([no, build without support for C complex numbers])
             ]
          )
       ]
@@ -117,7 +103,6 @@ AC_DEFUN([MPC_C_CHECK_WARNINGCFLAGS], [
       MPC_C_CHECK_FLAG(-Wno-long-long)
       MPC_C_CHECK_FLAG(-Wall)
       MPC_C_CHECK_FLAG(-Wextra)
-      MPC_C_CHECK_FLAG(-Werror)
       MPC_C_CHECK_FLAG(-Wdeclaration-after-statement)
       MPC_C_CHECK_FLAG(-Wundef)
       MPC_C_CHECK_FLAG(-Wshadow)
