@@ -95,6 +95,9 @@ mpc_sqr (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
                  mpfr_get_exp (mpc_realref (op)) - mpfr_get_exp (mpc_imagref (op)))
        > (mpfr_exp_t) MPC_MAX_PREC (op) / 2)
    {
+     emax = mpfr_get_emax ();
+     mpfr_set_emax (mpfr_get_emax_max ());
+
       mpfr_init2 (u, 2*MPC_PREC_RE (op));
       mpfr_init2 (v, 2*MPC_PREC_IM (op));
 
@@ -106,6 +109,9 @@ mpc_sqr (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
 
       mpfr_clear (u);
       mpfr_clear (v);
+      mpfr_set_emax (emax);
+      inex_re = mpfr_check_range (rop->re, inex_re, MPC_RND_RE (rnd));
+      inex_im = mpfr_check_range (rop->im, inex_im, MPC_RND_IM (rnd));
       return MPC_INEX (inex_re, inex_im);
    }
 
