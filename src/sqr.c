@@ -172,29 +172,38 @@ mpc_sqr (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
         }
       else
         {
+          mpfr_rnd_t rnd_re = MPC_RND_RE (rnd);
           inexact |= mpfr_mul (u, u, v, GMP_RNDD); /* error 5 */
-          /* checks that no overflow occurs: since u*v < 0 and we round down,
-             an overflow will give -Inf */
-          MPC_ASSERT (mpfr_inf_p (u) == 0);
-          /* if an underflow happens (i.e., u = -0.5*2^emin since we round
-             away from zero), the result will be an underflow */
-          if (mpfr_get_exp (u) == emin)
+          /* if an overflow occurs: since u*v < 0 and we round down,
+             the result is -Inf or -MAXDBL */
+          if (mpfr_inf_p (u))
             {
-              mpfr_rnd_t rnd_re = MPC_RND_RE (rnd);
-              if (rnd_re == GMP_RNDZ || rnd_re == GMP_RNDN ||
-                  rnd_re == GMP_RNDU)
-                {
-                  mpfr_set_ui (mpc_realref (rop), 0, rnd_re);
-                  inex_re = 1;
-                }
-              else /* round down or away from zero */ {
-                mpfr_set (mpc_realref (rop), u, rnd_re);
-                inex_re = -1;
-              }
-              break;
+              /* replace by "correctly rounded overflow" */
+              mpfr_set_si (u, -1, GMP_RNDN);
+              mpfr_mul_2ui (u, u, mpfr_get_emax (), rnd_re);
+              ok = 1;
             }
-          ok = (!inexact) | mpfr_can_round (u, prec - 3, GMP_RNDD, GMP_RNDZ,
-               MPC_PREC_RE (rop) + (MPC_RND_RE (rnd) == GMP_RNDN));
+          else
+            {
+              /* if an underflow happens (i.e., u = -0.5*2^emin since we round
+                 away from zero), the result will be an underflow */
+              if (mpfr_get_exp (u) == emin)
+                {
+                  if (rnd_re == GMP_RNDZ || rnd_re == GMP_RNDN ||
+                      rnd_re == GMP_RNDU)
+                    {
+                      mpfr_set_ui (mpc_realref (rop), 0, rnd_re);
+                      inex_re = 1;
+                    }
+                  else /* round down or away from zero */ {
+                    mpfr_set (mpc_realref (rop), u, rnd_re);
+                    inex_re = -1;
+                  }
+                  break;
+                }
+              ok = (!inexact) | mpfr_can_round (u, prec - 3, GMP_RNDD,
+                 GMP_RNDZ, MPC_PREC_RE (rop) + (MPC_RND_RE (rnd) == GMP_RNDN));
+            }
           if (ok)
             {
               inex_re = mpfr_set (mpc_realref (rop), u, MPC_RND_RE (rnd));
