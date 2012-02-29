@@ -483,6 +483,11 @@ mpc_pow (mpc_ptr z, mpc_srcptr x, mpc_srcptr y, mpc_rnd_t rnd)
   int ret = -2, loop, x_real, x_imag, y_real, z_real = 0, z_imag = 0;
   mpc_t t, u;
   mpfr_prec_t p, pr, pi, maxprec;
+  int saved_underflow, saved_overflow;
+
+  /* save the underflow or overflow flags from MPFR */
+  saved_underflow = mpfr_underflow_p ();
+  saved_overflow = mpfr_overflow_p ();
 
   x_real = mpfr_zero_p (mpc_imagref(x));
   y_real = mpfr_zero_p (mpc_imagref(y));
@@ -674,7 +679,7 @@ mpc_pow (mpc_ptr z, mpc_srcptr x, mpc_srcptr y, mpc_rnd_t rnd)
          /* under- and overflow flags are set by mpc_exp */
          mpc_set (z, u, MPC_RNDNN);
          ret = ret_exp;
-         goto clear_t_and_u;
+         goto exact;
       }
 
       /* Since the error bound is global, we have to take into account the
@@ -804,12 +809,12 @@ mpc_pow (mpc_ptr z, mpc_srcptr x, mpc_srcptr y, mpc_rnd_t rnd)
   mpc_clear (t);
   mpc_clear (u);
 
+  /* restore underflow and overflow flags from MPFR */
+  if (saved_underflow)
+    mpfr_set_underflow ();
+  if (saved_overflow)
+    mpfr_set_overflow ();
+
  end:
-  return ret;
-
-
-clear_t_and_u:
-  mpc_clear (t);
-  mpc_clear (u);
   return ret;
 }

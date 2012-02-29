@@ -27,6 +27,7 @@ int
 mpc_norm (mpfr_ptr a, mpc_srcptr b, mpfr_rnd_t rnd)
 {
    int inexact;
+   int saved_underflow, saved_overflow;
 
    /* handling of special values; consistent with abs in that
       norm = abs^2; so norm (+-inf, xxx) = norm (xxx, +-inf) = +inf */
@@ -53,6 +54,10 @@ mpc_norm (mpfr_ptr a, mpc_srcptr b, mpfr_rnd_t rnd)
       mpfr_init (u);
       mpfr_init (v);
       mpfr_init (res);
+
+      /* save the underflow or overflow flags from MPFR */
+      saved_underflow = mpfr_underflow_p ();
+      saved_overflow = mpfr_overflow_p ();
 
       loops = 0;
       mpfr_clear_underflow ();
@@ -161,6 +166,12 @@ mpc_norm (mpfr_ptr a, mpc_srcptr b, mpfr_rnd_t rnd)
       }
       else /* no problems, ternary value due to mpfr_can_round trick */
          inexact = mpfr_set (a, res, rnd);
+
+      /* restore underflow and overflow flags from MPFR */
+      if (saved_underflow)
+        mpfr_set_underflow ();
+      if (saved_overflow)
+        mpfr_set_overflow ();
 
       mpfr_clear (u);
       mpfr_clear (v);

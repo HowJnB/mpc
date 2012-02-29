@@ -2457,13 +2457,13 @@
 #0 0 10 1 10 0  10 0b1@536870912 10 0b1@-536870913 10 0b1@536870912 10 0b1@-536870913  N N
 # cases that should yield i, but cannot be handled due to intermediate
 # over- or underflows
-# current result: (0 @NaN@)
+# current result: (0 @Inf@)
 #0 0 10 0 10 1  10 -0b1@536870912 10 1 10 1 10 0b1@536870912  N N
-# current result: (@NaN@ @Inf@)
+# current result: (@NaN@ 1.0)
 #0 0 10 0 10 1  10 -0b1@-536870913 10 1 10 1 10 0b1@-536870913  N N
-# current result: (0 @NaN@)
+# current result: (0 @Inf@)
 #0 0 10 0 10 1  10 -0b1@536870912 10 0b1@536870912 10 0b1@536870912 10 0b1@536870912  N N
-# current result: (@NaN@ @NaN@)
+# current result: (@NaN@ 0)
 #0 0 10 0 10 1  10 -0b1@-536870913 10 0b1@-536870913 10 0b1@-536870913 10 0b1@-536870913  N N
 # current result: (@NaN@ @Inf@)
 #0 0 10 0 10 1  10 -0b1@-536870913 10 0b1@536870912 10 0b1@536870912 10 0b1@-536870913  N N

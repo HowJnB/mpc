@@ -27,6 +27,7 @@ mpc_exp (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
   mpfr_prec_t prec;
   int ok = 0;
   int inex_re, inex_im;
+  int saved_underflow, saved_overflow;
 
   /* special values */
   if (mpfr_nan_p (mpc_realref (op)) || mpfr_nan_p (mpc_imagref (op)))
@@ -142,6 +143,10 @@ mpc_exp (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
   mpfr_init2 (y, 2);
   mpfr_init2 (z, 2);
 
+  /* save the underflow or overflow flags from MPFR */
+  saved_underflow = mpfr_underflow_p ();
+  saved_overflow = mpfr_overflow_p ();
+
   do
     {
       prec += mpc_ceil_log2 (prec) + 5;
@@ -186,6 +191,12 @@ mpc_exp (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
   mpfr_clear (x);
   mpfr_clear (y);
   mpfr_clear (z);
+
+  /* restore underflow and overflow flags from MPFR */
+  if (saved_underflow)
+    mpfr_set_underflow ();
+  if (saved_overflow)
+    mpfr_set_overflow ();
 
   return MPC_INEX(inex_re, inex_im);
 }

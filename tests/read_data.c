@@ -554,6 +554,100 @@ read_ccs (FILE *fp, int *inex_re, int *inex_im, mpc_ptr expected,
   check_compatible (*inex_im, mpc_imagref(expected), MPC_RND_IM(*rnd), "imag");
 }
 
+/* set MPFR flags to random values */
+static void
+set_mpfr_flags (int counter)
+{
+  if (counter & 1)
+    mpfr_set_underflow ();
+  else
+    mpfr_clear_underflow ();
+  if (counter & 2)
+    mpfr_set_overflow ();
+  else
+    mpfr_clear_overflow ();
+  /* the divide-by-0 flag was added in MPFR 3.1.0 */
+#ifdef mpfr_set_divby0
+  if (counter & 4)
+    mpfr_set_divby0 ();
+  else
+    mpfr_clear_divby0 ();
+#endif
+  if (counter & 8)
+    mpfr_set_nanflag ();
+  else
+    mpfr_clear_nanflag ();
+  if (counter & 16)
+    mpfr_set_inexflag ();
+  else
+    mpfr_clear_inexflag ();
+  if (counter & 32)
+    mpfr_set_erangeflag ();
+  else
+    mpfr_clear_erangeflag ();
+}
+
+/* Check MPFR flags: we allow that some flags are set internally by MPC,
+   for example if MPC does internal computations (using MPFR) which yield
+   an overflow, even if the final MPC result fits in the exponent range.
+   However we don't allow MPC to *clear* the MPFR flags */
+static void
+check_mpfr_flags (int counter)
+{
+  int old, new;
+
+  old = (counter & 1) != 0;
+  new = mpfr_underflow_p () != 0;
+  if (old && (new == 0))
+    {
+      printf ("Error, underflow flag has been modified from %d to %d\n",
+              old, new);
+      exit (1);
+    }
+  old = (counter & 2) != 0;
+  new = mpfr_overflow_p () != 0;
+  if (old && (new == 0))
+    {
+      printf ("Error, overflow flag has been modified from %d to %d\n",
+              old, new);
+      exit (1);
+    }
+#ifdef mpfr_divby0_p
+  old = (counter & 4) != 0;
+  new = mpfr_divby0_p () != 0;
+  if (old && (new == 0))
+    {
+      printf ("Error, divby0 flag has been modified from %d to %d\n",
+              old, new);
+      exit (1);
+    }
+#endif
+  old = (counter & 8) != 0;
+  new = mpfr_nanflag_p () != 0;
+  if (old && (new == 0))
+    {
+      printf ("Error, nanflag flag has been modified from %d to %d\n",
+              old, new);
+      exit (1);
+    }
+  old = (counter & 16) != 0;
+  new = mpfr_inexflag_p () != 0;
+  if (old && (new == 0))
+    {
+      printf ("Error, inexflag flag has been modified from %d to %d\n",
+              old, new);
+      exit (1);
+    }
+  old = (counter & 32) != 0;
+  new = mpfr_erangeflag_p () != 0;
+  if (old && (new == 0))
+    {
+      printf ("Error, erangeflag flag has been modified from %d to %d\n",
+              old, new);
+      exit (1);
+    }
+}
+
 /* data_check (function, data_file_name) checks function results against
  precomputed data in a file.*/
 void
@@ -575,6 +669,8 @@ data_check (mpc_function function, const char *file_name)
 
   known_signs_t signs;
   int inex = 0;
+
+  static int rand_counter = 0;
 
   fp = open_data_file (file_name);
 
@@ -615,6 +711,8 @@ data_check (mpc_function function, const char *file_name)
   nextchar = getc (fp);
   skip_whitespace_comments (fp);
   while (nextchar != EOF) {
+      set_mpfr_flags (rand_counter);
+
       /* for each kind of function prototype: */
       /* 3.1 read a line of data: expected result, parameters, rounding mode */
       /* 3.2 compute function at the same precision as the expected result */
@@ -919,6 +1017,10 @@ data_check (mpc_function function, const char *file_name)
           printf ("Unhandled function prototype %i in 'data_check'\n", function.type);
           exit (1);
         }
+
+      /* check MPFR flags were not modified */
+      check_mpfr_flags (rand_counter);
+      rand_counter ++;
     }
 
   /* 3. Clear used variables */

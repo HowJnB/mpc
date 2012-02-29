@@ -1,6 +1,6 @@
 /* mpc_div -- Divide two complex numbers.
 
-Copyright (C) 2002, 2003, 2004, 2005, 2008, 2009, 2010, 2011 INRIA
+Copyright (C) 2002, 2003, 2004, 2005, 2008, 2009, 2010, 2011, 2012 INRIA
 
 This file is part of GNU MPC.
 
@@ -20,18 +20,23 @@ along with this program. If not, see http://www.gnu.org/licenses/ .
 
 #include "mpc-impl.h"
 
+/* this routine deals with the case where w is zero */
 static int
 mpc_div_zero (mpc_ptr a, mpc_srcptr z, mpc_srcptr w, mpc_rnd_t rnd)
 /* Assumes w==0, implementation according to C99 G.5.1.8 */
 {
    int sign = MPFR_SIGNBIT (mpc_realref (w));
    mpfr_t infty;
+
+   mpfr_init2 (infty, MPFR_PREC_MIN);
    mpfr_set_inf (infty, sign);
    mpfr_mul (mpc_realref (a), infty, mpc_realref (z), MPC_RND_RE (rnd));
    mpfr_mul (mpc_imagref (a), infty, mpc_imagref (z), MPC_RND_IM (rnd));
+   mpfr_clear (infty);
    return MPC_INEX (0, 0); /* exact */
 }
 
+/* this routine deals with the case where z is infinite and w finite */
 static int
 mpc_div_inf_fin (mpc_ptr rop, mpc_srcptr z, mpc_srcptr w)
 /* Assumes w finite and non-zero and z infinite; implementation
@@ -42,9 +47,13 @@ mpc_div_inf_fin (mpc_ptr rop, mpc_srcptr z, mpc_srcptr w)
    a = (mpfr_inf_p (mpc_realref (z)) ? MPFR_SIGNBIT (mpc_realref (z)) : 0);
    b = (mpfr_inf_p (mpc_imagref (z)) ? MPFR_SIGNBIT (mpc_imagref (z)) : 0);
 
+   /* a is -1 if Re(z) = -Inf, 1 if Re(z) = +Inf, 0 if Re(z) is finite
+      b is -1 if Im(z) = -Inf, 1 if Im(z) = +Inf, 0 if Im(z) is finite */
+
    /* x = MPC_MPFR_SIGN (a * mpc_realref (w) + b * mpc_imagref (w)) */
    /* y = MPC_MPFR_SIGN (b * mpc_realref (w) - a * mpc_imagref (w)) */
    if (a == 0 || b == 0) {
+     /* only one of a or b can be zero, since z is infinite */
       x = a * MPC_MPFR_SIGN (mpc_realref (w)) + b * MPC_MPFR_SIGN (mpc_imagref (w));
       y = b * MPC_MPFR_SIGN (mpc_realref (w)) - a * MPC_MPFR_SIGN (mpc_imagref (w));
    }
@@ -53,8 +62,9 @@ mpc_div_inf_fin (mpc_ptr rop, mpc_srcptr z, mpc_srcptr w)
          considerations and comparisons. Since operations with non-finite
          numbers are not considered time-critical, we let mpfr do the work. */
       mpfr_t sign;
+
       mpfr_init2 (sign, 2);
-         /* This is enough to determine the sign of sums and differences. */
+      /* This is enough to determine the sign of sums and differences. */
 
       if (a == 1)
          if (b == 1) {
@@ -98,6 +108,7 @@ mpc_div_inf_fin (mpc_ptr rop, mpc_srcptr z, mpc_srcptr w)
 }
 
 
+/* this routine deals with the case where z if finite and w infinite */
 static int
 mpc_div_fin_inf (mpc_ptr rop, mpc_srcptr z, mpc_srcptr w)
 /* Assumes z finite and w infinite; implementation according to
@@ -230,6 +241,7 @@ mpc_div (mpc_ptr a, mpc_srcptr b, mpc_srcptr c, mpc_rnd_t rnd)
    int underflow_norm, overflow_norm, underflow_prod, overflow_prod;
    int underflow_re, overflow_re, underflow_im = 0, overflow_im = 0;
    mpfr_rnd_t rnd_re = MPC_RND_RE (rnd), rnd_im = MPC_RND_IM (rnd);
+   int saved_underflow, saved_overflow;
 
    /* According to the C standard G.3, there are three types of numbers:   */
    /* finite (both parts are usual real numbers; contains 0), infinite     */
@@ -264,6 +276,10 @@ mpc_div (mpc_ptr a, mpc_srcptr b, mpc_srcptr c, mpc_rnd_t rnd)
    mpc_realref (c_conj)[0] = mpc_realref (c)[0];
    mpc_imagref (c_conj)[0] = mpc_imagref (c)[0];
    MPFR_CHANGE_SIGN (mpc_imagref (c_conj));
+
+   /* save the underflow or overflow flags from MPFR */
+   saved_underflow = mpfr_underflow_p ();
+   saved_overflow = mpfr_overflow_p ();
 
    do {
       loops ++;
@@ -387,6 +403,12 @@ mpc_div (mpc_ptr a, mpc_srcptr b, mpc_srcptr c, mpc_rnd_t rnd)
 
    mpc_clear (res);
    mpfr_clear (q);
+
+   /* restore underflow and overflow flags from MPFR */
+   if (saved_underflow)
+     mpfr_set_underflow ();
+   if (saved_overflow)
+     mpfr_set_overflow ();
 
    return (MPC_INEX (inexact_re, inexact_im));
 }
