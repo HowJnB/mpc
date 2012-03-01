@@ -180,6 +180,7 @@ mpc_sqr (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
    mpfr_prec_t prec;
    int inex_re, inex_im, inexact;
    mpfr_exp_t emin, emax;
+   int saved_underflow;
 
    /* special values: NaN and infinities */
    if (!mpc_fin_p (op)) {
@@ -252,20 +253,10 @@ mpc_sqr (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
          exactly with the standard formulae instead, even if this means an
          additional multiplication. Using the approach copied from mul, over-
          and underflows are also handled correctly. */
-      int saved_underflow;
 
       inex_re = mpfr_fmma (rop->re, x, x, op->im, op->im, -1,
                            MPC_RND_RE (rnd));
 
-      saved_underflow = mpfr_underflow_p ();
-      mpfr_clear_underflow ();
-      inex_im = mpfr_mul (rop->im, x, op->im, MPC_RND_IM (rnd));
-      if (!mpfr_underflow_p ())
-         inex_im |= mpfr_mul_2exp (rop->im, rop->im, 1, MPC_RND_IM (rnd));
-         /* We must not multiply by 2 if rop->im has been set to the smallest
-            representable number. */
-      if (saved_underflow)
-         mpfr_set_underflow ();
    }
    else {
       /* Karatsuba squaring */
@@ -367,18 +358,17 @@ mpc_sqr (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
 
       mpfr_clear (u);
       mpfr_clear (v);
-
-      if (mpfr_get_exp (x) + mpfr_get_exp(mpc_imagref (op)) <= emin + 1) {
-         mpfr_mul_2ui (x, x, 1, GMP_RNDN);
-         inex_im = mpfr_mul (mpc_imagref (rop), x, mpc_imagref (op), MPC_RND_IM (rnd));
-      }
-      else {
-         inex_im = mpfr_mul (mpc_imagref (rop), x, mpc_imagref (op), MPC_RND_IM (rnd));
-         /* checks that no underflow occurs (an overflow can occur here) */
-         MPC_ASSERT (mpfr_zero_p (mpc_imagref (rop)) == 0);
-         mpfr_mul_2ui (mpc_imagref (rop), mpc_imagref (rop), 1, GMP_RNDN);
-      }
    }
+
+   saved_underflow = mpfr_underflow_p ();
+   mpfr_clear_underflow ();
+   inex_im = mpfr_mul (rop->im, x, op->im, MPC_RND_IM (rnd));
+   if (!mpfr_underflow_p ())
+      inex_im |= mpfr_mul_2exp (rop->im, rop->im, 1, MPC_RND_IM (rnd));
+      /* We must not multiply by 2 if rop->im has been set to the smallest
+         representable number. */
+   if (saved_underflow)
+      mpfr_set_underflow ();
 
    if (rop == op)
       mpfr_clear (x);
