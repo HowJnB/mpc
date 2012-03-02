@@ -201,6 +201,14 @@ mpfr_fmma (mpfr_ptr z, mpfr_srcptr a, mpfr_srcptr b, mpfr_srcptr c,
       mpfr_set_si (z, (mpfr_signbit (z) ? -1 : 1), GMP_RNDN);
       inex = mpfr_mul_2ui (z, z, mpfr_get_emax (), rnd);
    }
+   else if (mpfr_zero_p (u) && !mpfr_zero_p (v)) {
+      /* exactly u underflowed, determine inexact flag */
+      inex = (mpfr_signbit (u) ? 1 : -1);
+   }
+   else if (mpfr_zero_p (v) && !mpfr_zero_p (u)) {
+      /* exactly v underflowed, determine inexact flag */
+      inex = (mpfr_signbit (v) ? 1 : -1);
+   }
    else if (mpfr_nan_p (z) || (mpfr_zero_p (u) && mpfr_zero_p (v))) {
       /* In the first case, u and v are infinities with opposite signs.
          In the second case, u and v are zeroes; their sum may be 0 or the
