@@ -22,6 +22,143 @@ along with this program. If not, see http://www.gnu.org/licenses/ .
 #include "mpc-impl.h"
 
 
+static int
+mpfr_fsss (mpfr_ptr z, mpfr_srcptr a, mpfr_srcptr c, mpfr_rnd_t rnd)
+{
+   /* Computes z = a^2 - c^2.
+      Assumes that a and c are finite and non-zero; so a squaring yielding
+      an infinity is an overflow, and a squaring yielding 0 is an underflow.
+      Assumes further that z is distinct from a and c. */
+
+   int inex;
+   mpfr_t u, v;
+
+   /* u=a^2, v=c^2 exactly */
+   mpfr_init2 (u, 2*mpfr_get_prec (a));
+   mpfr_init2 (v, 2*mpfr_get_prec (c));
+   mpfr_sqr (u, a, GMP_RNDN);
+   mpfr_sqr (v, c, GMP_RNDN);
+
+   /* tentatively compute z as u-v; here we need z to be distinct
+      from a and c to not lose the latter */
+   inex = mpfr_sub (z, u, v, rnd);
+
+   if (mpfr_inf_p (z)) {
+      /* replace by "correctly rounded overflow" */
+      mpfr_set_si (z, (mpfr_signbit (z) ? -1 : 1), GMP_RNDN);
+      inex = mpfr_mul_2ui (z, z, mpfr_get_emax (), rnd);
+   }
+   else if (mpfr_zero_p (u) && !mpfr_zero_p (v)) {
+      /* exactly u underflowed, determine inexact flag */
+      inex = (mpfr_signbit (u) ? 1 : -1);
+   }
+   else if (mpfr_zero_p (v) && !mpfr_zero_p (u)) {
+      /* exactly v underflowed, determine inexact flag */
+      inex = (mpfr_signbit (v) ? -1 : 1);
+   }
+   else if (mpfr_nan_p (z) || (mpfr_zero_p (u) && mpfr_zero_p (v))) {
+      /* In the first case, u and v are +inf.
+         In the second case, u and v are zeroes; their difference may be 0
+         or the least representable number, with a sign to be determined.
+         Redo the computations with mpz_t exponents */
+      mpfr_exp_t ea, ec;
+      mpz_t eu, ev;
+         /* cheat to work around the const qualifiers */
+
+      /* Normalise the input by shifting and keep track of the shifts in
+         the exponents of u and v */
+      ea = mpfr_get_exp (a);
+      ec = mpfr_get_exp (c);
+
+      mpfr_set_exp ((mpfr_ptr) a, (mpfr_prec_t) 0);
+      mpfr_set_exp ((mpfr_ptr) c, (mpfr_prec_t) 0);
+
+      mpz_init (eu);
+      mpz_init (ev);
+      mpz_set_si (eu, (long int) ea);
+      mpz_mul_2exp (eu, eu, 1);
+      mpz_set_si (ev, (long int) ec);
+      mpz_mul_2exp (ev, ev, 1);
+
+      /* recompute u and v and move exponents to eu and ev */
+      mpfr_sqr (u, a, GMP_RNDN);
+      /* exponent of u is non-positive */
+      mpz_sub_ui (eu, eu, (unsigned long int) (-mpfr_get_exp (u)));
+      mpfr_set_exp (u, (mpfr_prec_t) 0);
+      mpfr_sqr (v, c, GMP_RNDN);
+      mpz_sub_ui (ev, ev, (unsigned long int) (-mpfr_get_exp (v)));
+      mpfr_set_exp (v, (mpfr_prec_t) 0);
+      if (mpfr_nan_p (z)) {
+         mpfr_exp_t emax = mpfr_get_emax ();
+         int overflow;
+         /* We have a = ma * 2^ea with 1/2 <= |ma| < 1 and ea <= emax.
+            So eu <= 2*emax, and eu > emax since we have
+            an overflow. The same holds for ev. Shift u and v by as much as
+            possible so that one of them has exponent emax and the
+            remaining exponents in eu and ev are the same. Then carry out
+            the addition. Shifting u and v prevents an underflow. */
+         if (mpz_cmp (eu, ev) >= 0) {
+            mpfr_set_exp (u, emax);
+            mpz_sub_ui (eu, eu, (long int) emax);
+            mpz_sub (ev, ev, eu);
+            mpfr_set_exp (v, (mpfr_exp_t) mpz_get_ui (ev));
+               /* remaining common exponent is now in eu */
+         }
+         else {
+            mpfr_set_exp (v, emax);
+            mpz_sub_ui (ev, ev, (long int) emax);
+            mpz_sub (eu, eu, ev);
+            mpfr_set_exp (u, (mpfr_exp_t) mpz_get_ui (eu));
+            mpz_set (eu, ev);
+               /* remaining common exponent is now also in eu */
+         }
+         inex = mpfr_sub (z, u, v, rnd);
+            /* Result is finite since u and v have the same sign. */
+         overflow = mpfr_mul_2ui (z, z, mpz_get_ui (eu), rnd);
+         if (overflow)
+            inex = overflow;
+      }
+      else {
+         int underflow;
+         /* Subtraction of two zeroes. We have a = ma * 2^ea
+            with 1/2 <= |ma| < 1 and ea >= emin and similarly for b.
+            So 2*emin < 2*emin+1 <= eu < emin < 0, and analogously for v. */
+         mpfr_exp_t emin = mpfr_get_emin ();
+         if (mpz_cmp (eu, ev) <= 0) {
+            mpfr_set_exp (u, emin);
+            mpz_add_ui (eu, eu, (unsigned long int) (-emin));
+            mpz_sub (ev, ev, eu);
+            mpfr_set_exp (v, (mpfr_exp_t) mpz_get_si (ev));
+         }
+         else {
+            mpfr_set_exp (v, emin);
+            mpz_add_ui (ev, ev, (unsigned long int) (-emin));
+            mpz_sub (eu, eu, ev);
+            mpfr_set_exp (u, (mpfr_exp_t) mpz_get_si (eu));
+            mpz_set (eu, ev);
+         }
+         inex = mpfr_sub (z, u, v, rnd);
+         mpz_neg (eu, eu);
+         underflow = mpfr_div_2ui (z, z, mpz_get_ui (eu), rnd);
+         if (underflow)
+            inex = underflow;
+      }
+
+      mpz_clear (eu);
+      mpz_clear (ev);
+
+      mpfr_set_exp ((mpfr_ptr) a, ea);
+      mpfr_set_exp ((mpfr_ptr) c, ec);
+         /* works also when a == c */
+   }
+
+   mpfr_clear (u);
+   mpfr_clear (v);
+
+   return inex;
+}
+
+
 int
 mpc_sqr (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
 {
@@ -107,8 +244,7 @@ mpc_sqr (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
          additional multiplication. Using the approach copied from mul, over-
          and underflows are also handled correctly. */
 
-      inex_re = mpfr_fmma (rop->re, x, x, op->im, op->im, -1,
-                           MPC_RND_RE (rnd));
+      inex_re = mpfr_fsss (rop->re, x, op->im, MPC_RND_RE (rnd));
 
    }
    else {

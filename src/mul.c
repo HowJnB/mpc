@@ -171,7 +171,7 @@ mul_imag (mpc_ptr z, mpc_srcptr x, mpc_srcptr y, mpc_rnd_t rnd)
 }
 
 
-int
+static int
 mpfr_fmma (mpfr_ptr z, mpfr_srcptr a, mpfr_srcptr b, mpfr_srcptr c,
            mpfr_srcptr d, int sign, mpfr_rnd_t rnd)
 {

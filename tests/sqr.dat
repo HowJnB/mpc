@@ -170,4 +170,4 @@
 
 # wrong ternary value for real part with naive algorithm,
 # sqr.c:297: MPC assertion failed: mpfr_get_exp (u) != emin for Karatsuba
-#+ - 10 0b1e-1073741824 10 0  100 0b1@-536870912  100 0b1@-536870913 N N
++ - 10 0b1e-1073741824 10 0  100 0b1@-536870912  100 0b1@-536870913 N N

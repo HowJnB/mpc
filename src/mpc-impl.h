@@ -150,7 +150,6 @@ extern "C" {
 #endif
 
 
-__MPC_DECLSPEC int mpfr_fmma __MPC_PROTO ((mpfr_ptr z, mpfr_srcptr a, mpfr_srcptr b, mpfr_srcptr c, mpfr_srcptr d, int sign, mpfr_rnd_t rnd));
 __MPC_DECLSPEC int  mpc_mul_naive __MPC_PROTO ((mpc_ptr, mpc_srcptr, mpc_srcptr, mpc_rnd_t));
 __MPC_DECLSPEC int  mpc_mul_karatsuba __MPC_PROTO ((mpc_ptr, mpc_srcptr, mpc_srcptr, mpc_rnd_t));
 __MPC_DECLSPEC int  mpc_pow_usi __MPC_PROTO ((mpc_ptr, mpc_srcptr, unsigned long, int, mpc_rnd_t));
