@@ -248,7 +248,9 @@ mpc_sqr (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
 
    }
    else {
-      /* Karatsuba squaring */
+      /* Karatsuba squaring: we compute the real part as (x+y)*(x-y) and the
+         imaginary part as 2*x*y, with a total of 2M instead of 2S+1M for the
+         naive algorithm, which computes x^2-y^2 and 2*y*y */
       mpfr_init (u);
       mpfr_init (v);
 
@@ -266,7 +268,7 @@ mpc_sqr (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
          /* The error is bounded above by 1 ulp.                             */
          /* We first let inexact be 1 if the real part is not computed       */
          /* exactly and determine the sign later.                            */
-         inexact =    ROUND_AWAY (mpfr_add (u, x, mpc_imagref (op), MPFR_RNDA), u)
+         inexact = ROUND_AWAY (mpfr_add (u, x, mpc_imagref (op), MPFR_RNDA), u)
                   | ROUND_AWAY (mpfr_sub (v, x, mpc_imagref (op), MPFR_RNDA), v);
 
          /* compute the real part as u*v, rounded away                    */
@@ -284,8 +286,12 @@ mpc_sqr (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
             /* checks that no overflow nor underflow occurs: since u*v > 0
                and we round up, an overflow will give +Inf, but an underflow
                will give 0.5*2^emin */
-            MPC_ASSERT (mpfr_get_exp (u) != emin);
-            if (mpfr_inf_p (u))
+            if (mpfr_get_exp (u) == emin) /* underflow */
+              {
+                inex_re = mpfr_fsss (rop->re, x, op->im, MPC_RND_RE (rnd));
+                goto end_of_real_part;
+              }
+            else if (mpfr_inf_p (u))
                {
                /* let mpc_realref(rop) be a "correctly rounded overflow" */
                inex_re = mpfr_set_ui_2exp (mpc_realref (rop), 1, emax, MPC_RND_RE (rnd));
@@ -345,6 +351,7 @@ mpc_sqr (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
       }
       while (!ok);
 
+   end_of_real_part:
       mpfr_clear (u);
       mpfr_clear (v);
    }
