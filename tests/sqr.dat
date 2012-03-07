@@ -167,7 +167,4 @@
 0 0 10 0 10 0b1e-1073741823  100 0b1@-536870912  100 0b1@-536870912 N N
 0 - 10 0 10 0  100 0b1@-536870913  100 0b1@-536870913 N N
 0 + 10 0 10 0b1@-1073741824  100 0b1@-536870913  100 0b1@-536870913 N U
-
-# wrong ternary value for real part with naive algorithm,
-# sqr.c:297: MPC assertion failed: mpfr_get_exp (u) != emin for Karatsuba
 + - 10 0b1e-1073741824 10 0  100 0b1@-536870912  100 0b1@-536870913 N N
