@@ -287,25 +287,29 @@ mpc_sqr (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
                and we round up, an overflow will give +Inf, but an underflow
                will give 0.5*2^emin */
             if (mpfr_get_exp (u) == emin) /* underflow */
-              {
+            {
                 inex_re = mpfr_fsss (rop->re, x, op->im, MPC_RND_RE (rnd));
-                goto end_of_real_part;
-              }
+                ok = 1;
+            }
             else if (mpfr_inf_p (u))
-               {
+            {
                /* let mpc_realref(rop) be a "correctly rounded overflow" */
-               inex_re = mpfr_set_ui_2exp (mpc_realref (rop), 1, emax, MPC_RND_RE (rnd));
-               break;
-               }
-            ok = (!inexact) | mpfr_can_round (u, prec - 3, GMP_RNDU, GMP_RNDZ,
-                  MPC_PREC_RE (rop) + (MPC_RND_RE (rnd) == GMP_RNDN));
-            if (ok)
+               inex_re = mpfr_set_ui_2exp (mpc_realref (rop), 1, emax,
+                                           MPC_RND_RE (rnd));
+               ok = 1;
+            }
+            else {
+               ok = (!inexact) | mpfr_can_round (u, prec - 3,
+                     GMP_RNDU, GMP_RNDZ,
+                     MPC_PREC_RE (rop) + (MPC_RND_RE (rnd) == GMP_RNDN));
+               if (ok)
                {
-               inex_re = mpfr_set (mpc_realref (rop), u, MPC_RND_RE (rnd));
-               if (inex_re == 0)
-                  /* remember that u was already rounded */
-                  inex_re = inexact;
+                  inex_re = mpfr_set (mpc_realref (rop), u, MPC_RND_RE (rnd));
+                  if (inex_re == 0)
+                     /* remember that u was already rounded */
+                     inex_re = inexact;
                }
+            }
          }
          else
          {
@@ -351,7 +355,6 @@ mpc_sqr (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
       }
       while (!ok);
 
-   end_of_real_part:
       mpfr_clear (u);
       mpfr_clear (v);
    }
