@@ -1,13 +1,12 @@
 Changes in version 1.0:
   - First release as a GNU package
   - License change: LGPLv3+ for code, GFDLv1.3+ for documentation
-  - 0^0, which returned (NaN,NaN) previously, now returns (1,+0),
-  - mpc_mul no longer calls mpc_sqr when the two inputs are the same
+  - 0^0, which returned (NaN,NaN) previously, now returns (1,+0).
   - Bug fixes:
     - div and norm now return a value indicating the effective rounding
       direction, as the other functions.
-    - mul and norm now return correct results even if there are over- or
-      underflows during the computation
+    - mul, sqr and norm now return correct results even if there are over-
+      or underflows during the computation
     - asin, proj, sqr: Wrong result when input variable has infinite part and
       equals output variable is corrected.
 
