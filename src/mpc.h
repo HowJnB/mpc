@@ -1,6 +1,6 @@
 /* mpc.h -- Include file for mpc.
 
-Copyright (C) 2002, 2003, 2004, 2005, 2007, 2008, 2009, 2010, 2011 INRIA
+Copyright (C) 2002, 2003, 2004, 2005, 2007, 2008, 2009, 2010, 2011, 2012 INRIA
 
 This file is part of GNU MPC.
 
@@ -109,12 +109,10 @@ __mpc_struct;
 
 typedef __mpc_struct mpc_t[1];
 typedef __mpc_struct *mpc_ptr;
-typedef __gmp_const __mpc_struct *mpc_srcptr;
+typedef const __mpc_struct *mpc_srcptr;
 
 /* Prototypes: Support of K&R compiler */
-#if defined (__GMP_PROTO)
-# define __MPC_PROTO __GMP_PROTO
-#elif defined (__STDC__) || defined (__cplusplus)
+#if defined (__STDC__) || defined (__cplusplus)
 # define __MPC_PROTO(x) x
 #else
 # define __MPC_PROTO(x) ()
@@ -217,7 +215,7 @@ __MPC_DECLSPEC void mpc_init3 __MPC_PROTO ((mpc_ptr, mpfr_prec_t, mpfr_prec_t));
 __MPC_DECLSPEC mpfr_prec_t mpc_get_prec __MPC_PROTO((mpc_srcptr x));
 __MPC_DECLSPEC void mpc_get_prec2 __MPC_PROTO((mpfr_prec_t *pr, mpfr_prec_t *pi, mpc_srcptr x));
 __MPC_DECLSPEC void mpc_set_prec  __MPC_PROTO ((mpc_ptr, mpfr_prec_t));
-__MPC_DECLSPEC __gmp_const char * mpc_get_version __MPC_PROTO ((void));
+__MPC_DECLSPEC const char * mpc_get_version __MPC_PROTO ((void));
 
 __MPC_DECLSPEC int  mpc_strtoc    _MPFR_PROTO ((mpc_ptr, const char *, char **, int, mpc_rnd_t));
 __MPC_DECLSPEC int  mpc_set_str   _MPFR_PROTO ((mpc_ptr, const char *, int, mpc_rnd_t));
