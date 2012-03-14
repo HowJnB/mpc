@@ -43,8 +43,8 @@ along with this program. If not, see http://www.gnu.org/licenses/ .
       }                                                         \
   } while (0)
 
-__MPC_DECLSPEC int  mpc_mul_naive __MPC_PROTO ((mpc_ptr, mpc_srcptr, mpc_srcptr, mpc_rnd_t));
-__MPC_DECLSPEC int  mpc_mul_karatsuba __MPC_PROTO ((mpc_ptr, mpc_srcptr, mpc_srcptr, mpc_rnd_t));
+__MPC_DECLSPEC int  mpc_mul_naive (mpc_ptr, mpc_srcptr, mpc_srcptr, mpc_rnd_t);
+__MPC_DECLSPEC int  mpc_mul_karatsuba (mpc_ptr, mpc_srcptr, mpc_srcptr, mpc_rnd_t);
 /* end pieces copied from mpc-impl.h */
 
 #define MPC_OUT(x)                                              \

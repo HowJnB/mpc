@@ -169,7 +169,7 @@ mpc_sqr (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
          needed in the case rop==op */
    mpfr_prec_t prec;
    int inex_re, inex_im, inexact;
-   mpfr_exp_t emin, emax;
+   mpfr_exp_t emin;
    int saved_underflow;
 
    /* special values: NaN and infinities */
@@ -253,7 +253,6 @@ mpc_sqr (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
       mpfr_init (u);
       mpfr_init (v);
 
-      emax = mpfr_get_emax ();
       emin = mpfr_get_emin ();
 
       do

@@ -89,8 +89,8 @@ along with this program. If not, see http://www.gnu.org/licenses/ .
 
 #if MPFR_VERSION_MAJOR < 3
 /* declare missing functions, defined in get_version.c */
-__MPC_DECLSPEC void mpfr_set_zero __MPC_PROTO ((mpfr_ptr, int));
-__MPC_DECLSPEC int mpfr_regular_p __MPC_PROTO ((mpfr_srcptr));
+__MPC_DECLSPEC void mpfr_set_zero (mpfr_ptr, int);
+__MPC_DECLSPEC int mpfr_regular_p (mpfr_srcptr);
 #endif /* mpfr < 3 */
 
 
@@ -150,14 +150,14 @@ extern "C" {
 #endif
 
 
-__MPC_DECLSPEC int  mpc_mul_naive __MPC_PROTO ((mpc_ptr, mpc_srcptr, mpc_srcptr, mpc_rnd_t));
-__MPC_DECLSPEC int  mpc_mul_karatsuba __MPC_PROTO ((mpc_ptr, mpc_srcptr, mpc_srcptr, mpc_rnd_t));
-__MPC_DECLSPEC int  mpc_pow_usi __MPC_PROTO ((mpc_ptr, mpc_srcptr, unsigned long, int, mpc_rnd_t));
-__MPC_DECLSPEC char* mpc_alloc_str __MPC_PROTO ((size_t));
-__MPC_DECLSPEC char* mpc_realloc_str __MPC_PROTO ((char*, size_t, size_t));
-__MPC_DECLSPEC void mpc_free_str __MPC_PROTO ((char*));
-__MPC_DECLSPEC mpfr_prec_t mpc_ceil_log2 __MPC_PROTO ((mpfr_prec_t));
-__MPC_DECLSPEC int set_pi_over_2 __MPC_PROTO ((mpfr_ptr, int, mpfr_rnd_t));
+__MPC_DECLSPEC int  mpc_mul_naive (mpc_ptr, mpc_srcptr, mpc_srcptr, mpc_rnd_t);
+__MPC_DECLSPEC int  mpc_mul_karatsuba (mpc_ptr, mpc_srcptr, mpc_srcptr, mpc_rnd_t);
+__MPC_DECLSPEC int  mpc_pow_usi (mpc_ptr, mpc_srcptr, unsigned long, int, mpc_rnd_t);
+__MPC_DECLSPEC char* mpc_alloc_str (size_t);
+__MPC_DECLSPEC char* mpc_realloc_str (char*, size_t, size_t);
+__MPC_DECLSPEC void mpc_free_str (char*);
+__MPC_DECLSPEC mpfr_prec_t mpc_ceil_log2 (mpfr_prec_t);
+__MPC_DECLSPEC int set_pi_over_2 (mpfr_ptr, int, mpfr_rnd_t);
 
 #if defined (__cplusplus)
 }
