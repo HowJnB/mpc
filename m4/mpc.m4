@@ -91,10 +91,6 @@ AC_DEFUN([MPC_C_CHECK_WARNINGCFLAGS], [
   AC_REQUIRE([AC_PROG_GREP])
   if echo $VERSION | grep -c dev >/dev/null 2>&1 ; then
     if test "x$GCC" = "xyes" -a "x$compiler" != "xicc" -a "x$compiler" != "xg++"; then
-      case $host in
-         *darwin*) ;;
-         *) MPC_C_CHECK_FLAG(-D_FORTIFY_SOURCE=2,$1) ;;
-      esac
       MPC_C_CHECK_FLAG(-g)
       MPC_C_CHECK_FLAG(-std=c99)
       MPC_C_CHECK_FLAG(-pedantic)
