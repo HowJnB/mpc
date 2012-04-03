@@ -18,9 +18,8 @@ Bench:
   as done for mpfr at http://www.mpfr.org/mpfr-2.4.0/timings.html
 
 New functions to implement:
-- from Joseph S. Myers <joseph at codesourcery dot com> 19 Mar 2012
-  mpc_log10, mpc_erf, mpc_erfc, mpc_exp2, mpc_expm1, mpc_log1p, mpc_log2,
-  mpc_lgamma, mpc_tgamma
+- from Joseph S. Myers <joseph at codesourcery dot com> 19 Mar 2012: mpc_erf,
+  mpc_erfc, mpc_exp2, mpc_expm1, mpc_log1p, mpc_log2, mpc_lgamma, mpc_tgamma
   http://lists.gforge.inria.fr/pipermail/mpc-discuss/2012-March/001090.html
 - from Andreas Enge and Philippe Théveny 17 July 2008
   agm (and complex logarithm with agm ?)
