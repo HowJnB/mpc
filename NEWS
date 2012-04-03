@@ -4,6 +4,7 @@ Changes in version 1.0:
   - 0^0, which returned (NaN,NaN) previously, now returns (1,+0).
   - removed compatibility with K&R compilers, untestable due to lack of
     such compilers
+  - New function mpc_log10.
   - Bug fixes:
     - div and norm now return a value indicating the effective rounding
       direction, as the other functions.

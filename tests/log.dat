@@ -95,6 +95,7 @@
 
 # log(nan + i*inf) = +inf + i*nan
 0 0 2 +inf 2 nan                   2 nan 2 +inf  N N
+0 0 2 +inf 2 nan                   2 nan 2 -inf  N N
 
 # log(nan + i*nan) = nan + i*nan
 0 0 2 nan 2 nan                    2 nan 2 nan   N N

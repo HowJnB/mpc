@@ -959,11 +959,12 @@ rounded according to @var{rnd} with the precision of @var{rop}.
 @end deftypefun
 
 @deftypefun int mpc_log (mpc_t @var{rop}, mpc_t @var{op}, mpc_rnd_t @var{rnd})
-Set @var{rop} to the logarithm of @var{op},
+@deftypefunx int mpc_log10 (mpc_t @var{rop}, mpc_t @var{op}, mpc_rnd_t @var{rnd})
+Set @var{rop} to the natural and base-10 logarithm of @var{op} respectively,
 rounded according to @var{rnd} with the precision of @var{rop}.
 The principal branch is chosen, with the branch cut on the negative real axis,
 so that the imaginary part of the result lies in
-@math{]-\pi , \pi]}.
+@math{]-\pi , \pi]} and @math{]-\pi/log(10) , \pi/log(10)]} respectively.
 @end deftypefun
 
 

@@ -29,10 +29,10 @@ LOADLIBES=$(DEFS) -I$(top_srcdir)/src -I$(top_builddir) $(CPPFLAGS) $(CFLAGS) -L
 
 check_PROGRAMS = tabs tacos tacosh tadd tadd_fr tadd_si tadd_ui targ tasin    \
 tasinh tatan tatanh tconj tcos tcosh tdiv tdiv_2exp tdiv_fr tdiv_ui texp tfma \
-tfr_div tfr_sub timag tio_str tlog tmul tmul_2exp tmul_fr tmul_i tmul_si      \
-tmul_ui tneg tnorm tpow tpow_ld tpow_d tpow_fr tpow_si tpow_ui tpow_z tprec   \
-tproj treal treimref tset tsin tsin_cos tsinh tsqr tsqrt tstrtoc tsub tsub_fr \
-tsub_ui tswap ttan ttanh tui_div tui_ui_sub tget_version
+tfr_div tfr_sub timag tio_str tlog tlog10 tmul tmul_2exp tmul_fr tmul_i       \
+tmul_si tmul_ui tneg tnorm tpow tpow_ld tpow_d tpow_fr tpow_si tpow_ui tpow_z \
+tprec tproj treal treimref tset tsin tsin_cos tsinh tsqr tsqrt tstrtoc tsub   \
+tsub_fr tsub_ui tswap ttan ttanh tui_div tui_ui_sub tget_version
 
 check_LTLIBRARIES=libmpc-tests.la
 libmpc_tests_la_SOURCES=mpc-tests.h random.c tgeneric.c read_data.c           \
