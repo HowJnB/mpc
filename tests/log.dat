@@ -116,6 +116,16 @@
 + - 53 0x10C234DA4A23A7p-50 53  0x3243F6A8885A3p-48    7 -0x42 2    +0 U N
 - + 53 0x8611A6D2511D3p-49  53 -0x3243F6A8885A3p-48    7 -0x42 2    -0 D U
 
+# normal non-zero numbers
+- - 17 0x6701p-15 42 0x3b58ce0ac37p-43 2 2 2 1 N N
+- + 17 0x6701p-15 42 -0x3b58ce0ac37p-43 2 2 2 -1 N N
+- + 17 0x6701p-15 42 0x2ad8dce72ffp-40 2 -2 2 1 N N
+- - 17 0x6701p-15 42 -0x2ad8dce72ffp-40 2 -2 2 -1 N N
+- + 17 0x6701p-15 42 0x46db864bafp-38 2 1 2 2 N N
+- - 17 0x6701p-15 42 -0x46db864bafp-38 2 1 2 -2 N N
+- + 17 0x6701p-15 42 0x10468a8ace5p-39 2 -1 2 2 N N
+- - 17 0x6701p-15 42 -0x10468a8ace5p-39 2 -1 2 -2 N N
+
 # huge values
 + 0 53 0x162E42FEFA39Fp-39  2   0                   2 0x1p1024 2    +0 U U
 + 0 53 0x162E42FEFA39Fp-38  2   0                   2 0x1p2048 2    +0 U U
