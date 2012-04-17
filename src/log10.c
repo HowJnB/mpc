@@ -251,7 +251,7 @@ mpc_log10 (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
          u = v = 0 mod 2^e, thus x and y are necessarily integers.
       */
       if ((ok == 0) && (loops == 1) && mpfr_integer_p (mpc_realref (op)) &&
-          mpc_imagref (op))
+          mpfr_integer_p (mpc_imagref (op)))
         {
           mpz_t x, y;
           unsigned long s;
