@@ -18,6 +18,7 @@ You should have received a copy of the GNU Lesser General Public License
 along with this program. If not, see http://www.gnu.org/licenses/ .
 */
 
+#include <limits.h> /* for CHAR_BIT */
 #include "mpc-impl.h"
 
 /* Auxiliary functions which implement Ziv's strategy for special cases.
@@ -236,6 +237,54 @@ mpc_log10 (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
 
       ok = mpfr_can_round (mpc_realref (ww), prec - 2, GMP_RNDN, GMP_RNDZ,
                            MPC_PREC_RE(rop) + (MPC_RND_RE (rnd) == GMP_RNDN));
+
+      /* Special code to deal with cases where the real part of log10(x+i*y)
+         is exact, like x=3 and y=1. Since Re(log10(x+i*y)) = log10(x^2+y^2)/2
+         this happens whenever x^2+y^2 is a nonnegative power of 10.
+         Indeed x^2+y^2 cannot equal 10^(a/2^b) for a, b integers, a odd, b>0,
+         since x^2+y^2 is rational, and 10^(a/2^b) is irrational.
+         Similarly, for b=0, x^2+y^2 cannot equal 10^a for a < 0 since x^2+y^2
+         is a rational with denominator a power of 2.
+         Now let x^2+y^2 = 10^s. Without loss of generality we can assume
+         x = u/2^e and y = v/2^e with u, v, e integers: u^2+v^2 = 10^s*2^(2e)
+         thus u^2+v^2 = 0 mod 2^(2e). By recurrence on e, necessarily
+         u = v = 0 mod 2^e, thus x and y are necessarily integers.
+      */
+      if ((ok == 0) && (loops == 1) && mpfr_integer_p (mpc_realref (op)) &&
+          mpc_imagref (op))
+        {
+          mpz_t x, y;
+          unsigned long s;
+
+          mpz_init (x);
+          mpz_init (y);
+          mpfr_get_z (x, mpc_realref (op), GMP_RNDN); /* exact */
+          mpfr_get_z (y, mpc_imagref (op), GMP_RNDN); /* exact */
+          mpz_mul (x, x, x);
+          mpz_mul (y, y, y);
+          mpz_add (x, x, y); /* x^2+y^2 */
+          s = mpz_sizeinbase (x, 10); /* always exact or 1 too big */
+          /* since s is the number of digits of x in base 10 (or one more),
+             we subtract 1 since we want to check whether x = 10^s */
+          s --;
+          mpz_ui_pow_ui (y, 10, s);
+          if (mpz_cmp (y, x) > 0) /* might be 1 too big */
+            {
+              mpz_divexact_ui (y, y, 10);
+              s --;
+            }
+          if (mpz_cmp (y, x) == 0) /* Re(log10(x+i*y)) is exactly s/2 */
+            {
+              /* we reset the precision of Re(ww) so that s can be
+                 represented exactly */
+              mpfr_set_prec (mpc_realref (ww), sizeof(unsigned long)*CHAR_BIT);
+              mpfr_set_ui_2exp (mpc_realref (ww), s, -1, GMP_RNDN); /* exact */
+              ok = 1;
+            }
+          mpz_clear (x);
+          mpz_clear (y);
+        }
+
       ok = ok && mpfr_can_round (mpc_imagref (ww), prec-2, GMP_RNDN, GMP_RNDZ,
                             MPC_PREC_IM(rop) + (MPC_RND_IM (rnd) == GMP_RNDN));
     }
