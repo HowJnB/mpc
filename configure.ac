@@ -26,7 +26,8 @@ AC_CONFIG_HEADER([config.h])
 
 AM_INIT_AUTOMAKE([1.9 -Wall -Werror])
 AM_MAINTAINER_MODE
-AM_PROG_AR
+# automake 1.12 seems to require this, but automake 1.11 doesn't recognize it
+m4_ifdef([AM_PROG_AR], [AM_PROG_AR])
 
 AC_CANONICAL_HOST
 AC_CONFIG_MACRO_DIR([m4])
