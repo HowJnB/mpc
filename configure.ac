@@ -119,7 +119,12 @@ AC_COMPILE_IFELSE([AC_LANG_SOURCE([[
 ])
 
 # Check if compiler accepts warning flags and add them to CFLAGS
-MPC_C_CHECK_WARNINGCFLAGS
+# Note: don't do this if the user defined CFLAGS, since adding new flags
+# might override the user's settings, see
+# http://lists.gforge.inria.fr/pipermail/mpc-discuss/2012-May/001115.html
+if test -z "$CFLAGS"; then
+   MPC_C_CHECK_WARNINGCFLAGS
+fi
 
 
 # Checks for header files.
