@@ -107,7 +107,7 @@ AC_PROG_CC
 AC_LANG(C)
 
 # Set up LibTool
-AC_PROG_LIBTOOL
+LT_INIT
 
 # Check GMP Header
 AC_MSG_CHECKING(for gmp.h)
