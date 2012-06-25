@@ -1,6 +1,6 @@
 # Data file for mpc_fr_sub.
 #
-# Copyright (C) 2008 INRIA
+# Copyright (C) 2008, 2012 INRIA
 #
 # This file is part of GNU MPC.
 #
@@ -366,3 +366,8 @@
 0 0 7    0 7   -0   7    1 7    1  7   +0  N N
 0 0 7    0 7   -1   7    1 7    1  7    1  N N
 
+# inexact return values
+- - 2 -8 2 -8  3 1 3 8 3 7 D D
+- - 2 -8 2 -8  3 1 3 8 3 7 N N
++ + 2 -6 2 -6  3 1 3 8 3 7 U U
++ + 2 -6 2 -6  3 1 3 8 3 7 Z Z

@@ -1,6 +1,6 @@
 /* mpc_fr_sub -- Substract a complex number from a floating-point number.
 
-Copyright (C) 2008, 2009, 2011 INRIA
+Copyright (C) 2008, 2009, 2011, 2012 INRIA
 
 This file is part of GNU MPC.
 
@@ -26,9 +26,8 @@ mpc_fr_sub (mpc_ptr a, mpfr_srcptr b, mpc_srcptr c, mpc_rnd_t rnd)
 {
   int inex_re, inex_im;
 
-  inex_re = mpfr_sub (mpc_realref(a), b, mpc_realref(c), MPC_RND_RE(rnd));
-  inex_im = mpfr_set (mpc_imagref (a), mpc_imagref (c), INV_RND (MPC_RND_IM (rnd)));
-  MPFR_CHANGE_SIGN (mpc_imagref (a));
+  inex_re = mpfr_sub (mpc_realref (a), b, mpc_realref (c), MPC_RND_RE (rnd));
+  inex_im = mpfr_neg (mpc_imagref (a), mpc_imagref (c), MPC_RND_IM (rnd));
 
   return MPC_INEX(inex_re, inex_im);
 }

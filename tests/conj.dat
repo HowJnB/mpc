@@ -1,6 +1,6 @@
 # Data file for mpc_conj.
 #
-# Copyright (C) 2008 INRIA
+# Copyright (C) 2008, 2012 INRIA
 #
 # This file is part of GNU MPC.
 #
@@ -107,3 +107,8 @@
 0 0 53 +0 53  0x123456789abcdep+52    25 +0 67 -0x123456789abcdep+52 Z D
 0 0 53 -0 53  0x123456789abcdep+52    23 -0 68 -0x123456789abcdep+52 U D
 
+# non-exact return values
+- - 2 4 2 -8  3 5 3 7 N N
+- + 2 4 2 -6  3 5 3 7 D U
++ - 2 6 2 -8  3 5 3 7 U D
+- + 2 4 2 -6  3 5 3 7 Z Z
