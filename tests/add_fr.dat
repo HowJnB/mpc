@@ -1,6 +1,6 @@
 # Data file for mpc_add_fr.
 #
-# Copyright (C) 2008 INRIA
+# Copyright (C) 2008, 2012 INRIA
 #
 # This file is part of GNU MPC.
 #
@@ -117,3 +117,6 @@
 0 0 53 +1 53 +1     53 +0 53 1 53 +1 U U
 0 0 53 +1 53 +1     53 -0 53 1 53 +1 D D
 
+# non-zero return values for imaginary part
+0 + 2 0 2 8  3 0 3 7 3 0 N N
+0 - 2 0 2 4  3 0 3 5 3 0 N N
