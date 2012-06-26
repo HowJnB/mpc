@@ -5,6 +5,8 @@ Changes in version 1.0:
   - removed compatibility with K&R compilers, untestable due to lack of
     such compilers
   - New function mpc_log10.
+  - Optimisation:
+    - fma
   - Bug fixes:
     - div and norm now return a value indicating the effective rounding
       direction, as the other functions.
@@ -123,7 +125,7 @@ Changes in version 0.5 ("Aconitum neomontanum"):
     - sqrt with directed rounding
 
 
-Copyright (C) 2008, 2009, 2010, 2011 INRIA
+Copyright (C) 2008, 2009, 2010, 2011, 2012 INRIA
 
 Copying and distribution of this file, with or without modification,
 are permitted in any medium without royalty provided the copyright

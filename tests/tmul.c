@@ -33,48 +33,32 @@ cmpmul (mpc_srcptr x, mpc_srcptr y, mpc_rnd_t rnd)
    /* all have the same precision, and we use this precision also for the  */
    /* result.                                                              */
 {
-  mpc_t z, t;
-  int   inexact_z, inexact_t;
+   mpc_t z, t;
+   int   inex_z, inex_t;
 
-  mpc_init2 (z, MPC_MAX_PREC (x));
-  mpc_init2 (t, MPC_MAX_PREC (x));
+   mpc_init2 (z, MPC_MAX_PREC (x));
+   mpc_init2 (t, MPC_MAX_PREC (x));
 
-  inexact_z = mpc_mul_naive (z, x, y, rnd);
-  inexact_t = mpc_mul_karatsuba (t, x, y, rnd);
+   inex_z = mpc_mul_naive (z, x, y, rnd);
+   inex_t = mpc_mul_karatsuba (t, x, y, rnd);
 
-  if (mpc_cmp (z, t))
-    {
-      fprintf (stderr, "mul and mul2 differ for rnd=(%s,%s)\nx=",
+   if (mpc_cmp (z, t) != 0 || inex_z != inex_t) {
+      fprintf (stderr, "mul_naive and mul_karatsuba differ for rnd=(%s,%s)\n",
                mpfr_print_rnd_mode(MPC_RND_RE(rnd)),
                mpfr_print_rnd_mode(MPC_RND_IM(rnd)));
-      mpc_out_str (stderr, 2, 0, x, MPC_RNDNN);
-      fprintf (stderr, "\ny=");
-      mpc_out_str (stderr, 2, 0, y, MPC_RNDNN);
-      fprintf (stderr, "\nmpc_mul_naive     gives ");
-      mpc_out_str (stderr, 2, 0, z, MPC_RNDNN);
-      fprintf (stderr, "\nmpc_mul_karatsuba gives ");
-      mpc_out_str (stderr, 2, 0, t, MPC_RNDNN);
-      fprintf (stderr, "\n");
+      MPC_OUT (x);
+      MPC_OUT (y);
+      MPC_OUT (z);
+      MPC_OUT (t);
+      if (inex_z != inex_t) {
+         fprintf (stderr, "inex_re (z): %s\n", MPC_INEX_STR (inex_z));
+         fprintf (stderr, "inex_re (t): %s\n", MPC_INEX_STR (inex_t));
+      }
       exit (1);
-    }
-  if (inexact_z != inexact_t)
-    {
-      fprintf (stderr, "The return values of mul and mul2 differ for rnd=(%s,%s) \nx=",
-               mpfr_print_rnd_mode(MPC_RND_RE(rnd)),
-               mpfr_print_rnd_mode(MPC_RND_IM(rnd)));
-      mpc_out_str (stderr, 2, 0, x, MPC_RNDNN);
-      fprintf (stderr, "\nand y=");
-      mpc_out_str (stderr, 2, 0, y, MPC_RNDNN);
-      fprintf (stderr, "\nand x*y=");
-      mpc_out_str (stderr, 2, 0, z, MPC_RNDNN);
-      fprintf (stderr, "\nmpc_mul_naive     gives %i", inexact_z);
-      fprintf (stderr, "\nmpc_mul_karatsuba gives %i", inexact_t);
-      fprintf (stderr, "\n");
-      exit (1);
-    }
+   }
 
-  mpc_clear (z);
-  mpc_clear (t);
+   mpc_clear (z);
+   mpc_clear (t);
 }
 
 
