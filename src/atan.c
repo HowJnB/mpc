@@ -232,8 +232,6 @@ mpc_atan (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
 
     do
       {
-        MPC_ASSERT (++loops < 100);
-
         p += mpc_ceil_log2 (p) + 2;
         mpfr_set_prec (a, p);
         mpfr_set_prec (b, p);
@@ -246,8 +244,8 @@ mpc_atan (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
         if (mpfr_sgn (a) == 0) /* y is near 1, thus 1+y is near 2, and
                                   expo will be 1 or 2 below */
           {
-            if (mpfr_cmp_ui (mpc_imagref(op), 1) != 0)
-              continue;
+            MPC_ASSERT (mpfr_cmp_ui (mpc_imagref(op), 1) == 0);
+               /* check for intermediate underflow */
             err = 2; /* ensures err will be expo below */
           }
         else
@@ -257,13 +255,12 @@ mpc_atan (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
         /* b = lower bound for atan (-x/(1+y)): for x negative, we need a
            lower bound on -x/(1+y), i.e., an upper bound on 1+y */
         mpfr_add_ui (a, mpc_imagref(op), 1, rnd2);
-        /* if a is zero but inexact, try again with a larger precision
-           if a is exactly zero, i.e., Im(op) = -1, then the error on a is 0,
+        /* if a is exactly zero, i.e., Im(op) = -1, then the error on a is 0,
            and we can simply ignore the terms involving Exp(a) in the error */
         if (mpfr_sgn (a) == 0)
           {
-            if (mpfr_cmp_si (mpc_imagref(op), -1) != 0)
-              continue;
+            MPC_ASSERT (mpfr_cmp_si (mpc_imagref(op), -1) == 0);
+               /* check for intermediate underflow */
             expo = err; /* will leave err unchanged below */
           }
         else
