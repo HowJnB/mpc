@@ -239,7 +239,7 @@ mpc_div (mpc_ptr a, mpc_srcptr b, mpc_srcptr c, mpc_rnd_t rnd)
    mpfr_prec_t prec;
    int inex, inexact_prod, inexact_norm, inexact_re, inexact_im, loops = 0;
    int underflow_norm, overflow_norm, underflow_prod, overflow_prod;
-   int underflow_re, overflow_re, underflow_im = 0, overflow_im = 0;
+   int underflow_re = 0, overflow_re = 0, underflow_im = 0, overflow_im = 0;
    mpfr_rnd_t rnd_re = MPC_RND_RE (rnd), rnd_im = MPC_RND_IM (rnd);
    int saved_underflow, saved_overflow;
 
@@ -309,15 +309,20 @@ mpc_div (mpc_ptr a, mpc_srcptr b, mpc_srcptr c, mpc_rnd_t rnd)
          /* unfortunately, does not distinguish between under-/overflow
             in real or imaginary parts
             hopefully, the side-effects of mpc_mul do indeed raise the
-            mpfr exceptions
-            FIXME: handling of under- and overflows here and in the
-            following is not totally rigorous and just a best effort to
-            salvage almost hopeless situations                          */
+            mpfr exceptions */
       if (overflow_prod) {
          if (!mpfr_zero_p (mpc_realref (res)))
-            mpfr_set_inf (mpc_realref (res), mpfr_sgn (mpc_realref (res)));
+           {
+             mpfr_set_inf (mpc_realref (res), mpfr_sgn (mpc_realref (res)));
+             overflow_re = 1;
+           }
          if (!mpfr_zero_p (mpc_imagref (res)))
-            mpfr_set_inf (mpc_imagref (res), mpfr_sgn (mpc_imagref (res)));
+           {
+             mpfr_set_inf (mpc_imagref (res), mpfr_sgn (mpc_imagref (res)));
+             overflow_im = 1;
+           }
+         mpc_set (a, res, rnd);
+         goto end;
       }
 
       /* divide the product by the norm */
@@ -382,6 +387,7 @@ mpc_div (mpc_ptr a, mpc_srcptr b, mpc_srcptr c, mpc_rnd_t rnd)
    inexact_re = MPC_INEX_RE (inex);
    inexact_im = MPC_INEX_IM (inex);
 
+ end:
    /* fix values and inexact flags in case of overflow/underflow */
    /* FIXME: heuristic, certainly does not cover all cases */
    if (overflow_re || (underflow_norm && !underflow_prod)) {
@@ -410,5 +416,5 @@ mpc_div (mpc_ptr a, mpc_srcptr b, mpc_srcptr c, mpc_rnd_t rnd)
    if (saved_overflow)
      mpfr_set_overflow ();
 
-   return (MPC_INEX (inexact_re, inexact_im));
+   return MPC_INEX (inexact_re, inexact_im);
 }
