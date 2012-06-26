@@ -121,6 +121,11 @@ __MPC_DECLSPEC int mpfr_regular_p (mpfr_srcptr);
  * ASSERT macros
  */
 
+#ifdef NDEBUG
+#define MPC_ASSERT(expr) \
+  do {                   \
+  } while (0)
+#else
 #define MPC_ASSERT(expr)                                        \
   do {                                                          \
     if (!(expr))                                                \
@@ -130,7 +135,7 @@ __MPC_DECLSPEC int mpfr_regular_p (mpfr_srcptr);
         abort();                                                \
       }                                                         \
   } while (0)
-
+#endif
 
 /*
  * Constants
