@@ -39,8 +39,8 @@ bound_prec_addsub (mpfr_srcptr x, mpfr_srcptr y)
 }
 
 /* r <- a*b+c */
-int
-mpc_fma (mpc_ptr r, mpc_srcptr a, mpc_srcptr b, mpc_srcptr c, mpc_rnd_t rnd)
+static int
+mpc_fma_naive (mpc_ptr r, mpc_srcptr a, mpc_srcptr b, mpc_srcptr c, mpc_rnd_t rnd)
 {
   mpfr_t rea_reb, rea_imb, ima_reb, ima_imb, tmp;
   mpfr_prec_t pre12, pre13, pre23, pim12, pim13, pim23;
@@ -130,3 +130,62 @@ mpc_fma (mpc_ptr r, mpc_srcptr a, mpc_srcptr b, mpc_srcptr c, mpc_rnd_t rnd)
   return MPC_INEX(inex_re, inex_im);
 }
 
+/* The algorithm is as follows:
+   - in a first pass, we use the target precision + some extra bits
+   - if it fails, we add the number of cancelled bits when adding
+     Re(a*b) and Re(c) [similarly for the imaginary part]
+   - it is fails again, we call the mpc_fma_naive function, which also
+     deals with the special cases */
+int
+mpc_fma (mpc_ptr r, mpc_srcptr a, mpc_srcptr b, mpc_srcptr c, mpc_rnd_t rnd)
+{
+  mpc_t ab;
+  mpfr_prec_t pre, pim, wpre, wpim;
+  mpfr_exp_t diffre, diffim;
+  int i, inex, okre = 0, okim = 0;
+
+  if (mpc_fin_p (a) == 0 || mpc_fin_p (b) == 0 || mpc_fin_p (c) == 0)
+    return mpc_fma_naive (r, a, b, c, rnd);
+
+  pre = mpfr_get_prec (mpc_realref(r));
+  pim = mpfr_get_prec (mpc_imagref(r));
+  wpre = pre + mpc_ceil_log2 (pre) + 10;
+  wpim = pim + mpc_ceil_log2 (pim) + 10;
+  mpc_init3 (ab, wpre, wpim);
+  for (i = 0; i < 2; ++i)
+    {
+      mpc_mul (ab, a, b, MPC_RNDZZ);
+      if (mpfr_zero_p (mpc_realref(ab)) || mpfr_zero_p (mpc_imagref(ab)))
+        break;
+      diffre = mpfr_get_exp (mpc_realref(ab));
+      diffim = mpfr_get_exp (mpc_imagref(ab));
+      if (mpfr_zero_p (mpc_realref(ab)) || mpfr_zero_p (mpc_imagref(ab)))
+        break;
+      mpc_add (ab, ab, c, MPC_RNDZZ);
+      diffre -= mpfr_get_exp (mpc_realref(ab));
+      diffim -= mpfr_get_exp (mpc_imagref(ab));
+      diffre = (diffre > 0 ? diffre + 1 : 1);
+      diffim = (diffim > 0 ? diffim + 1 : 1);
+      okre = diffre > wpre ? 0 : mpfr_can_round (mpc_realref(ab),
+                                 wpre - diffre, GMP_RNDZ, GMP_RNDZ,
+                                 pre + (MPC_RND_RE (rnd) == GMP_RNDN));
+      okim = diffim > wpim ? 0 : mpfr_can_round (mpc_imagref(ab),
+                                 wpim - diffim, GMP_RNDZ, GMP_RNDZ,
+                                 pim + (MPC_RND_IM (rnd) == GMP_RNDN));
+      if (okre && okim)
+        {
+          inex = mpc_set (r, ab, rnd);
+          break;
+        }
+      if (i == 1)
+        break;
+      if (okre == 0 && diffre > 1)
+        wpre += diffre;
+      if (okim == 0 && diffim > 1)
+        wpim += diffim;
+      mpfr_set_prec (mpc_realref(ab), wpre);
+      mpfr_set_prec (mpc_imagref(ab), wpim);
+    }
+  mpc_clear (ab);
+  return okre && okim ? inex : mpc_fma_naive (r, a, b, c, rnd);
+}
