@@ -1,6 +1,6 @@
 /* mpc_log -- Take the logarithm of a complex number.
 
-Copyright (C) 2008, 2009, 2010, 2011 INRIA
+Copyright (C) 2008, 2009, 2010, 2011, 2012 INRIA
 
 This file is part of GNU MPC.
 
@@ -18,6 +18,7 @@ You should have received a copy of the GNU Lesser General Public License
 along with this program. If not, see http://www.gnu.org/licenses/ .
 */
 
+#include <stdio.h> /* for MPC_ASSERT */
 #include "mpc-impl.h"
 
 int
@@ -121,23 +122,19 @@ mpc_log (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd){
 
       /* w is rounded down */
       mpc_norm (w, op, GMP_RNDD);
-      /* error 1 ulp */
+         /* error 1 ulp */
+      MPC_ASSERT (!mpfr_inf_p (w));
+         /* FIXME: intermediate overflow; the logarithm may be representable */
+      
+      mpfr_log (w, w, GMP_RNDD);
+      /* generic error of log: (2^(2 - exp(w)) + 1) ulp */
 
-      if (mpfr_inf_p (w))
-         /* FIXME
-            return +inf, which is wrong since the logarithm is representable */
-         ok = 1;
-      else {
-         mpfr_log (w, w, GMP_RNDD);
-         /* generic error of log: (2^(2 - exp(w)) + 1) ulp */
-
-         if (mpfr_get_exp (w) >= 2)
-            ok = mpfr_can_round (w, prec - 2, GMP_RNDD,
-               MPC_RND_RE(rnd), MPC_PREC_RE(rop));
-         else
-            ok = mpfr_can_round (w, prec - 3 + mpfr_get_exp (w), GMP_RNDD,
-               MPC_RND_RE(rnd), MPC_PREC_RE(rop));
-      }
+      if (mpfr_get_exp (w) >= 2)
+         ok = mpfr_can_round (w, prec - 2, GMP_RNDD,
+            MPC_RND_RE(rnd), MPC_PREC_RE(rop));
+      else
+         ok = mpfr_can_round (w, prec - 3 + mpfr_get_exp (w), GMP_RNDD,
+            MPC_RND_RE(rnd), MPC_PREC_RE(rop));
    } while (ok == 0);
 
    /* imaginary part */
