@@ -1,6 +1,6 @@
 /* mpc_fma -- Fused multiply-add of three complex numbers
 
-Copyright (C) 2011 INRIA
+Copyright (C) 2011, 2012 INRIA
 
 This file is part of GNU MPC.
 
@@ -39,7 +39,7 @@ bound_prec_addsub (mpfr_srcptr x, mpfr_srcptr y)
 }
 
 /* r <- a*b+c */
-static int
+int
 mpc_fma_naive (mpc_ptr r, mpc_srcptr a, mpc_srcptr b, mpc_srcptr c, mpc_rnd_t rnd)
 {
   mpfr_t rea_reb, rea_imb, ima_reb, ima_imb, tmp;

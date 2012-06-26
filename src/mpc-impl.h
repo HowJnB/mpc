@@ -157,6 +157,7 @@ extern "C" {
 
 __MPC_DECLSPEC int  mpc_mul_naive (mpc_ptr, mpc_srcptr, mpc_srcptr, mpc_rnd_t);
 __MPC_DECLSPEC int  mpc_mul_karatsuba (mpc_ptr, mpc_srcptr, mpc_srcptr, mpc_rnd_t);
+__MPC_DECLSPEC int  mpc_fma_naive (mpc_ptr, mpc_srcptr, mpc_srcptr, mpc_srcptr, mpc_rnd_t);
 __MPC_DECLSPEC int  mpc_pow_usi (mpc_ptr, mpc_srcptr, unsigned long, int, mpc_rnd_t);
 __MPC_DECLSPEC char* mpc_alloc_str (size_t);
 __MPC_DECLSPEC char* mpc_realloc_str (char*, size_t, size_t);
