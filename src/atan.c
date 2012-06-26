@@ -1,6 +1,6 @@
 /* mpc_atan -- arctangent of a complex number.
 
-Copyright (C) 2009, 2010, 2011 INRIA
+Copyright (C) 2009, 2010, 2011, 2012 INRIA
 
 This file is part of GNU MPC.
 
@@ -18,6 +18,7 @@ You should have received a copy of the GNU Lesser General Public License
 along with this program. If not, see http://www.gnu.org/licenses/ .
 */
 
+#include <stdio.h>
 #include "mpc-impl.h"
 
 /* set rop to
@@ -195,6 +196,7 @@ mpc_atan (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
     mpfr_t minus_op_re;
     mpfr_exp_t op_re_exp, op_im_exp;
     mpfr_rnd_t rnd1, rnd2;
+    int loops = 0;
 
     mpfr_inits2 (MPFR_PREC_MIN, a, b, x, y, (mpfr_ptr) 0);
 
@@ -230,6 +232,8 @@ mpc_atan (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
 
     do
       {
+        MPC_ASSERT (++loops < 100);
+
         p += mpc_ceil_log2 (p) + 2;
         mpfr_set_prec (a, p);
         mpfr_set_prec (b, p);
