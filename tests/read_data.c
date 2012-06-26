@@ -189,7 +189,7 @@ read_string (FILE *fp, char **buffer_ptr, size_t buffer_length, const char *name
   nextchar = getc (fp);
   skip_whitespace_comments (fp);
 
-  buffer_ptr = &buffer;
+  *buffer_ptr = buffer;
 
   return buffer_length;
 
