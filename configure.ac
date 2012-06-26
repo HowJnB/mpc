@@ -26,11 +26,16 @@ AC_CONFIG_HEADER([config.h])
 
 AM_INIT_AUTOMAKE([1.9 -Wall -Werror])
 AM_MAINTAINER_MODE
+
+USER_CC=$CC
+USER_CFLAGS=$CFLAGS
+
 # automake 1.12 seems to require this, but automake 1.11 doesn't recognize it
 m4_ifdef([AM_PROG_AR], [AM_PROG_AR])
 
 AC_CANONICAL_HOST
 AC_CONFIG_MACRO_DIR([m4])
+
 
 # Extra arguments to configure
 AC_ARG_WITH([mpfr_include],
@@ -98,7 +103,7 @@ AC_ARG_ENABLE([valgrind-tests],
 # at http://lists.gforge.inria.fr/pipermail/mpc-discuss/2012-January/001056.html
 AC_PROG_EGREP
 AC_PROG_SED
-if test -z "$CC" && test -z "$CFLAGS"; then
+if test -z "$USER_CC" && test -z "$USER_CFLAGS"; then
    MPC_GMP_CC_CFLAGS
 fi
 
