@@ -67,12 +67,12 @@ mpc_rootofunity (mpc_ptr rop, unsigned long int n, mpc_rnd_t rnd)
       mpfr_mul_2ui (t, t, 1u, GMP_RNDN);
       mpfr_div_ui (t, t, n, GMP_RNDN); /* error 2*0.5+0.5=1.5 ulp */
       mpfr_sin_cos (s, c, t, GMP_RNDN);
-         /* error (3*2^{Exp (t) - Exp (s resp.c)} + 0.5) ulp
-            <= 12.5 ulp for n>=3                             */
+         /* error (1.5*2^{Exp (t) - Exp (s resp.c)} + 0.5) ulp
+            <= 6.5 ulp for n>=3                             */
    }
-   while (   !mpfr_can_round (c, prec - 4, GMP_RNDN, GMP_RNDZ,
+   while (   !mpfr_can_round (c, prec - 3, GMP_RNDN, GMP_RNDZ,
                  MPC_PREC_RE(rop) + (MPC_RND_RE(rnd) == GMP_RNDN))
-          || !mpfr_can_round (s, prec - 4, GMP_RNDN, GMP_RNDZ,
+          || !mpfr_can_round (s, prec - 3, GMP_RNDN, GMP_RNDZ,
                  MPC_PREC_IM(rop) + (MPC_RND_IM(rnd) == GMP_RNDN)));
 
    inex_re = mpfr_set (mpc_realref(rop), c, MPC_RND_RE(rnd));
