@@ -2468,7 +2468,13 @@
 # current result: (@NaN@ @Inf@)
 #0 0 10 0 10 1  10 -0b1@-536870913 10 0b1@536870912 10 0b1@536870912 10 0b1@-536870913  N N
 
-# example to exercise overflow (re)
+# examples to exercise overflow (re)
+#  positive overflow
 + 0 2 inf 2 0 10 0x3ffp1073741813 10 0x3ffp1073741813 10 0x2abp-10 10 0x2abp-10 N N
-# example to exercise overflow (im)
+#  negative overflow
+- 0 2 -inf 2 0 10 -0x3ffp1073741813 10 -0x3ffp1073741813 10 0x2abp-10 10 0x2abp-10 N N
+# examples to exercise overflow (im)
+#  positive overflow
 0 + 2 0 2 inf 10 0x3ffp1073741813 10 0x3ffp1073741813 10 0x2abp-10 10 -0x2abp-10 N N
+#  negative overflow
+0 - 2 0 2 -inf 10 -0x3ffp1073741813 10 -0x3ffp1073741813 10 0x2abp-10 10 -0x2abp-10 N N

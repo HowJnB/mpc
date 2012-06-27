@@ -18,6 +18,8 @@ You should have received a copy of the GNU Lesser General Public License
 along with this program. If not, see http://www.gnu.org/licenses/ .
 */
 
+#include <stdio.h>
+
 #include "mpc-impl.h"
 
 /* this routine deals with the case where w is zero */
@@ -242,6 +244,7 @@ mpc_div (mpc_ptr a, mpc_srcptr b, mpc_srcptr c, mpc_rnd_t rnd)
    int underflow_re = 0, overflow_re = 0, underflow_im = 0, overflow_im = 0;
    mpfr_rnd_t rnd_re = MPC_RND_RE (rnd), rnd_im = MPC_RND_IM (rnd);
    int saved_underflow, saved_overflow;
+   int tmpsgn;
 
    /* According to the C standard G.3, there are three types of numbers:   */
    /* finite (both parts are usual real numbers; contains 0), infinite     */
@@ -311,20 +314,36 @@ mpc_div (mpc_ptr a, mpc_srcptr b, mpc_srcptr c, mpc_rnd_t rnd)
             hopefully, the side-effects of mpc_mul do indeed raise the
             mpfr exceptions */
       if (overflow_prod) {
-         mpfr_nextabove (mpc_realref (res));
-         if (mpfr_inf_p (mpc_realref (res)))
+         tmpsgn = mpfr_sgn (mpc_realref(res));
+         if (tmpsgn > 0)
+            mpfr_nextabove (mpc_realref(res));
+         else if (tmpsgn < 0)
+            mpfr_nextbelow (mpc_realref(res));
+         if (mpfr_inf_p (mpc_realref(res)))
            {
-             mpfr_set_inf (mpc_realref (res), mpfr_sgn (mpc_realref (res)));
+             mpfr_set_inf (mpc_realref(res), tmpsgn);
              overflow_re = 1;
            }
-         else mpfr_nextbelow (mpc_realref (res));
-         mpfr_nextabove (mpc_imagref (res));
-         if (mpfr_inf_p (mpc_imagref (res)))
+         else
+            if (tmpsgn > 0)
+               mpfr_nextbelow (mpc_realref(res));
+            else if (tmpsgn < 0)
+               mpfr_nextabove (mpc_realref(res));
+         tmpsgn = mpfr_sgn (mpc_imagref(res));
+         if (tmpsgn > 0)
+            mpfr_nextabove (mpc_imagref(res));
+         else if (tmpsgn < 0)
+            mpfr_nextbelow (mpc_imagref(res));
+         if (mpfr_inf_p (mpc_imagref(res)))
            {
-             mpfr_set_inf (mpc_imagref (res), mpfr_sgn (mpc_imagref (res)));
+             mpfr_set_inf (mpc_imagref(res), tmpsgn);
              overflow_im = 1;
            }
-         else mpfr_nextbelow (mpc_imagref (res));
+         else
+            if (tmpsgn > 0)
+               mpfr_nextbelow (mpc_imagref(res));
+            else if (tmpsgn < 0)
+               mpfr_nextabove (mpc_imagref(res));
          mpc_set (a, res, rnd);
          goto end;
       }
