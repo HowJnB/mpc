@@ -384,6 +384,8 @@
 + 0 53 +0x1620227B598EF9p-57 53  0      53 -0 53 -1    53 +0 53 -2 N N
 
 # exact cases
+# (-1)^(1/2) = i
+0 0 2 0 2 1 2 -1 2 0 2 0x1p-1 2 0 N N
 # (-4)^(1/4) = 1+i
 0 0 2 1 2 1 2 -4 2 0 2 0x1p-2 2 0 N N
 # for an odd positive integer n, a positive integer m and an integer e:
