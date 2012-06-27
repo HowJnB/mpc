@@ -142,7 +142,7 @@ mpc_fma (mpc_ptr r, mpc_srcptr a, mpc_srcptr b, mpc_srcptr c, mpc_rnd_t rnd)
   mpc_t ab;
   mpfr_prec_t pre, pim, wpre, wpim;
   mpfr_exp_t diffre, diffim;
-  int i, inex, okre = 0, okim = 0;
+  int i, inex = 0, okre = 0, okim = 0;
 
   if (mpc_fin_p (a) == 0 || mpc_fin_p (b) == 0 || mpc_fin_p (c) == 0)
     return mpc_fma_naive (r, a, b, c, rnd);
