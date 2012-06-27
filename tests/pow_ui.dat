@@ -97,3 +97,6 @@
 # special cases with exponents 1 and 2
 0 0 53  3 53  4  53 3 53 4 1 N N
 0 0 53 -7 53 24  53 3 53 4 2 N N
+
+# coverage test
++ - 2 1 2 1 100 0x8ac78f4e6aec091921cbdc891p-99 100 0x4a5f2972ea662e1cc0caebb81p-100 3 N N
