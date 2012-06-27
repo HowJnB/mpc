@@ -177,54 +177,55 @@ __MPC_DECLSPEC int  mpc_fma       (mpc_ptr, mpc_srcptr, mpc_srcptr, mpc_srcptr, 
 
 __MPC_DECLSPEC void mpc_set_nan   (mpc_ptr);
 
-__MPC_DECLSPEC int  mpc_real      (mpfr_ptr, mpc_srcptr, mpfr_rnd_t);
-__MPC_DECLSPEC int  mpc_imag      (mpfr_ptr, mpc_srcptr, mpfr_rnd_t);
-__MPC_DECLSPEC int  mpc_arg       (mpfr_ptr, mpc_srcptr, mpfr_rnd_t);
-__MPC_DECLSPEC int  mpc_proj      (mpc_ptr, mpc_srcptr, mpc_rnd_t);
-__MPC_DECLSPEC int  mpc_cmp       (mpc_srcptr, mpc_srcptr);
-__MPC_DECLSPEC int  mpc_cmp_si_si (mpc_srcptr, long int, long int);
-__MPC_DECLSPEC int  mpc_cmp_abs   (mpc_srcptr, mpc_srcptr);
-__MPC_DECLSPEC int  mpc_exp       (mpc_ptr, mpc_srcptr, mpc_rnd_t);
-__MPC_DECLSPEC int  mpc_log       (mpc_ptr, mpc_srcptr, mpc_rnd_t);
-__MPC_DECLSPEC int  mpc_log10     (mpc_ptr, mpc_srcptr, mpc_rnd_t);
-__MPC_DECLSPEC int  mpc_sin       (mpc_ptr, mpc_srcptr, mpc_rnd_t);
-__MPC_DECLSPEC int  mpc_cos       (mpc_ptr, mpc_srcptr, mpc_rnd_t);
-__MPC_DECLSPEC int  mpc_sin_cos   (mpc_ptr, mpc_ptr, mpc_srcptr, mpc_rnd_t, mpc_rnd_t);
-__MPC_DECLSPEC int  mpc_tan       (mpc_ptr, mpc_srcptr, mpc_rnd_t);
-__MPC_DECLSPEC int  mpc_sinh      (mpc_ptr, mpc_srcptr, mpc_rnd_t);
-__MPC_DECLSPEC int  mpc_cosh      (mpc_ptr, mpc_srcptr, mpc_rnd_t);
-__MPC_DECLSPEC int  mpc_tanh      (mpc_ptr, mpc_srcptr, mpc_rnd_t);
-__MPC_DECLSPEC int  mpc_asin      (mpc_ptr, mpc_srcptr, mpc_rnd_t);
-__MPC_DECLSPEC int  mpc_acos      (mpc_ptr, mpc_srcptr, mpc_rnd_t);
-__MPC_DECLSPEC int  mpc_atan      (mpc_ptr, mpc_srcptr, mpc_rnd_t);
-__MPC_DECLSPEC int  mpc_asinh     (mpc_ptr, mpc_srcptr, mpc_rnd_t);
-__MPC_DECLSPEC int  mpc_acosh     (mpc_ptr, mpc_srcptr, mpc_rnd_t);
-__MPC_DECLSPEC int  mpc_atanh     (mpc_ptr, mpc_srcptr, mpc_rnd_t);
-__MPC_DECLSPEC void mpc_clear     (mpc_ptr);
-__MPC_DECLSPEC int  mpc_urandom   (mpc_ptr, gmp_randstate_t);
-__MPC_DECLSPEC void mpc_init2     (mpc_ptr, mpfr_prec_t);
-__MPC_DECLSPEC void mpc_init3     (mpc_ptr, mpfr_prec_t, mpfr_prec_t);
+__MPC_DECLSPEC int  mpc_real        (mpfr_ptr, mpc_srcptr, mpfr_rnd_t);
+__MPC_DECLSPEC int  mpc_imag        (mpfr_ptr, mpc_srcptr, mpfr_rnd_t);
+__MPC_DECLSPEC int  mpc_arg         (mpfr_ptr, mpc_srcptr, mpfr_rnd_t);
+__MPC_DECLSPEC int  mpc_proj        (mpc_ptr, mpc_srcptr, mpc_rnd_t);
+__MPC_DECLSPEC int  mpc_cmp         (mpc_srcptr, mpc_srcptr);
+__MPC_DECLSPEC int  mpc_cmp_si_si   (mpc_srcptr, long int, long int);
+__MPC_DECLSPEC int  mpc_cmp_abs     (mpc_srcptr, mpc_srcptr);
+__MPC_DECLSPEC int  mpc_exp         (mpc_ptr, mpc_srcptr, mpc_rnd_t);
+__MPC_DECLSPEC int  mpc_log         (mpc_ptr, mpc_srcptr, mpc_rnd_t);
+__MPC_DECLSPEC int  mpc_log10       (mpc_ptr, mpc_srcptr, mpc_rnd_t);
+__MPC_DECLSPEC int  mpc_sin         (mpc_ptr, mpc_srcptr, mpc_rnd_t);
+__MPC_DECLSPEC int  mpc_cos         (mpc_ptr, mpc_srcptr, mpc_rnd_t);
+__MPC_DECLSPEC int  mpc_sin_cos     (mpc_ptr, mpc_ptr, mpc_srcptr, mpc_rnd_t, mpc_rnd_t);
+__MPC_DECLSPEC int  mpc_tan         (mpc_ptr, mpc_srcptr, mpc_rnd_t);
+__MPC_DECLSPEC int  mpc_sinh        (mpc_ptr, mpc_srcptr, mpc_rnd_t);
+__MPC_DECLSPEC int  mpc_cosh        (mpc_ptr, mpc_srcptr, mpc_rnd_t);
+__MPC_DECLSPEC int  mpc_tanh        (mpc_ptr, mpc_srcptr, mpc_rnd_t);
+__MPC_DECLSPEC int  mpc_asin        (mpc_ptr, mpc_srcptr, mpc_rnd_t);
+__MPC_DECLSPEC int  mpc_acos        (mpc_ptr, mpc_srcptr, mpc_rnd_t);
+__MPC_DECLSPEC int  mpc_atan        (mpc_ptr, mpc_srcptr, mpc_rnd_t);
+__MPC_DECLSPEC int  mpc_asinh       (mpc_ptr, mpc_srcptr, mpc_rnd_t);
+__MPC_DECLSPEC int  mpc_acosh       (mpc_ptr, mpc_srcptr, mpc_rnd_t);
+__MPC_DECLSPEC int  mpc_atanh       (mpc_ptr, mpc_srcptr, mpc_rnd_t);
+__MPC_DECLSPEC int  mpc_rootofunity (mpc_ptr, unsigned long int, mpc_rnd_t);
+__MPC_DECLSPEC void mpc_clear       (mpc_ptr);
+__MPC_DECLSPEC int  mpc_urandom     (mpc_ptr, gmp_randstate_t);
+__MPC_DECLSPEC void mpc_init2       (mpc_ptr, mpfr_prec_t);
+__MPC_DECLSPEC void mpc_init3       (mpc_ptr, mpfr_prec_t, mpfr_prec_t);
 __MPC_DECLSPEC mpfr_prec_t mpc_get_prec (mpc_srcptr x);
-__MPC_DECLSPEC void mpc_get_prec2 (mpfr_prec_t *pr, mpfr_prec_t *pi, mpc_srcptr x);
-__MPC_DECLSPEC void mpc_set_prec  (mpc_ptr, mpfr_prec_t);
+__MPC_DECLSPEC void mpc_get_prec2   (mpfr_prec_t *pr, mpfr_prec_t *pi, mpc_srcptr x);
+__MPC_DECLSPEC void mpc_set_prec    (mpc_ptr, mpfr_prec_t);
 __MPC_DECLSPEC const char * mpc_get_version (void);
 
-__MPC_DECLSPEC int  mpc_strtoc    (mpc_ptr, const char *, char **, int, mpc_rnd_t);
-__MPC_DECLSPEC int  mpc_set_str   (mpc_ptr, const char *, int, mpc_rnd_t);
-__MPC_DECLSPEC char * mpc_get_str (int, size_t, mpc_srcptr, mpc_rnd_t);
-__MPC_DECLSPEC void mpc_free_str  (char *);
+__MPC_DECLSPEC int  mpc_strtoc      (mpc_ptr, const char *, char **, int, mpc_rnd_t);
+__MPC_DECLSPEC int  mpc_set_str     (mpc_ptr, const char *, int, mpc_rnd_t);
+__MPC_DECLSPEC char * mpc_get_str   (int, size_t, mpc_srcptr, mpc_rnd_t);
+__MPC_DECLSPEC void mpc_free_str    (char *);
 
 /* declare certain functions only if appropriate headers have been included */
 #ifdef _MPC_H_HAVE_INTMAX_T
-__MPC_DECLSPEC int  mpc_set_sj    (mpc_ptr, intmax_t, mpc_rnd_t);
-__MPC_DECLSPEC int  mpc_set_uj    (mpc_ptr, uintmax_t,  mpc_rnd_t);
-__MPC_DECLSPEC int  mpc_set_sj_sj (mpc_ptr, intmax_t, intmax_t, mpc_rnd_t);
-__MPC_DECLSPEC int  mpc_set_uj_uj (mpc_ptr, uintmax_t, uintmax_t, mpc_rnd_t);
+__MPC_DECLSPEC int  mpc_set_sj      (mpc_ptr, intmax_t, mpc_rnd_t);
+__MPC_DECLSPEC int  mpc_set_uj      (mpc_ptr, uintmax_t,  mpc_rnd_t);
+__MPC_DECLSPEC int  mpc_set_sj_sj   (mpc_ptr, intmax_t, intmax_t, mpc_rnd_t);
+__MPC_DECLSPEC int  mpc_set_uj_uj   (mpc_ptr, uintmax_t, uintmax_t, mpc_rnd_t);
 #endif
 
 #ifdef _Complex_I
-__MPC_DECLSPEC int  mpc_set_dc    (mpc_ptr, double _Complex, mpc_rnd_t);
-__MPC_DECLSPEC int  mpc_set_ldc   (mpc_ptr, long double _Complex, mpc_rnd_t);
+__MPC_DECLSPEC int  mpc_set_dc      (mpc_ptr, double _Complex, mpc_rnd_t);
+__MPC_DECLSPEC int  mpc_set_ldc     (mpc_ptr, long double _Complex, mpc_rnd_t);
 __MPC_DECLSPEC double _Complex mpc_get_dc (mpc_srcptr, mpc_rnd_t);
 __MPC_DECLSPEC long double _Complex mpc_get_ldc (mpc_srcptr, mpc_rnd_t);
 #endif
