@@ -1,6 +1,6 @@
 /* mpc_pow_ui -- Raise a complex number to an integer power.
 
-Copyright (C) 2009, 2010, 2011 INRIA
+Copyright (C) 2009, 2010, 2011, 2012 INRIA
 
 This file is part of GNU MPC.
 
