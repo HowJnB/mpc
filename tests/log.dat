@@ -170,3 +170,6 @@
 # instead of the correct result. Since this may happen in other parts of the
 # library as well, we do not consider it a bug for the moment.
 # + + 53 0x58B90BFD4BCBFp-22   2  0x1p0       2 0x1p536870912 2 0x1p536870912 U U
+
+# log(-1 + i*eps) : infinite loop ?
+# 0 0 2 0 2 0b11 2 -1 2 0x1p-1073741813 N N
