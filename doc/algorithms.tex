@@ -46,7 +46,7 @@
 
 \title {MPC: Algorithms and Error Analysis}
 \author {Andreas Enge \and Philippe Th\'eveny \and Paul Zimmermann}
-\date {Draft; June 16, 2010}
+\date {Draft; June 27, 2012}
 
 \begin {document}
 \maketitle
@@ -422,6 +422,42 @@ Then by \cite[\S1.7]{MPFRAlgorithms},
 \leq
 \frac {2 k_1}{1 + \sqrt {1 + \epsilon_1^-}} 2^{\Exp (\appro x) - p}.
 \end {equation}
+
+
+\subsubsection {Cosine and sine}
+\label {sssec:proprealcossin}
+
+Let
+\[
+\appro x = \cos {\appro {x_1}}.
+\]
+Using the addition formula for $\cos$,
+\[
+\cos (a + b) = \cos (a) \cos (b) - \sin (a) \sin (b),
+\]
+we obtain
+\begin {eqnarray*}
+\error (\appro x)
+& \leq & |\cos (x)| (1 - \cos (\error (\appro {x_1})))
++ |\sin (x) \sin (\error (\appro {x_1}))| \\
+& \leq & 2 \error (\appro {x_1})
+\end {eqnarray*}
+since $|\sin (\delta)|$, $1 - \cos (\delta) \leq \delta$
+(one even has $1 - \cos (\delta) \leq \frac {1}{2} \delta^2$,
+but this does not fundamentally improve the error bound).
+
+Taking the exponents into account, one obtains
+\begin {equation}
+\label {eq:proprealcos}
+\error (\appro x)
+\leq
+2 k \, 2^{\Exp (\appro {x_1}) - \Exp (\appro x)}
+\, 2^{\Exp (\appro x) - p}.
+\end {equation}
+
+For the sine function, a completely analogous argument shows that
+\eqref {eq:proprealcos} still holds.
+
 
 
 

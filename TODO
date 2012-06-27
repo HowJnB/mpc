@@ -3,9 +3,6 @@ implement mul_karatsuba with three multiplications at precision around p,
 instead of two at precision 2*p and one at precision p
 requires analysis of error propagation
 
-From Andreas Enge 2 September 2011:
-rewrite fma more efficiently to work with lower (close to target) precision
-
 From Andreas Enge 30 August 2011:
 As soon as dependent on mpfr>=3, remove auxiliary functions from
 get_version.c and update mpc.h.
