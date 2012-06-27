@@ -311,16 +311,20 @@ mpc_div (mpc_ptr a, mpc_srcptr b, mpc_srcptr c, mpc_rnd_t rnd)
             hopefully, the side-effects of mpc_mul do indeed raise the
             mpfr exceptions */
       if (overflow_prod) {
-         if (!mpfr_zero_p (mpc_realref (res)))
+         mpfr_nextabove (mpc_realref (res));
+         if (mpfr_inf_p (mpc_realref (res)))
            {
              mpfr_set_inf (mpc_realref (res), mpfr_sgn (mpc_realref (res)));
              overflow_re = 1;
            }
-         if (!mpfr_zero_p (mpc_imagref (res)))
+         else mpfr_nextbelow (mpc_realref (res));
+         mpfr_nextabove (mpc_imagref (res));
+         if (mpfr_inf_p (mpc_imagref (res)))
            {
              mpfr_set_inf (mpc_imagref (res), mpfr_sgn (mpc_imagref (res)));
              overflow_im = 1;
            }
+         else mpfr_nextbelow (mpc_imagref (res));
          mpc_set (a, res, rnd);
          goto end;
       }
