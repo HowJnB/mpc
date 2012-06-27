@@ -1,3 +1,7 @@
+From Andreas Enge 27 June 2012:
+implement over- and underflow resistant log(x^2+y^2) in log.c;
+uncomment corresponding tests in log.dat
+
 From Andreas Enge 31 August 2011:
 implement mul_karatsuba with three multiplications at precision around p,
 instead of two at precision 2*p and one at precision p

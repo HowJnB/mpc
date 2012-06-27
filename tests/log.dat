@@ -1,13 +1,13 @@
 # Data test file for mpc_log.
 #
-# Copyright (C) 2008, 2009, 2010 INRIA
+# Copyright (C) 2008, 2009, 2010, 2012 INRIA
 #
 # This file is part of GNU MPC.
 #
 # GNU MPC is free software; you can redistribute it and/or modify it under
 # the terms of the GNU Lesser General Public License as published by the
 # Free Software Foundation; either version 3 of the License, or (at your
-#o ption) any later version.
+# option) any later version.
 #
 # GNU MPC is distributed in the hope that it will be useful, but WITHOUT ANY
 # WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
@@ -170,6 +170,7 @@
 # instead of the correct result. Since this may happen in other parts of the
 # library as well, we do not consider it a bug for the moment.
 # + + 53 0x58B90BFD4BCBFp-22   2  0x1p0       2 0x1p536870912 2 0x1p536870912 U U
-
-# log(-1 + i*eps) : infinite loop ?
-# 0 0 2 0 2 0b11 2 -1 2 0x1p-1073741813 N N
+# Due to intermediate "underflow" (see FIXME in log.c), the following example
+# loops.
+# log(-1 + i*eps)
+# - - 2 0 2 3 2 -1 2 0x1p-1073741813 N N

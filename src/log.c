@@ -28,7 +28,7 @@ mpc_log (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd){
    mpfr_prec_t prec;
    int loops = 0;
    int re_cmp, im_cmp;
-   int inex_re, inex_im;
+   int inex_re, inex_im, inex;
 
    /* special values: NaN and infinities */
    if (!mpc_fin_p (op)) {
@@ -121,10 +121,13 @@ mpc_log (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd){
       mpfr_set_prec (w, prec);
 
       /* w is rounded down */
-      mpc_norm (w, op, GMP_RNDD);
+      inex = mpc_norm (w, op, GMP_RNDD);
          /* error 1 ulp */
       MPC_ASSERT (!mpfr_inf_p (w));
          /* FIXME: intermediate overflow; the logarithm may be representable */
+      MPC_ASSERT (!(inex && mpfr_cmp_ui (w, 1) == 0));
+         /* FIXME: this is like an underflow; the following call to log will
+            compute 0 instead of a positive result                           */
       
       mpfr_log (w, w, GMP_RNDD);
       /* generic error of log: (2^(2 - exp(w)) + 1) ulp */
