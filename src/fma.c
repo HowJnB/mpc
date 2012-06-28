@@ -154,20 +154,6 @@ mpc_fma (mpc_ptr r, mpc_srcptr a, mpc_srcptr b, mpc_srcptr c, mpc_rnd_t rnd)
   mpc_init3 (ab, wpre, wpim);
   for (i = 0; i < 2; ++i)
     {
-#define MPC_OUT(x)                                              \
-do {                                                            \
-  printf (#x "[%lu,%lu]=", (unsigned long int) MPC_PREC_RE (x), \
-      (unsigned long int) MPC_PREC_IM (x));                     \
-  mpc_out_str (stdout, 2, 0, x, MPC_RNDNN);                     \
-  printf ("\n");                                                \
-} while (0)
-
-#define MPFR_OUT(x)                                             \
-do {                                                            \
-  printf (#x "[%lu]=", (unsigned long int) mpfr_get_prec (x));  \
-  mpfr_out_str (stdout, 2, 0, x, GMP_RNDN);                     \
-  printf ("\n");                                                \
-} while (0)
       mpc_mul (ab, a, b, MPC_RNDZZ);
       if (mpfr_zero_p (mpc_realref(ab)) || mpfr_zero_p (mpc_imagref(ab)))
         break;
