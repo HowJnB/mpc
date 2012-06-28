@@ -254,7 +254,7 @@ mpc_log10 (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
           mpfr_integer_p (mpc_imagref (op)))
         {
           mpz_t x, y;
-          unsigned long s;
+          unsigned long s, v;
 
           mpz_init (x);
           mpz_init (y);
@@ -263,23 +263,23 @@ mpc_log10 (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
           mpz_mul (x, x, x);
           mpz_mul (y, y, y);
           mpz_add (x, x, y); /* x^2+y^2 */
-          s = mpz_sizeinbase (x, 10); /* always exact or 1 too big */
-          /* since s is the number of digits of x in base 10 (or one more),
-             we subtract 1 since we want to check whether x = 10^s */
-          s --;
-          mpz_ui_pow_ui (y, 10, s);
-          if (mpz_cmp (y, x) > 0) /* might be 1 too big */
+          v = mpz_scan1 (x, 0);
+          /* if x = 10^s then necessarily s = v */
+          s = mpz_sizeinbase (x, 10);
+          /* since s is either the number of digits of x or one more,
+             then x = 10^(s-1) or 10^(s-2) */
+          if (s == v + 1 || s == v + 2)
             {
-              mpz_divexact_ui (y, y, 10);
-              s --;
-            }
-          if (mpz_cmp (y, x) == 0) /* Re(log10(x+i*y)) is exactly s/2 */
-            {
-              /* we reset the precision of Re(ww) so that s can be
-                 represented exactly */
-              mpfr_set_prec (mpc_realref (ww), sizeof(unsigned long)*CHAR_BIT);
-              mpfr_set_ui_2exp (mpc_realref (ww), s, -1, GMP_RNDN); /* exact */
-              ok = 1;
+              mpz_div_2exp (x, x, v);
+              mpz_ui_pow_ui (y, 5, v);
+              if (mpz_cmp (y, x) == 0) /* Re(log10(x+i*y)) is exactly v/2 */
+                {
+                  /* we reset the precision of Re(ww) so that v can be
+                     represented exactly */
+                  mpfr_set_prec (mpc_realref (ww), sizeof(unsigned long)*CHAR_BIT);
+                  mpfr_set_ui_2exp (mpc_realref (ww), v, -1, GMP_RNDN); /* exact */
+                  ok = 1;
+                }
             }
           mpz_clear (x);
           mpz_clear (y);

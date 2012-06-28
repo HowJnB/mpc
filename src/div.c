@@ -312,45 +312,53 @@ mpc_div (mpc_ptr a, mpc_srcptr b, mpc_srcptr c, mpc_rnd_t rnd)
             hopefully, the side-effects of mpc_mul do indeed raise the
             mpfr exceptions */
       if (overflow_prod) {
+         int isinf = 0;
          tmpsgn = mpfr_sgn (mpc_realref(res));
          if (tmpsgn > 0)
-            mpfr_nextabove (mpc_realref(res));
+           {
+             mpfr_nextabove (mpc_realref(res));
+             isinf = mpfr_inf_p (mpc_realref(res));
+             mpfr_nextbelow (mpc_realref(res));
+           }
          else if (tmpsgn < 0)
-            mpfr_nextbelow (mpc_realref(res));
-         if (mpfr_inf_p (mpc_realref(res)))
+           {
+             mpfr_nextbelow (mpc_realref(res));
+             isinf = mpfr_inf_p (mpc_realref(res));
+             mpfr_nextabove (mpc_realref(res));
+           }
+         if (isinf)
            {
              mpfr_set_inf (mpc_realref(res), tmpsgn);
              overflow_re = 1;
            }
-         else
-            if (tmpsgn > 0)
-               mpfr_nextbelow (mpc_realref(res));
-            else if (tmpsgn < 0)
-               mpfr_nextabove (mpc_realref(res));
          tmpsgn = mpfr_sgn (mpc_imagref(res));
+         isinf = 0;
          if (tmpsgn > 0)
-            mpfr_nextabove (mpc_imagref(res));
+           {
+             mpfr_nextabove (mpc_imagref(res));
+             isinf = mpfr_inf_p (mpc_imagref(res));
+             mpfr_nextbelow (mpc_imagref(res));
+           }
          else if (tmpsgn < 0)
-            mpfr_nextbelow (mpc_imagref(res));
-         if (mpfr_inf_p (mpc_imagref(res)))
+           {
+             mpfr_nextbelow (mpc_imagref(res));
+             isinf = mpfr_inf_p (mpc_imagref(res));
+             mpfr_nextabove (mpc_imagref(res));
+           }
+         if (isinf)
            {
              mpfr_set_inf (mpc_imagref(res), tmpsgn);
              overflow_im = 1;
            }
-         else
-            if (tmpsgn > 0)
-               mpfr_nextbelow (mpc_imagref(res));
-            else if (tmpsgn < 0)
-               mpfr_nextabove (mpc_imagref(res));
          mpc_set (a, res, rnd);
          goto end;
       }
 
       /* divide the product by the norm */
       if (inexact_norm == 0 && (inexact_re == 0 || inexact_im == 0)) {
-         /* The division has good chances to be exact in at least one part.   */
-         /* Since this can cause problems when not rounding to the nearest,   */
-         /* we use the division code of mpfr, which handles the situation.    */
+         /* The division has good chances to be exact in at least one part.  */
+         /* Since this can cause problems when not rounding to the nearest,  */
+         /* we use the division code of mpfr, which handles the situation.   */
          mpfr_clear_underflow ();
          mpfr_clear_overflow ();
          inexact_re |= mpfr_div (mpc_realref (res), mpc_realref (res), q, GMP_RNDZ);
@@ -416,16 +424,16 @@ mpc_div (mpc_ptr a, mpc_srcptr b, mpc_srcptr c, mpc_rnd_t rnd)
       inexact_re = mpfr_sgn (mpc_realref (res));
    }
    else if (underflow_re || (overflow_norm && !overflow_prod)) {
-      mpfr_set_zero (mpc_realref (a), mpfr_sgn (mpc_realref (res)));
-      inexact_re = -mpfr_sgn (mpc_realref (res));
+      inexact_re = mpfr_signbit (mpc_realref (res)) ? 1 : -1;
+      mpfr_set_zero (mpc_realref (a), -inexact_re);
    }
    if (overflow_im || (underflow_norm && !underflow_prod)) {
       mpfr_set_inf (mpc_imagref (a), mpfr_sgn (mpc_imagref (res)));
       inexact_im = mpfr_sgn (mpc_imagref (res));
    }
    else if (underflow_im || (overflow_norm && !overflow_prod)) {
-      mpfr_set_zero (mpc_imagref (a), mpfr_sgn (mpc_imagref (res)));
-      inexact_im = -mpfr_sgn (mpc_imagref (res));
+      inexact_im = mpfr_signbit (mpc_imagref (res)) ? 1 : -1;
+      mpfr_set_zero (mpc_imagref (a), -inexact_im);
    }
 
    mpc_clear (res);

@@ -125,6 +125,7 @@
 
 # huge values
 + - 53 -0 53 -1  53 0x4580CBF242683p-3 53 -0x1B3E8A3660D279p-3 N N
+- - 53 +0 53 -1  53 -0x4580CBF242683p-3 53 -0x1B3E8A3660D279p-3 N N
 + + 53 -0 53 +1  53 -0x1B3E8A3660D279p-3 53 0x4580CBF242683p-3 N N
 
 # some values taken from ttan.c

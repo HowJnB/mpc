@@ -1,6 +1,6 @@
 /* mpc_sqrt -- Take the square root of a complex number.
 
-Copyright (C) 2002, 2008, 2009, 2010, 2011 INRIA
+Copyright (C) 2002, 2008, 2009, 2010, 2011, 2012 INRIA
 
 This file is part of GNU MPC.
 
@@ -329,11 +329,11 @@ mpc_sqrt (mpc_ptr a, mpc_srcptr b, mpc_rnd_t rnd)
                inex_im = inex_t;
             else {
                inex_im = -inex_t;
-               if (   (im_cmp > 0 && r == GMP_RNDD)
-                   || (im_cmp < 0 && r == GMP_RNDU))
-                  MPFR_ADD_ONE_ULP (mpc_imagref (a));
-               else
-                  MPFR_SUB_ONE_ULP (mpc_imagref (a));
+               /* im_cmp > 0 implies that Im(b) > 0, thus im_sgn = 0
+                  and r = GMP_RNDU.
+                  im_cmp < 0 implies that Im(b) < 0, thus im_sgn = -1
+                  and r = GMP_RNDD. */
+               MPFR_SUB_ONE_ULP (mpc_imagref (a));
             }
          }
          else if (im_cmp > 0) {
@@ -341,21 +341,17 @@ mpc_sqrt (mpc_ptr a, mpc_srcptr b, mpc_rnd_t rnd)
                inex_re = inex_t;
             else {
                inex_re = -inex_t;
-               if (r == GMP_RNDD)
-                  MPFR_ADD_ONE_ULP (mpc_realref (a));
-               else
-                  MPFR_SUB_ONE_ULP (mpc_realref (a));
+               /* im_cmp > 0 implies r = GMP_RNDU (see above) */
+               MPFR_SUB_ONE_ULP (mpc_realref (a));
             }
          }
-         else {
+         else { /* im_cmp < 0 */
             if (rnd_t == r)
                inex_re = -inex_t;
             else {
                inex_re = inex_t;
-               if (r == GMP_RNDD)
-                  MPFR_SUB_ONE_ULP (mpc_realref (a));
-               else
-                  MPFR_ADD_ONE_ULP (mpc_realref (a));
+               /* im_cmp < 0 implies r = GMP_RNDD (see above) */
+               MPFR_SUB_ONE_ULP (mpc_realref (a));
             }
          }
       }

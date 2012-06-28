@@ -202,7 +202,7 @@ mpc_pow_exact (mpc_ptr z, mpc_srcptr x, mpfr_srcptr y, mpc_rnd_t rnd,
   t = mpz_scan1 (my, 0);
   ey += (mpfr_exp_t) t;
   mpz_tdiv_q_2exp (my, my, t);
-  /* y = my*2^ey */
+  /* y = my*2^ey with my odd */
 
   if (x_imag)
     {
@@ -229,7 +229,6 @@ mpc_pow_exact (mpc_ptr z, mpc_srcptr x, mpfr_srcptr y, mpc_rnd_t rnd,
       mpz_mul_2exp (d, d, (unsigned long int) (ed - ec));
       if ((mpfr_prec_t) mpz_sizeinbase (d, 2) > maxprec)
         goto end;
-      ed = ec;
     }
   else if (ed < ec)
     {
@@ -484,7 +483,7 @@ mpc_pow (mpc_ptr z, mpc_srcptr x, mpc_srcptr y, mpc_rnd_t rnd)
   mpc_t t, u;
   mpfr_prec_t p, pr, pi, maxprec;
   int saved_underflow, saved_overflow;
-
+  
   /* save the underflow or overflow flags from MPFR */
   saved_underflow = mpfr_underflow_p ();
   saved_overflow = mpfr_overflow_p ();
@@ -614,8 +613,8 @@ mpc_pow (mpc_ptr z, mpc_srcptr x, mpc_srcptr y, mpc_rnd_t rnd)
          (a) x is negative and y is half-an-integer
          (b) x = -1 and Re(y) is half-an-integer
       */
-      if (mpfr_cmp_ui (mpc_realref(x), 0) < 0 && is_odd (mpc_realref(y), 1) &&
-          (y_real || mpfr_cmp_si (mpc_realref(x), -1) == 0))
+      if ((mpfr_cmp_ui (mpc_realref(x), 0) < 0) && is_odd (mpc_realref(y), 1)
+         && (y_real || mpfr_cmp_si (mpc_realref(x), -1) == 0))
         z_imag = 1;
     }
   else /* x non real */
