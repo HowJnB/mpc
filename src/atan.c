@@ -196,7 +196,6 @@ mpc_atan (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
     mpfr_t minus_op_re;
     mpfr_exp_t op_re_exp, op_im_exp;
     mpfr_rnd_t rnd1, rnd2;
-    int loops = 0;
 
     mpfr_inits2 (MPFR_PREC_MIN, a, b, x, y, (mpfr_ptr) 0);
 

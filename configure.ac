@@ -123,11 +123,12 @@ AC_COMPILE_IFELSE([AC_LANG_SOURCE([[
  AC_MSG_ERROR([gmp.h cannot be found or is unusable.])
 ])
 
-# Check if compiler accepts warning flags and add them to CFLAGS
+# Check (only in development versions) if the compiler accepts warning
+# flags and add them to CFLAGS
 # Note: don't do this if the user defined CFLAGS, since adding new flags
 # might override the user's settings, see
 # http://lists.gforge.inria.fr/pipermail/mpc-discuss/2012-May/001115.html
-if test -z "$CFLAGS"; then
+if test -z "$USER_CFLAGS"; then
    MPC_C_CHECK_WARNINGCFLAGS
 fi
 
