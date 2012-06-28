@@ -3,6 +3,7 @@
 \usepackage[a4paper]{geometry}
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
+\usepackage{ae}
 \usepackage{amsmath,amssymb}
 \usepackage{hyperref}
 \usepackage{comment}
@@ -46,7 +47,7 @@
 
 \title {MPC: Algorithms and Error Analysis}
 \author {Andreas Enge \and Philippe Th\'eveny \and Paul Zimmermann}
-\date {Draft; June 27, 2012}
+\date {Draft; June 28, 2012}
 
 \begin {document}
 \maketitle
@@ -454,6 +455,37 @@ For the sine function, a completely analogous argument shows that
 \eqref {eq:proprealcos} also holds.
 
 
+\subsubsection {Logarithm}
+\label {sssec:propreallog}
+
+Let
+\[
+\appro x = \log (1 + \appro {x_1})
+\]
+for $\appro {x_1} > -1$.
+By the mean value theorem, there is a $\xi$ between $x_1$ and $\appro {x_1}$
+such that
+\[
+\error (\appro x) = \frac {1}{1 + \xi} \error (\appro {x_1})
+\leq \frac {1}{1 + \min (x_1, \appro {x_1})} \error (\appro {x_1}).
+\]
+For $x_1 > 0$, this implies
+\begin {eqnarray*}
+\error (\appro x)
+& \leq & \error (\appro {x_1})
+\leq
+k \, 2^{\Exp (\appro {x_1}) - \Exp (\appro x)}
+\, 2^{\Exp (\appro x) - p} \\
+& \leq & 2 \, k \, \frac {\appro {x_1}}{\appro x} \, 2^{\Exp (\appro x) - p} \\
+& \leq & 2 \, k \, \frac {\appro {x_1}}{\appro {x_1} - \appro {x_1}^2/2}
+\, 2^{\Exp (\appro x) - p}
+\end {eqnarray*}
+using $\log (1 + z) \geq z - z^2/2$ for $z > 0$.
+For $0 < x_1 \leq 1$, we have $\appro {x_1}^2/2 \leq \appro {x_1}/2$ and
+\[
+\error (\appro x)
+\leq 4 \, k \, 2^{\Exp (\appro x) - p}.
+\]
 
 
 \subsection {Complex functions}
