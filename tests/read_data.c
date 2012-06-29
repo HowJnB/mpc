@@ -594,56 +594,56 @@ set_mpfr_flags (int counter)
 static void
 check_mpfr_flags (int counter)
 {
-  int old, new;
+  int old, neu;
 
   old = (counter & 1) != 0;
-  new = mpfr_underflow_p () != 0;
-  if (old && (new == 0))
+  neu = mpfr_underflow_p () != 0;
+  if (old && (neu == 0))
     {
       printf ("Error, underflow flag has been modified from %d to %d\n",
-              old, new);
+              old, neu);
       exit (1);
     }
   old = (counter & 2) != 0;
-  new = mpfr_overflow_p () != 0;
-  if (old && (new == 0))
+  neu = mpfr_overflow_p () != 0;
+  if (old && (neu == 0))
     {
       printf ("Error, overflow flag has been modified from %d to %d\n",
-              old, new);
+              old, neu);
       exit (1);
     }
 #ifdef mpfr_divby0_p
   old = (counter & 4) != 0;
-  new = mpfr_divby0_p () != 0;
-  if (old && (new == 0))
+  neu = mpfr_divby0_p () != 0;
+  if (old && (neu == 0))
     {
       printf ("Error, divby0 flag has been modified from %d to %d\n",
-              old, new);
+              old, neu);
       exit (1);
     }
 #endif
   old = (counter & 8) != 0;
-  new = mpfr_nanflag_p () != 0;
-  if (old && (new == 0))
+  neu = mpfr_nanflag_p () != 0;
+  if (old && (neu == 0))
     {
       printf ("Error, nanflag flag has been modified from %d to %d\n",
-              old, new);
+              old, neu);
       exit (1);
     }
   old = (counter & 16) != 0;
-  new = mpfr_inexflag_p () != 0;
-  if (old && (new == 0))
+  neu = mpfr_inexflag_p () != 0;
+  if (old && (neu == 0))
     {
       printf ("Error, inexflag flag has been modified from %d to %d\n",
-              old, new);
+              old, neu);
       exit (1);
     }
   old = (counter & 32) != 0;
-  new = mpfr_erangeflag_p () != 0;
-  if (old && (new == 0))
+  neu = mpfr_erangeflag_p () != 0;
+  if (old && (neu == 0))
     {
       printf ("Error, erangeflag flag has been modified from %d to %d\n",
-              old, new);
+              old, neu);
       exit (1);
     }
 }
