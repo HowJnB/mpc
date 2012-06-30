@@ -169,6 +169,7 @@
 
 # Example leading to intermediate overflow in x^2+y^2
 + + 53 0x58B90BFD4BCBFp-22   2  0x1p0       2 0x1p536870912 2 0x1p536870912 U U
++ + 53 0x58B90BFAA42A98p-25   2  0x1p0       2 0x3p1073741821 2 0x3p1073741821 U U
 # Example leading to intermediate underflow in x^2+y^2
 - - 53 -0x58B90BFB3775A8p-25   2  0x3p-2     2 0x1p-1073741824 2 0x1p-1073741824 D D
 

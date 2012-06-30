@@ -143,7 +143,10 @@ do {                                                            \
 
       mpc_abs (w, op, GMP_RNDN);
          /* error 0.5 ulp */
-      MPC_ASSERT (!mpfr_inf_p (w) && !mpfr_zero_p (w));
+      if (mpfr_inf_p (w))
+         /* intermediate overflow; the logarithm may be representable.
+            Intermediate underflow is impossible.                      */
+         break;
 
       mpfr_log (w, w, GMP_RNDN);
          /* generic error of log: (2^(- exp(w)) + 0.5) ulp */
