@@ -135,6 +135,10 @@ mpc_log (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd){
       mpfr_log (w, w, GMP_RNDN);
          /* generic error of log: (2^(- exp(w)) + 0.5) ulp */
 
+      if (mpfr_zero_p (w))
+         /* impossible to round, switch to second algorithm */
+         break;
+
       err = MPC_MAX (-mpfr_get_exp (w), 0) + 1;
          /* number of lost digits */
       ok = mpfr_can_round (w, prec - err, GMP_RNDN, GMP_RNDZ,
