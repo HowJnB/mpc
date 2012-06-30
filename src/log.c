@@ -121,7 +121,7 @@ mpc_log (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd){
    /* loop for the real part: 1/2 log (x^2 + y^2), fast, but unsafe */
    /* implementation                                                */
    ok = 0;
-   for (loops = 1; loops <= 2; loops++) {
+   for (loops = 1; !ok && loops <= 2; loops++) {
       prec += mpc_ceil_log2 (prec) + 4;
       mpfr_set_prec (w, prec);
 
