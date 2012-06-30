@@ -137,6 +137,27 @@ __MPC_DECLSPEC int mpfr_regular_p (mpfr_srcptr);
   } while (0)
 #endif
 
+
+/*
+ * Debug macros
+ */
+
+#define MPC_OUT(x)                                              \
+do {                                                            \
+  printf (#x "[%lu,%lu]=", (unsigned long int) MPC_PREC_RE (x), \
+      (unsigned long int) MPC_PREC_IM (x));                     \
+  mpc_out_str (stdout, 2, 0, x, MPC_RNDNN);                     \
+  printf ("\n");                                                \
+} while (0)
+
+#define MPFR_OUT(x)                                             \
+do {                                                            \
+  printf (#x "[%lu]=", (unsigned long int) mpfr_get_prec (x));  \
+  mpfr_out_str (stdout, 2, 0, x, GMP_RNDN);                     \
+  printf ("\n");                                                \
+} while (0)
+
+
 /*
  * Constants
  */
