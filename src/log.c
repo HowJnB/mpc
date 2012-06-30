@@ -141,16 +141,12 @@ do {                                                            \
       prec += mpc_ceil_log2 (prec) + 4;
       mpfr_set_prec (w, prec);
 
-      /* w is rounded down */
-      mpc_norm (w, op, GMP_RNDN);
+      mpc_abs (w, op, GMP_RNDN);
          /* error 0.5 ulp */
-      if (mpfr_inf_p (w) || mpfr_zero_p (w))
-         /* intermediate over- or underflow; the logarithm may be representable */
-         break;
+      MPC_ASSERT (!mpfr_inf_p (w) && !mpfr_zero_p (w));
 
       mpfr_log (w, w, GMP_RNDN);
          /* generic error of log: (2^(- exp(w)) + 0.5) ulp */
-      mpfr_div_2ui (w, w, 1, GMP_RNDN);
 
       err = MPC_MAX (-mpfr_get_exp (w), 0) + 1;
          /* number of lost digits */
