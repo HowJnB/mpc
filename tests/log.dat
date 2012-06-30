@@ -173,7 +173,11 @@
 # Example leading to intermediate underflow in x^2+y^2
 - - 53 -0x58B90BFB3775A8p-25   2  0x3p-2     2 0x1p-1073741824 2 0x1p-1073741824 D D
 
-# Due to intermediate "underflow" (see FIXME in log.c), the following example
-# loops.
-# log(-1 + i*eps)
-# - - 2 0 2 3 2 -1 2 0x1p-1073741813 N N
+# log (-1 + i*eps), looped in previous version
+- - 2 0 2 3                2 -1 2 0x1p-1073741813 N N
+- - 2 0 2 3                2 -1 2 0x1p-1073741813 D D
++ + 2 0x1p-1073741824 2 4  2 -1 2 0x1p-1073741813 U U
+# log(1 + i*eps), could cause similar problems
+- + 2 0               2 0x1p-1073741824  2 1 2 0x1p-1073741824 N N
+- - 2 0               2 0                2 1 2 0x1p-1073741824 D D
++ + 2 0x1p-1073741824 2 0x1p-1073741824  2 1 2 0x1p-1073741824 U U

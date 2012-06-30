@@ -23,7 +23,7 @@ along with this program. If not, see http://www.gnu.org/licenses/ .
 
 int
 mpc_log (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd){
-   int ok;
+   int ok, underflow = 0;
    mpfr_srcptr x, y;
    mpfr_t v, w;
    mpfr_prec_t prec;
@@ -170,18 +170,20 @@ do {                                                            \
          x = mpc_imagref (op);
          y = mpc_realref (op);
       }
+
       do {
          prec += mpc_ceil_log2 (prec) + 4;
          mpfr_set_prec (v, prec);
          mpfr_set_prec (w, prec);
 
-         mpfr_div (v, y, x, GMP_RNDN); /* error 0.5 ulp */
-         mpfr_sqr (v, v, GMP_RNDN);
+         mpfr_div (v, y, x, GMP_RNDD); /* error 1 ulp */
+         mpfr_sqr (v, v, GMP_RNDD);
             /* generic error of multiplication:
-               0.5 + 2*0.5*(2+0.5*2^(1-prec)) <= 2.51... since prec >= 6 */
-         mpfr_log1p (v, v, GMP_RNDN);
-            /* error 0.5 + 4*2.51... = 10.54... , see algorithms.tex */
-         mpfr_div_2ui (v, v, 1, GMP_RNDN);
+               1 + 2*1*(2+1*2^(1-prec)) <= 5.0625 since prec >= 6 */
+         mpfr_log1p (v, v, GMP_RNDD);
+            /* error 1 + 4*5.0625 = 21.25 , see algorithms.tex */
+         mpfr_div_2ui (v, v, 1, GMP_RNDD);
+            /* If the result is 0, then there has been an underflow somewhere. */
 
          mpfr_abs (w, x, GMP_RNDN); /* exact */
          mpfr_log (w, w, GMP_RNDN); /* error 0.5 ulp */
@@ -192,13 +194,20 @@ do {                                                            \
                                  error 11.54... ulp; error counts lost bits */
             err = 4;
          else
-            err =   MPC_MAX (4 + mpfr_get_exp (v),
-                  /* 10.54... ulp (v) rewritten in ulp (result, now in w) */
+            err =   MPC_MAX (5 + mpfr_get_exp (v),
+                  /* 21.25 ulp (v) rewritten in ulp (result, now in w) */
                            -1 + expw             - mpfr_get_exp (w)
                   /* 0.5 ulp (previous w), rewritten in ulp (result) */
                   ) + 2;
 
-      } while (!mpfr_can_round (w, prec - err, GMP_RNDN, GMP_RNDZ,
+         /* handle one special case: |x|=1, and (y/x)^2 underflows;
+            then 1/2*log(x^2+y^2) \approx 1/2*y^2 also underflows.  */
+         if (   (mpfr_cmp_si (x, -1) == 0 || mpfr_cmp_ui (x, 1) == 0)
+             && mpfr_zero_p (w))
+            underflow = 1;
+
+      } while (!underflow &&
+               !mpfr_can_round (w, prec - err, GMP_RNDN, GMP_RNDZ,
                mpfr_get_prec (mpc_realref (rop)) + (MPC_RND_RE (rnd) == GMP_RNDN)));
       mpfr_clear (v);
    }
@@ -208,7 +217,14 @@ do {                                                            \
                          MPC_RND_IM (rnd));
 
    /* set the real part; cannot be done before if rop==op */
-   inex_re = mpfr_set (mpc_realref (rop), w, MPC_RND_RE (rnd));
+   if (underflow) {
+      /* create underflow in result */
+      mpfr_set_ui (mpc_realref (rop), 1, GMP_RNDN);
+      inex_re = mpfr_mul_2si (mpc_realref (rop), mpc_realref (rop), mpfr_get_emin_min (),
+                              MPC_RND_RE (rnd));
+   }
+   else
+      inex_re = mpfr_set (mpc_realref (rop), w, MPC_RND_RE (rnd));
    mpfr_clear (w);
    return MPC_INEX(inex_re, inex_im);
 }
