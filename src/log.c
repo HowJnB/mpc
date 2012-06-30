@@ -23,11 +23,11 @@ along with this program. If not, see http://www.gnu.org/licenses/ .
 
 int
 mpc_log (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd){
-   int ok=0;
+   int ok;
    mpfr_srcptr x, y;
    mpfr_t v, w;
    mpfr_prec_t prec;
-   int loops = 0;
+   int loops;
    int re_cmp, im_cmp;
    int inex_re, inex_im, inex;
    int err;
@@ -114,22 +114,6 @@ mpc_log (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd){
       return MPC_INEX(inex_re, inex_im);
    }
 
-   prec = MPC_PREC_RE(rop);
-   mpfr_init2 (v, prec);
-   mpfr_init2 (w, prec);
-   /* let op = x + iy; log = 1/2 log (x^2 + y^2) + i atan2 (y, x) */
-   /* loop for the real part:
-      compute 1/2 log (x^2 + y^2) = log |x| + 1/2 * log (1 + (y/x)^2)
-         if |x| >= |y|; otherwise, exchange x and y               */
-   if (mpfr_cmpabs (mpc_realref (op), mpc_imagref (op)) >= 0) {
-      x = mpc_realref (op);
-      y = mpc_imagref (op);
-   }
-   else {
-      x = mpc_imagref (op);
-      y = mpc_realref (op);
-   }
-   do {
 #define MPC_OUT(x)                                              \
 do {                                                            \
   printf (#x "[%lu,%lu]=", (unsigned long int) MPC_PREC_RE (x), \
@@ -146,44 +130,90 @@ do {                                                            \
   mpfr_out_str (stdout, 10, 0, x, GMP_RNDN);                     \
   printf ("\n");                                                \
 } while (0)
-      loops ++;
+
+   prec = MPC_PREC_RE(rop);
+   mpfr_init2 (w, 2);
+   /* let op = x + iy; log = 1/2 log (x^2 + y^2) + i atan2 (y, x)   */
+   /* loop for the real part: 1/2 log (x^2 + y^2), fast, but unsafe */
+   /* implementation                                                */
+   ok = 0;
+   for (loops = 1; loops <= 2; loops++) {
       prec += mpc_ceil_log2 (prec) + 4;
-      mpfr_set_prec (v, prec);
       mpfr_set_prec (w, prec);
 
-      mpfr_div (v, y, x, GMP_RNDN); /* error 0.5 ulp */
-      mpfr_sqr (v, v, GMP_RNDN);
-         /* generic error of multiplication:
-            0.5 + 2*0.5*(2+0.5*2^(1-prec)) <= 2.51... since prec >= 6 */
-      mpfr_log1p (v, v, GMP_RNDN);
-         /* error 0.5 + 4*2.51... = 10.54... , see algorithms.tex */
-      mpfr_div_2ui (v, v, 1, GMP_RNDN);
+      /* w is rounded down */
+      inex = mpc_norm (w, op, GMP_RNDN);
+         /* error 0.5 ulp */
+      if (mpfr_inf_p (w))
+         /* intermediate overflow; the logarithm may be representable */
+         break;
+      if (inex && mpfr_cmp_ui (w, 1) == 0)
+         /* this is like an underflow; the following call to log will
+            compute 0 instead of a positive result                    */
+         break;
 
-      mpfr_abs (w, x, GMP_RNDN); /* exact */
-      mpfr_log (w, w, GMP_RNDN); /* error 0.5 ulp */
-      expw = mpfr_get_exp (w);
+      mpfr_log (w, w, GMP_RNDN);
+         /* generic error of log: (2^(- exp(w)) + 0.5) ulp */
+      mpfr_div_2ui (w, w, 1, GMP_RNDN);
 
-      mpfr_add (w, w, v, GMP_RNDN);
-      if (!mpfr_signbit (w)) /* v is positive, so no cancellation;
-                                error 11.54... ulp; error counts lost bits */
-         err = 4;
-      else
-         err =   MPC_MAX (4 + mpfr_get_exp (v),
-                 /* 10.54... ulp (v) rewritten in ulp (result, now in w) */
-                          -1 + expw             - mpfr_get_exp (w)
-                 /* 0.5 ulp (previous w), rewritten in ulp (result) */
-                 ) + 2;
-   
-   } while (!mpfr_can_round (w, prec - err, GMP_RNDN, GMP_RNDZ,
-            mpfr_get_prec (mpc_realref (rop)) + (MPC_RND_RE (rnd) == GMP_RNDN)));
-      
+      err = MPC_MAX (-mpfr_get_exp (w), 0) + 1;
+         /* number of lost digits */
+      ok = mpfr_can_round (w, prec - err, GMP_RNDN, GMP_RNDZ,
+         mpfr_get_prec (mpc_realref (rop)) + (MPC_RND_RE (rnd) == GMP_RNDN));
+   }
+
+   if (!ok) {
+      prec = MPC_PREC_RE(rop);
+      mpfr_init2 (v, 2);
+      /* compute 1/2 log (x^2 + y^2) = log |x| + 1/2 * log (1 + (y/x)^2)
+            if |x| >= |y|; otherwise, exchange x and y                   */
+      if (mpfr_cmpabs (mpc_realref (op), mpc_imagref (op)) >= 0) {
+         x = mpc_realref (op);
+         y = mpc_imagref (op);
+      }
+      else {
+         x = mpc_imagref (op);
+         y = mpc_realref (op);
+      }
+      do {
+         prec += mpc_ceil_log2 (prec) + 4;
+         mpfr_set_prec (v, prec);
+         mpfr_set_prec (w, prec);
+
+         mpfr_div (v, y, x, GMP_RNDN); /* error 0.5 ulp */
+         mpfr_sqr (v, v, GMP_RNDN);
+            /* generic error of multiplication:
+               0.5 + 2*0.5*(2+0.5*2^(1-prec)) <= 2.51... since prec >= 6 */
+         mpfr_log1p (v, v, GMP_RNDN);
+            /* error 0.5 + 4*2.51... = 10.54... , see algorithms.tex */
+         mpfr_div_2ui (v, v, 1, GMP_RNDN);
+
+         mpfr_abs (w, x, GMP_RNDN); /* exact */
+         mpfr_log (w, w, GMP_RNDN); /* error 0.5 ulp */
+         expw = mpfr_get_exp (w);
+
+         mpfr_add (w, w, v, GMP_RNDN);
+         if (!mpfr_signbit (w)) /* v is positive, so no cancellation;
+                                 error 11.54... ulp; error counts lost bits */
+            err = 4;
+         else
+            err =   MPC_MAX (4 + mpfr_get_exp (v),
+                  /* 10.54... ulp (v) rewritten in ulp (result, now in w) */
+                           -1 + expw             - mpfr_get_exp (w)
+                  /* 0.5 ulp (previous w), rewritten in ulp (result) */
+                  ) + 2;
+
+      } while (!mpfr_can_round (w, prec - err, GMP_RNDN, GMP_RNDZ,
+               mpfr_get_prec (mpc_realref (rop)) + (MPC_RND_RE (rnd) == GMP_RNDN)));
+      mpfr_clear (v);
+   }
+
    /* imaginary part */
    inex_im = mpfr_atan2 (mpc_imagref (rop), mpc_imagref (op), mpc_realref (op),
                          MPC_RND_IM (rnd));
 
    /* set the real part; cannot be done before if rop==op */
    inex_re = mpfr_set (mpc_realref (rop), w, MPC_RND_RE (rnd));
-   mpfr_clear (v);
    mpfr_clear (w);
    return MPC_INEX(inex_re, inex_im);
 }
