@@ -144,8 +144,8 @@ do {                                                            \
       /* w is rounded down */
       inex = mpc_norm (w, op, GMP_RNDN);
          /* error 0.5 ulp */
-      if (mpfr_inf_p (w))
-         /* intermediate overflow; the logarithm may be representable */
+      if (mpfr_inf_p (w) || mpfr_zero_p (w))
+         /* intermediate over- or underflow; the logarithm may be representable */
          break;
       if (inex && mpfr_cmp_ui (w, 1) == 0)
          /* this is like an underflow; the following call to log will
