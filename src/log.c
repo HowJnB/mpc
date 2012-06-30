@@ -32,6 +32,7 @@ mpc_log (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd){
    int inex_re, inex_im;
    int err;
    mpfr_exp_t expw;
+   int sgnw;
 
    /* special values: NaN and infinities */
    if (!mpc_fin_p (op)) {
@@ -114,23 +115,6 @@ mpc_log (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd){
       return MPC_INEX(inex_re, inex_im);
    }
 
-#define MPC_OUT(x)                                              \
-do {                                                            \
-  printf (#x "[%lu,%lu]=", (unsigned long int) MPC_PREC_RE (x), \
-      (unsigned long int) MPC_PREC_IM (x));                     \
-  mpc_out_str (stdout, 2, 0, x, MPC_RNDNN);                     \
-  printf ("\n");                                                \
-} while (0)
-
-#define MPFR_OUT(x)                                             \
-do {                                                            \
-  printf (#x "[%lu]=", (unsigned long int) mpfr_get_prec (x));  \
-  mpfr_out_str (stdout, 2, 0, x, GMP_RNDN);                     \
-  printf ("\t");                                                 \
-  mpfr_out_str (stdout, 10, 0, x, GMP_RNDN);                     \
-  printf ("\n");                                                \
-} while (0)
-
    prec = MPC_PREC_RE(rop);
    mpfr_init2 (w, 2);
    /* let op = x + iy; log = 1/2 log (x^2 + y^2) + i atan2 (y, x)   */
@@ -188,10 +172,11 @@ do {                                                            \
          mpfr_abs (w, x, GMP_RNDN); /* exact */
          mpfr_log (w, w, GMP_RNDN); /* error 0.5 ulp */
          expw = mpfr_get_exp (w);
+         sgnw = mpfr_signbit (w);
 
          mpfr_add (w, w, v, GMP_RNDN);
-         if (!mpfr_signbit (w)) /* v is positive, so no cancellation;
-                                 error 22.25 ulp; error counts lost bits */
+         if (!sgnw) /* v is positive, so no cancellation;
+                       error 22.25 ulp; error counts lost bits */
             err = 5;
          else
             err =   MPC_MAX (5 + mpfr_get_exp (v),
