@@ -191,8 +191,8 @@ do {                                                            \
 
          mpfr_add (w, w, v, GMP_RNDN);
          if (!mpfr_signbit (w)) /* v is positive, so no cancellation;
-                                 error 11.54... ulp; error counts lost bits */
-            err = 4;
+                                 error 22.25 ulp; error counts lost bits */
+            err = 5;
          else
             err =   MPC_MAX (5 + mpfr_get_exp (v),
                   /* 21.25 ulp (v) rewritten in ulp (result, now in w) */
