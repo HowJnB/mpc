@@ -206,12 +206,10 @@ mpc_log (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd){
                          MPC_RND_IM (rnd));
 
    /* set the real part; cannot be done before if rop==op */
-   if (underflow) {
+   if (underflow)
       /* create underflow in result */
-      mpfr_set_ui (mpc_realref (rop), 1, GMP_RNDN);
-      inex_re = mpfr_mul_2si (mpc_realref (rop), mpc_realref (rop), mpfr_get_emin_min (),
-                              MPC_RND_RE (rnd));
-   }
+      inex_re = mpfr_set_ui_2exp (mpc_realref (rop), 1,
+                                  mpfr_get_emin_min () - 2, MPC_RND_RE (rnd));
    else
       inex_re = mpfr_set (mpc_realref (rop), w, MPC_RND_RE (rnd));
    mpfr_clear (w);
