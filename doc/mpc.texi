@@ -913,15 +913,17 @@ rounded in the direction @var{rnd}.
 @end deftypefun
 
 @deftypefun int mpc_mul_2ui (mpc_t @var{rop}, mpc_t @var{op1}, unsigned long int @var{op2}, mpc_rnd_t @var{rnd})
+@deftypefunx int mpc_mul_2si (mpc_t @var{rop}, mpc_t @var{op1}, long int @var{op2}, mpc_rnd_t @var{rnd})
 Set @var{rop} to @var{op1} times 2 raised to @var{op2}
-rounded according to @var{rnd}. Just increases the exponents
+rounded according to @var{rnd}. Just modifies the exponents
 of the real and imaginary parts by @var{op2}
 when @var{rop} and @var{op1} are identical.
 @end deftypefun
 
 @deftypefun int mpc_div_2ui (mpc_t @var{rop}, mpc_t @var{op1}, unsigned long int @var{op2}, mpc_rnd_t @var{rnd})
+@deftypefunx int mpc_div_2ui (mpc_t @var{rop}, mpc_t @var{op1}, long int @var{op2}, mpc_rnd_t @var{rnd})
 Set @var{rop} to @var{op1} divided by 2 raised to @var{op2}
-rounded according to @var{rnd}. Just decreases the exponents
+rounded according to @var{rnd}. Just modifies the exponents
 of the real and imaginary parts by @var{op2}
 when @var{rop} and @var{op1} are identical.
 @end deftypefun

@@ -1,4 +1,4 @@
-/* tdiv_2exp -- test file for mpc_div_2exp.
+/* tdiv_2ui -- test file for mpc_div_2ui.
 
 Copyright (C) 2008, 2012 INRIA
 

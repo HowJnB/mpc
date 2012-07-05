@@ -13,6 +13,9 @@ get_version.c and update mpc.h.
 Use MPFR_RND? instead of GMP_RND?, and remove workarounds for MPFR_RNDA from
 mpc-impl.h.
 
+From Andreas Enge 05 July 2012:
+Add support for rounding mode MPFR_RNDA.
+
 Bench:
 - from Andreas Enge 9 June 2009:
   Scripts and web page comparing timings with different systems,

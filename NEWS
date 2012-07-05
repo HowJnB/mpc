@@ -6,7 +6,7 @@ Changes in version 1.0:
   - 0^0, which returned (NaN,NaN) previously, now returns (1,+0).
   - Removed compatibility with K&R compilers, untestable due to lack of
     such compilers
-  - New function mpc_log10.
+  - New functions: mpc_log10, mpc_mul_2si, mpc_div_2si
   - Optimisation:
     - fma
   - Bug fixes:

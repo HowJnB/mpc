@@ -1,4 +1,4 @@
-/* tmul_2exp -- test file for mpc_mul_2exp.
+/* tmul_2ui -- test file for mpc_mul_2ui.
 
 Copyright (C) 2008, 2012 INRIA
 

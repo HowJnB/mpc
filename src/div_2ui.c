@@ -25,8 +25,8 @@ mpc_div_2ui (mpc_ptr a, mpc_srcptr b, unsigned long int c, mpc_rnd_t rnd)
 {
   int inex_re, inex_im;
 
-  inex_re = mpfr_div_2exp (mpc_realref(a), mpc_realref(b), c, MPC_RND_RE(rnd));
-  inex_im = mpfr_div_2exp (mpc_imagref(a), mpc_imagref(b), c, MPC_RND_IM(rnd));
+  inex_re = mpfr_div_2ui (mpc_realref(a), mpc_realref(b), c, MPC_RND_RE(rnd));
+  inex_im = mpfr_div_2ui (mpc_imagref(a), mpc_imagref(b), c, MPC_RND_IM(rnd));
 
   return MPC_INEX(inex_re, inex_im);
 }

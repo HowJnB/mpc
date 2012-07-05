@@ -153,6 +153,8 @@ __MPC_DECLSPEC int  mpc_div_ui    (mpc_ptr, mpc_srcptr, unsigned long int, mpc_r
 __MPC_DECLSPEC int  mpc_ui_div    (mpc_ptr, unsigned long int, mpc_srcptr, mpc_rnd_t);
 __MPC_DECLSPEC int  mpc_div_2ui   (mpc_ptr, mpc_srcptr, unsigned long int, mpc_rnd_t);
 __MPC_DECLSPEC int  mpc_mul_2ui   (mpc_ptr, mpc_srcptr, unsigned long int, mpc_rnd_t);
+__MPC_DECLSPEC int  mpc_div_2si   (mpc_ptr, mpc_srcptr, long int, mpc_rnd_t);
+__MPC_DECLSPEC int  mpc_mul_2si   (mpc_ptr, mpc_srcptr, long int, mpc_rnd_t);
 __MPC_DECLSPEC int  mpc_conj      (mpc_ptr, mpc_srcptr, mpc_rnd_t);
 __MPC_DECLSPEC int  mpc_neg       (mpc_ptr, mpc_srcptr, mpc_rnd_t);
 __MPC_DECLSPEC int  mpc_norm      (mpfr_ptr, mpc_srcptr, mpfr_rnd_t);

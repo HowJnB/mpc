@@ -28,9 +28,10 @@ AM_LDFLAGS = -no-install
 LOADLIBES=$(DEFS) -I$(top_srcdir)/src -I$(top_builddir) $(CPPFLAGS) $(CFLAGS) -L$(top_builddir)/tests/.libs -lmpc-tests -lmpc -lm $(LIBS)
 
 check_PROGRAMS = tabs tacos tacosh tadd tadd_fr tadd_si tadd_ui targ tasin    \
-tasinh tatan tatanh tconj tcos tcosh tdiv tdiv_2ui tdiv_fr tdiv_ui texp tfma  \
-tfr_div tfr_sub timag tio_str tlog tlog10 tmul tmul_2ui tmul_fr tmul_i        \
-tmul_si tmul_ui tneg tnorm tpow tpow_ld tpow_d tpow_fr tpow_si tpow_ui tpow_z \
+tasinh tatan tatanh tconj tcos tcosh tdiv tdiv_2si tdiv_2ui tdiv_fr tdiv_ui   \
+texp tfma tfr_div tfr_sub timag tio_str tlog tlog10                           \
+tmul tmul_2ui tmul_2ui tmul_fr tmul_i tmul_si tmul_ui                         \
+tneg tnorm tpow tpow_ld tpow_d tpow_fr tpow_si tpow_ui tpow_z                 \
 tprec tproj treal treimref tset tsin tsin_cos tsinh tsqr tsqrt tstrtoc tsub   \
 tsub_fr tsub_ui tswap ttan ttanh tui_div tui_ui_sub tget_version
 
