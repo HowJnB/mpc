@@ -304,7 +304,6 @@ mpc_atan (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
     */
     err = 2;
     p = prec; /* working precision */
-    rnd1 = mpfr_cmp_si (mpc_imagref (op), -1) > 0 ? GMP_RNDU : GMP_RNDD;
 
     do
       {
@@ -314,7 +313,7 @@ mpc_atan (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
         mpfr_set_prec (y, p);
 
         /* a = upper bound for log(x^2 + (1+y)^2) */
-        mpfr_add_ui (a, mpc_imagref (op), 1, rnd1); /* round away */
+        ROUND_AWAY (mpfr_add_ui (a, mpc_imagref (op), 1, MPFR_RNDA), a);
         mpfr_sqr (a, a, GMP_RNDU);
         mpfr_sqr (y, mpc_realref (op), GMP_RNDU);
         mpfr_add (a, a, y, GMP_RNDU);
