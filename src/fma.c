@@ -166,10 +166,10 @@ mpc_fma (mpc_ptr r, mpc_srcptr a, mpc_srcptr b, mpc_srcptr c, mpc_rnd_t rnd)
       diffim -= mpfr_get_exp (mpc_imagref(ab));
       diffre = (diffre > 0 ? diffre + 1 : 1);
       diffim = (diffim > 0 ? diffim + 1 : 1);
-      okre = diffre > wpre ? 0 : mpfr_can_round (mpc_realref(ab),
+      okre = diffre > (mpfr_exp_t) wpre ? 0 : mpfr_can_round (mpc_realref(ab),
                                  wpre - diffre, GMP_RNDN, GMP_RNDZ,
                                  pre + (MPC_RND_RE (rnd) == GMP_RNDN));
-      okim = diffim > wpim ? 0 : mpfr_can_round (mpc_imagref(ab),
+      okim = diffim > (mpfr_exp_t) wpim ? 0 : mpfr_can_round (mpc_imagref(ab),
                                  wpim - diffim, GMP_RNDN, GMP_RNDZ,
                                  pim + (MPC_RND_IM (rnd) == GMP_RNDN));
       if (okre && okim)
