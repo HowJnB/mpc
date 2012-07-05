@@ -195,8 +195,7 @@ mpc_acos (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
       mpfr_set_prec (mpc_realref(z1), p);
       mpfr_set_prec (pi_over_2, p);
 
-      mpfr_const_pi (pi_over_2, GMP_RNDN);
-      mpfr_div_2exp (pi_over_2, pi_over_2, 1, GMP_RNDN); /* Pi/2 */
+      set_pi_over_2 (pi_over_2, +1, GMP_RNDN);
       e1 = 1; /* Exp(pi_over_2) */
       inex = mpc_asin (z1, op, rnd1); /* asin(z) */
       MPC_ASSERT (mpfr_sgn (mpc_imagref(z1)) * mpfr_sgn (mpc_imagref(op)) > 0);
