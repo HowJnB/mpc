@@ -184,7 +184,7 @@ mpc_log10 (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
             inex_re = mpfr_set_ui (mpc_realref (rop), 0, MPC_RND_RE (rnd));
           else
             inex_re = mpc_log10_aux (rop, ww, rnd, 0, 1);
-          inex_im = mpc_log10_aux (rop, op, RNDC(0,rnd_im), 1, 2);
+          inex_im = mpc_log10_aux (rop, op, MPC_RND (0,rnd_im), 1, 2);
           if (negative_zero)
             {
               mpc_conj (rop, rop, MPC_RNDNN);
@@ -208,7 +208,7 @@ mpc_log10 (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
            ww->im[0] = *mpc_imagref (op);
            MPFR_CHANGE_SIGN (ww->im);
            inex_re = mpc_log10_aux (rop, ww, rnd, 0, 3);
-           invrnd = RNDC(0, INV_RND (MPC_RND_IM (rnd)));
+           invrnd = MPC_RND (0, INV_RND (MPC_RND_IM (rnd)));
            inex_im = mpc_log10_aux (rop, op, invrnd, 1, 2);
            /* division by 2 does not change the ternary flag */
            mpfr_div_2ui (mpc_imagref (rop), mpc_imagref (rop), 1, GMP_RNDN);

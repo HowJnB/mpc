@@ -1,6 +1,6 @@
 /* mpc_acos -- arccosine of a complex number.
 
-Copyright (C) 2009, 2010, 2011 INRIA
+Copyright (C) 2009, 2010, 2011, 2012 INRIA
 
 This file is part of GNU MPC.
 
@@ -186,7 +186,7 @@ mpc_acos (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
     rnd_im = rnd_im == GMP_RNDU ? GMP_RNDD
       : rnd_im == GMP_RNDD ? GMP_RNDU
       : rnd_im; /* both RNDZ and RNDA map to themselves for -asin(z) */
-  rnd1 = RNDC(GMP_RNDN, rnd_im);
+  rnd1 = MPC_RND (GMP_RNDN, rnd_im);
   mpfr_init2 (pi_over_2, p);
   for (;;)
     {

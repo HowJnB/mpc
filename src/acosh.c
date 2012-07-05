@@ -1,6 +1,6 @@
 /* mpc_acosh -- inverse hyperbolic cosine of a complex number.
 
-Copyright (C) 2009, 2011 INRIA
+Copyright (C) 2009, 2011, 2012 INRIA
 
 This file is part of GNU MPC.
 
@@ -46,7 +46,7 @@ mpc_acosh (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
   if (mpfr_signbit (mpc_imagref (op)))
     {
       inex = mpc_acos (a, op,
-                       RNDC (INV_RND (MPC_RND_IM (rnd)), MPC_RND_RE (rnd)));
+                       MPC_RND (INV_RND (MPC_RND_IM (rnd)), MPC_RND_RE (rnd)));
 
       /* change a to -i*a, i.e., -y+i*x to x+i*y */
       tmp[0] = mpc_realref (a)[0];
@@ -58,7 +58,7 @@ mpc_acosh (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
   else
     {
       inex = mpc_acos (a, op,
-                       RNDC (MPC_RND_IM (rnd), INV_RND(MPC_RND_RE (rnd))));
+                       MPC_RND (MPC_RND_IM (rnd), INV_RND(MPC_RND_RE (rnd))));
 
       /* change a to i*a, i.e., y-i*x to x+i*y */
       tmp[0] = mpc_realref (a)[0];

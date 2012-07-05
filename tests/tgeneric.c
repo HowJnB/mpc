@@ -1,6 +1,6 @@
 /* tgeneric.c -- File for generic tests.
 
-Copyright (C) 2008, 2009, 2010, 2011 INRIA
+Copyright (C) 2008, 2009, 2010, 2011, 2012 INRIA
 
 This file is part of GNU MPC.
 
@@ -1288,13 +1288,13 @@ tgeneric (mpc_function function, mpfr_prec_t prec_min,
           case C_CC:
             for (rnd_im = first_rnd_mode (); is_valid_rnd_mode (rnd_im); rnd_im = next_rnd_mode (rnd_im))
               tgeneric_c_cc (&function, z1, z2, z3, zzzz, z4,
-			     RNDC (rnd_re, rnd_im));
+			     MPC_RND (rnd_re, rnd_im));
             reuse_c_cc (&function, z1, z2, z3, z4);
             break;
           case CCCC:
             for (rnd_im = first_rnd_mode (); is_valid_rnd_mode (rnd_im); rnd_im = next_rnd_mode (rnd_im))
               tgeneric_cccc (&function, z1, z2, z3, z4, zzzz, z5,
-                            RNDC (rnd_re, rnd_im));
+                            MPC_RND (rnd_re, rnd_im));
             reuse_cccc (&function, z1, z2, z3, z4, z5);
             break;
           case FC:
@@ -1304,7 +1304,7 @@ tgeneric (mpc_function function, mpfr_prec_t prec_min,
           case CC:
             for (rnd_im = first_rnd_mode (); is_valid_rnd_mode (rnd_im); rnd_im = next_rnd_mode (rnd_im))
               tgeneric_cc (&function, z1, z2, zzzz, z3,
-                           RNDC (rnd_re, rnd_im));
+                           MPC_RND (rnd_re, rnd_im));
             reuse_cc (&function, z1, z2, z3);
             break;
           case CC_C:
@@ -1312,49 +1312,49 @@ tgeneric (mpc_function function, mpfr_prec_t prec_min,
                for (rnd2_re = first_rnd_mode (); is_valid_rnd_mode (rnd2_re); rnd2_re = next_rnd_mode (rnd2_re))
                   for (rnd2_im = first_rnd_mode (); is_valid_rnd_mode (rnd2_im); rnd2_im = next_rnd_mode (rnd2_im))
                      tgeneric_cc_c (&function, z1, z2, z3, zzzz, zzzz2, z4, z5,
-                           RNDC (rnd_re, rnd_im), RNDC (rnd2_re, rnd2_im));
+                           MPC_RND (rnd_re, rnd_im), MPC_RND (rnd2_re, rnd2_im));
              reuse_cc_c (&function, z1, z2, z3, z4, z5);
             break;
           case CFC:
             for (rnd_im = first_rnd_mode (); is_valid_rnd_mode (rnd_im); rnd_im = next_rnd_mode (rnd_im))
               tgeneric_cfc (&function, x1, z1, z2, zzzz, z3,
-                            RNDC (rnd_re, rnd_im));
+                            MPC_RND (rnd_re, rnd_im));
             reuse_cfc (&function, z1, x1, z2, z3);
             break;
           case CCF:
             for (rnd_im = first_rnd_mode (); is_valid_rnd_mode (rnd_im); rnd_im = next_rnd_mode (rnd_im))
               tgeneric_ccf (&function, z1, x1, z2, zzzz, z3,
-                            RNDC (rnd_re, rnd_im));
+                            MPC_RND (rnd_re, rnd_im));
             reuse_ccf (&function, z1, x1, z2, z3);
             break;
           case CCU:
             for (rnd_im = first_rnd_mode (); is_valid_rnd_mode (rnd_im); rnd_im = next_rnd_mode (rnd_im))
               tgeneric_ccu (&function, z1, ul1, z2, zzzz, z3,
-                            RNDC (rnd_re, rnd_im));
+                            MPC_RND (rnd_re, rnd_im));
             reuse_ccu (&function, z1, ul1, z2, z3);
             break;
           case CUC:
             for (rnd_im = first_rnd_mode (); is_valid_rnd_mode (rnd_im); rnd_im = next_rnd_mode (rnd_im))
               tgeneric_cuc (&function, ul1, z1, z2, zzzz, z3,
-                            RNDC (rnd_re, rnd_im));
+                            MPC_RND (rnd_re, rnd_im));
             reuse_cuc (&function, ul1, z1, z2, z3);
             break;
           case CCS:
             for (rnd_im = first_rnd_mode (); is_valid_rnd_mode (rnd_im); rnd_im = next_rnd_mode (rnd_im))
               tgeneric_ccs (&function, z1, lo, z2, zzzz, z3,
-                            RNDC (rnd_re, rnd_im));
+                            MPC_RND (rnd_re, rnd_im));
             reuse_ccs (&function, z1, lo, z2, z3);
             break;
           case CCI:
             for (rnd_im = first_rnd_mode (); is_valid_rnd_mode (rnd_im); rnd_im = next_rnd_mode (rnd_im))
               tgeneric_cci (&function, z1, i, z2, zzzz, z3,
-                            RNDC (rnd_re, rnd_im));
+                            MPC_RND (rnd_re, rnd_im));
             reuse_cci (&function, z1, i, z2, z3);
             break;
           case CUUC:
             for (rnd_im = first_rnd_mode (); is_valid_rnd_mode (rnd_im); rnd_im = next_rnd_mode (rnd_im))
               tgeneric_cuuc (&function, ul1, ul2, z1, z2, zzzz, z3,
-                             RNDC (rnd_re, rnd_im));
+                             MPC_RND (rnd_re, rnd_im));
             reuse_cuuc (&function, ul1, ul2, z1, z2, z3);
             break;
           default:

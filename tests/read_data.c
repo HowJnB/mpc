@@ -1,6 +1,6 @@
 /* read_data,c -- Read data file and check function.
 
-Copyright (C) 2008, 2009, 2010, 2011 INRIA
+Copyright (C) 2008, 2009, 2010, 2011, 2012 INRIA
 
 This file is part of GNU MPC.
 
@@ -271,7 +271,7 @@ read_mpc_rounding_mode (FILE *fp, mpc_rnd_t* rnd)
    mpfr_rnd_t re, im;
    read_mpfr_rounding_mode (fp, &re);
    read_mpfr_rounding_mode (fp, &im);
-   *rnd = RNDC (re, im);
+   *rnd = MPC_RND (re, im);
 }
 
 void

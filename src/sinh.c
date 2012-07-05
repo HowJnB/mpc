@@ -1,6 +1,6 @@
 /* mpc_sinh -- hyperbolic sine of a complex number.
 
-Copyright (C)2008, 2009, 2011 INRIA
+Copyright (C)2008, 2009, 2011, 2012 INRIA
 
 This file is part of GNU MPC.
 
@@ -36,7 +36,7 @@ mpc_sinh (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
   mpc_realref (sin_z)[0] = mpc_imagref (rop)[0];
   mpc_imagref (sin_z)[0] = mpc_realref (rop)[0];
 
-  inex = mpc_sin (sin_z, z, RNDC (MPC_RND_IM (rnd), MPC_RND_RE (rnd)));
+  inex = mpc_sin (sin_z, z, MPC_RND (MPC_RND_IM (rnd), MPC_RND_RE (rnd)));
 
   /* sin_z and rop parts share the same significands, copy the rest now. */
   mpc_realref (rop)[0] = mpc_imagref (sin_z)[0];

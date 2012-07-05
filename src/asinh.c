@@ -1,6 +1,6 @@
 /* mpc_asinh -- inverse hyperbolic sine of a complex number.
 
-Copyright (C) 2009, 2011 INRIA
+Copyright (C) 2009, 2011, 2012 INRIA
 
 This file is part of GNU MPC.
 
@@ -37,7 +37,7 @@ mpc_asinh (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
   mpc_init3 (a, MPC_PREC_IM(rop), MPC_PREC_RE(rop));
 
   inex = mpc_asin (a, z,
-                   RNDC (INV_RND (MPC_RND_IM (rnd)), MPC_RND_RE (rnd)));
+                   MPC_RND (INV_RND (MPC_RND_IM (rnd)), MPC_RND_RE (rnd)));
 
   /* if a = asin(i*op) = x+i*y, and we want y-i*x */
 

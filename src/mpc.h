@@ -74,29 +74,29 @@ along with this program. If not, see http://www.gnu.org/licenses/ .
    we reserve four bits for a real rounding mode.  */
 typedef int mpc_rnd_t;
 
-#define RNDC(r1,r2) (((int)(r1)) + ((int)(r2) << 4))
+#define MPC_RND(r1,r2) (((int)(r1)) + ((int)(r2) << 4))
 #define MPC_RND_RE(x) ((mpfr_rnd_t)((x) & 0x0F))
 #define MPC_RND_IM(x) ((mpfr_rnd_t)((x) >> 4))
 
-#define MPC_RNDNN RNDC(GMP_RNDN,GMP_RNDN)
-#define MPC_RNDNZ RNDC(GMP_RNDN,GMP_RNDZ)
-#define MPC_RNDNU RNDC(GMP_RNDN,GMP_RNDU)
-#define MPC_RNDND RNDC(GMP_RNDN,GMP_RNDD)
+#define MPC_RNDNN MPC_RND (GMP_RNDN,GMP_RNDN)
+#define MPC_RNDNZ MPC_RND (GMP_RNDN,GMP_RNDZ)
+#define MPC_RNDNU MPC_RND (GMP_RNDN,GMP_RNDU)
+#define MPC_RNDND MPC_RND (GMP_RNDN,GMP_RNDD)
 
-#define MPC_RNDZN RNDC(GMP_RNDZ,GMP_RNDN)
-#define MPC_RNDZZ RNDC(GMP_RNDZ,GMP_RNDZ)
-#define MPC_RNDZU RNDC(GMP_RNDZ,GMP_RNDU)
-#define MPC_RNDZD RNDC(GMP_RNDZ,GMP_RNDD)
+#define MPC_RNDZN MPC_RND (GMP_RNDZ,GMP_RNDN)
+#define MPC_RNDZZ MPC_RND (GMP_RNDZ,GMP_RNDZ)
+#define MPC_RNDZU MPC_RND (GMP_RNDZ,GMP_RNDU)
+#define MPC_RNDZD MPC_RND (GMP_RNDZ,GMP_RNDD)
 
-#define MPC_RNDUN RNDC(GMP_RNDU,GMP_RNDN)
-#define MPC_RNDUZ RNDC(GMP_RNDU,GMP_RNDZ)
-#define MPC_RNDUU RNDC(GMP_RNDU,GMP_RNDU)
-#define MPC_RNDUD RNDC(GMP_RNDU,GMP_RNDD)
+#define MPC_RNDUN MPC_RND (GMP_RNDU,GMP_RNDN)
+#define MPC_RNDUZ MPC_RND (GMP_RNDU,GMP_RNDZ)
+#define MPC_RNDUU MPC_RND (GMP_RNDU,GMP_RNDU)
+#define MPC_RNDUD MPC_RND (GMP_RNDU,GMP_RNDD)
 
-#define MPC_RNDDN RNDC(GMP_RNDD,GMP_RNDN)
-#define MPC_RNDDZ RNDC(GMP_RNDD,GMP_RNDZ)
-#define MPC_RNDDU RNDC(GMP_RNDD,GMP_RNDU)
-#define MPC_RNDDD RNDC(GMP_RNDD,GMP_RNDD)
+#define MPC_RNDDN MPC_RND (GMP_RNDD,GMP_RNDN)
+#define MPC_RNDDZ MPC_RND (GMP_RNDD,GMP_RNDZ)
+#define MPC_RNDDU MPC_RND (GMP_RNDD,GMP_RNDU)
+#define MPC_RNDDD MPC_RND (GMP_RNDD,GMP_RNDD)
 
 
 /* Definitions of types and their semantics */

@@ -80,7 +80,7 @@ check_random (void)
 
       for (rnd_re = 0; rnd_re < 4; rnd_re ++)
          for (rnd_im = 0; rnd_im < 4; rnd_im ++)
-            cmpfma (a, b, c, RNDC(rnd_re, rnd_im));
+            cmpfma (a, b, c, MPC_RND (rnd_re, rnd_im));
    }
 
    mpc_clear (a);
