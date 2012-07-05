@@ -1,6 +1,6 @@
 /* tadd_fr -- test file for mpc_add_fr.
 
-Copyright (C) 2008, 2010 INRIA
+Copyright (C) 2008, 2010, 2012 INRIA
 
 This file is part of GNU MPC.
 
@@ -45,7 +45,7 @@ check_ternary_value (mpfr_prec_t prec_max, mpfr_prec_t step)
         }
 
       mpc_set_ui (z, 1, MPC_RNDNN);
-      mpc_mul_2exp (z, z, (unsigned long int) prec, MPC_RNDNN);
+      mpc_mul_2ui (z, z, (unsigned long int) prec, MPC_RNDNN);
       if (mpc_add_fr (z, z, f, MPC_RNDNN) == 0)
         {
           fprintf (stderr, "Error in mpc_add_fr: 2^prec+1 cannot be exact\n");

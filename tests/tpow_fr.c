@@ -1,6 +1,6 @@
 /* tpow_fr -- test file for mpc_pow_fr.
 
-Copyright (C) 2009, 2011 INRIA
+Copyright (C) 2009, 2011, 2012 INRIA
 
 This file is part of GNU MPC.
 
@@ -31,7 +31,7 @@ test_reuse (void)
   mpc_init2 (z, 2);
   mpc_set_si_si (z, 0, -1, MPC_RNDNN);
   mpfr_neg (mpc_realref (z), mpc_realref (z), GMP_RNDN);
-  mpc_div_2exp (z, z, 4, MPC_RNDNN);
+  mpc_div_2ui (z, z, 4, MPC_RNDNN);
   mpfr_set_ui (y, 512, GMP_RNDN);
   inex = mpc_pow_fr (z, z, y, MPC_RNDNN);
   if (MPC_INEX_RE(inex) != 0 || MPC_INEX_IM(inex) != 0 ||

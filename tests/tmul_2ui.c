@@ -1,6 +1,6 @@
-/* mpc_mul_2exp -- Multiply a complex number by 2^e.
+/* tmul_2exp -- test file for mpc_mul_2exp.
 
-Copyright (C) 2002, 2009, 2011 INRIA
+Copyright (C) 2008, 2012 INRIA
 
 This file is part of GNU MPC.
 
@@ -18,15 +18,18 @@ You should have received a copy of the GNU Lesser General Public License
 along with this program. If not, see http://www.gnu.org/licenses/ .
 */
 
-#include "mpc-impl.h"
+#include "mpc-tests.h"
 
 int
-mpc_mul_2exp (mpc_ptr a, mpc_srcptr b, unsigned long int c, mpc_rnd_t rnd)
+main (void)
 {
-  int inex_re, inex_im;
+  DECL_FUNC (CCU, f, mpc_mul_2ui);
 
-  inex_re = mpfr_mul_2exp (mpc_realref(a), mpc_realref(b), c, MPC_RND_RE(rnd));
-  inex_im = mpfr_mul_2exp (mpc_imagref(a), mpc_imagref(b), c, MPC_RND_IM(rnd));
+  test_start ();
 
-  return MPC_INEX(inex_re, inex_im);
+  tgeneric (f, 2, 1024, 7, -1);
+
+  test_end ();
+
+  return 0;
 }

@@ -1,6 +1,6 @@
-/* tdiv_2exp -- test file for mpc_div_2exp.
+/* mpc_mul_2ui -- Multiply a complex number by 2^e.
 
-Copyright (C) 2008 INRIA
+Copyright (C) 2002, 2009, 2011, 2012 INRIA
 
 This file is part of GNU MPC.
 
@@ -18,18 +18,15 @@ You should have received a copy of the GNU Lesser General Public License
 along with this program. If not, see http://www.gnu.org/licenses/ .
 */
 
-#include "mpc-tests.h"
+#include "mpc-impl.h"
 
 int
-main (void)
+mpc_mul_2ui (mpc_ptr a, mpc_srcptr b, unsigned long int c, mpc_rnd_t rnd)
 {
-  DECL_FUNC (CCU, f, mpc_div_2exp);
+  int inex_re, inex_im;
 
-  test_start ();
+  inex_re = mpfr_mul_2exp (mpc_realref(a), mpc_realref(b), c, MPC_RND_RE(rnd));
+  inex_im = mpfr_mul_2exp (mpc_imagref(a), mpc_imagref(b), c, MPC_RND_IM(rnd));
 
-  tgeneric (f, 2, 1024, 7, -1);
-
-  test_end ();
-
-  return 0;
+  return MPC_INEX(inex_re, inex_im);
 }

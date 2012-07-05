@@ -13,7 +13,7 @@
 This manual is for GNU MPC, a library for multiple precision complex arithmetic,
 version @value{VERSION} of @value{UPDATED-MONTH}.
 
-Copyright @copyright{} 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010, 2011 INRIA
+Copyright @copyright{} 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010, 2011, 2012 INRIA
 
 @quotation
 Permission is granted to copy, distribute and/or modify this document
@@ -912,14 +912,14 @@ Set the floating-point number @var{rop} to the norm of @var{op}
 rounded in the direction @var{rnd}.
 @end deftypefun
 
-@deftypefun int mpc_mul_2exp (mpc_t @var{rop}, mpc_t @var{op1}, unsigned long int @var{op2}, mpc_rnd_t @var{rnd})
+@deftypefun int mpc_mul_2ui (mpc_t @var{rop}, mpc_t @var{op1}, unsigned long int @var{op2}, mpc_rnd_t @var{rnd})
 Set @var{rop} to @var{op1} times 2 raised to @var{op2}
 rounded according to @var{rnd}. Just increases the exponents
 of the real and imaginary parts by @var{op2}
 when @var{rop} and @var{op1} are identical.
 @end deftypefun
 
-@deftypefun int mpc_div_2exp (mpc_t @var{rop}, mpc_t @var{op1}, unsigned long int @var{op2}, mpc_rnd_t @var{rnd})
+@deftypefun int mpc_div_2ui (mpc_t @var{rop}, mpc_t @var{op1}, unsigned long int @var{op2}, mpc_rnd_t @var{rnd})
 Set @var{rop} to @var{op1} divided by 2 raised to @var{op2}
 rounded according to @var{rnd}. Just decreases the exponents
 of the real and imaginary parts by @var{op2}

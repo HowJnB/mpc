@@ -1,6 +1,6 @@
 /* tadd_si -- test file for mpc_add_si.
 
-Copyright (C) 2011 INRIA
+Copyright (C) 2011, 2012 INRIA
 
 This file is part of GNU MPC.
 
@@ -42,7 +42,7 @@ check_ternary_value (void)
          exit (1);
       }
 
-      mpc_mul_2exp (z, z, (unsigned long int) prec, MPC_RNDNN);
+      mpc_mul_2ui (z, z, (unsigned long int) prec, MPC_RNDNN);
       if (mpc_add_si (z, z, s, MPC_RNDNN) == 0) {
          printf ("Error in mpc_add_si: 2^(prec+1)-1 cannot be exact\n");
          exit (1);
