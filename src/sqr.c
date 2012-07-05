@@ -311,7 +311,7 @@ mpc_sqr (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
    mpfr_clear_underflow ();
    inex_im = mpfr_mul (rop->im, x, op->im, MPC_RND_IM (rnd));
    if (!mpfr_underflow_p ())
-      inex_im |= mpfr_mul_2exp (rop->im, rop->im, 1, MPC_RND_IM (rnd));
+      inex_im |= mpfr_mul_2ui (rop->im, rop->im, 1, MPC_RND_IM (rnd));
       /* We must not multiply by 2 if rop->im has been set to the smallest
          representable number. */
    if (saved_underflow)
