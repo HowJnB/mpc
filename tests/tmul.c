@@ -1,6 +1,6 @@
 /* tmul -- test file for mpc_mul.
 
-Copyright (C) 2002, 2005, 2008, 2009, 2010, 2011 INRIA
+Copyright (C) 2002, 2005, 2008, 2009, 2010, 2011, 2012 INRIA
 
 This file is part of GNU MPC.
 
@@ -84,7 +84,7 @@ static void
 check_regular (void)
 {
   mpc_t x, y;
-  mpc_rnd_t rnd_re, rnd_im;
+  int rnd_re, rnd_im;
   mpfr_prec_t prec;
 
   testmul (247, -65, -223, 416, 8, 24);

@@ -43,9 +43,15 @@ along with this program. If not, see http://www.gnu.org/licenses/ .
       }                                                         \
   } while (0)
 
+#if defined (__cplusplus)
+extern "C" {
+#endif
 __MPC_DECLSPEC int  mpc_mul_naive (mpc_ptr, mpc_srcptr, mpc_srcptr, mpc_rnd_t);
 __MPC_DECLSPEC int  mpc_mul_karatsuba (mpc_ptr, mpc_srcptr, mpc_srcptr, mpc_rnd_t);
 __MPC_DECLSPEC int  mpc_fma_naive (mpc_ptr, mpc_srcptr, mpc_srcptr, mpc_srcptr, mpc_rnd_t);
+#if defined (__cplusplus)
+}
+#endif
 /* end pieces copied from mpc-impl.h */
 
 #define MPC_OUT(x)                                              \

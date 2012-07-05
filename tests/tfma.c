@@ -62,7 +62,7 @@ static void
 check_random (void)
 {
    mpfr_prec_t prec;
-   mpfr_rnd_t rnd_re, rnd_im;
+   int rnd_re, rnd_im;
    mpc_t a, b, c;
 
    mpc_init2 (a, 1000);
