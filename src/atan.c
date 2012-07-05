@@ -314,16 +314,18 @@ mpc_atan (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
         mpfr_set_prec (y, p);
 
         /* a = upper bound for log(x^2 + (1+y)^2) */
-        mpfr_add_ui (a, mpc_imagref (op), 1, rnd1);
+        mpfr_add_ui (a, mpc_imagref (op), 1, rnd1); /* round away */
         mpfr_sqr (a, a, GMP_RNDU);
         mpfr_sqr (y, mpc_realref (op), GMP_RNDU);
         mpfr_add (a, a, y, GMP_RNDU);
         mpfr_log (a, a, GMP_RNDU);
 
         /* b = lower bound for log(x^2 + (1-y)^2) */
-        mpfr_ui_sub (b, 1, mpc_imagref (op), GMP_RNDZ);
-        mpfr_sqr (b, b, GMP_RNDU);
-        /* mpfr_sqr (y, mpc_realref (op), GMP_RNDZ); */
+        mpfr_ui_sub (b, 1, mpc_imagref (op), GMP_RNDZ); /* round to zero */
+        mpfr_sqr (b, b, GMP_RNDZ);
+        /* we could write mpfr_sqr (y, mpc_realref (op), GMP_RNDZ) but it is
+           more efficient to reuse the value of y (x^2) above and subtract
+           one ulp */
         mpfr_nextbelow (y);
         mpfr_add (b, b, y, GMP_RNDZ);
         mpfr_log (b, b, GMP_RNDZ);
