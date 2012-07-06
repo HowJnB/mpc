@@ -24,6 +24,14 @@ AC_DEFUN([gl_VALGRIND_TESTS],
   if test -n "$VALGRIND" && $VALGRIND -q true > /dev/null 2>&1; then
     opt_valgrind_tests=yes
     VALGRIND="$VALGRIND -q --error-exitcode=1 --leak-check=full"
+# Addition AE: enable suppression file through a shell variable
+    AC_MSG_CHECKING([for valgrind suppression file])
+    if test -n "$VALGRIND_SUPPRESSION"; then
+       AC_MSG_RESULT($VALGRIND_SUPPRESSION)
+       VALGRIND="$VALGRIND --suppressions=$VALGRIND_SUPPRESSION"
+    else
+       AC_MSG_RESULT([no])
+    fi
     AC_DEFINE([MPC_USE_VALGRIND], 1, [Use valgrind for make check])
   else
     opt_valgrind_tests=no
