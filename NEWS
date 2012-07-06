@@ -1,6 +1,7 @@
 Changes in version 1.0:
   - First release as a GNU package
   - License change: LGPLv3+ for code, GFDLv1.3+ for documentation
+  - 100% of all lines are covered by tests
   - Functions renamed:
     mpc_mul_2exp to mpc_mul_2ui, mpc_div_2exp to mpc_div_2ui
   - 0^0, which returned (NaN,NaN) previously, now returns (1,+0).

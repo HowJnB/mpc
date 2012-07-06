@@ -332,6 +332,8 @@ mpc_atan (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
         mpfr_sub (y, a, b, GMP_RNDU);
 
         if (mpfr_zero_p (y))
+           /* FIXME: happens when x and y have very different magnitudes;
+              could be handled more efficiently                           */
           ok = 0;
         else
           {
@@ -345,8 +347,12 @@ mpc_atan (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
               err = (expo < 0) ? 1 : expo + 2;
 
             mpfr_div_2ui (y, y, 2, GMP_RNDN);
-            if (mpfr_zero_p (y))
-              err = 2; /* underflow */
+            MPC_ASSERT (!mpfr_zero_p (y));
+               /* FIXME: underflow. Since the main term of the Taylor series
+                  in y=0 is 1/(x^2+1) * y, this means that y is very small
+                  and/or x very large; but then the mpfr_zero_p (y) above
+                  should be true. This needs a proof, or better yet,
+                  special code.                                              */
 
             ok = mpfr_can_round (y, p - err, GMP_RNDU, GMP_RNDD,
                                  prec + (MPC_RND_IM (rnd) == GMP_RNDN));

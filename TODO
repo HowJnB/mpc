@@ -12,6 +12,10 @@ mpc-impl.h.
 From Andreas Enge 05 July 2012:
 Add support for rounding mode MPFR_RNDA.
 
+From Andreas Enge and Paul Zimmermann 6 July 2012:
+Improve speed of Im (atan) for x+i*y with small y, for instance by using
+the Taylor series directly.
+
 Bench:
 - from Andreas Enge 9 June 2009:
   Scripts and web page comparing timings with different systems,
