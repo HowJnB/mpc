@@ -12,4 +12,4 @@
 
 Currently, the following functions have been rewritten to solve these
 problems:
-mul, norm
+mul, norm, sqr

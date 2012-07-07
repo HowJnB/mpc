@@ -17,7 +17,7 @@ Changes in version 1.0:
       or underflows during the computation
     - asin, proj, sqr: Wrong result when input variable has infinite part and
       equals output variable is corrected.
-    - fr_sub: Wrong return value for imaginary part.
+    - fr_sub: Wrong return value for imaginary part is corrected.
 
 Changes in version 0.9:
   - New functions:
