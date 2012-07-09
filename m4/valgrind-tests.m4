@@ -5,19 +5,15 @@ dnl gives unlimited permission to copy and/or distribute it,
 dnl with or without modifications, as long as this notice is preserved.
 
 dnl From Simon Josefsson
+dnl with adaptations to MPC
 
 # gl_VALGRIND_TESTS()
 # -------------------
 # Check if valgrind is available, and set VALGRIND to it if available.
 AC_DEFUN([gl_VALGRIND_TESTS],
 [
-  AC_ARG_ENABLE(valgrind-tests,
-    AS_HELP_STRING([--enable-valgrind-tests],
-                   [run self tests under valgrind]),
-    [opt_valgrind_tests=$enableval], [opt_valgrind_tests=yes])
-
   # Run self-tests under valgrind?
-  if test "$opt_valgrind_tests" = "yes" && test "$cross_compiling" = no; then
+  if test "$cross_compiling" = no; then
     AC_CHECK_PROGS(VALGRIND, valgrind)
   fi
 
