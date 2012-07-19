@@ -1,23 +1,24 @@
 Changes in version 1.0:
   - First release as a GNU package
-  - License change: LGPLv3+ for code, GFDLv1.3+ for documentation
+  - License change: LGPLv3+ for code, GFDLv1.3+ (with no invariant sections)
+    for documentation
   - 100% of all lines are covered by tests
   - Functions renamed:
     mpc_mul_2exp to mpc_mul_2ui, mpc_div_2exp to mpc_div_2ui
-  - 0^0, which returned (NaN,NaN) previously, now returns (1,+0).
+  - 0^0, which returned (NaN,NaN) previously, now returns (1,+0)
   - Removed compatibility with K&R compilers, untestable due to lack of
     such compilers
   - New functions: mpc_log10, mpc_mul_2si, mpc_div_2si
-  - Optimisation:
+  - Speed-ups:
     - mpc_fma
   - Bug fixes:
     - mpc_div and mpc_norm now return a value indicating the effective
-      rounding direction, as the other functions.
+      rounding direction, as the other functions
     - mpc_mul, mpc_sqr and mpc_norm now return correct results even if there
       are over- or underflows during the computation
     - mpc_asin, mpc_proj, mpc_sqr: Wrong result when input variable has
-      infinite part and equals output variable is corrected.
-    - mpc_fr_sub: Wrong return value for imaginary part is corrected.
+      infinite part and equals output variable is corrected
+    - mpc_fr_sub: Wrong return value for imaginary part is corrected
 
 Changes in version 0.9:
   - New functions:
