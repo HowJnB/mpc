@@ -44,5 +44,5 @@ mpfr_regular_p (mpfr_srcptr z)
 const char *
 mpc_get_version (void)
 {
-  return "1.0";
+  return "1.1dev";
 }
