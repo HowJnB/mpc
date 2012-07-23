@@ -1,13 +1,11 @@
+From Andreas Enge 23 July 2012:
+go through tests and move them to the data files if possible
+(see, for instance, tcos.c)
+
 From Andreas Enge 31 August 2011:
 implement mul_karatsuba with three multiplications at precision around p,
 instead of two at precision 2*p and one at precision p
 requires analysis of error propagation
-
-From Andreas Enge 30 August 2011:
-As soon as dependent on mpfr>=3, remove auxiliary functions from
-get_version.c and update mpc.h.
-Use MPFR_RND? instead of GMP_RND?, and remove workarounds for MPFR_RNDA from
-mpc-impl.h.
 
 From Andreas Enge 05 July 2012:
 Add support for rounding mode MPFR_RNDA.

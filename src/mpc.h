@@ -24,11 +24,6 @@ along with this program. If not, see http://www.gnu.org/licenses/ .
 #include "gmp.h"
 #include "mpfr.h"
 
-/* Backwards compatibility with mpfr<3.0.0 */
-#ifndef mpfr_exp_t
-#define mpfr_exp_t mp_exp_t
-#endif
-
 /* Define MPC version number */
 #define MPC_VERSION_MAJOR 1
 #define MPC_VERSION_MINOR 1
