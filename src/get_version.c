@@ -20,27 +20,6 @@ along with this program. If not, see http://www.gnu.org/licenses/ .
 
 #include "mpc-impl.h"
 
-#if MPFR_VERSION_MAJOR < 3
-/* The following are functions defined for compatibility with mpfr < 3;
-   logically, they should be defined in a separate file, but then gcc
-   complains about an empty translation unit with mpfr >= 3.            */
-
-void
-mpfr_set_zero (mpfr_ptr z, int s)
-{
-   mpfr_set_ui (z, 0ul, MPFR_RNDN);
-   if (s < 0)
-      mpfr_neg (z, z, MPFR_RNDN);
-}
-
-int
-mpfr_regular_p (mpfr_srcptr z)
-{
-   return (mpfr_number_p (z) && !mpfr_zero_p (z));
-}
-#endif /* mpfr < 3 */
-
-
 const char *
 mpc_get_version (void)
 {

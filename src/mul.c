@@ -477,13 +477,13 @@ mpc_mul_karatsuba (mpc_ptr rop, mpc_srcptr op1, mpc_srcptr op2, mpc_rnd_t rnd)
 
          /* first compute away(b +/- a) and store it in u */
          inexact = (mul_a == -1 ?
-                    ROUND_AWAY (mpfr_sub (u, b, a, MPFR_RNDA), u) :
-                    ROUND_AWAY (mpfr_add (u, b, a, MPFR_RNDA), u));
+                    mpfr_sub (u, b, a, MPFR_RNDA) :
+                    mpfr_add (u, b, a, MPFR_RNDA));
 
          /* then compute away(+/-c - d) and store it in x */
          inexact |= (mul_c == -1 ?
-                     ROUND_AWAY (mpfr_add (x, c, d, MPFR_RNDA), x) :
-                     ROUND_AWAY (mpfr_sub (x, c, d, MPFR_RNDA), x));
+                     mpfr_add (x, c, d, MPFR_RNDA) :
+                     mpfr_sub (x, c, d, MPFR_RNDA));
          if (mul_c == -1)
            mpfr_neg (x, x, MPFR_RNDN);
 
@@ -491,7 +491,7 @@ mpc_mul_karatsuba (mpc_ptr rop, mpc_srcptr op1, mpc_srcptr op2, mpc_rnd_t rnd)
             mpfr_prec_round (u, prec_u = 2 * prec, MPFR_RNDN);
 
          /* compute away(u*x) and store it in u */
-         inexact |= ROUND_AWAY (mpfr_mul (u, u, x, MPFR_RNDA), u);
+         inexact |= mpfr_mul (u, u, x, MPFR_RNDA);
             /* (a+b)*(c-d) */
 
 	 /* if all computations are exact up to here, it may be that

@@ -313,7 +313,7 @@ mpc_atan (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
         mpfr_set_prec (y, p);
 
         /* a = upper bound for log(x^2 + (1+y)^2) */
-        ROUND_AWAY (mpfr_add_ui (a, mpc_imagref (op), 1, MPFR_RNDA), a);
+        mpfr_add_ui (a, mpc_imagref (op), 1, MPFR_RNDA);
         mpfr_sqr (a, a, MPFR_RNDU);
         mpfr_sqr (y, mpc_realref (op), MPFR_RNDU);
         mpfr_add (a, a, y, MPFR_RNDU);

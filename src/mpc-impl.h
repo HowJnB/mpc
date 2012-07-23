@@ -67,34 +67,6 @@ along with this program. If not, see http://www.gnu.org/licenses/ .
 
 
 /*
- * Macro implementing rounding away from zero, to ease compatibility with
- * mpfr < 3. f is the complete function call with a rounding mode of
- * MPFR_RNDA, rop the name of the variable containing the result; it is
- * already contained in f, but needs to be repeated so that the macro can
- * modify the variable.
- * Usage: replace each call to a function such as
- *    mpfr_add (rop, a, b, MPFR_RNDA)
- * by
- *    ROUND_AWAY (mpfr_add (rop, a, b, MPFR_RNDA), rop)
-*/
-#if MPFR_VERSION_MAJOR < 3
-   /* round towards zero, add 1 ulp if not exact */
-#define MPFR_RNDA MPFR_RNDZ
-#define ROUND_AWAY(f,rop)                            \
-   ((f) ? MPFR_ADD_ONE_ULP (rop), MPFR_SIGNBIT (rop) : 0)
-#else
-#define ROUND_AWAY(f,rop) \
-   (f)
-#endif /* mpfr < 3 */
-
-#if MPFR_VERSION_MAJOR < 3
-/* declare missing functions, defined in get_version.c */
-__MPC_DECLSPEC void mpfr_set_zero (mpfr_ptr, int);
-__MPC_DECLSPEC int mpfr_regular_p (mpfr_srcptr);
-#endif /* mpfr < 3 */
-
-
-/*
  * MPC macros
  */
 

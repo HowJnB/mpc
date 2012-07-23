@@ -266,8 +266,8 @@ mpc_sqr (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
          /* The error is bounded above by 1 ulp.                             */
          /* We first let inexact be 1 if the real part is not computed       */
          /* exactly and determine the sign later.                            */
-         inexact =  ROUND_AWAY (mpfr_add (u, x, mpc_imagref (op), MPFR_RNDA), u)
-                  | ROUND_AWAY (mpfr_sub (v, x, mpc_imagref (op), MPFR_RNDA), v);
+         inexact =   mpfr_add (u, x, mpc_imagref (op), MPFR_RNDA)
+                   | mpfr_sub (v, x, mpc_imagref (op), MPFR_RNDA);
 
          /* compute the real part as u*v, rounded away                    */
          /* determine also the sign of inex_re                            */
@@ -279,10 +279,7 @@ mpc_sqr (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
             ok = 1;
          }
          else {
-            mpfr_rnd_t rnd_away;
-               /* FIXME: can be replaced by MPFR_RNDA in mpfr >= 3 */
-            rnd_away = (mpfr_sgn (u) * mpfr_sgn (v) > 0 ? MPFR_RNDU : MPFR_RNDD);
-            inexact |= ROUND_AWAY (mpfr_mul (u, u, v, MPFR_RNDA), u); /* error 5 */
+            inexact |= mpfr_mul (u, u, v, MPFR_RNDA); /* error 5 */
             if (mpfr_get_exp (u) == emin || mpfr_inf_p (u)) {
                /* under- or overflow */
                inex_re = mpfr_fsss (rop->re, x, op->im, MPC_RND_RE (rnd));
@@ -290,7 +287,7 @@ mpc_sqr (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
             }
             else {
                ok = (!inexact) | mpfr_can_round (u, prec - 3,
-                     rnd_away, MPFR_RNDZ,
+                     MPFR_RNDA, MPFR_RNDZ,
                      MPC_PREC_RE (rop) + (MPC_RND_RE (rnd) == MPFR_RNDN));
                if (ok) {
                   inex_re = mpfr_set (mpc_realref (rop), u, MPC_RND_RE (rnd));
