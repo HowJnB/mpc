@@ -5,7 +5,7 @@
 @synindex tp fn
 
 @set MINGMP 4.3.2
-@set MINMPFR 2.4.2
+@set MINMPFR 3.0.0
 
 @set AUTHORS Andreas Enge, Philippe Th@'eveny, Paul Zimmermann
 
