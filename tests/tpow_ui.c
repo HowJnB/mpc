@@ -1,6 +1,6 @@
 /* tpow_ui -- test file for mpc_pow_ui.
 
-Copyright (C) 2009, 2010 INRIA
+Copyright (C) 2009, 2010, 2012 INRIA
 
 This file is part of GNU MPC.
 
@@ -97,9 +97,9 @@ main (int argc, char *argv[])
       MPC_ASSERT (k >= 0);
       mpc_init2 (z, p);
       mpc_init2 (res, p);
-      mpfr_const_pi (mpc_realref (z), GMP_RNDN);
-      mpfr_div_2exp (mpc_realref (z), mpc_realref (z), 2, GMP_RNDN);
-      mpfr_const_log2 (mpc_imagref (z), GMP_RNDN);
+      mpfr_const_pi (mpc_realref (z), MPFR_RNDN);
+      mpfr_div_2exp (mpc_realref (z), mpc_realref (z), 2, MPFR_RNDN);
+      mpfr_const_log2 (mpc_imagref (z), MPFR_RNDN);
       while (k--)
         mpc_pow_ui (res, z, (unsigned long int) n, MPC_RNDNN);
       mpc_clear (z);

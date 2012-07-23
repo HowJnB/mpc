@@ -25,7 +25,7 @@ along with this program. If not, see http://www.gnu.org/licenses/ .
 #define MPFR_CAN_ROUND(b,err,prec,rnd)                                  \
   (mpfr_zero_p (b) || mpfr_inf_p (b)                                    \
    || mpfr_can_round (b, (long)mpfr_get_prec (b) - (err), (rnd),        \
-                      GMP_RNDZ, (prec) + ((rnd)==GMP_RNDN)))
+                      MPFR_RNDZ, (prec) + ((rnd)==MPFR_RNDN)))
 
 /* functions with one input, one output */
 static void
@@ -563,8 +563,8 @@ static void
 reuse_fc (mpc_function* function, mpc_ptr z, mpc_ptr x, mpfr_ptr expected)
 {
   mpc_set (x, z, MPC_RNDNN); /* exact */
-  function->pointer.FC (expected, z, GMP_RNDN);
-  function->pointer.FC (mpc_realref (x), x, GMP_RNDN);
+  function->pointer.FC (expected, z, MPFR_RNDN);
+  function->pointer.FC (mpc_realref (x), x, MPFR_RNDN);
   if (!same_mpfr_value (mpc_realref (x), expected, 1))
     {
       mpfr_t got;
@@ -577,7 +577,7 @@ reuse_fc (mpc_function* function, mpc_ptr z, mpc_ptr x, mpfr_ptr expected)
       exit (1);
     }
   mpc_set (x, z, MPC_RNDNN); /* exact */
-  function->pointer.FC (mpc_imagref (x), x, GMP_RNDN);
+  function->pointer.FC (mpc_imagref (x), x, MPFR_RNDN);
   if (!same_mpfr_value (mpc_imagref (x), expected, 1))
     {
       mpfr_t got;
@@ -856,7 +856,7 @@ reuse_cuuc (mpc_function* function, unsigned long ul1, unsigned long ul2,
 static mpfr_rnd_t
 first_rnd_mode (void)
 {
-   return GMP_RNDN;
+   return MPFR_RNDN;
 }
 
 static mpfr_rnd_t
@@ -865,16 +865,16 @@ next_rnd_mode (mpfr_rnd_t curr)
       when curr is the last rounding mode                              */
 {
    switch (curr) {
-      case GMP_RNDN:
-         return GMP_RNDZ;
-      case GMP_RNDZ:
-         return GMP_RNDU;
-      case GMP_RNDU:
-         return GMP_RNDD;
+      case MPFR_RNDN:
+         return MPFR_RNDZ;
+      case MPFR_RNDZ:
+         return MPFR_RNDU;
+      case MPFR_RNDU:
+         return MPFR_RNDD;
       default:
          /* return invalid guard value in mpfr_rnd_t */
 #if MPFR_VERSION_MAJOR < 3
-         return GMP_RNDNA;
+         return MPFR_RNDNA;
 #else
          return MPFR_RNDA; /* valid rounding type, but not (yet) used in mpc */
 #endif
@@ -885,8 +885,8 @@ static int
 is_valid_rnd_mode (mpfr_rnd_t curr)
    /* returns 1 if curr is a valid rounding mode, and 0otherwise */
 {
-   if (   curr == GMP_RNDN || curr == GMP_RNDZ
-       || curr == GMP_RNDU || curr == GMP_RNDD)
+   if (   curr == MPFR_RNDN || curr == MPFR_RNDZ
+       || curr == MPFR_RNDU || curr == MPFR_RNDD)
       return 1;
    else
       return 0;
@@ -1010,25 +1010,25 @@ tgeneric (mpc_function function, mpfr_prec_t prec_min,
           switch (special)
             {
             case 1:
-              mpfr_set_ui (mpc_realref (z1), 0, GMP_RNDN);
+              mpfr_set_ui (mpc_realref (z1), 0, MPFR_RNDN);
               break;
             case 2:
               mpfr_set_inf (mpc_realref (z1), +1);
               break;
             case 3:
-              mpfr_set_ui (mpc_imagref (z1), 0, GMP_RNDN);
+              mpfr_set_ui (mpc_imagref (z1), 0, MPFR_RNDN);
               break;
             case 4:
               mpfr_set_inf (mpc_imagref (z1), -1);
               break;
             case 5:
-              mpfr_set_ui (mpc_realref (z2), 0, GMP_RNDN);
+              mpfr_set_ui (mpc_realref (z2), 0, MPFR_RNDN);
               break;
             case 6:
               mpfr_set_inf (mpc_realref (z2), -1);
               break;
             case 7:
-              mpfr_set_ui (mpc_imagref (z2), 0, GMP_RNDN);
+              mpfr_set_ui (mpc_imagref (z2), 0, MPFR_RNDN);
               break;
             case 8:
               mpfr_set_inf (mpc_imagref (z2), +1);
@@ -1045,25 +1045,25 @@ tgeneric (mpc_function function, mpfr_prec_t prec_min,
           switch (special)
             {
             case 1:
-              mpfr_set_ui (mpc_realref (z1), 0, GMP_RNDN);
+              mpfr_set_ui (mpc_realref (z1), 0, MPFR_RNDN);
               break;
             case 2:
               mpfr_set_inf (mpc_realref (z1), +1);
               break;
             case 3:
-              mpfr_set_ui (mpc_imagref (z1), 0, GMP_RNDN);
+              mpfr_set_ui (mpc_imagref (z1), 0, MPFR_RNDN);
               break;
             case 4:
               mpfr_set_inf (mpc_imagref (z1), -1);
               break;
             case 5:
-              mpfr_set_ui (mpc_realref (z2), 0, GMP_RNDN);
+              mpfr_set_ui (mpc_realref (z2), 0, MPFR_RNDN);
               break;
             case 6:
               mpfr_set_inf (mpc_realref (z2), -1);
               break;
             case 7:
-              mpfr_set_ui (mpc_imagref (z2), 0, GMP_RNDN);
+              mpfr_set_ui (mpc_imagref (z2), 0, MPFR_RNDN);
               break;
             case 8:
               mpfr_set_inf (mpc_imagref (z2), +1);
@@ -1078,13 +1078,13 @@ tgeneric (mpc_function function, mpfr_prec_t prec_min,
           switch (special)
             {
             case 1:
-              mpfr_set_ui (mpc_realref (z1), 0, GMP_RNDN);
+              mpfr_set_ui (mpc_realref (z1), 0, MPFR_RNDN);
               break;
             case 2:
               mpfr_set_inf (mpc_realref (z1), +1);
               break;
             case 3:
-              mpfr_set_ui (mpc_imagref (z1), 0, GMP_RNDN);
+              mpfr_set_ui (mpc_imagref (z1), 0, MPFR_RNDN);
               break;
             case 4:
               mpfr_set_inf (mpc_imagref (z1), -1);
@@ -1095,21 +1095,21 @@ tgeneric (mpc_function function, mpfr_prec_t prec_min,
           mpc_set_prec (z2, 128);
           do {
             test_default_random (z2, 0, 64, 128, zero_probability);
-          } while (!mpfr_fits_ulong_p (mpc_realref (z2), GMP_RNDN));
-          ul1 = mpfr_get_ui (mpc_realref(z2), GMP_RNDN);
+          } while (!mpfr_fits_ulong_p (mpc_realref (z2), MPFR_RNDN));
+          ul1 = mpfr_get_ui (mpc_realref(z2), MPFR_RNDN);
           mpc_set_prec (z2, prec);
           mpc_set_prec (z3, prec);
           mpc_set_prec (zzzz, 4*prec);
           switch (special)
             {
             case 1:
-              mpfr_set_ui (mpc_realref (z1), 0, GMP_RNDN);
+              mpfr_set_ui (mpc_realref (z1), 0, MPFR_RNDN);
               break;
             case 2:
               mpfr_set_inf (mpc_realref (z1), +1);
               break;
             case 3:
-              mpfr_set_ui (mpc_imagref (z1), 0, GMP_RNDN);
+              mpfr_set_ui (mpc_imagref (z1), 0, MPFR_RNDN);
               break;
             case 4:
               mpfr_set_inf (mpc_imagref (z1), -1);
@@ -1123,23 +1123,23 @@ tgeneric (mpc_function function, mpfr_prec_t prec_min,
           mpc_set_prec (z2, 128);
           do {
             test_default_random (z2, 0, 64, 128, zero_probability);
-          } while (!mpfr_fits_ulong_p (mpc_realref (z2), GMP_RNDN)
-                   ||!mpfr_fits_ulong_p (mpc_imagref (z2), GMP_RNDN));
-          ul1 = mpfr_get_ui (mpc_realref(z2), GMP_RNDN);
-          ul2 = mpfr_get_ui (mpc_imagref(z2), GMP_RNDN);
+          } while (!mpfr_fits_ulong_p (mpc_realref (z2), MPFR_RNDN)
+                   ||!mpfr_fits_ulong_p (mpc_imagref (z2), MPFR_RNDN));
+          ul1 = mpfr_get_ui (mpc_realref(z2), MPFR_RNDN);
+          ul2 = mpfr_get_ui (mpc_imagref(z2), MPFR_RNDN);
           mpc_set_prec (z2, prec);
           mpc_set_prec (z3, prec);
           mpc_set_prec (zzzz, 4*prec);
           switch (special)
             {
             case 1:
-              mpfr_set_ui (mpc_realref (z1), 0, GMP_RNDN);
+              mpfr_set_ui (mpc_realref (z1), 0, MPFR_RNDN);
               break;
             case 2:
               mpfr_set_inf (mpc_realref (z1), +1);
               break;
             case 3:
-              mpfr_set_ui (mpc_imagref (z1), 0, GMP_RNDN);
+              mpfr_set_ui (mpc_imagref (z1), 0, MPFR_RNDN);
               break;
             case 4:
               mpfr_set_inf (mpc_imagref (z1), -1);
@@ -1156,21 +1156,21 @@ tgeneric (mpc_function function, mpfr_prec_t prec_min,
           mpc_set_prec (z2, 128);
           do {
             test_default_random (z2, 0, 64, 128, zero_probability);
-          } while (!mpfr_fits_slong_p (mpc_realref (z2), GMP_RNDN));
-          lo = mpfr_get_si (mpc_realref(z2), GMP_RNDN);
+          } while (!mpfr_fits_slong_p (mpc_realref (z2), MPFR_RNDN));
+          lo = mpfr_get_si (mpc_realref(z2), MPFR_RNDN);
           mpc_set_prec (z2, prec);
           mpc_set_prec (z3, prec);
           mpc_set_prec (zzzz, 4*prec);
           switch (special)
             {
             case 1:
-              mpfr_set_ui (mpc_realref (z1), 0, GMP_RNDN);
+              mpfr_set_ui (mpc_realref (z1), 0, MPFR_RNDN);
               break;
             case 2:
               mpfr_set_inf (mpc_realref (z1), +1);
               break;
             case 3:
-              mpfr_set_ui (mpc_imagref (z1), 0, GMP_RNDN);
+              mpfr_set_ui (mpc_imagref (z1), 0, MPFR_RNDN);
               break;
             case 4:
               mpfr_set_inf (mpc_imagref (z1), -1);
@@ -1184,21 +1184,21 @@ tgeneric (mpc_function function, mpfr_prec_t prec_min,
           mpc_set_prec (z2, 128);
           do {
             test_default_random (z2, 0, 64, 128, zero_probability);
-          } while (!mpfr_fits_slong_p (mpc_realref (z2), GMP_RNDN));
-          i = (int)mpfr_get_si (mpc_realref(z2), GMP_RNDN);
+          } while (!mpfr_fits_slong_p (mpc_realref (z2), MPFR_RNDN));
+          i = (int)mpfr_get_si (mpc_realref(z2), MPFR_RNDN);
           mpc_set_prec (z2, prec);
           mpc_set_prec (z3, prec);
           mpc_set_prec (zzzz, 4*prec);
           switch (special)
             {
             case 1:
-              mpfr_set_ui (mpc_realref (z1), 0, GMP_RNDN);
+              mpfr_set_ui (mpc_realref (z1), 0, MPFR_RNDN);
               break;
             case 2:
               mpfr_set_inf (mpc_realref (z1), +1);
               break;
             case 3:
-              mpfr_set_ui (mpc_imagref (z1), 0, GMP_RNDN);
+              mpfr_set_ui (mpc_imagref (z1), 0, MPFR_RNDN);
               break;
             case 4:
               mpfr_set_inf (mpc_imagref (z1), -1);
@@ -1210,7 +1210,7 @@ tgeneric (mpc_function function, mpfr_prec_t prec_min,
           break;
         case CCF: case CFC:
           mpfr_set_prec (x1, prec);
-          mpfr_set (x1, mpc_realref (z1), GMP_RNDN);
+          mpfr_set (x1, mpc_realref (z1), MPFR_RNDN);
           test_default_random (z1, exp_min, exp_max, 128, zero_probability);
           mpc_set_prec (z2, prec);
           mpc_set_prec (z3, prec);
@@ -1218,19 +1218,19 @@ tgeneric (mpc_function function, mpfr_prec_t prec_min,
           switch (special)
             {
             case 1:
-              mpfr_set_ui (mpc_realref (z1), 0, GMP_RNDN);
+              mpfr_set_ui (mpc_realref (z1), 0, MPFR_RNDN);
               break;
             case 2:
               mpfr_set_inf (mpc_realref (z1), +1);
               break;
             case 3:
-              mpfr_set_ui (mpc_imagref (z1), 0, GMP_RNDN);
+              mpfr_set_ui (mpc_imagref (z1), 0, MPFR_RNDN);
               break;
             case 4:
               mpfr_set_inf (mpc_imagref (z1), -1);
               break;
             case 5:
-              mpfr_set_ui (x1, 0, GMP_RNDN);
+              mpfr_set_ui (x1, 0, MPFR_RNDN);
               break;
             case 6:
               mpfr_set_inf (x1, +1);
@@ -1247,13 +1247,13 @@ tgeneric (mpc_function function, mpfr_prec_t prec_min,
           switch (special)
             {
             case 1:
-              mpfr_set_ui (mpc_realref (z1), 0, GMP_RNDN);
+              mpfr_set_ui (mpc_realref (z1), 0, MPFR_RNDN);
               break;
             case 2:
               mpfr_set_inf (mpc_realref (z1), +1);
               break;
             case 3:
-              mpfr_set_ui (mpc_imagref (z1), 0, GMP_RNDN);
+              mpfr_set_ui (mpc_imagref (z1), 0, MPFR_RNDN);
               break;
             case 4:
               mpfr_set_inf (mpc_imagref (z1), -1);
@@ -1268,13 +1268,13 @@ tgeneric (mpc_function function, mpfr_prec_t prec_min,
           switch (special)
             {
             case 1:
-              mpfr_set_ui (mpc_realref (z1), 0, GMP_RNDN);
+              mpfr_set_ui (mpc_realref (z1), 0, MPFR_RNDN);
               break;
             case 2:
               mpfr_set_inf (mpc_realref (z1), +1);
               break;
             case 3:
-              mpfr_set_ui (mpc_imagref (z1), 0, GMP_RNDN);
+              mpfr_set_ui (mpc_imagref (z1), 0, MPFR_RNDN);
               break;
             case 4:
               mpfr_set_inf (mpc_imagref (z1), -1);

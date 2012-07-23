@@ -30,10 +30,10 @@ test_underflow (void)
 
   mpfr_set_emin (-10);
   mpc_init2 (z, 21);
-  mpfr_set_si (mpc_realref(z), -1, GMP_RNDZ);
-  mpfr_set_ui_2exp (mpc_imagref(z), 1, 20, GMP_RNDZ);
-  mpfr_add_ui (mpc_imagref(z), mpc_imagref(z), 1, GMP_RNDZ);
-  mpfr_div_2exp (mpc_imagref(z), mpc_imagref(z), 20, GMP_RNDZ);
+  mpfr_set_si (mpc_realref(z), -1, MPFR_RNDZ);
+  mpfr_set_ui_2exp (mpc_imagref(z), 1, 20, MPFR_RNDZ);
+  mpfr_add_ui (mpc_imagref(z), mpc_imagref(z), 1, MPFR_RNDZ);
+  mpfr_div_2exp (mpc_imagref(z), mpc_imagref(z), 20, MPFR_RNDZ);
   mpc_atan (z, z, MPC_RNDNN);
   if (mpfr_cmp_si_2exp (mpc_realref(z), -1066635, 20) != 0 ||
       mpfr_cmp_si_2exp (mpc_imagref(z), 1687619, 22))

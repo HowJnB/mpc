@@ -39,8 +39,8 @@ mpc_log10_aux (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd, int flag, int nb)
   mpfr_init2 (log10, prec);
   while (ok == 0)
     {
-      mpfr_set_ui (log10, 10, GMP_RNDN); /* exact since prec >= 4 */
-      mpfr_log (log10, log10, GMP_RNDN);
+      mpfr_set_ui (log10, 10, MPFR_RNDN); /* exact since prec >= 4 */
+      mpfr_log (log10, log10, MPFR_RNDN);
       /* In each case we have two roundings, thus the final value is
          x * (1+u)^2 where x is the exact value, and |u| <= 2^(-prec-1).
          Thus the error is always less than 3 ulps. */
@@ -49,40 +49,40 @@ mpc_log10_aux (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd, int flag, int nb)
         case 0: /* imag <- atan2(y/x) */
           mpfr_atan2 (mpc_imagref (tmp), mpc_imagref (op), mpc_realref (op),
                       MPC_RND_IM (rnd));
-          mpfr_div (mpc_imagref (tmp), mpc_imagref (tmp), log10, GMP_RNDN);
-          ok = mpfr_can_round (mpc_imagref (tmp), prec - 2, GMP_RNDN,
-                               GMP_RNDZ, MPC_PREC_IM(rop) +
-                               (MPC_RND_IM (rnd) == GMP_RNDN));
+          mpfr_div (mpc_imagref (tmp), mpc_imagref (tmp), log10, MPFR_RNDN);
+          ok = mpfr_can_round (mpc_imagref (tmp), prec - 2, MPFR_RNDN,
+                               MPFR_RNDZ, MPC_PREC_IM(rop) +
+                               (MPC_RND_IM (rnd) == MPFR_RNDN));
           if (ok)
             ret = mpfr_set (mpc_imagref (rop), mpc_imagref (tmp),
                             MPC_RND_IM (rnd));
           break;
         case 1: /* real <- log(x) */
           mpfr_log (mpc_realref (tmp), mpc_realref (op), MPC_RND_RE (rnd));
-          mpfr_div (mpc_realref (tmp), mpc_realref (tmp), log10, GMP_RNDN);
-          ok = mpfr_can_round (mpc_realref (tmp), prec - 2, GMP_RNDN,
-                               GMP_RNDZ, MPC_PREC_RE(rop) +
-                               (MPC_RND_RE (rnd) == GMP_RNDN));
+          mpfr_div (mpc_realref (tmp), mpc_realref (tmp), log10, MPFR_RNDN);
+          ok = mpfr_can_round (mpc_realref (tmp), prec - 2, MPFR_RNDN,
+                               MPFR_RNDZ, MPC_PREC_RE(rop) +
+                               (MPC_RND_RE (rnd) == MPFR_RNDN));
           if (ok)
             ret = mpfr_set (mpc_realref (rop), mpc_realref (tmp),
                             MPC_RND_RE (rnd));
           break;
         case 2: /* imag <- pi */
           mpfr_const_pi (mpc_imagref (tmp), MPC_RND_IM (rnd));
-          mpfr_div (mpc_imagref (tmp), mpc_imagref (tmp), log10, GMP_RNDN);
-          ok = mpfr_can_round (mpc_imagref (tmp), prec - 2, GMP_RNDN,
-                               GMP_RNDZ, MPC_PREC_IM(rop) +
-                               (MPC_RND_IM (rnd) == GMP_RNDN));
+          mpfr_div (mpc_imagref (tmp), mpc_imagref (tmp), log10, MPFR_RNDN);
+          ok = mpfr_can_round (mpc_imagref (tmp), prec - 2, MPFR_RNDN,
+                               MPFR_RNDZ, MPC_PREC_IM(rop) +
+                               (MPC_RND_IM (rnd) == MPFR_RNDN));
           if (ok)
             ret = mpfr_set (mpc_imagref (rop), mpc_imagref (tmp),
                             MPC_RND_IM (rnd));
           break;
         case 3: /* real <- log(y) */
           mpfr_log (mpc_realref (tmp), mpc_imagref (op), MPC_RND_RE (rnd));
-          mpfr_div (mpc_realref (tmp), mpc_realref (tmp), log10, GMP_RNDN);
-          ok = mpfr_can_round (mpc_realref (tmp), prec - 2, GMP_RNDN,
-                               GMP_RNDZ, MPC_PREC_RE(rop) +
-                               (MPC_RND_RE (rnd) == GMP_RNDN));
+          mpfr_div (mpc_realref (tmp), mpc_realref (tmp), log10, MPFR_RNDN);
+          ok = mpfr_can_round (mpc_realref (tmp), prec - 2, MPFR_RNDN,
+                               MPFR_RNDZ, MPC_PREC_RE(rop) +
+                               (MPC_RND_RE (rnd) == MPFR_RNDN));
           if (ok)
             ret = mpfr_set (mpc_realref (rop), mpc_realref (tmp),
                             MPC_RND_RE (rnd));
@@ -200,7 +200,7 @@ mpc_log10 (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
            inex_re = mpc_log10_aux (rop, op, rnd, 0, 3);
            inex_im = mpc_log10_aux (rop, op, rnd, 1, 2);
            /* division by 2 does not change the ternary flag */
-           mpfr_div_2ui (mpc_imagref (rop), mpc_imagref (rop), 1, GMP_RNDN);
+           mpfr_div_2ui (mpc_imagref (rop), mpc_imagref (rop), 1, MPFR_RNDN);
          }
        else
          {
@@ -211,8 +211,8 @@ mpc_log10 (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
            invrnd = MPC_RND (0, INV_RND (MPC_RND_IM (rnd)));
            inex_im = mpc_log10_aux (rop, op, invrnd, 1, 2);
            /* division by 2 does not change the ternary flag */
-           mpfr_div_2ui (mpc_imagref (rop), mpc_imagref (rop), 1, GMP_RNDN);
-           mpfr_neg (mpc_imagref (rop), mpc_imagref (rop), GMP_RNDN);
+           mpfr_div_2ui (mpc_imagref (rop), mpc_imagref (rop), 1, MPFR_RNDN);
+           mpfr_neg (mpc_imagref (rop), mpc_imagref (rop), MPFR_RNDN);
            inex_im = -inex_im; /* negate the ternary flag */
          }
        return MPC_INEX(inex_re, inex_im);
@@ -231,12 +231,12 @@ mpc_log10 (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
       mpc_set_prec (ww, prec);
 
       mpc_log (ww, op, MPC_RNDNN);
-      mpfr_set_ui (w, 10, GMP_RNDN); /* exact since prec >= 4 */
-      mpfr_log (w, w, GMP_RNDN);
+      mpfr_set_ui (w, 10, MPFR_RNDN); /* exact since prec >= 4 */
+      mpfr_log (w, w, MPFR_RNDN);
       mpc_div_fr (ww, ww, w, MPC_RNDNN);
 
-      ok = mpfr_can_round (mpc_realref (ww), prec - 2, GMP_RNDN, GMP_RNDZ,
-                           MPC_PREC_RE(rop) + (MPC_RND_RE (rnd) == GMP_RNDN));
+      ok = mpfr_can_round (mpc_realref (ww), prec - 2, MPFR_RNDN, MPFR_RNDZ,
+                           MPC_PREC_RE(rop) + (MPC_RND_RE (rnd) == MPFR_RNDN));
 
       /* Special code to deal with cases where the real part of log10(x+i*y)
          is exact, like x=3 and y=1. Since Re(log10(x+i*y)) = log10(x^2+y^2)/2
@@ -258,8 +258,8 @@ mpc_log10 (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
 
           mpz_init (x);
           mpz_init (y);
-          mpfr_get_z (x, mpc_realref (op), GMP_RNDN); /* exact */
-          mpfr_get_z (y, mpc_imagref (op), GMP_RNDN); /* exact */
+          mpfr_get_z (x, mpc_realref (op), MPFR_RNDN); /* exact */
+          mpfr_get_z (y, mpc_imagref (op), MPFR_RNDN); /* exact */
           mpz_mul (x, x, x);
           mpz_mul (y, y, y);
           mpz_add (x, x, y); /* x^2+y^2 */
@@ -277,7 +277,7 @@ mpc_log10 (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
                   /* we reset the precision of Re(ww) so that v can be
                      represented exactly */
                   mpfr_set_prec (mpc_realref (ww), sizeof(unsigned long)*CHAR_BIT);
-                  mpfr_set_ui_2exp (mpc_realref (ww), v, -1, GMP_RNDN); /* exact */
+                  mpfr_set_ui_2exp (mpc_realref (ww), v, -1, MPFR_RNDN); /* exact */
                   ok = 1;
                 }
             }
@@ -285,8 +285,8 @@ mpc_log10 (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
           mpz_clear (y);
         }
 
-      ok = ok && mpfr_can_round (mpc_imagref (ww), prec-2, GMP_RNDN, GMP_RNDZ,
-                            MPC_PREC_IM(rop) + (MPC_RND_IM (rnd) == GMP_RNDN));
+      ok = ok && mpfr_can_round (mpc_imagref (ww), prec-2, MPFR_RNDN, MPFR_RNDZ,
+                            MPC_PREC_IM(rop) + (MPC_RND_IM (rnd) == MPFR_RNDN));
     }
 
   inex_re = mpfr_set (mpc_realref(rop), mpc_realref (ww), MPC_RND_RE (rnd));

@@ -1,6 +1,6 @@
 /* tcos -- test file for mpc_cos.
 
-Copyright (C) 2008, 2009, 2011 INRIA
+Copyright (C) 2008, 2009, 2011, 2012 INRIA
 
 This file is part of GNU MPC.
 
@@ -30,13 +30,13 @@ bug20090105 (void)
   mpc_init2 (got, 324);
 
   mpfr_set_str (mpc_realref(op), "-3.f1813b1487372434fea4414a520f65a343a16d0ec1ffb"
-                "b2b880154db8d63377ce788fc4215c450300@1", 16, GMP_RNDN);
+                "b2b880154db8d63377ce788fc4215c450300@1", 16, MPFR_RNDN);
   mpfr_set_str (mpc_imagref(op), "-2.b7a0c80bcacf1ccbbac614bf53a58b672b1b503161bee"
-                "59a82e46a23570b652f7ba5f01ef766d1c50", 16,GMP_RNDN);
+                "59a82e46a23570b652f7ba5f01ef766d1c50", 16,MPFR_RNDN);
   mpfr_set_str (mpc_realref(expected), "7.57c5b08a2b11b660d906a354289b0724b9c4b237"
-                "95abe33424e8d9858e534bd5d776ddd18e34b0240", 16, GMP_RNDN);
+                "95abe33424e8d9858e534bd5d776ddd18e34b0240", 16, MPFR_RNDN);
   mpfr_set_str (mpc_imagref(expected), "-1.f41a389646d068e0263561cb3c5d1df763945ad"
-                "ed9339f2a98387a3c4f97dbfd8a08b7d0af2f11b46", 16,GMP_RNDN);
+                "ed9339f2a98387a3c4f97dbfd8a08b7d0af2f11b46", 16,MPFR_RNDN);
 
   mpc_cos (got, op, MPC_RNDNN);
   if (mpc_cmp (got, expected) != 0)

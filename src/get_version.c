@@ -28,9 +28,9 @@ along with this program. If not, see http://www.gnu.org/licenses/ .
 void
 mpfr_set_zero (mpfr_ptr z, int s)
 {
-   mpfr_set_ui (z, 0ul, GMP_RNDN);
+   mpfr_set_ui (z, 0ul, MPFR_RNDN);
    if (s < 0)
-      mpfr_neg (z, z, GMP_RNDN);
+      mpfr_neg (z, z, MPFR_RNDN);
 }
 
 int

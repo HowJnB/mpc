@@ -37,7 +37,7 @@ check_ternary_value (mpfr_prec_t prec_max, mpfr_prec_t step)
       mpfr_set_prec (f, prec);
 
       mpc_set_ui (z, 1, MPC_RNDNN);
-      mpfr_set_ui (f, 1, GMP_RNDN);
+      mpfr_set_ui (f, 1, MPFR_RNDN);
       if (mpc_add_fr (z, z, f, MPC_RNDNZ))
         {
           printf ("Error in mpc_add_fr: 1+1 should be exact\n");

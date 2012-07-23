@@ -30,9 +30,9 @@ test_reuse (void)
   mpfr_init2 (y, 2);
   mpc_init2 (z, 2);
   mpc_set_si_si (z, 0, -1, MPC_RNDNN);
-  mpfr_neg (mpc_realref (z), mpc_realref (z), GMP_RNDN);
+  mpfr_neg (mpc_realref (z), mpc_realref (z), MPFR_RNDN);
   mpc_div_2ui (z, z, 4, MPC_RNDNN);
-  mpfr_set_ui (y, 512, GMP_RNDN);
+  mpfr_set_ui (y, 512, MPFR_RNDN);
   inex = mpc_pow_fr (z, z, y, MPC_RNDNN);
   if (MPC_INEX_RE(inex) != 0 || MPC_INEX_IM(inex) != 0 ||
       mpfr_cmp_ui_2exp (mpc_realref(z), 1, -2048) != 0 ||

@@ -1,6 +1,6 @@
 /* tui_div -- test file for mpc_ui_div.
 
-Copyright (C) 2008, 2011 INRIA
+Copyright (C) 2008, 2011, 2012 INRIA
 
 This file is part of GNU MPC.
 
@@ -41,8 +41,8 @@ special (void)
     }
 
   /* 0/(-1-0*I) should give (-0, +0) */
-  mpfr_set_str (mpc_realref(a), "-1", 10, GMP_RNDN);
-  mpfr_set_str (mpc_imagref(a), "-0", 10, GMP_RNDN);
+  mpfr_set_str (mpc_realref(a), "-1", 10, MPFR_RNDN);
+  mpfr_set_str (mpc_imagref(a), "-0", 10, MPFR_RNDN);
   mpc_ui_div (b, 0, a, MPC_RNDNN);
   if ((mpc_cmp_si_si (b, 0, 0) != 0) || (MPFR_SIGN (mpc_realref(b)) > 0)
       || (MPFR_SIGN (mpc_imagref(b)) < 0))

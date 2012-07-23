@@ -65,7 +65,7 @@ do {                                                            \
 #define MPFR_OUT(x)                                             \
 do {                                                            \
   printf (#x "[%lu]=", (unsigned long int) mpfr_get_prec (x));  \
-  mpfr_out_str (stdout, 2, 0, x, GMP_RNDN);                     \
+  mpfr_out_str (stdout, 2, 0, x, MPFR_RNDN);                     \
   printf ("\n");                                                \
 } while (0)
 

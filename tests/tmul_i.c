@@ -1,6 +1,6 @@
 /* tmul_i -- test file for mpc_mul_i.
 
-Copyright (C)  2008, 2009, 2010, 2011 INRIA
+Copyright (C)  2008, 2009, 2010, 2011, 2012 INRIA
 
 This file is part of GNU MPC.
 
@@ -36,10 +36,10 @@ check_different_precisions(void)
   mpfr_set_prec (mpc_imagref (expected), 32);
   mpfr_set_prec (mpc_imagref (got), 32);
 
-  mpfr_set_str (mpc_realref (z), "0x100000000fp-32", 16, GMP_RNDN);
-  mpfr_set_str (mpc_imagref (z), "-1", 2, GMP_RNDN);
-  mpfr_set_str (mpc_realref (expected), "+1", 2, GMP_RNDN);
-  mpfr_set_str (mpc_imagref (expected), "0x100000000fp-32", 16, GMP_RNDN);
+  mpfr_set_str (mpc_realref (z), "0x100000000fp-32", 16, MPFR_RNDN);
+  mpfr_set_str (mpc_imagref (z), "-1", 2, MPFR_RNDN);
+  mpfr_set_str (mpc_realref (expected), "+1", 2, MPFR_RNDN);
+  mpfr_set_str (mpc_imagref (expected), "0x100000000fp-32", 16, MPFR_RNDN);
 
   mpc_set (got, z, MPC_RNDNN);
   res = mpc_mul_i (got, got, +1, MPC_RNDNN);

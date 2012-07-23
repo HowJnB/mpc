@@ -1,6 +1,6 @@
 /* mpc_asin -- arcsine of a complex number.
 
-Copyright (C) 2009, 2010, 2011 INRIA
+Copyright (C) 2009, 2010, 2011, 2012 INRIA
 
 This file is part of GNU MPC.
 
@@ -38,7 +38,7 @@ mpc_asin (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
         }
       else if (mpfr_zero_p (mpc_realref (op)))
         {
-          mpfr_set (mpc_realref (rop), mpc_realref (op), GMP_RNDN);
+          mpfr_set (mpc_realref (rop), mpc_realref (op), MPFR_RNDN);
           mpfr_set_nan (mpc_imagref (rop));
         }
       else
@@ -62,7 +62,7 @@ mpc_asin (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
           mpfr_set_inf (mpc_imagref (rop), (mpfr_signbit (mpc_imagref (op)) ? -1 : 1));
 
           if (inf_im)
-            mpfr_div_2ui (mpc_realref (rop), mpc_realref (rop), 1, GMP_RNDN);
+            mpfr_div_2ui (mpc_realref (rop), mpc_realref (rop), 1, MPFR_RNDN);
         }
       else
         {
@@ -116,7 +116,7 @@ mpc_asin (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
         {
           inex_im = mpfr_set_ui (mpc_imagref (rop), 0, MPC_RND_IM (rnd));
           if (s_im)
-            mpfr_neg (mpc_imagref (rop), mpc_imagref (rop), GMP_RNDN);
+            mpfr_neg (mpc_imagref (rop), mpc_imagref (rop), MPFR_RNDN);
           inex_re = mpfr_asin (mpc_realref (rop), mpc_realref (op), MPC_RND_RE (rnd));
         }
 
@@ -129,9 +129,9 @@ mpc_asin (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
       int inex_im;
       int s;
       s = mpfr_signbit (mpc_realref (op));
-      mpfr_set_ui (mpc_realref (rop), 0, GMP_RNDN);
+      mpfr_set_ui (mpc_realref (rop), 0, MPFR_RNDN);
       if (s)
-        mpfr_neg (mpc_realref (rop), mpc_realref (rop), GMP_RNDN);
+        mpfr_neg (mpc_realref (rop), mpc_realref (rop), MPFR_RNDN);
       inex_im = mpfr_asinh (mpc_imagref (rop), mpc_imagref (op), MPC_RND_IM (rnd));
 
       return MPC_INEX (0, inex_im);
@@ -158,8 +158,8 @@ mpc_asin (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
     /* err(x) <= 1/2 ulp(x), err(y) <= 1/2 ulp(y) */
     /* z1 <- 1-z1 */
     ex = mpfr_get_exp (mpc_realref(z1));
-    mpfr_ui_sub (mpc_realref(z1), 1, mpc_realref(z1), GMP_RNDN);
-    mpfr_neg (mpc_imagref(z1), mpc_imagref(z1), GMP_RNDN);
+    mpfr_ui_sub (mpc_realref(z1), 1, mpc_realref(z1), MPFR_RNDN);
+    mpfr_neg (mpc_imagref(z1), mpc_imagref(z1), MPFR_RNDN);
     ex = ex - mpfr_get_exp (mpc_realref(z1));
     ex = (ex <= 0) ? 0 : ex;
     /* err(x) <= 2^ex * ulp(x) */
@@ -186,8 +186,8 @@ mpc_asin (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
     /* z1 <- i*z + z1 */
     ex = mpfr_get_exp (mpc_realref(z1));
     ey = mpfr_get_exp (mpc_imagref(z1));
-    mpfr_sub (mpc_realref(z1), mpc_realref(z1), mpc_imagref(op), GMP_RNDN);
-    mpfr_add (mpc_imagref(z1), mpc_imagref(z1), mpc_realref(op), GMP_RNDN);
+    mpfr_sub (mpc_realref(z1), mpc_realref(z1), mpc_imagref(op), MPFR_RNDN);
+    mpfr_add (mpc_imagref(z1), mpc_imagref(z1), mpc_realref(op), MPFR_RNDN);
     if (mpfr_cmp_ui (mpc_realref(z1), 0) == 0 || mpfr_cmp_ui (mpc_imagref(z1), 0) == 0)
       continue;
     ex -= mpfr_get_exp (mpc_realref(z1)); /* cancellation in x */
@@ -201,7 +201,7 @@ mpc_asin (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
     ey = mpfr_get_exp (mpc_imagref(z1));
     ex = (ex >= ey) ? ex : ey;
     err += ex - p; /* revert to absolute error <= 2^err */
-    mpc_log (z1, z1, GMP_RNDN);
+    mpc_log (z1, z1, MPFR_RNDN);
     err -= ex - 1; /* 1/|t| <= 1/|z| <= 2^(1-ex) */
     /* express err in terms of ulp(z1) */
     ey = mpfr_get_exp (mpc_realref(z1)) <= mpfr_get_exp (mpc_imagref(z1))
@@ -211,11 +211,11 @@ mpc_asin (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
     err = (err <= 0) ? 1 : err + 1;
     /* z1 <- -i*z1 */
     mpfr_swap (mpc_realref(z1), mpc_imagref(z1));
-    mpfr_neg (mpc_imagref(z1), mpc_imagref(z1), GMP_RNDN);
-    if (mpfr_can_round (mpc_realref(z1), p - err, GMP_RNDN, GMP_RNDZ,
-                        p_re + (rnd_re == GMP_RNDN)) &&
-        mpfr_can_round (mpc_imagref(z1), p - err, GMP_RNDN, GMP_RNDZ,
-                        p_im + (rnd_im == GMP_RNDN)))
+    mpfr_neg (mpc_imagref(z1), mpc_imagref(z1), MPFR_RNDN);
+    if (mpfr_can_round (mpc_realref(z1), p - err, MPFR_RNDN, MPFR_RNDZ,
+                        p_re + (rnd_re == MPFR_RNDN)) &&
+        mpfr_can_round (mpc_imagref(z1), p - err, MPFR_RNDN, MPFR_RNDZ,
+                        p_im + (rnd_im == MPFR_RNDN)))
       break;
   }
 

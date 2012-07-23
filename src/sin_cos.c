@@ -1,6 +1,6 @@
 /* mpc_sin_cos -- combined sine and cosine of a complex number.
 
-Copyright (C) 2010, 2011 INRIA
+Copyright (C) 2010, 2011, 2012 INRIA
 
 This file is part of GNU MPC.
 
@@ -81,7 +81,7 @@ mpc_sin_cos_nonfinite (mpc_ptr rop_sin, mpc_ptr rop_cos, mpc_srcptr op,
          mpfr_t s, c;
          mpfr_init2 (s, 2);
          mpfr_init2 (c, 2);
-         mpfr_sin_cos (s, c, mpc_realref (op_loc), GMP_RNDZ);
+         mpfr_sin_cos (s, c, mpc_realref (op_loc), MPFR_RNDZ);
          mpfr_set_inf (mpc_realref (rop_sin), MPFR_SIGN (s));
          mpfr_set_inf (mpc_imagref (rop_sin), MPFR_SIGN (c)*MPFR_SIGN (mpc_imagref (op_loc)));
          mpfr_clear (s);
@@ -157,7 +157,7 @@ mpc_sin_cos_nonfinite (mpc_ptr rop_sin, mpc_ptr rop_cos, mpc_srcptr op,
          mpfr_t s, c;
          mpfr_init2 (c, 2);
          mpfr_init2 (s, 2);
-         mpfr_sin_cos (s, c, mpc_realref (op_loc), GMP_RNDN);
+         mpfr_sin_cos (s, c, mpc_realref (op_loc), MPFR_RNDN);
          mpfr_set_inf (mpc_realref (rop_cos), mpfr_sgn (c));
          mpfr_set_inf (mpc_imagref (rop_cos),
             (mpfr_sgn (mpc_imagref (op_loc)) == mpfr_sgn (s) ? -1 : +1));
@@ -203,7 +203,7 @@ mpc_sin_cos_real (mpc_ptr rop_sin, mpc_ptr rop_cos, mpc_srcptr op,
          arbitrary rounding mode will work.                                 */
 
    if (rop_sin != NULL) {
-      mpfr_set (mpc_realref (rop_sin), s, GMP_RNDN); /* exact */
+      mpfr_set (mpc_realref (rop_sin), s, MPFR_RNDN); /* exact */
       inex_sin_re = inex_s;
       mpfr_set_zero (mpc_imagref (rop_sin),
          (     ( sign_im && !mpfr_signbit(c))
@@ -211,7 +211,7 @@ mpc_sin_cos_real (mpc_ptr rop_sin, mpc_ptr rop_cos, mpc_srcptr op,
    }
 
    if (rop_cos != NULL) {
-      mpfr_set (mpc_realref (rop_cos), c, GMP_RNDN); /* exact */
+      mpfr_set (mpc_realref (rop_cos), c, MPFR_RNDN); /* exact */
       inex_cos_re = inex_c;
       mpfr_set_zero (mpc_imagref (rop_cos),
          (     ( sign_im &&  mpfr_signbit(s))
@@ -245,7 +245,7 @@ mpc_sin_cos_imag (mpc_ptr rop_sin, mpc_ptr rop_cos, mpc_srcptr op,
 
    if (rop_sin != NULL) {
       /* sin(+-O +i*y) = +-0 +i*sinh(y) */
-      mpfr_set (mpc_realref(rop_sin), mpc_realref(op_loc), GMP_RNDN);
+      mpfr_set (mpc_realref(rop_sin), mpc_realref(op_loc), MPFR_RNDN);
       inex_sin_im = mpfr_sinh (mpc_imagref(rop_sin), mpc_imagref(op_loc), MPC_RND_IM(rnd_sin));
    }
 
@@ -325,43 +325,43 @@ mpc_sin_cos (mpc_ptr rop_sin, mpc_ptr rop_cos, mpc_srcptr op,
          mpfr_set_prec (sch, prec);
          mpfr_set_prec (csh, prec);
 
-         mpfr_sin_cos (s, c, mpc_realref(op), GMP_RNDN);
-         mpfr_sinh_cosh (sh, ch, mpc_imagref(op), GMP_RNDN);
+         mpfr_sin_cos (s, c, mpc_realref(op), MPFR_RNDN);
+         mpfr_sinh_cosh (sh, ch, mpc_imagref(op), MPFR_RNDN);
 
          if (rop_sin != NULL) {
             /* real part of sine */
-            mpfr_mul (sch, s, ch, GMP_RNDN);
+            mpfr_mul (sch, s, ch, MPFR_RNDN);
             ok = (!mpfr_number_p (sch))
-                  || mpfr_can_round (sch, prec - 2, GMP_RNDN, GMP_RNDZ,
+                  || mpfr_can_round (sch, prec - 2, MPFR_RNDN, MPFR_RNDZ,
                         MPC_PREC_RE (rop_sin)
-                        + (MPC_RND_RE (rnd_sin) == GMP_RNDN));
+                        + (MPC_RND_RE (rnd_sin) == MPFR_RNDN));
 
             if (ok) {
                /* imaginary part of sine */
-               mpfr_mul (csh, c, sh, GMP_RNDN);
+               mpfr_mul (csh, c, sh, MPFR_RNDN);
                ok = (!mpfr_number_p (csh))
-                     || mpfr_can_round (csh, prec - 2, GMP_RNDN, GMP_RNDZ,
+                     || mpfr_can_round (csh, prec - 2, MPFR_RNDN, MPFR_RNDZ,
                            MPC_PREC_IM (rop_sin)
-                           + (MPC_RND_IM (rnd_sin) == GMP_RNDN));
+                           + (MPC_RND_IM (rnd_sin) == MPFR_RNDN));
             }
          }
 
          if (rop_cos != NULL && ok) {
             /* real part of cosine */
-            mpfr_mul (c, c, ch, GMP_RNDN);
+            mpfr_mul (c, c, ch, MPFR_RNDN);
             ok = (!mpfr_number_p (c))
-                  || mpfr_can_round (c, prec - 2, GMP_RNDN, GMP_RNDZ,
+                  || mpfr_can_round (c, prec - 2, MPFR_RNDN, MPFR_RNDZ,
                         MPC_PREC_RE (rop_cos)
-                        + (MPC_RND_RE (rnd_cos) == GMP_RNDN));
+                        + (MPC_RND_RE (rnd_cos) == MPFR_RNDN));
 
             if (ok) {
                /* imaginary part of cosine */
-               mpfr_mul (s, s, sh, GMP_RNDN);
-               mpfr_neg (s, s, GMP_RNDN);
+               mpfr_mul (s, s, sh, MPFR_RNDN);
+               mpfr_neg (s, s, MPFR_RNDN);
                ok = (!mpfr_number_p (s))
-                     || mpfr_can_round (s, prec - 2, GMP_RNDN, GMP_RNDZ,
+                     || mpfr_can_round (s, prec - 2, MPFR_RNDN, MPFR_RNDZ,
                            MPC_PREC_IM (rop_cos)
-                           + (MPC_RND_IM (rnd_cos) == GMP_RNDN));
+                           + (MPC_RND_IM (rnd_cos) == MPFR_RNDN));
             }
          }
       } while (ok == 0);

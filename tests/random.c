@@ -1,6 +1,6 @@
 /* random.c -- Handle seed for random numbers.
 
-// Copyright (C) 2008, 2009, 2010, 2011 INRIA
+// Copyright (C) 2008, 2009, 2010, 2011, 2012 INRIA
 
 This file is part of GNU MPC.
 
@@ -140,9 +140,9 @@ test_default_random (mpc_ptr z, mpfr_exp_t emin, mpfr_exp_t emax,
           zero_im_p = !zero_re_p;
         }
       if (zero_re_p)
-        mpfr_set_ui (mpc_realref (z), 0, GMP_RNDN);
+        mpfr_set_ui (mpc_realref (z), 0, MPFR_RNDN);
       if (zero_im_p)
-        mpfr_set_ui (mpc_imagref (z), 0, GMP_RNDN);
+        mpfr_set_ui (mpc_imagref (z), 0, MPFR_RNDN);
     }
   if (!mpfr_zero_p (mpc_realref (z)))
     mpfr_set_exp (mpc_realref (z), (mpfr_exp_t) gmp_urandomm_ui (rands, range) + emin);
@@ -154,7 +154,7 @@ test_default_random (mpc_ptr z, mpfr_exp_t emin, mpfr_exp_t emax,
     negative_probability = 256;
   r = gmp_urandomb_ui (rands, 16);
   if ((r & 0xFF) < negative_probability)
-    mpfr_neg (mpc_realref (z), mpc_realref (z), GMP_RNDN);
+    mpfr_neg (mpc_realref (z), mpc_realref (z), MPFR_RNDN);
   if (((r>>8) & 0xFF) < negative_probability)
-    mpfr_neg (mpc_imagref (z), mpc_imagref (z), GMP_RNDN);
+    mpfr_neg (mpc_imagref (z), mpc_imagref (z), MPFR_RNDN);
 }

@@ -55,13 +55,13 @@ along with this program. If not, see http://www.gnu.org/licenses/ .
 #define MPFR_SIGNBIT(x) (mpfr_signbit (x) ? -1 : 1)
 #define MPC_MPFR_SIGN(x) (mpfr_zero_p (x) ? 0 : MPFR_SIGNBIT (x))
    /* should be called MPFR_SIGN, but this is taken in mpfr.h */
-#define MPFR_CHANGE_SIGN(x) mpfr_neg(x,x,GMP_RNDN)
+#define MPFR_CHANGE_SIGN(x) mpfr_neg(x,x,MPFR_RNDN)
 #define MPFR_COPYSIGN(x,y,z,rnd) (mpfr_nan_p (z) ? \
    mpfr_setsign (x, y, 0, rnd) : \
    mpfr_copysign (x, y, z, rnd))
    /* work around spurious signs in nan */
-#define MPFR_ADD_ONE_ULP(x) mpfr_add_one_ulp (x, GMP_RNDN)
-#define MPFR_SUB_ONE_ULP(x) mpfr_sub_one_ulp (x, GMP_RNDN)
+#define MPFR_ADD_ONE_ULP(x) mpfr_add_one_ulp (x, MPFR_RNDN)
+#define MPFR_SUB_ONE_ULP(x) mpfr_sub_one_ulp (x, MPFR_RNDN)
    /* drop unused rounding mode from macroes */
 #define MPFR_SWAP(a,b) do { mpfr_srcptr tmp; tmp = a; a = b; b = tmp; } while (0)
 
@@ -79,7 +79,7 @@ along with this program. If not, see http://www.gnu.org/licenses/ .
 */
 #if MPFR_VERSION_MAJOR < 3
    /* round towards zero, add 1 ulp if not exact */
-#define MPFR_RNDA GMP_RNDZ
+#define MPFR_RNDA MPFR_RNDZ
 #define ROUND_AWAY(f,rop)                            \
    ((f) ? MPFR_ADD_ONE_ULP (rop), MPFR_SIGNBIT (rop) : 0)
 #else
@@ -103,7 +103,7 @@ __MPC_DECLSPEC int mpfr_regular_p (mpfr_srcptr);
 #define MPC_MAX_PREC(x) MPC_MAX(MPC_PREC_RE(x), MPC_PREC_IM(x))
 
 #define INV_RND(r) \
-   (((r) == GMP_RNDU) ? GMP_RNDD : (((r) == GMP_RNDD) ? GMP_RNDU : (r)))
+   (((r) == MPFR_RNDU) ? MPFR_RNDD : (((r) == MPFR_RNDD) ? MPFR_RNDU : (r)))
 
 #define mpc_inf_p(z) (mpfr_inf_p(mpc_realref(z))||mpfr_inf_p(mpc_imagref(z)))
    /* Convention in C99 (G.3): z is regarded as an infinity if at least one of
@@ -153,7 +153,7 @@ do {                                                            \
 #define MPFR_OUT(x)                                             \
 do {                                                            \
   printf (#x "[%lu]=", (unsigned long int) mpfr_get_prec (x));  \
-  mpfr_out_str (stdout, 2, 0, x, GMP_RNDN);                     \
+  mpfr_out_str (stdout, 2, 0, x, MPFR_RNDN);                     \
   printf ("\n");                                                \
 } while (0)
 

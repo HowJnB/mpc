@@ -1,6 +1,6 @@
 /* tpow -- test file for mpc_pow.
 
-Copyright (C) 2009, 2011 INRIA
+Copyright (C) 2009, 2011, 2012 INRIA
 
 This file is part of GNU MPC.
 
@@ -34,8 +34,8 @@ reuse_bug (void)
        mpc_init2 (y, prec);
        mpc_init2 (z, prec);
    
-       mpfr_set_ui (mpc_realref (x), 0ul, GMP_RNDN);
-       mpfr_set_ui_2exp (mpc_imagref (x), 3ul, -2, GMP_RNDN);
+       mpfr_set_ui (mpc_realref (x), 0ul, MPFR_RNDN);
+       mpfr_set_ui_2exp (mpc_imagref (x), 3ul, -2, MPFR_RNDN);
        mpc_set_ui (y, 8ul, MPC_RNDNN);
 
        mpc_pow (z, x, y, MPC_RNDNN);
