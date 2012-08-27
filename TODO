@@ -1,3 +1,8 @@
+From Andreas Enge 27 August 2012:
+Implement im(atan(x+i*y)) as
+1/4 * [log1p (4y / (x^2 +(1-y)^2))]
+(see http://lists.gforge.inria.fr/pipermail/mpc-discuss/2012-August/001196.html)
+
 From Andreas Enge 23 July 2012:
 go through tests and move them to the data files if possible
 (see, for instance, tcos.c)
