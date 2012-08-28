@@ -30,9 +30,6 @@ AM_MAINTAINER_MODE
 USER_CC=$CC
 USER_CFLAGS=$CFLAGS
 
-# automake 1.12 seems to require this, but automake 1.11 doesn't recognize it
-m4_ifdef([AM_PROG_AR], [AM_PROG_AR])
-
 AC_CANONICAL_HOST
 AC_CONFIG_MACRO_DIR([m4])
 
@@ -110,6 +107,9 @@ fi
 # Setup CC and CFLAGS
 AC_PROG_CC
 AC_LANG(C)
+
+# automake 1.12 seems to require this, but automake 1.11 doesn't recognize it
+m4_ifdef([AM_PROG_AR], [AM_PROG_AR])
 
 # Set up LibTool
 LT_INIT
