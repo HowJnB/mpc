@@ -1,3 +1,6 @@
+Changes in version 1.0.1:
+  - #14669: Fixed extraction of CC from gmp.h
+
 Changes in version 1.0:
   - First release as a GNU package
   - License change: LGPLv3+ for code, GFDLv1.3+ (with no invariant sections)
