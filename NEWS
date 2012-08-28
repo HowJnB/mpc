@@ -1,4 +1,6 @@
 Changes in version 1.0.1:
+  - Switched to automake 1.11.6, see
+    https://lists.gnu.org/archive/html/automake/2012-07/msg00023.html
   - #14669: Fixed extraction of CC from gmp.h
   - Fixed case of intermediate zero real or imaginary part in mpc_fma,
     found by hydra with GMP_CHECK_RANDOMIZE=1346362345
