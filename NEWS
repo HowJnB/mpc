@@ -1,7 +1,7 @@
 Recent changes in the trunk:
   - Minimally required library version: mpfr 3.0.0
 
-Recent changes in branch 1.0 (bug fixes only):
+Changes in version 1.0.1:
   - #14669: Fixed extraction of CC from gmp.h
 
 Changes in version 1.0:
