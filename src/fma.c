@@ -159,9 +159,9 @@ mpc_fma (mpc_ptr r, mpc_srcptr a, mpc_srcptr b, mpc_srcptr c, mpc_rnd_t rnd)
         break;
       diffre = mpfr_get_exp (mpc_realref(ab));
       diffim = mpfr_get_exp (mpc_imagref(ab));
+      mpc_add (ab, ab, c, MPC_RNDZZ);
       if (mpfr_zero_p (mpc_realref(ab)) || mpfr_zero_p (mpc_imagref(ab)))
         break;
-      mpc_add (ab, ab, c, MPC_RNDZZ);
       diffre -= mpfr_get_exp (mpc_realref(ab));
       diffim -= mpfr_get_exp (mpc_imagref(ab));
       diffre = (diffre > 0 ? diffre + 1 : 1);
