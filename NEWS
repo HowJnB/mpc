@@ -3,6 +3,8 @@ Recent changes in the trunk:
 
 Changes in version 1.0.1:
   - #14669: Fixed extraction of CC from gmp.h
+  - Fixed case of intermediate zero real or imaginary part in mpc_fma,
+    found by hydra with GMP_CHECK_RANDOMIZE=1346362345
 
 Changes in version 1.0:
   - First release as a GNU package
