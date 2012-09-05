@@ -32,6 +32,7 @@
 \renewcommand {\theta}{\vartheta}
 \renewcommand {\leq}{\leqslant}
 \renewcommand {\geq}{\geqslant}
+\newcommand {\AGM}{\operatorname{AGM}}
 
 \newtheorem{theorem}{Theorem}
 \newtheorem{lemma}[theorem]{Lemma}
@@ -1762,6 +1763,48 @@ Thus, assuming that $n 2^{-p} \leq 1$, the error estimates
 \eqref {eq:powui_re} and \eqref {eq:powui_im} are valid with $n$
 in the place of $n - 1$.
 
+\subsection{The AGM}
+
+We assume we compute the univariate AGM defined by $\AGM(1,z)$.
+It is easy to see
+that after one AGM iteration the values $\circ((1+z)/2)$ and
+$\circ(\sqrt{z})$ are in the same quadrant (in the first quadrant if the
+imaginary part of $z$ is nonnegative, in the fourth quadrant otherwise).
+Taking into account symmetries, we thus assume $z$ is in the first quadrant.
+
+Let $\tilde{a}_n, \tilde{b}_n$ be the values of the AGM iteration performed
+with infinite precision, and $a_n, b_n$ those performed with $p$-bit precision
+and rounding towards $+\infty$. We have $\tilde{a}_0 = a_0 = 1$ and
+$\tilde{b}_0 = b_0 = z$ (assuming $z$ is exactly representable in precision
+$p$).
+
+\begin{lemma}
+If $z = x + i y$ is a complex number with infinite precision,
+with $x, y \geq 0$,
+is rounded to $z' = x' + i y'$ with precision $p$, with both roundings towards
+$+\infty$, then we can write $z' = z (1 + \theta)$, with $\theta$ a
+complex number satisfying $|\theta| < 2^{1-p}$.
+\end{lemma}
+\begin{proof}
+We have $x' = x (1 + \mu)$ with $0 \leq \mu < 2^{1-p}$, and similarly
+$y' = y (1 + \nu)$ with $0 \leq \nu < 2^{1-p}$.
+Then:
+\[ \frac{z'}{z} = 1 + \frac{x \mu + i y \nu}{x + i y}. \]
+Define $\theta := (x \mu + i y \nu)/(x + i y)$, then
+$|\theta|^2 = (x^2 \mu^2 + y^2 \nu^2)/(x^2 + y^2) \leq {\rm max}(\mu^2, \nu^2)$
+thus $|\theta| < 2^{1-p}$.
+
+Each iteration computes $a_n = \circ((a_{n-1} + b_{n-1})/2)$ and
+$b_n = \circ(\sqrt{a_{n-1} b_{n-1}})$.
+Assume by induction we can write
+$a_{n-1} = \tilde{a}_{n-1} (1 + \mu_{n-1})^{e_{n-1}}$
+and $b_{n-1} = \tilde{b}_{n-1} (1 + \nu_{n-1})^{e_{n-1}}$
+with $|\mu_{n-1}|, |\nu_{n-1}| < 2^{1-p}$.
+Then using the above lemma, since the division by $2$ is exact, we can write
+$a_n = \tilde{a}_n (1 + \mu_n)^{e_{n-1} + 1}$, and 
+$b_n = \tilde{b}_n (1 + \nu_n)^{e_{n-1} + 2}$.
+Thus $e_n \leq e_{n-1} + 2$, which gives $e_n \leq 2n$.
+\end{proof}
 
 
 \bibliographystyle{acm}
