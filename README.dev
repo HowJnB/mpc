@@ -24,12 +24,13 @@ Creating a new release
 4) Execute "autoreconf; touch doc/mpc.texi; make distcheck".
    This updates the date and version number in doc/version.texi and
    creates the tarball for distribution.
-5) Create an svn tag from inside the svn root:
-   svn cp trunk tags/VERSION
+5) Upload to GNU ftp server.
 6) Update the web page on the server.
    The html documentation is created with
       makeinfo --html --no-split mpc.texi
    and the resulting mpc.html is copied to content_html.php.
-7) After the release, update the version number in configure.ac, INSTALL,
+7) Create an svn tag from inside the svn root:
+   svn cp trunk tags/VERSION
+8) After the release, update the version number in configure.ac, INSTALL,
    src/get_version.c, src/mpc.h and Makefile.vc.
-8) Commit the changes to svn.
+9) Commit the changes to svn.
