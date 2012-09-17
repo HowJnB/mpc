@@ -341,19 +341,48 @@ For the converse direction, write
 \end {proof}
 
 As a corollary to Propositions~\ref {prop:relerror}
-and~\ref {prop:comrelerror}, we obtain the following result.
+and~\ref {prop:comrelerror}, we obtain the following result that shows how
+to transform absolute into complex relative errors.
 
 \begin {prop}
-\label {prop:comabserror}
-Let $\corr z = \corr x + i \corr y$, $\appro z = \appro x + i \appro y$
-be represented at precision~$p$. If
+\label {prop:comabstorelerror}
+Let $\appro z = \appro x + i \appro y$ be representable at precision~$p$.
+If
 $\error (\appro x) \leq k \, \Ulp (\appro x)$ and
 $\error (\appro y) \leq k \, \Ulp (\appro y)$, then
 \[
 \relerror (\appro z) \leq k \, 2^{1-p}.
 \]
+As in Proposition~\ref {prop:relerror}, there is an immediate generalisation
+if $\appro z$ is not representable at precision~$p$.
 \end {prop}
 
+This result can be used to analyse how rounding affects complex
+relative errors.
+
+\begin {prop}
+\label {prop:comrelround}
+Let $\relerror (\appro z) = \epsilon$.
+Then
+\[
+\relerror (\round (\appro z)) \leq
+\epsilon + c (1 + \epsilon) 2^{1-p},
+\]
+where $c = \frac {1}{2}$ if both the real and the imaginary part are
+rounded to nearest, and $c = 1$ otherwise.
+\end {prop}
+
+\begin {proof}
+Write $\corr z = (1 + \theta) \appro z$ with $|\theta| = \epsilon$.
+Applying Proposition~\ref {prop:comabstorelerror} with $\appro z$ in the
+place of $\corr z$, $\round (\appro z)$ in the place of $\appro z$
+and $c$ in the place of~$k$,
+there is a $\theta'$ with $\appro z = (1 + \theta') \round (\appro z)$
+and $|\theta'| \leq c \, 2^{1-p}$.
+So $\corr z = (1 + \theta'') \round (\appro z)$ with
+$\theta'' = (1 + \theta)(1 + \theta') - 1
+= \theta + \theta' (1 + \theta)$.
+\end {proof}
 
 
 \subsection {Real functions}
@@ -542,7 +571,7 @@ For subtraction, the same bounds are obtained, except that the simpler bound
 now holds whenever $\appro {x_1}$ and $\appro {x_2}$ resp.
 $\appro {y_1}$ and $\appro {y_2}$ have different signs.
 
-We obtain a useful result with complex relative errors when $z_1$ and $z_2$
+We obtain a useful result for complex relative errors when $z_1$ and $z_2$
 lie in the same quadrant, so that cancellation occurs neither for the real
 nor for the imaginary part.
 
@@ -569,37 +598,29 @@ with $\epsilon_1 = |\theta_1|$ and
 $\corr {z_2} = (1 + \theta_2) \appro {z_2}$
 with $\epsilon_2 = |\theta_2|$ lie in the same quadrant.
 Then
-$\corr z = \corr {z_1} + \corr {z_2}
-= (1 + \theta_3) (\appro {z_1} + \appro {z_2})$
+$\corr z = (1 + \theta) \appro z$
 with
 \[
-\theta_3 = \frac {\theta_1 \appro {z_1} + \theta_2 \appro {z_2}}
-                 {\appro {z_1} + \appro {z_2}}.
+\theta = \frac {\theta_1 \appro {z_1} + \theta_2 \appro {z_2}}
+               {\appro {z_1} + \appro {z_2}}.
 \]
 and
 \[
-\epsilon_3 = |\theta_3|
+\relerror (\appro z)
 \leq
-\max (|\theta_1|, |\theta_2|)
+\max (\epsilon_1, \epsilon_2)
    \frac {|\appro {z_1}| + |\appro {z_2}|}{|\appro {z_1} + \appro {z_2}|}
 \leq
-\sqrt 2 \, \max (|\theta_1|, |\theta_2|)
+\sqrt 2 \, \max (\epsilon_1, \epsilon_2)
 \]
 by Lemma~\ref {lm:arithgeom}.
-Now apply Proposition~\ref {prop:comabserror} to
-$\appro {z_1} + \appro {z_2}$ in the place of $\corr z$ and
-$\appro z = \round (\appro {z_1} + \appro {z_2})$ in the place of $\appro z$
-to show that $\appro {z_1} + \appro {z_2} = (1 + \theta_4) \appro z$
-with
-$\epsilon_4 = |\theta_4| \leq c \, 2^{1-p}$,
-where $c = 1/2$ if both the real and the imaginary part are rounded to
-nearest, and $c = 1$ otherwise. So
-$\corr z = (1 + \theta) \appro z$ with
-$\theta = \theta_3 + \theta_4 + \theta_3 \theta_4$ and
+
+Defining $c$ as in Proposition~\ref {prop:comrelround}, we obtain
 \begin {equation}
 \label {eq:addrel}
-\epsilon = |\theta| \leq \sqrt 2 \, \max (|\theta_1|, |\theta_2|)
-+ c \left( 1 + \sqrt 2 \, \max (|\theta_1|, |\theta_2|) \right) 2^{1-p}.
+\relerror (\round (\appro z))
+\leq \sqrt 2 \, \max (\epsilon_1, \epsilon_2)
++ c \left( 1 + \sqrt 2 \, \max (\epsilon_1, \epsilon_2) \right) 2^{1-p}.
 \end {equation}
 
 
