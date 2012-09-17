@@ -593,10 +593,8 @@ One readily verifies that
 \]
 \end {proof}
 
-Assume now that $\corr {z_1} = (1 + \theta_1) \appro {z_1}$
-with $\epsilon_1 = |\theta_1|$ and
-$\corr {z_2} = (1 + \theta_2) \appro {z_2}$
-with $\epsilon_2 = |\theta_2|$ lie in the same quadrant.
+Assume now that $\corr {z_n} = (1 + \theta_n) \appro {z_n}$
+with $\epsilon_n = |\theta_n|$ lie in the same quadrant.
 Then
 $\corr z = (1 + \theta) \appro z$
 with
@@ -605,23 +603,16 @@ with
                {\appro {z_1} + \appro {z_2}}.
 \]
 and
-\[
+\begin {equation}
+\label {eq:propaddrel}
 \relerror (\appro z)
 \leq
 \max (\epsilon_1, \epsilon_2)
    \frac {|\appro {z_1}| + |\appro {z_2}|}{|\appro {z_1} + \appro {z_2}|}
 \leq
 \sqrt 2 \, \max (\epsilon_1, \epsilon_2)
-\]
-by Lemma~\ref {lm:arithgeom}.
-
-Defining $c$ as in Proposition~\ref {prop:comrelround}, we obtain
-\begin {equation}
-\label {eq:addrel}
-\relerror (\round (\appro z))
-\leq \sqrt 2 \, \max (\epsilon_1, \epsilon_2)
-+ c \left( 1 + \sqrt 2 \, \max (\epsilon_1, \epsilon_2) \right) 2^{1-p}.
 \end {equation}
+by Lemma~\ref {lm:arithgeom}.
 
 
 
@@ -767,7 +758,11 @@ A coarser bound may be obtained more easily by considering complex
 relative errors. Write $\corr {z_n} = (1 + \theta_n) \appro {z_n}$
 with $\epsilon_n = | \theta_n |$. Then $\corr z = (1 + \theta) \appro z$
 with $\theta = \theta_1 + \theta_2 + \theta_1 \theta_2$ and
-$\epsilon = |\theta| \leq \epsilon_1 + \epsilon_2 + \epsilon_1 \epsilon_2$.
+\begin {equation}
+\label {eq:propmulrel}
+\epsilon = \relerror (\appro z)
+\leq \epsilon_1 + \epsilon_2 + \epsilon_1 \epsilon_2.
+\end {equation}
 By Proposition~\ref {prop:relerror},
 we have $\epsilon_{X, n} \leq k_{X, n} 2^{1-p}$ for $X \in \{ R, I \}$,
 and by Proposition~\ref {prop:comrelerror},
