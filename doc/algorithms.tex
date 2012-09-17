@@ -1782,19 +1782,24 @@ in the place of $n - 1$.
 
 We assume we compute the univariate AGM defined by $\AGM(1,z)$.
 It is easy to see
-that after one AGM iteration the values $\circ((1+z)/2)$ and
-$\circ(\sqrt{z})$ are in the same quadrant (in the first quadrant if the
+that after one AGM iteration the values
+$\round \left( \frac {1+z}{2} \right)$ and
+$\round (\sqrt{z})$ are in the same quadrant (in the first quadrant if the
 imaginary part of $z$ is nonnegative, in the fourth quadrant otherwise).
 Taking into account symmetries, we thus assume $z$ is in the first quadrant.
 
 Let $\corr {a_n}, \corr {b_n}$ be the values of the AGM iteration performed
-with infinite precision, and $\appro {a_n}, \appro {b_n}$ those performed with $p$-bit precision
+with infinite precision, and
+$\appro {a_n}, \appro {b_n}$ those performed with $p$-bit precision
 and rounding towards $+\infty$. We have $\corr {a_0} = a_0 = 1$ and
 $\corr {b_0} = b_0 = z$ (assuming $z$ is exactly representable in precision
 $p$).
 
-Each iteration computes $\appro {a_n} = \circ((\appro {a_{n-1}} + \appro {b_{n-1}})/2)$ and
-$\appro {b_n} = \circ(\sqrt{\appro {a_{n-1}} \appro {b_{n-1}}})$.
+Each iteration computes
+$\appro {a_n} = \round \left(
+\frac {\appro {a_{n-1}} + \appro {b_{n-1}}}{2} \right)$ and
+$\appro {b_n} = \round \left(
+\sqrt {\appro {a_{n-1}} \appro {b_{n-1}}} \right)$.
 Assume by induction we can write
 $\appro {a_{n-1}} = \corr {a_{n-1}} (1 + \mu_{n-1})^{e_{n-1}}$
 and $\appro {b_{n-1}} = \corr {b_{n-1}} (1 + \nu_{n-1})^{e_{n-1}}$
