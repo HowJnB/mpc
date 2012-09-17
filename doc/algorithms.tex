@@ -1001,6 +1001,39 @@ we find the exact same error estimate \eqref {eq:propmulcomrel}
 also for the case of division.
 
 
+\subsubsection {Square root}
+Let
+\[
+\appro z = \sqrt {\appro {z_1}}.
+\]
+Write $\corr {z_1} = (1 + \theta_1) \appro {z_1}$ with
+$\epsilon_1 = |\theta_1|$, and assume $\epsilon_1 < 1$.
+Then $\corr z = (1 + \theta) \appro z$ with
+\[
+\theta = \sqrt {1 + \theta_1} - 1
+= \frac {1}{2} \theta_1
++ \sum_{n=2}^\infty \frac {(-1)^{n+1} 1 \cdot 3 \cdots (2 n - 3)}{2^n \, n!}
+   \theta_1^n
+\]
+as a Taylor series, and
+\[
+\epsilon = |\theta|
+\leq
+\frac {1}{2}  \epsilon_1
++ \sum_{n=2}^\infty \frac {1 \cdot 3 \cdots (2 n - 3)}{2^n \, n!}
+\epsilon_1^n
+= 1 - \sqrt {1 - \epsilon_1}.
+\]
+By the mean value theorem, applied to the function $f (x) = \sqrt {1 - x}$,
+there is $0 < \xi < \epsilon_1$ with
+\begin {equation}
+\label {eq:propsqrt}
+\epsilon = \frac {1}{2 \sqrt {1 - \xi}} \, \epsilon_1
+\leq \frac {1}{2 \sqrt {1 - \epsilon_1}} \, \epsilon_1.
+\end {equation}
+For instance $\epsilon \leq \epsilon_1$ for $\epsilon_1 \leq \frac {3}{4}$.
+
+
 \subsubsection {Logarithm}
 
 
