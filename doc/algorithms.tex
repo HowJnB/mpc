@@ -1772,10 +1772,10 @@ $\circ(\sqrt{z})$ are in the same quadrant (in the first quadrant if the
 imaginary part of $z$ is nonnegative, in the fourth quadrant otherwise).
 Taking into account symmetries, we thus assume $z$ is in the first quadrant.
 
-Let $\tilde{a}_n, \tilde{b}_n$ be the values of the AGM iteration performed
-with infinite precision, and $a_n, b_n$ those performed with $p$-bit precision
-and rounding towards $+\infty$. We have $\tilde{a}_0 = a_0 = 1$ and
-$\tilde{b}_0 = b_0 = z$ (assuming $z$ is exactly representable in precision
+Let $\corr {a_n}, \corr {b_n}$ be the values of the AGM iteration performed
+with infinite precision, and $\appro {a_n}, \appro {b_n}$ those performed with $p$-bit precision
+and rounding towards $+\infty$. We have $\corr {a_0} = a_0 = 1$ and
+$\corr {b_0} = b_0 = z$ (assuming $z$ is exactly representable in precision
 $p$).
 
 \begin{lemma}
@@ -1794,15 +1794,15 @@ Define $\theta := (x \mu + i y \nu)/(x + i y)$, then
 $|\theta|^2 = (x^2 \mu^2 + y^2 \nu^2)/(x^2 + y^2) \leq {\rm max}(\mu^2, \nu^2)$
 thus $|\theta| < 2^{1-p}$.
 
-Each iteration computes $a_n = \circ((a_{n-1} + b_{n-1})/2)$ and
-$b_n = \circ(\sqrt{a_{n-1} b_{n-1}})$.
+Each iteration computes $\appro {a_n} = \circ((\appro {a_{n-1}} + \appro {b_{n-1}})/2)$ and
+$\appro {b_n} = \circ(\sqrt{\appro {a_{n-1}} \appro {b_{n-1}}})$.
 Assume by induction we can write
-$a_{n-1} = \tilde{a}_{n-1} (1 + \mu_{n-1})^{e_{n-1}}$
-and $b_{n-1} = \tilde{b}_{n-1} (1 + \nu_{n-1})^{e_{n-1}}$
+$\appro {a_{n-1}} = \corr {a_{n-1}} (1 + \mu_{n-1})^{e_{n-1}}$
+and $\appro {b_{n-1}} = \corr {b_{n-1}} (1 + \nu_{n-1})^{e_{n-1}}$
 with $|\mu_{n-1}|, |\nu_{n-1}| < 2^{1-p}$.
 Then using the above lemma, since the division by $2$ is exact, we can write
-$a_n = \tilde{a}_n (1 + \mu_n)^{e_{n-1} + 1}$, and 
-$b_n = \tilde{b}_n (1 + \nu_n)^{e_{n-1} + 2}$.
+$\appro {a_n} = \corr {a_n} (1 + \mu_n)^{e_{n-1} + 1}$, and
+$\appro {b_n} = \corr {b_n} (1 + \nu_n)^{e_{n-1} + 2}$.
 Thus $e_n \leq e_{n-1} + 2$, which gives $e_n \leq 2n$.
 \end{proof}
 
