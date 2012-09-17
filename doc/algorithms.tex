@@ -48,7 +48,7 @@
 
 \title {MPC: Algorithms and Error Analysis}
 \author {Andreas Enge \and Philippe Th\'eveny \and Paul Zimmermann}
-\date {Draft; June 28, 2012}
+\date {Draft; September 17, 2012}
 
 \begin {document}
 \maketitle
@@ -339,6 +339,21 @@ For the converse direction, write
 \leq \max \left( \epsilon_R^2, \epsilon_I^2 \right).
 \]
 \end {proof}
+
+As a corollary to Propositions~\ref {prop:relerror}
+and~\ref {prop:comrelerror}, we obtain the following result.
+
+\begin {prop}
+\label {prop:comabserror}
+Let $\corr z = \corr x + i \corr y$, $\appro z = \appro x + i \appro y$
+be represented at precision~$p$. If
+$\error (\appro x) \leq k \, \Ulp (\appro x)$ and
+$\error (\appro y) \leq k \, \Ulp (\appro y)$, then
+\[
+\relerror (\appro z) \leq k \, 2^{1-p}.
+\]
+\end {prop}
+
 
 
 \subsection {Real functions}
@@ -1778,22 +1793,6 @@ and rounding towards $+\infty$. We have $\corr {a_0} = a_0 = 1$ and
 $\corr {b_0} = b_0 = z$ (assuming $z$ is exactly representable in precision
 $p$).
 
-\begin{lemma}
-If $z = x + i y$ is a complex number with infinite precision,
-with $x, y \geq 0$,
-is rounded to $z' = x' + i y'$ with precision $p$, with both roundings towards
-$+\infty$, then we can write $z' = z (1 + \theta)$, with $\theta$ a
-complex number satisfying $|\theta| < 2^{1-p}$.
-\end{lemma}
-\begin{proof}
-We have $x' = x (1 + \mu)$ with $0 \leq \mu < 2^{1-p}$, and similarly
-$y' = y (1 + \nu)$ with $0 \leq \nu < 2^{1-p}$.
-Then:
-\[ \frac{z'}{z} = 1 + \frac{x \mu + i y \nu}{x + i y}. \]
-Define $\theta := (x \mu + i y \nu)/(x + i y)$, then
-$|\theta|^2 = (x^2 \mu^2 + y^2 \nu^2)/(x^2 + y^2) \leq {\rm max}(\mu^2, \nu^2)$
-thus $|\theta| < 2^{1-p}$.
-
 Each iteration computes $\appro {a_n} = \circ((\appro {a_{n-1}} + \appro {b_{n-1}})/2)$ and
 $\appro {b_n} = \circ(\sqrt{\appro {a_{n-1}} \appro {b_{n-1}}})$.
 Assume by induction we can write
@@ -1804,7 +1803,6 @@ Then using the above lemma, since the division by $2$ is exact, we can write
 $\appro {a_n} = \corr {a_n} (1 + \mu_n)^{e_{n-1} + 1}$, and
 $\appro {b_n} = \corr {b_n} (1 + \nu_n)^{e_{n-1} + 2}$.
 Thus $e_n \leq e_{n-1} + 2$, which gives $e_n \leq 2n$.
-\end{proof}
 
 
 \bibliographystyle{acm}
