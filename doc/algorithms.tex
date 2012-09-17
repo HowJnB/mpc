@@ -1891,34 +1891,120 @@ in the place of $n - 1$.
 
 \subsection{The AGM}
 
-We assume we compute the univariate AGM defined by $\AGM(1,z)$.
-It is easy to see
-that after one AGM iteration the values
-$\round \left( \frac {1+z}{2} \right)$ and
-$\round (\sqrt{z})$ are in the same quadrant (in the first quadrant if the
-imaginary part of $z$ is nonnegative, in the fourth quadrant otherwise).
-Taking into account symmetries, we thus assume $z$ is in the first quadrant.
+Let
+\[
+z = \AGM (1, z_1);
+\]
+for the time being, we assume $\Re (z_1) \geq 0$ and $\Im (z_1) > 0$.
 
-Let $\corr {a_n}, \corr {b_n}$ be the values of the AGM iteration performed
-with infinite precision, and
+Let $\corr {a_0} = \appro {a_0} = 1$,
+$\corr {b_0} = \appro {b_0} = z_1$, and let
+$\corr {a_n} = \frac {\corr {a_{n-1}} + \corr {b_{n-1}}}{2}$ and
+$\corr {b_n} = \sqrt {\corr {a_{n-1}} \corr {b_{n-1}}}$
+be the values of the AGM iteration performed with infinite precision and
 $\appro {a_n}, \appro {b_n}$ those performed with $p$-bit precision
-and rounding towards $+\infty$. We have $\corr {a_0} = a_0 = 1$ and
-$\corr {b_0} = b_0 = z$ (assuming $z$ is exactly representable in precision
-$p$).
+and some fixed rounding mode; let $c = \frac {1}{2}$ if this rounding mode
+is to nearest, $c = 1$ otherwise.
+Let $\eta_n = \relerror (\appro {a_n})$ and
+$\epsilon_n = \relerror (\appro {b_n})$.
 
-Each iteration computes
-$\appro {a_n} = \round \left(
-\frac {\appro {a_{n-1}} + \appro {b_{n-1}}}{2} \right)$ and
-$\appro {b_n} = \round \left(
-\sqrt {\appro {a_{n-1}} \appro {b_{n-1}}} \right)$.
-Assume by induction we can write
-$\appro {a_{n-1}} = \corr {a_{n-1}} (1 + \mu_{n-1})^{e_{n-1}}$
-and $\appro {b_{n-1}} = \corr {b_{n-1}} (1 + \nu_{n-1})^{e_{n-1}}$
-with $|\mu_{n-1}|, |\nu_{n-1}| < 2^{1-p}$.
-Then using the above lemma, since the division by $2$ is exact, we can write
-$\appro {a_n} = \corr {a_n} (1 + \mu_n)^{e_{n-1} + 1}$, and
-$\appro {b_n} = \corr {b_n} (1 + \nu_n)^{e_{n-1} + 2}$.
-Thus $e_n \leq e_{n-1} + 2$, which gives $e_n \leq 2n$.
+Let $c_n = \frac {\appro {a_{n-1}} + \appro {b_{n-1}}}{2}$, so that
+$\appro {a_n} = \round(c_n)$. By \eqref {eq:propaddrel}, the error of
+$c_n$ (relative to the correct value $a_n$) is bounded above by
+$\sqrt 2 \, \max (\epsilon_{n-1}, \eta_{n-1})$, division by~$2$ being exact.
+After rounding, we obtain
+\begin {equation}
+\label {eq:agmeta}
+\eta_n \leq
+\sqrt 2 \, \max (\eta_{n-1}, \epsilon_{n-1})
++ c \left( 1 + \sqrt 2 \, \max (\eta_{n-1}, \epsilon_{n-1}) \right) 2^{1-p}
+\end {equation}
+by Proposition~\ref {prop:comrelround}.
+
+Let $d_n = \round \left( \appro {a_{n-1}} \appro {b_{n-1}} \right)$.
+Then by \eqref {eq:propmulrel} and Proposition~\ref {prop:comrelround},
+the error of $d_n$ (relative to $a_{n-1} b_{n-1}$) is bounded above by
+\begin {equation}
+\label {eq:agmzeta}
+\zeta_n =
+\eta_{n-1} + \epsilon_{n-1} + \eta_{n-1} \epsilon_{n-1}
++ c (1 + \eta_{n-1} + \epsilon_{n-1} + \eta_{n-1} \epsilon_{n-1}) 2^{1-p}.
+\end {equation}
+Now $\appro {b_n} = \round (\sqrt {d_n})$, and by \eqref {eq:propsqrt}
+and Proposition~\ref {prop:comrelround},
+assuming $\zeta_n \leq \frac {3}{4}$,
+we obtain
+\begin {equation}
+\label {eq:agmepsilon}
+\epsilon_n \leq
+\zeta_n + c (1 + \zeta_n) 2^{1-p}.
+\end {equation}
+
+Let $r_n = (2^n - 1) d$ for some $d > 2 c$. Then for a sufficiently high
+precision~$p$ and not too many steps~$n$ compared to~$p$, we have
+$\eta_n, \epsilon_n \leq r_n 2^{1-p}$.
+For instance, $c=1$ and $d=4$ is compatible with any rounding mode, and
+we show
+$\eta_n, \epsilon_n \leq r_n 2^{1-p} \leq 2^{n + 3 -p}$
+by induction over \eqref {eq:agmeta}, \eqref {eq:agmzeta}
+and~\eqref {eq:agmepsilon}. For $n = 0$, we have $\eta_0 = \epsilon_0 = 0$.
+Inductively, by \eqref {eq:agmzeta} we obtain
+\[
+\frac {\zeta_n}{2^{1-p}} \leq
+2 r_{n-1} + 1 +
+\left( r_{n-1}^2 + 2 r_{n-1} + r_{n-1}^2 2^{1-p} \right) 2^{1-p}
+\leq
+r_n - 3 + 2^{2n+4-p}
+\leq
+r_n - 2
+\]
+as long as $2n+4 \leq p$. Then by \eqref {eq:agmepsilon},
+\[
+\frac {\epsilon_n}{2^{1-p}} \leq
+r_n - 1 + r_n 2^{1-p}
+\leq
+r_n - 1 + 2^{n+3-p}
+\leq r_n
+\]
+under a milder than the previous condition. Finally by \eqref {eq:agmeta},
+\[
+\frac {\eta_n}{2^{1-p}} \leq
+\sqrt 2 \, r_{n-1} + 1 + \sqrt {2} \, r_{n-1} 2^{1-p}
+\leq r_n
+\]
+under an even less restrictive condition.
+
+To summarise, we have
+\begin {equation}
+\label {eq:propagm}
+\corr {a_n} = (1 + \theta_1) \appro {a_n}
+\text { with }
+|\theta_1| \leq 2^{n + 3 - p} \leq 2^{1 - p/2}
+\text { for }
+2n+4 \leq p.
+\end {equation}
+
+We now use \cite[Prop.~3.3]{Dupont06}, which states that for
+$z_1 \neq 0, 1$,
+\[
+n \geq B (N, z_1)
+  = \max \left( 1, \left\lceil \log_2 |\log_2 |z_1|| \right\rceil \right)
+       + \lceil \log_2 (N+2) \rceil + 2
+\]
+(where $\log_2 0$ is to be understood as $- \infty$),
+we have
+\[
+a_n = (1 + \theta_2) z
+\text { with }
+|\theta_2| \leq 2^{-N}.
+\]
+So taking $\appro z = \appro {a_n}$ as an approximation for $z$, we obtain
+$z = \frac {1 + \theta_1}{1 + \theta_2} \appro z
+= (1 + \theta) \appro z$ with
+\[
+|\theta| \leq \frac {|\theta_1| + |\theta_2|}{|1 - |\theta_2||}
+\]
+(see the computation at the end of \S\ref {sssec:propdiv}).
 
 
 \bibliographystyle{acm}
