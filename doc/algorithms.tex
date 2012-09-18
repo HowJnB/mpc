@@ -48,7 +48,7 @@
 
 \title {MPC: Algorithms and Error Analysis}
 \author {Andreas Enge \and Philippe Th\'eveny \and Paul Zimmermann}
-\date {Draft; September 17, 2012}
+\date {Draft; September 18, 2012}
 
 \begin {document}
 \maketitle
@@ -1889,7 +1889,7 @@ Thus, assuming that $n 2^{-p} \leq 1$, the error estimates
 \eqref {eq:powui_re} and \eqref {eq:powui_im} are valid with $n$
 in the place of $n - 1$.
 
-\subsection{The AGM}
+\subsection{\texttt {mpc\_agm1}}
 
 Let
 \[
@@ -1979,7 +1979,7 @@ To summarise, we have
 \label {eq:propagm}
 \corr {a_n} = (1 + \theta_1) \appro {a_n}
 \text { with }
-|\theta_1| \leq 2^{n + 3 - p} \leq 2^{1 - p/2}
+|\theta_1| \leq 2^{n + 3 - p}
 \text { for }
 2n+4 \leq p.
 \end {equation}
@@ -1989,22 +1989,49 @@ $z_1 \neq 0, 1$,
 \[
 n \geq B (N, z_1)
   = \max \left( 1, \left\lceil \log_2 |\log_2 |z_1|| \right\rceil \right)
-       + \lceil \log_2 (N+2) \rceil + 2
+       + \lceil \log_2 (N+4) \rceil + 2
 \]
 (where $\log_2 0$ is to be understood as $- \infty$),
 we have
 \[
 a_n = (1 + \theta_2) z
 \text { with }
-|\theta_2| \leq 2^{-N}.
+|\theta_2| \leq 2^{-(N+2)}.
 \]
 So taking $\appro z = \appro {a_n}$ as an approximation for $z$, we obtain
 $z = \frac {1 + \theta_1}{1 + \theta_2} \appro z
 = (1 + \theta) \appro z$ with
 \[
 |\theta| \leq \frac {|\theta_1| + |\theta_2|}{|1 - |\theta_2||}
+\leq 2 \left( 2^{n+3-p} + 2^{-(N+2)} \right)
 \]
 (see the computation at the end of \S\ref {sssec:propdiv}).
+
+So after $n = B (N, z_1)$ steps of the AGM iteration at a working precision
+of $p = N + n + 5$, we obtain $\appro z = \appro {a_n}$ with a relative error
+bounded by $2^{-N}$.
+
+Using Propositions~\ref {prop:comrelerror} and~\ref {prop:relerror}, this
+complex relative error may be translated into an error expressed in $\Ulp$.
+With $\appro {z} = \appro x + i \appro y$, let
+$k_R = \max (\Exp (\appro y) - \Exp (\appro x) + 1, 0) + 1$,
+$k_I = \max (\Exp (\appro x) - \Exp (\appro y) + 1, 0) + 1$ and
+$k = \max (k_R, k_I)$.
+Then we have
+$\error (\appro x) \leq 2^{k_R - N + p} \Ulp (\appro x)$ and
+$\error (\appro y) \leq 2^{k_I - N + p} \Ulp (\appro y)$.
+
+In practice, one should take this additional loss into account: In a first
+loop, one may use an arbitrary guess for~$k$; if rounding fails after the
+first computation, one has nevertheless obtained the correct value of~$k$.
+Then after $n = B (N + k, z_1)$ steps of the AGM iteration at a working
+precision of $p = N + k + n + 5$, one has
+$\error (\appro x)
+\leq 2^{p - N - (k - k_R)} \Ulp (\appro x) \leq 2^{p - N} \Ulp (\appro x)$
+and
+$\error (\appro y)
+\leq 2^{p - N - (k - k_I)} \Ulp (\appro y) \leq 2^{p - N} \Ulp (\appro y)$.
+
 
 
 \bibliographystyle{acm}
