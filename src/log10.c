@@ -21,213 +21,118 @@ along with this program. If not, see http://www.gnu.org/licenses/ .
 #include <limits.h> /* for CHAR_BIT */
 #include "mpc-impl.h"
 
-/* Auxiliary function which implements Ziv's strategy for special cases.
-   Exact cases should be dealt with separately. */
-static int
-mpc_log10_aux (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd, int nb)
-{
-  mp_prec_t prec = (MPFR_PREC_MIN > 4) ? MPFR_PREC_MIN : 4;
-  mpc_t tmp;
-  mpfr_t log10;
-  int ok = 0, ret;
-
-  prec = mpfr_get_prec (mpc_imagref (rop));
-  prec += 10;
-  mpc_init2 (tmp, prec);
-  mpfr_init2 (log10, prec);
-  while (ok == 0)
-    {
-      mpfr_set_ui (log10, 10, MPFR_RNDN); /* exact since prec >= 4 */
-      mpfr_log (log10, log10, MPFR_RNDN);
-      /* In each case we have two roundings, thus the final value is
-         x * (1+u)^2 where x is the exact value, and |u| <= 2^(-prec-1).
-         Thus the error is always less than 3 ulps. */
-      if (nb == 0)
-        mpfr_atan2 (mpc_imagref (tmp), mpc_imagref (op), mpc_realref (op),
-          MPC_RND_IM (rnd));
-      else
-        mpfr_const_pi (mpc_imagref (tmp), MPC_RND_IM (rnd));
-      mpfr_div (mpc_imagref (tmp), mpc_imagref (tmp), log10, MPFR_RNDN);
-      ok = mpfr_can_round (mpc_imagref (tmp), prec - 2, MPFR_RNDN,
-             MPFR_RNDZ, MPC_PREC_IM(rop) + (MPC_RND_IM (rnd) == MPFR_RNDN));
-      if (ok)
-        ret = mpfr_set (mpc_imagref (rop), mpc_imagref (tmp),
-                        MPC_RND_IM (rnd));
-      prec += prec / 2;
-      mpc_set_prec (tmp, prec);
-      mpfr_set_prec (log10, prec);
-    }
-  mpc_clear (tmp);
-  mpfr_clear (log10);
-  return ret;
-}
 
 int
 mpc_log10 (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
 {
-  int ok = 0, loops = 0, re_cmp, im_cmp, inex_re, inex_im, negative_zero;
-  mpfr_t w;
-  mpfr_prec_t prec;
-  mpfr_rnd_t rnd_im;
-  mpc_t ww;
-  mpc_rnd_t invrnd;
+   int ok = 0, loops = 0, special_re, special_im, inex, inex_re, inex_im;
+   mpfr_t w;
+   mpfr_prec_t prec;
+   mpc_t ww;
 
-   /* special values: NaN and infinities: same as mpc_log */
-   if (!mpc_fin_p (op)) {
-      if (  mpfr_nan_p (mpc_realref (op))
-          || mpfr_nan_p (mpc_imagref (op))
-          || (   mpfr_inf_p (mpc_realref (op))
-              && mpfr_signbit (mpc_realref (op))== 0
-              && mpfr_number_p (mpc_imagref (op))))
-         return mpc_log (rop, op, rnd);
-      else {
-         /* (xxx, Inf) -> (+Inf, atan2(Inf/xxx))
-            (Inf, yyy) -> (+Inf, atan2(yyy/Inf)) */
-         inex_im = mpc_log10_aux (rop, op, rnd, 0);
-         mpfr_set_inf (mpc_realref (rop), +1);
-         return MPC_INEX(0, inex_im);
-      }
-   }
-
-   /* special cases: real and purely imaginary numbers */
-  re_cmp = mpfr_cmp_ui (mpc_realref (op), 0);
-  im_cmp = mpfr_cmp_ui (mpc_imagref (op), 0);
-  if (im_cmp == 0) /* Im(op) = 0 */
-    {
-      if (re_cmp == 0) /* Re(op) = 0 */
-        {
-          if (mpfr_signbit (mpc_realref (op)) == 0)
-            inex_im = mpfr_atan2 (mpc_imagref (rop), mpc_imagref (op),
-                                  mpc_realref (op), MPC_RND_IM (rnd));
-          else
-            inex_im = mpc_log10_aux (rop, op, rnd, 0);
-          mpfr_set_inf (mpc_realref (rop), -1);
-          inex_re = 0; /* -Inf is exact */
-        }
-      else if (re_cmp > 0)
-        {
-          inex_re = mpfr_log10 (mpc_realref (rop), mpc_realref (op),
-                                MPC_RND_RE (rnd));
-          inex_im = mpfr_set (mpc_imagref (rop), mpc_imagref (op),
-                              MPC_RND_IM (rnd));
-        }
-      else /* log10(x + 0*i) for negative x */
-        { /* op = x + 0*i; let w = -x = |x| */
-          negative_zero = mpfr_signbit (mpc_imagref (op));
-          if (negative_zero)
-            rnd_im = INV_RND (MPC_RND_IM (rnd));
-          else
-            rnd_im = MPC_RND_IM (rnd);
-          w [0] = *mpc_realref (op);
-          MPFR_CHANGE_SIGN (w);
-          inex_re = mpfr_log10 (mpc_realref (rop), w, MPC_RND_RE (rnd));
-          inex_im = mpc_log10_aux (rop, op, MPC_RND (0,rnd_im), 2);
-          if (negative_zero)
-            {
-              mpc_conj (rop, rop, MPC_RNDNN);
-              inex_im = -inex_im;
-            }
-        }
-      return MPC_INEX(inex_re, inex_im);
-    }
-   else if (re_cmp == 0)
-     {
-       if (im_cmp > 0)
-         {
-           inex_re = mpfr_log10 (mpc_realref (rop), mpc_imagref (op), MPC_RND_RE (rnd));
-           inex_im = mpc_log10_aux (rop, op, rnd, 2);
-           /* division by 2 does not change the ternary flag */
-           mpfr_div_2ui (mpc_imagref (rop), mpc_imagref (rop), 1, MPFR_RNDN);
-         }
-       else
-         {
-           w [0] = *mpc_imagref (op);
-           MPFR_CHANGE_SIGN (w);
-           inex_re = mpfr_log10 (mpc_realref (rop), w, MPC_RND_RE (rnd));
-           invrnd = MPC_RND (0, INV_RND (MPC_RND_IM (rnd)));
-           inex_im = mpc_log10_aux (rop, op, invrnd, 2);
-           /* division by 2 does not change the ternary flag */
-           mpfr_div_2ui (mpc_imagref (rop), mpc_imagref (rop), 1, MPFR_RNDN);
-           mpfr_neg (mpc_imagref (rop), mpc_imagref (rop), MPFR_RNDN);
-           inex_im = -inex_im; /* negate the ternary flag */
-         }
-       return MPC_INEX(inex_re, inex_im);
-     }
-
-  /* generic case: neither Re(op) nor Im(op) is NaN, Inf or zero */
-  prec = MPC_PREC_RE(rop);
-  mpfr_init2 (w, prec);
-  mpc_init2 (ww, prec);
-  /* let op = x + iy; compute log(op)/log(10) */
-  while (ok == 0)
-    {
+   mpfr_init2 (w, 2);
+   mpc_init2 (ww, 2);
+   prec = MPC_PREC_RE(rop);
+   /* compute log(op)/log(10) */
+   while (ok == 0) {
       loops ++;
       prec += (loops <= 2) ? mpc_ceil_log2 (prec) + 4 : prec / 2;
       mpfr_set_prec (w, prec);
       mpc_set_prec (ww, prec);
 
-      mpc_log (ww, op, MPC_RNDNN);
-      mpfr_set_ui (w, 10, MPFR_RNDN); /* exact since prec >= 4 */
-      mpfr_log (w, w, MPFR_RNDN);
-      mpc_div_fr (ww, ww, w, MPC_RNDNN);
+      inex = mpc_log (ww, op, rnd); /* error <= 1 ulp */
 
-      ok = mpfr_can_round (mpc_realref (ww), prec - 2, MPFR_RNDN, MPFR_RNDZ,
-                           MPC_PREC_RE(rop) + (MPC_RND_RE (rnd) == MPFR_RNDN));
+      if (!mpfr_number_p (mpc_imagref (ww))
+         || mpfr_zero_p (mpc_imagref (ww))) {
+         /* no need to divide by log(10) */
+         special_im = 1;
+         ok = 1;
+      }
+      else {
+         special_im = 0;
+         mpfr_set_ui (w, 10, MPFR_RNDN); /* exact since prec >= 4 */
+         mpfr_log (w, w, MPFR_RNDN); /* error <= 1/2 ulp */
+         mpfr_div (mpc_imagref (ww), mpc_imagref (ww), w, MPFR_RNDN);
 
-      /* Special code to deal with cases where the real part of log10(x+i*y)
-         is exact, like x=3 and y=1. Since Re(log10(x+i*y)) = log10(x^2+y^2)/2
-         this happens whenever x^2+y^2 is a nonnegative power of 10.
-         Indeed x^2+y^2 cannot equal 10^(a/2^b) for a, b integers, a odd, b>0,
-         since x^2+y^2 is rational, and 10^(a/2^b) is irrational.
-         Similarly, for b=0, x^2+y^2 cannot equal 10^a for a < 0 since x^2+y^2
-         is a rational with denominator a power of 2.
-         Now let x^2+y^2 = 10^s. Without loss of generality we can assume
-         x = u/2^e and y = v/2^e with u, v, e integers: u^2+v^2 = 10^s*2^(2e)
-         thus u^2+v^2 = 0 mod 2^(2e). By recurrence on e, necessarily
-         u = v = 0 mod 2^e, thus x and y are necessarily integers.
-      */
-      if ((ok == 0) && (loops == 1) && mpfr_integer_p (mpc_realref (op)) &&
-          mpfr_integer_p (mpc_imagref (op)))
-        {
-          mpz_t x, y;
-          unsigned long s, v;
+         ok = mpfr_can_round (mpc_imagref (ww), prec - 2, MPFR_RNDN, MPFR_RNDZ,
+                           MPC_PREC_IM(rop) + (MPC_RND_IM (rnd) == MPFR_RNDN));
+      }
 
-          mpz_init (x);
-          mpz_init (y);
-          mpfr_get_z (x, mpc_realref (op), MPFR_RNDN); /* exact */
-          mpfr_get_z (y, mpc_imagref (op), MPFR_RNDN); /* exact */
-          mpz_mul (x, x, x);
-          mpz_mul (y, y, y);
-          mpz_add (x, x, y); /* x^2+y^2 */
-          v = mpz_scan1 (x, 0);
-          /* if x = 10^s then necessarily s = v */
-          s = mpz_sizeinbase (x, 10);
-          /* since s is either the number of digits of x or one more,
-             then x = 10^(s-1) or 10^(s-2) */
-          if (s == v + 1 || s == v + 2)
-            {
-              mpz_div_2exp (x, x, v);
-              mpz_ui_pow_ui (y, 5, v);
-              if (mpz_cmp (y, x) == 0) /* Re(log10(x+i*y)) is exactly v/2 */
-                {
+      if (ok) {
+         if (!mpfr_number_p (mpc_realref (ww))
+            || mpfr_zero_p (mpc_realref (ww)))
+            special_re = 1;
+         else {
+            special_re = 0;
+            if (special_im) {
+               /* log10 not yet computed */
+               mpfr_set_ui (w, 10, MPFR_RNDN);
+               mpfr_log (w, w, MPFR_RNDN);
+            }
+            mpfr_div (mpc_realref (ww), mpc_realref (ww), w, MPFR_RNDN);
+               /* error <= 24/7 ulp < 4 ulp for prec >= 4, see algorithms.tex */
+
+            ok = mpfr_can_round (mpc_realref (ww), prec - 2, MPFR_RNDN,
+                     MPFR_RNDZ,
+                     MPC_PREC_RE(rop) + (MPC_RND_RE (rnd) == MPFR_RNDN));
+         }
+
+         /* Special code to deal with cases where the real part of log10(x+i*y)
+            is exact, like x=3 and y=1. Since Re(log10(x+i*y)) = log10(x^2+y^2)/2
+            this happens whenever x^2+y^2 is a nonnegative power of 10.
+            Indeed x^2+y^2 cannot equal 10^(a/2^b) for a, b integers, a odd, b>0,
+            since x^2+y^2 is rational, and 10^(a/2^b) is irrational.
+            Similarly, for b=0, x^2+y^2 cannot equal 10^a for a < 0 since x^2+y^2
+            is a rational with denominator a power of 2.
+            Now let x^2+y^2 = 10^s. Without loss of generality we can assume
+            x = u/2^e and y = v/2^e with u, v, e integers: u^2+v^2 = 10^s*2^(2e)
+            thus u^2+v^2 = 0 mod 2^(2e). By recurrence on e, necessarily
+            u = v = 0 mod 2^e, thus x and y are necessarily integers.
+         */
+         if (!ok && (loops == 1) && mpfr_integer_p (mpc_realref (op)) &&
+            mpfr_integer_p (mpc_imagref (op))) {
+            mpz_t x, y;
+            unsigned long s, v;
+
+            mpz_init (x);
+            mpz_init (y);
+            mpfr_get_z (x, mpc_realref (op), MPFR_RNDN); /* exact */
+            mpfr_get_z (y, mpc_imagref (op), MPFR_RNDN); /* exact */
+            mpz_mul (x, x, x);
+            mpz_mul (y, y, y);
+            mpz_add (x, x, y); /* x^2+y^2 */
+            v = mpz_scan1 (x, 0);
+            /* if x = 10^s then necessarily s = v */
+            s = mpz_sizeinbase (x, 10);
+            /* since s is either the number of digits of x or one more,
+               then x = 10^(s-1) or 10^(s-2) */
+            if (s == v + 1 || s == v + 2) {
+               mpz_div_2exp (x, x, v);
+               mpz_ui_pow_ui (y, 5, v);
+               if (mpz_cmp (y, x) == 0) {
+                  /* Re(log10(x+i*y)) is exactly v/2 */
                   /* we reset the precision of Re(ww) so that v can be
                      represented exactly */
                   mpfr_set_prec (mpc_realref (ww), sizeof(unsigned long)*CHAR_BIT);
                   mpfr_set_ui_2exp (mpc_realref (ww), v, -1, MPFR_RNDN); /* exact */
                   ok = 1;
-                }
+               }
             }
-          mpz_clear (x);
-          mpz_clear (y);
-        }
+            mpz_clear (x);
+            mpz_clear (y);
+         }
+      }
+   }
 
-      ok = ok && mpfr_can_round (mpc_imagref (ww), prec-2, MPFR_RNDN, MPFR_RNDZ,
-                            MPC_PREC_IM(rop) + (MPC_RND_IM (rnd) == MPFR_RNDN));
-    }
+   inex_re = mpfr_set (mpc_realref(rop), mpc_realref (ww), MPC_RND_RE (rnd));
+   if (special_re)
+      inex_re = MPC_INEX_RE (inex);
+      /* recover flag from call to mpc_log above */
+   inex_im = mpfr_set (mpc_imagref(rop), mpc_imagref (ww), MPC_RND_IM (rnd));
+   if (special_im)
+      inex_im = MPC_INEX_IM (inex);
+   mpfr_clear (w);
+   mpc_clear (ww);
 
-  inex_re = mpfr_set (mpc_realref(rop), mpc_realref (ww), MPC_RND_RE (rnd));
-  inex_im = mpfr_set (mpc_imagref(rop), mpc_imagref (ww), MPC_RND_IM (rnd));
-  mpfr_clear (w);
-  mpc_clear (ww);
-  return MPC_INEX(inex_re, inex_im);
+   return MPC_INEX(inex_re, inex_im);
 }
