@@ -15,11 +15,18 @@ FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for
 more details.
 
 You should have received a copy of the GNU Lesser General Public License
-along with this program. If not, see http://www.gnu.org/licenses/ .
+along with this program. If not, see http://logw.gnu.org/licenses/ .
 */
 
 #include <limits.h> /* for CHAR_BIT */
 #include "mpc-impl.h"
+
+static void
+mpfr_const_log10 (mpfr_ptr log10)
+{
+   mpfr_set_ui (log10, 10, MPFR_RNDN); /* exact since prec >= 4 */
+   mpfr_log (log10, log10, MPFR_RNDN); /* error <= 1/2 ulp */
+}
 
 
 int
@@ -27,54 +34,52 @@ mpc_log10 (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
 {
    int ok = 0, loops = 0, check_exact = 0, special_re, special_im,
        inex, inex_re, inex_im;
-   mpfr_t w;
    mpfr_prec_t prec;
-   mpc_t ww;
+   mpfr_t log10;
+   mpc_t log;
 
-   mpfr_init2 (w, 2);
-   mpc_init2 (ww, 2);
-   prec = MPC_PREC_RE(rop);
+   mpfr_init2 (log10, 2);
+   mpc_init2 (log, 2);
+   prec = MPC_MAX_PREC (rop);
    /* compute log(op)/log(10) */
    while (ok == 0) {
       loops ++;
       prec += (loops <= 2) ? mpc_ceil_log2 (prec) + 4 : prec / 2;
-      mpfr_set_prec (w, prec);
-      mpc_set_prec (ww, prec);
+      mpfr_set_prec (log10, prec);
+      mpc_set_prec (log, prec);
 
-      inex = mpc_log (ww, op, rnd); /* error <= 1 ulp */
+      inex = mpc_log (log, op, rnd); /* error <= 1 ulp */
 
-      if (!mpfr_number_p (mpc_imagref (ww))
-         || mpfr_zero_p (mpc_imagref (ww))) {
+      if (!mpfr_number_p (mpc_imagref (log))
+         || mpfr_zero_p (mpc_imagref (log))) {
          /* no need to divide by log(10) */
          special_im = 1;
          ok = 1;
       }
       else {
          special_im = 0;
-         mpfr_set_ui (w, 10, MPFR_RNDN); /* exact since prec >= 4 */
-         mpfr_log (w, w, MPFR_RNDN); /* error <= 1/2 ulp */
-         mpfr_div (mpc_imagref (ww), mpc_imagref (ww), w, MPFR_RNDN);
+         mpfr_const_log10 (log10);
+         mpfr_div (mpc_imagref (log), mpc_imagref (log), log10, MPFR_RNDN);
 
-         ok = mpfr_can_round (mpc_imagref (ww), prec - 2, MPFR_RNDN, MPFR_RNDZ,
-                           MPC_PREC_IM(rop) + (MPC_RND_IM (rnd) == MPFR_RNDN));
+         ok = mpfr_can_round (mpc_imagref (log), prec - 2,
+                  MPFR_RNDN, MPFR_RNDZ,
+                  MPC_PREC_IM(rop) + (MPC_RND_IM (rnd) == MPFR_RNDN));
       }
 
       if (ok) {
-         if (!mpfr_number_p (mpc_realref (ww))
-            || mpfr_zero_p (mpc_realref (ww)))
+         if (!mpfr_number_p (mpc_realref (log))
+            || mpfr_zero_p (mpc_realref (log)))
             special_re = 1;
          else {
             special_re = 0;
-            if (special_im) {
+            if (special_im)
                /* log10 not yet computed */
-               mpfr_set_ui (w, 10, MPFR_RNDN);
-               mpfr_log (w, w, MPFR_RNDN);
-            }
-            mpfr_div (mpc_realref (ww), mpc_realref (ww), w, MPFR_RNDN);
+               mpfr_const_log10 (log10);
+            mpfr_div (mpc_realref (log), mpc_realref (log), log10, MPFR_RNDN);
                /* error <= 24/7 ulp < 4 ulp for prec >= 4, see algorithms.tex */
 
-            ok = mpfr_can_round (mpc_realref (ww), prec - 2, MPFR_RNDN,
-                     MPFR_RNDZ,
+            ok = mpfr_can_round (mpc_realref (log), prec - 2,
+                     MPFR_RNDN, MPFR_RNDZ,
                      MPC_PREC_RE(rop) + (MPC_RND_RE (rnd) == MPFR_RNDN));
          }
 
@@ -112,11 +117,13 @@ mpc_log10 (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
                mpz_div_2exp (x, x, v);
                mpz_ui_pow_ui (y, 5, v);
                if (mpz_cmp (y, x) == 0) {
-                  /* Re(log10(x+i*y)) is exactly v/2 */
-                  /* we reset the precision of Re(ww) so that v can be
+                  /* Re(log10(x+i*y)) is exactly v/2
+                     we reset the precision of Re(log) so that v can be
                      represented exactly */
-                  mpfr_set_prec (mpc_realref (ww), sizeof(unsigned long)*CHAR_BIT);
-                  mpfr_set_ui_2exp (mpc_realref (ww), v, -1, MPFR_RNDN); /* exact */
+                  mpfr_set_prec (mpc_realref (log),
+                                 sizeof(unsigned long)*CHAR_BIT);
+                  mpfr_set_ui_2exp (mpc_realref (log), v, -1, MPFR_RNDN);
+                     /* exact */
                   ok = 1;
                }
             }
@@ -126,15 +133,15 @@ mpc_log10 (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
       }
    }
 
-   inex_re = mpfr_set (mpc_realref(rop), mpc_realref (ww), MPC_RND_RE (rnd));
+   inex_re = mpfr_set (mpc_realref(rop), mpc_realref (log), MPC_RND_RE (rnd));
    if (special_re)
       inex_re = MPC_INEX_RE (inex);
       /* recover flag from call to mpc_log above */
-   inex_im = mpfr_set (mpc_imagref(rop), mpc_imagref (ww), MPC_RND_IM (rnd));
+   inex_im = mpfr_set (mpc_imagref(rop), mpc_imagref (log), MPC_RND_IM (rnd));
    if (special_im)
       inex_im = MPC_INEX_IM (inex);
-   mpfr_clear (w);
-   mpc_clear (ww);
+   mpfr_clear (log10);
+   mpc_clear (log);
 
    return MPC_INEX(inex_re, inex_im);
 }
