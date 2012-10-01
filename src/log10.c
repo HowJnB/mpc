@@ -82,7 +82,9 @@ mpc_log10_aux (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd, int flag, int nb)
           mpfr_div (mpc_realref (tmp), mpc_realref (tmp), log10, MPFR_RNDN);
           ok = mpfr_can_round (mpc_realref (tmp), prec - 2, MPFR_RNDN,
                                MPFR_RNDZ, MPC_PREC_RE(rop) +
-                               (MPC_RND_RE (rnd) == MPFR_RNDN));
+                               (MPC_RND_RE (rnd) == MPFR_RNDN)) ||
+            mpfr_cmp_ui (mpc_imagref (op), 1) == 0;
+          /* the result is also exact when y=1 */
           if (ok)
             ret = mpfr_set (mpc_realref (rop), mpc_realref (tmp),
                             MPC_RND_RE (rnd));
