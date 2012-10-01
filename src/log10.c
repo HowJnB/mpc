@@ -25,7 +25,8 @@ along with this program. If not, see http://www.gnu.org/licenses/ .
 int
 mpc_log10 (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
 {
-   int ok = 0, loops = 0, special_re, special_im, inex, inex_re, inex_im;
+   int ok = 0, loops = 0, check_exact = 0, special_re, special_im,
+       inex, inex_re, inex_im;
    mpfr_t w;
    mpfr_prec_t prec;
    mpc_t ww;
@@ -89,11 +90,12 @@ mpc_log10 (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
             thus u^2+v^2 = 0 mod 2^(2e). By recurrence on e, necessarily
             u = v = 0 mod 2^e, thus x and y are necessarily integers.
          */
-         if (!ok && (loops == 1) && mpfr_integer_p (mpc_realref (op)) &&
+         if (!ok && !check_exact && mpfr_integer_p (mpc_realref (op)) &&
             mpfr_integer_p (mpc_imagref (op))) {
             mpz_t x, y;
             unsigned long s, v;
 
+            check_exact = 1;
             mpz_init (x);
             mpz_init (y);
             mpfr_get_z (x, mpc_realref (op), MPFR_RNDN); /* exact */
