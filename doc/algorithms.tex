@@ -2051,8 +2051,8 @@ $k'_I \leq k$, then
 $\error (\appro x) \leq 2^{p - N} \Ulp (\appro x)$ and
 $\error (\appro y) \leq 2^{p - N} \Ulp (\appro y)$.
 
-If $\Im(z_1) < 0$, then we can use the fact that $\AGM(1,\bar{z_1}) = 
-\bar{\AGM(1,z_1)}$, thus the same error analysis applies;
+If $\Im(z_1) < 0$, then we can use the fact that $\AGM(1,\bar{z_1})$ is the
+conjugate of $\AGM(1,z_1)$, thus the same error analysis applies;
 and if $\Im(z_1) = 0$, we are computing a real AGM, we can call the
 corresponding MPFR function.
 
@@ -2061,12 +2061,12 @@ relative error at most $2^{1-p}$. Then we have to replace $\epsilon_0 = 0$
 by $\epsilon_0 = 2^{1-p}$ in the above proof.
 This gives
 \[ \zeta_1 \leq \epsilon_0 + c (1 + \epsilon_0) 2^{1-p}
-           \leq (2 + 2^{1-p}) 2^{1-p} \leq \frac{5}{2} 2^{1-p}, \]
+           \leq (2 + 2^{1-p}) 2^{1-p} \leq \frac{9}{4} 2^{1-p}, \]
 and
 \[ \epsilon_1 \leq \zeta_1 + c (1 + \zeta_1) 2^{1-p}
-               \leq (\frac{5}{2} + 1 + \frac{5}{2} 2^{1-p}) 2^{1-p}
+               \leq (\frac{9}{4} + 1 + \frac{9}{4} 2^{1-p}) 2^{1-p}
                \leq 4 \cdot 2^{1-p}, \]
-as long as $p \geq 4$. Thus the bound $\epsilon_1 \leq r_1 2^{1-p}$ still
+as long as $p \geq 3$. Thus the bound $\epsilon_1 \leq r_1 2^{1-p}$ still
 holds in that case.
 
 \paragraph{The general case.}
