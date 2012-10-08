@@ -2051,7 +2051,42 @@ $k'_I \leq k$, then
 $\error (\appro x) \leq 2^{p - N} \Ulp (\appro x)$ and
 $\error (\appro y) \leq 2^{p - N} \Ulp (\appro y)$.
 
+If $\Im(z_1) < 0$, then we can use the fact that $\AGM(1,\bar{z_1}) = 
+\bar{\AGM(1,z_1)}$, thus the same error analysis applies;
+and if $\Im(z_1) = 0$, we are computing a real AGM, we can call the
+corresponding MPFR function.
 
+Now assume $z_1$ is the rounding of some complex number $z_0$ with a
+relative error at most $2^{1-p}$. Then we have to replace $\epsilon_0 = 0$
+by $\epsilon_0 = 2^{1-p}$ in the above proof.
+This gives
+\[ \zeta_1 \leq \epsilon_0 + c (1 + \epsilon_0) 2^{1-p}
+           \leq (2 + 2^{1-p}) 2^{1-p} \leq \frac{5}{2} 2^{1-p}, \]
+and
+\[ \epsilon_1 \leq \zeta_1 + c (1 + \zeta_1) 2^{1-p}
+               \leq (\frac{5}{2} + 1 + \frac{5}{2} 2^{1-p}) 2^{1-p}
+               \leq 4 \cdot 2^{1-p}, \]
+as long as $p \geq 4$. Thus the bound $\epsilon_1 \leq r_1 2^{1-p}$ still
+holds in that case.
+
+\paragraph{The general case.}
+
+Assume now that $a, b$ are two arbitrary complex numbers, and we want to
+approximate $z = \AGM(a, b)$.
+We first have to precisely define $\AGM(a, b)$. At each step indeed there are
+two choices for $b_n = \sqrt{a_{n-1} b_{n-1}}$. We take a \emph{good} choice
+so that $|a_n - b_n| \leq |a_n + b_n|$; this corresponds to an \emph{optimal}
+AGM sequence \cite{CrTh10}.
+In case $|a_n - b_n| = |a_n + b_n|$, we choose $b_n$ such that
+$b_n/a_n$ has a positive imaginary part.
+
+In \cite{Dupont06}, it is shown that if $\lambda$ is a non-zero complex
+number, then $(\lambda a, \lambda b)$ is a good choice if and only if
+$(a, b)$ is a good choice. As a consequence, taking $\lambda = 1/a$,
+it shows that $\AGM(a,b) = a \AGM(1,b/a)$. We can thus restrict ourselves to
+the special case $\AGM(1, z)$ studied above.
+Since $\AGM(a,b) = \AGM(b,a)$, without loss of generality we can assume
+$|z| \leq 1$.
 
 \bibliographystyle{acm}
 \bibliography{algorithms}
