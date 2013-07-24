@@ -62,7 +62,7 @@ along with this program. If not, see http://www.gnu.org/licenses/ .
    /* work around spurious signs in nan */
 #define MPFR_ADD_ONE_ULP(x) mpfr_add_one_ulp (x, MPFR_RNDN)
 #define MPFR_SUB_ONE_ULP(x) mpfr_sub_one_ulp (x, MPFR_RNDN)
-   /* drop unused rounding mode from macroes */
+   /* drop unused rounding mode from macros */
 #define MPFR_SWAP(a,b) do { mpfr_srcptr tmp; tmp = a; a = b; b = tmp; } while (0)
 
 

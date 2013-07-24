@@ -43,7 +43,7 @@ mul_infinite (mpc_ptr z, mpc_srcptr x, mpc_srcptr y)
    /* compute the sign of
       u = xrs * yrs * xr * yr - xis * yis * xi * yi
       v = xrs * yis * xr * yi + xis * yrs * xi * yr
-      +1 if positive, -1 if negatiye, 0 if NaN */
+      +1 if positive, -1 if negative, 0 if NaN */
    if (  mpfr_nan_p (mpc_realref (x)) || mpfr_nan_p (mpc_imagref (x))
       || mpfr_nan_p (mpc_realref (y)) || mpfr_nan_p (mpc_imagref (y))) {
       u = 0;

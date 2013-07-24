@@ -749,9 +749,9 @@ parentheses, or @code{nan(n-char-sequence)} or @code{@@nan@@(n-char-sequence)}
 of ascii letters, digits or @code{'_'}.
 
 For instance, upon input of @code{"nan(13 1)"}, the function
-@code{mpc_inp_str} starts to recognise a value of NaN followed by an
+@code{mpc_inp_str} starts to recognize a value of NaN followed by an
 n-char-sequence indicated by the opening parenthesis; as soon as the
-space is reached, it becocmes clear that the expression in parentheses
+space is reached, it becomes clear that the expression in parentheses
 is not an n-char-sequence, and the error flag -1 is returned after 6
 characters have been consumed from the stream (the whitespace itself
 remaining in the stream).

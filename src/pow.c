@@ -659,7 +659,7 @@ mpc_pow (mpc_ptr z, mpc_srcptr x, mpc_srcptr y, mpc_rnd_t rnd)
       int ret_exp;
       mpfr_exp_t dr, di;
       mpfr_prec_t q=0;
-      /* to avoid warning message, real initialisation below */
+      /* to avoid warning message, real initialization below */
 
       mpc_log (t, x, MPC_RNDNN);
       mpc_mul (t, t, y, MPC_RNDNN);
