@@ -2,6 +2,8 @@ Recent changes in the trunk:
   - Minimally required library version: mpfr 3.0.0
 
 Changes in version 1.0.2:
+   - Fixed mpc_atan, mpc_atanh for (+-0, +-1), see
+     http://gcc.gnu.org/bugzilla/show_bug.cgi?id=57994#c7
    - Fixed mpc_log10 for purely imaginary argument, see
      http://lists.gforge.inria.fr/pipermail/mpc-discuss/2012-September/001208.html
 
