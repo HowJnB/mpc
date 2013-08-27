@@ -17,7 +17,34 @@ Add support for rounding mode MPFR_RNDA.
 
 From Andreas Enge and Paul Zimmermann 6 July 2012:
 Improve speed of Im (atan) for x+i*y with small y, for instance by using
-the Taylor series directly.
+the Taylor series directly. For example with Sage 5.11:
+sage: %timeit atan(MPComplexField()(1,1))
+10000 loops, best of 3: 42.2 us per loop
+sage: %timeit atan(MPComplexField()(1,1e-1000))
+100 loops, best of 3: 5.29 ms per loop
+
+Same for asin:
+sage: %timeit asin(MPComplexField()(1,1))      
+10000 loops, best of 3: 83.7 us per loop
+sage: %timeit asin(MPComplexField()(1,1e-1000))
+100 loops, best of 3: 17 ms per loop
+
+Same for acos:
+sage: %timeit acos(MPComplexField()(1,1))      
+10000 loops, best of 3: 90.8 us per loop
+sage: %timeit acos(MPComplexField()(1,1e-1000))
+1 loops, best of 3: 2.29 s per loop
+
+Same for asinh:
+sage: %timeit asinh(MPComplexField()(1,1))     
+10000 loops, best of 3: 84 us per loop
+sage: %timeit asinh(MPComplexField()(1,1e-1000))
+100 loops, best of 3: 2.1 ms per loop
+
+sage: %timeit acosh(MPComplexField()(1,1))      
+10000 loops, best of 3: 92 us per loop
+sage: %timeit acosh(MPComplexField()(1,1e-1000))
+1 loops, best of 3: 2.28 s per loop
 
 Bench:
 - from Andreas Enge 9 June 2009:
