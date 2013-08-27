@@ -18,7 +18,9 @@ Add support for rounding mode MPFR_RNDA.
 From Andreas Enge and Paul Zimmermann 6 July 2012:
 Improve speed of Im (atan) for x+i*y with small y, for instance by using
 the Taylor series directly. See also the discussion
-http://lists.gforge.inria.fr/pipermail/mpc-discuss/2012-August/001196.html.
+http://lists.gforge.inria.fr/pipermail/mpc-discuss/2012-August/001196.html
+and the timing program on
+http://lists.gforge.inria.fr/pipermail/mpc-discuss/2013-August/001254.html
 
 For example with Sage 5.11:
 sage: %timeit atan(MPComplexField()(1,1))
