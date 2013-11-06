@@ -55,7 +55,7 @@ check_ternary_value (void)
 int
 main (void)
 {
-   DECL_FUNC (CCU, f, mpc_add_ui);
+   DECL_FUNC (CCS, f, mpc_add_si);
 
    test_start ();
 
