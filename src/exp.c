@@ -94,8 +94,9 @@ mpc_exp (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
 
       if (mpfr_inf_p (mpc_imagref (op)))
         {
+          int real_sign = mpfr_signbit (mpc_realref (op));
           inex_re = mpfr_set (mpc_realref (rop), n, MPFR_RNDN);
-          if (mpfr_signbit (mpc_realref (op)))
+          if (real_sign)
             inex_im = mpfr_set (mpc_imagref (rop), n, MPFR_RNDN);
           else
             {
