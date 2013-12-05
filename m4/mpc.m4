@@ -107,6 +107,7 @@ AC_DEFUN([MPC_C_CHECK_WARNINGCFLAGS], [
       MPC_C_CHECK_FLAG(-Wstrict-prototypes)
       MPC_C_CHECK_FLAG(-Wmissing-prototypes)
       MPC_C_CHECK_FLAG(-Wno-unused-value)
+      MPC_C_CHECK_FLAG(-Wlogical-op)
     fi
   fi
 ])
