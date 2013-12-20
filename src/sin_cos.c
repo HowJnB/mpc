@@ -299,7 +299,7 @@ mpc_sin_cos (mpc_ptr rop_sin, mpc_ptr rop_cos, mpc_srcptr op,
       mpfr_t s, c, sh, ch, sch, csh;
       mpfr_prec_t prec;
       int ok;
-      int inex_re, inex_im, inex_sin, inex_cos;
+      int inex_re, inex_im, inex_sin, inex_cos, loop = 0;
 
       prec = 2;
       if (rop_sin != NULL)
@@ -315,8 +315,9 @@ mpc_sin_cos (mpc_ptr rop_sin, mpc_ptr rop_cos, mpc_srcptr op,
       mpfr_init2 (csh, 2);
 
       do {
+         loop ++;
          ok = 1;
-         prec += mpc_ceil_log2 (prec) + 5;
+         prec += (loop == 1) ? mpc_ceil_log2 (prec) + 5 : prec / 2;
 
          mpfr_set_prec (s, prec);
          mpfr_set_prec (c, prec);
