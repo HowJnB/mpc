@@ -23,10 +23,10 @@ along with this program. If not, see http://www.gnu.org/licenses/ .
 int
 mpc_asin (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
 {
-  mpfr_prec_t p, p_re, p_im, incr_p = 0;
+  mpfr_prec_t p, p_re, p_im;
   mpfr_rnd_t rnd_re, rnd_im;
   mpc_t z1;
-  int inex;
+  int inex, loop = 0;
 
   /* special values */
   if (mpfr_nan_p (mpc_realref (op)) || mpfr_nan_p (mpc_imagref (op)))
@@ -148,8 +148,8 @@ mpc_asin (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
   {
     mpfr_exp_t ex, ey, err;
 
-    p += mpc_ceil_log2 (p) + 3 + incr_p; /* incr_p is zero initially */
-    incr_p = p / 2;
+    loop ++;
+    p += (loop <= 2) ? mpc_ceil_log2 (p) + 3 : p / 2;
     mpfr_set_prec (mpc_realref(z1), p);
     mpfr_set_prec (mpc_imagref(z1), p);
 

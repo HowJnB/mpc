@@ -24,7 +24,7 @@ along with this program. If not, see http://www.gnu.org/licenses/ .
 int
 mpc_acos (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
 {
-  int inex_re, inex_im, inex;
+  int inex_re, inex_im, inex, loop = 0;
   mpfr_prec_t p_re, p_im, p;
   mpc_t z1;
   mpfr_t pi_over_2;
@@ -190,7 +190,8 @@ mpc_acos (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
   mpfr_init2 (pi_over_2, p);
   for (;;)
     {
-      p += mpc_ceil_log2 (p) + 3;
+      loop ++;
+      p += (loop <= 2) ? mpc_ceil_log2 (p) + 3 : p / 2;
 
       mpfr_set_prec (mpc_realref(z1), p);
       mpfr_set_prec (pi_over_2, p);

@@ -317,7 +317,7 @@ mpc_sin_cos (mpc_ptr rop_sin, mpc_ptr rop_cos, mpc_srcptr op,
       do {
          loop ++;
          ok = 1;
-         prec += (loop == 1) ? mpc_ceil_log2 (prec) + 5 : prec / 2;
+         prec += (loop <= 2) ? mpc_ceil_log2 (prec) + 5 : prec / 2;
 
          mpfr_set_prec (s, prec);
          mpfr_set_prec (c, prec);
