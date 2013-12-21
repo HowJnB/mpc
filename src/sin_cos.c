@@ -303,7 +303,24 @@ mpc_sin_cos (mpc_ptr rop_sin, mpc_ptr rop_cos, mpc_srcptr op,
 
       prec = 2;
       if (rop_sin != NULL)
-         prec = MPC_MAX (prec, MPC_MAX_PREC (rop_sin));
+        {
+          mp_prec_t er, ei;
+          prec = MPC_MAX (prec, MPC_MAX_PREC (rop_sin));
+          /* since the Taylor expansion of sin(x) at x=0 is x - x^3/6 + O(x^5),
+             if x <= 2^(-p), then the second term/x is about 2^(-2p)/6, thus we
+             need at least 2p+3 bits of precision. This is true only when x is
+             exactly representable in the target precision. */
+          if (MPC_MAX_PREC (op) <= prec)
+            {
+              er = mpfr_get_exp (mpc_realref (op));
+              ei = mpfr_get_exp (mpc_imagref (op));
+              /* consider the maximal exponent only */
+              er = (er < ei) ? ei : er;
+              if (er < 0)
+                if (prec < 2 * (mp_prec_t) (-er) + 3)
+                  prec = 2 * (mp_prec_t) (-er) + 3;
+            }
+        }
       if (rop_cos != NULL)
          prec = MPC_MAX (prec, MPC_MAX_PREC (rop_cos));
 
