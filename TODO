@@ -33,6 +33,7 @@ sage: %timeit asin(MPComplexField()(1,1))
 10000 loops, best of 3: 83.7 us per loop
 sage: %timeit asin(MPComplexField()(1,1e-1000))
 100 loops, best of 3: 17 ms per loop
+asin(1+i*y) ~ pi/2-y^(1/2) + i*y^(1/2) for y small > 0
 
 Same for acos:
 sage: %timeit acos(MPComplexField()(1,1))      
