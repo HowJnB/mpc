@@ -17,6 +17,7 @@
 \newcommand {\Ulp}{{\operatorname {ulp}}}
 \DeclareMathOperator{\Exp}{\operatorname {Exp}}
 \newcommand {\atantwo}{\operatorname {atan2}}
+\newcommand {\asin}{\operatorname {asin}}
 \newcommand{\error}{\operatorname {error}}
 \newcommand{\relerror}{\operatorname {relerror}}
 \newcommand{\Norm}{\operatorname {N}}
@@ -1141,6 +1142,11 @@ k_R=\left\{
 \end{array}
 \right.
 \end{equation*}
+
+\subsection {\texttt {mpc\_asin}}
+
+For $0 \leq y \leq 1$, we have $|\Re \asin (1 \pm iy) - \pi/2|
+\leq y^{1/2}$, and $|\Im \asin (1 \pm iy) \mp y^{1/2}| \leq (1/12) y^{3/2}$.
 
 \subsection {\texttt {mpc\_pow}}
 
