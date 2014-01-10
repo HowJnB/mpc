@@ -25,7 +25,7 @@ AM_LDFLAGS = -no-install
 # LOADLIBES (documented in the "GNU make" manual and equivalent to LDLIBS)
 # enables to compile a program foo.c in the test directory by simply doing
 # "make foo".
-LOADLIBES=$(DEFS) -I$(top_srcdir)/src -I$(top_builddir) $(CPPFLAGS) $(CFLAGS) -L$(top_builddir)/src/.libs -L$(top_builddir)/tests/.libs -lmpc-tests -lmpc -lm -Wl,-rpath -Wl,$(top_builddir)/src/.libs $(LIBS)
+LOADLIBES=$(DEFS) $(AM_CPPFLAGS) $(CPPFLAGS) $(CFLAGS) $(top_builddir)/tests/.libs/libmpc-tests.a $(top_builddir)/src/.libs/libmpc.a $(LIBS)
 
 check_PROGRAMS = tabs tacos tacosh tadd tadd_fr tadd_si tadd_ui targ tasin    \
 tasinh tatan tatanh tconj tcos tcosh tdiv tdiv_2si tdiv_2ui tdiv_fr tdiv_ui   \
