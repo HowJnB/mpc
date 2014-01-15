@@ -1,6 +1,6 @@
 /* tio_str-- Test file for mpc_inp_str and mpc_out_str.
 
-Copyright (C) 2009, 2011 INRIA
+Copyright (C) 2009, 2014 INRIA
 
 This file is part of GNU MPC.
 
@@ -21,7 +21,9 @@ along with this program. If not, see http://www.gnu.org/licenses/ .
 #include "mpc-tests.h"
 
 #ifdef HAVE_UNISTD_H
+#ifndef _POSIX_C_SOURCE
 #define _POSIX_C_SOURCE 1 /* apparently needed on Darwin */
+#endif
 #include <unistd.h> /* for dup, dup2, STDIN_FILENO and STDOUT_FILENO */
 #else
 #define STDIN_FILENO 0
