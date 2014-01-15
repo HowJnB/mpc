@@ -90,7 +90,7 @@ AC_DEFUN([MPC_C_CHECK_FLAG], [
 AC_DEFUN([MPC_C_CHECK_WARNINGCFLAGS], [
   AC_REQUIRE([AC_PROG_GREP])
   if echo $VERSION | grep -c dev >/dev/null 2>&1 ; then
-    if test "x$GCC" = "xyes" -a "x$compiler" != "xicc" -a "x$compiler" != "xg++"; then
+    if test "x$GCC" = "xyes" -a "x$compiler" != "xicc"; then
       # enable -Werror for myself (Andreas Enge)
       if test "x$USER" = "xenge"; then
          MPC_C_CHECK_FLAG(-Werror)
