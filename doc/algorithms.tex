@@ -29,6 +29,7 @@
 \newcommand {\Z}{\mathbb Z}
 \newcommand {\Q}{\mathbb Q}
 \newcommand {\R}{\mathbb R}
+\newcommand {\C}{\mathbb C}
 \renewcommand {\epsilon}{\varepsilon}
 \renewcommand {\theta}{\vartheta}
 \renewcommand {\leq}{\leqslant}
@@ -1902,10 +1903,10 @@ in the place of $n - 1$.
 
 Let
 \[
-z = \AGM (1, z_1);
+z = \AGM (1, z_1).
 \]
-for the time being, we assume $\Re (z_1) \geq 0$ and $\Im (z_1) > 0$.
 
+For the time being, we assume $\Re (z_1) \geq 0$ and $\Im (z_1) > 0$.
 Let $\corr {a_0} = \appro {a_0} = 1$,
 $\corr {b_0} = \appro {b_0} = z_1$, and let
 $\corr {a_n} = \frac {\corr {a_{n-1}} + \corr {b_{n-1}}}{2}$ and
@@ -1917,8 +1918,15 @@ is to nearest, $c = 1$ otherwise.
 Let $\eta_n = \relerror (\appro {a_n})$ and
 $\epsilon_n = \relerror (\appro {b_n})$.
 
+Among others, we will show in the following, using induction, that
+$\Re (\appro {a_n})$, $\Re (\appro {b_n}) \geq 0$ and
+$\Im (\appro {a_n})$, $\Im (\appro {b_n}) > 0$, regardless of the rounding mode.
+By assumption, this holds for $n = 0$.
+
 Let $c_n = \frac {\appro {a_{n-1}} + \appro {b_{n-1}}}{2}$, so that
-$\appro {a_n} = \round(c_n)$. By \eqref {eq:propaddrel}, the error of
+$\appro {a_n} = \round(c_n)$ satisfies
+$\Re (\appro {a_n}) \geq 0$, $\Im (\appro {a_n}) > 0$.
+By \eqref {eq:propaddrel}, the error of
 $c_n$ (relative to the correct value $a_n$) is bounded above by
 $\sqrt 2 \, \max (\epsilon_{n-1}, \eta_{n-1})$, division by~$2$ being exact.
 After rounding, we obtain
@@ -1930,8 +1938,11 @@ After rounding, we obtain
 \end {equation}
 by Proposition~\ref {prop:comrelround}.
 
-Let $d_n = \round \left( \appro {a_{n-1}} \appro {b_{n-1}} \right)$.
-Then by \eqref {eq:propmulrel} and Proposition~\ref {prop:comrelround},
+Let $d_n = \round \left( \appro {a_{n-1}} \appro {b_{n-1}} \right)$,
+so that $\Im (d_n) \geq 0$, and $\Im (d_n) = 0$ occurs only if
+$\appro {a_{n-1}}$ and $\appro {b_{n-1}}$ are both purely imaginary
+and $\Re (d_n) < 0$.
+By \eqref {eq:propmulrel} and Proposition~\ref {prop:comrelround},
 the error of $d_n$ (relative to $a_{n-1} b_{n-1}$) is bounded above by
 \begin {equation}
 \label {eq:agmzeta}
@@ -1939,40 +1950,50 @@ the error of $d_n$ (relative to $a_{n-1} b_{n-1}$) is bounded above by
 \eta_{n-1} + \epsilon_{n-1} + \eta_{n-1} \epsilon_{n-1}
 + c (1 + \eta_{n-1} + \epsilon_{n-1} + \eta_{n-1} \epsilon_{n-1}) 2^{1-p}.
 \end {equation}
-Now $\appro {b_n} = \round (\sqrt {d_n})$, and by \eqref {eq:propsqrt}
-and Proposition~\ref {prop:comrelround},
-assuming $\zeta_n \leq 1$,
-we obtain
+Now $\appro {b_n} = \round (\sqrt {d_n})$ satisfies
+$\Re (\appro {b_n}) \geq 0$ and $\Im (\appro {b_n}) > 0$,
+and by \eqref {eq:propsqrt} and Proposition~\ref {prop:comrelround},
+assuming $\zeta_n \leq 1$, we obtain
 \begin {equation}
 \label {eq:agmepsilon}
 \epsilon_n \leq
 \zeta_n + c (1 + \zeta_n) 2^{1-p}.
 \end {equation}
 
-Let $r_n = (2^n - 1) d$ for some $d > 2 c$. Then for a sufficiently high
-precision~$p$ and not too many steps~$n$ compared to~$p$, we have
+Let $r_n = (2^n - 1) d$ for some $d > 2 c$. Then one can show that
+for a sufficiently high
+precision~$p$ and not too many steps~$n$ compared to~$p$, one has
 $\eta_n, \epsilon_n \leq r_n 2^{1-p}$.
-Now we will prove this explicitly in the case $c=1$ and $d=4$,
-which is enough to deal with all rounding modes, and
-we show
+Now we will prove this explicitly for $d=4$ and $c \leq 1$, and show
 $\eta_n, \epsilon_n \leq r_n 2^{1-p} \leq 2^{n + 3 -p}$
+for $p \geq 2 n + 3$
 by induction over \eqref {eq:agmeta}, \eqref {eq:agmzeta}
 and~\eqref {eq:agmepsilon}. For $n = 0$, we have $\eta_0 = \epsilon_0 = 0$.
 Inductively, by \eqref {eq:agmzeta} we obtain
 \[
 \frac {\zeta_n}{2^{1-p}} \leq
 2 r_{n-1} + 1 +
+\left( r_{n-1}^2 + 2 r_{n-1} + r_{n-1}^2 2^{1-p} \right) 2^{1-p}.
+\]
+From $r_{n-1} < 4 \cdot 2^{n-1}$ we obtain
+\[
+r_{n-1}^2 2^{1-p} < 2^{2 n + 3 - p} \leq 1
+\]
+as long as $p \geq 2 n + 3$, and then, under the same condition,
+\[
 \left( r_{n-1}^2 + 2 r_{n-1} + r_{n-1}^2 2^{1-p} \right) 2^{1-p}
 \leq
-r_n - 3 + 2^{2n+3-p}
-\leq
-r_n - 2
+(r_{n-1} + 1)^2 \, 2^{1-p} \leq (4 \cdot 2^{n-1})^2 \, 2^{1-p} \leq 1.
 \]
-as long as $2n+3 \leq p$.\footnote{Indeed,
-$r_{n-1}^2 2^{1-p} \leq 2^{2n-2} \cdot 2^4 \cdot 2^{1-p} = 2^{2n+3-p} \leq 1$,
-thus $(r_{n-1}^2 + 2 r_{n-1} + r_{n-1}^2 2^{1-p}) 2^{1-p} \leq
-(r_{n-1} + 1)^2 2^{1-p} \leq 2^{2n-2} \cdot 2^4 \cdot 2^{1-p} = 2^{2n+3-p}$.}
-Then by \eqref {eq:agmepsilon},
+Then
+\[
+\frac {\zeta_n}{2^{1-p}}
+\leq
+2 r_{n-1} + 2
+=
+r_n - 2.
+\]
+By \eqref {eq:agmepsilon},
 \[
 \frac {\epsilon_n}{2^{1-p}} \leq
 r_n - 1 + r_n 2^{1-p}
@@ -1987,7 +2008,7 @@ for $p \geq 3$,
 \sqrt 2 \, r_{n-1} + 1 + \sqrt {2} \, r_{n-1} 2^{1-p}
 \leq \frac{5}{4} \sqrt{2} r_{n-1} + 1 \leq 2 r_{n-1} + d = r_n.
 \]
-
+This finishes the induction argument.
 To summarise, we have
 \begin {equation}
 \label {eq:propagm}
@@ -1995,11 +2016,11 @@ To summarise, we have
 \text { with }
 |\theta_1| \leq 2^{n + 3 - p}
 \text { for }
-2n+4 \leq p.
+2n+3 \leq p.
 \end {equation}
 
 We now use \cite[Prop.~3.3]{Dupont06}, which states that for
-$z_1 \neq 0, 1$,
+$z_1 \neq 0, 1$ and
 \begin{equation} \label{eq:agmbound}
 n \geq B (N, z_1)
   = \max \left( 1, \left\lceil \log_2 |\log_2 |z_1|| \right\rceil \right)
@@ -2017,17 +2038,16 @@ $z = \frac {1 + \theta_1}{1 + \theta_2} \appro z
 = (1 + \theta) \appro z$ with
 \[
 |\theta| \leq \frac {|\theta_1| + |\theta_2|}{|1 - |\theta_2||}
-\leq 2 \left( 2^{n+3-p} + 2^{-(N+2)} \right)
+\leq 2 \left( 2^{n+3-p} + 2^{-(N+2)} \right).
 \]
-(see the computation at the end of \S\ref {sssec:propdiv}).
 
 So after $n = B (N, z_1)$ steps of the AGM iteration at a working precision
 of $p = N + n + 5$, we obtain $\appro z = \appro {a_n}$ with a relative error
 bounded by $2^{-N}$.
 
-Note that with $p = N + n + 5$, the constraint $2n + 3 \leq p$ gives
+Note that with $p = N + n + 5$, the constraint $2n + 3 \leq p$ means
 $n \leq N+2$. Depending on the value of $z_1$, one might have to take
-$N$ larger than the required accuracy to ensure Eq.~(\ref{eq:agmbound}) is
+$N$ larger than the required accuracy to ensure \eqref{eq:agmbound} is
 fulfilled.
 
 Using Propositions~\ref {prop:comrelerror} and~\ref {prop:relerror}, this
@@ -2036,30 +2056,19 @@ With $\appro {z} = \appro x + i \appro y$, let
 $k_R = \max (\Exp (\appro y) - \Exp (\appro x) + 1, 0) + 1$, and
 $k_I = \max (\Exp (\appro x) - \Exp (\appro y) + 1, 0) + 1$.
 Then we have
-$\error (\appro x) \leq 2^{k_R - N + p} \Ulp (\appro x)$ and
-$\error (\appro y) \leq 2^{k_I - N + p} \Ulp (\appro y)$.
+$\error (\appro x) \leq 2^{k_R + n + 5} \Ulp (\appro x)$ and
+$\error (\appro y) \leq 2^{k_I + n + 5} \Ulp (\appro y)$.
 
-In practice, one should take this additional loss into account:
-if rounding fails after the
-first computation, nevertheless the values of $k_R$ and $k_I$ will most likely
-not change with a larger precision.
-Then take $k = \max (k_R, k_I)$,
-after $n = B (N + k, z_1)$ steps of the AGM iteration at a working
-precision of $p = N + k + n + 5$, one has
-$\error (\appro x)
-\leq 2^{p - N - (k - k'_R)} \Ulp (\appro x)$
-and
-$\error (\appro y)
-\leq 2^{p - N - (k - k'_I)} \Ulp (\appro y)$,
-where $k'_R, k'_I$ denote the new values of $k_R$ and $k_I$.
-It then suffices to check a posteriori that $k'_R \leq k$ and
-$k'_I \leq k$, then
-$\error (\appro x) \leq 2^{p - N} \Ulp (\appro x)$ and
-$\error (\appro y) \leq 2^{p - N} \Ulp (\appro y)$.
+In practice, one should take this additional loss into account.
+If rounding fails after the first computation, nevertheless the values of
+$k_R$ and $k_I$ will most likely not change with a larger precision.
+So one should let $k = \max (k_R, k_I)$, replace $N$ by $N + k$
+and adapt the precision accordingly.
 
-If $\Im(z_1) < 0$, then we can use the fact that $\AGM(1,\bar{z_1})$ is the
+If $\Im(z_1) < 0$, then we can use the fact that $\AGM(1,\overline z_1)$ is
+the complex
 conjugate of $\AGM(1,z_1)$, thus the same error analysis applies;
-and if $\Im(z_1) = 0$, we are computing a real AGM, we can call the
+and if $\Im(z_1) = 0$, we are computing a real AGM and can call the
 corresponding MPFR function.
 
 Now assume $z_1$ is the rounding of some complex number $z_0$ with a
@@ -2067,13 +2076,14 @@ relative error at most $2^{1-p}$. Then we have to replace $\epsilon_0 = 0$
 by $\epsilon_0 = 2^{1-p}$ in the above proof.
 This gives
 \[ \zeta_1 \leq \epsilon_0 + c (1 + \epsilon_0) 2^{1-p}
-           \leq (2 + 2^{1-p}) 2^{1-p} \leq \frac{9}{4} 2^{1-p}, \]
+           \leq \left( 2 + 2^{1-p} \right) 2^{1-p} \leq \frac{9}{4} \, 2^{1-p}, \]
 and
 \[ \epsilon_1 \leq \zeta_1 + c (1 + \zeta_1) 2^{1-p}
-               \leq (\frac{9}{4} + 1 + \frac{9}{4} 2^{1-p}) 2^{1-p}
-               \leq 4 \cdot 2^{1-p}, \]
+               \leq \left( \frac{9}{4} + 1 + \frac{9}{4} \, 2^{1-p} \right) 2^{1-p}
+               \leq 4 \cdot 2^{1-p} \]
 as long as $p \geq 3$. Thus the bound $\epsilon_1 \leq r_1 2^{1-p}$ still
 holds in that case.
+By \eqref {eq:agmeta}, also $\eta_1 \leq 4 \cdot 2^{1-p} = r_1 2^{1-p}$.
 
 \paragraph{The general case.}
 
@@ -2082,17 +2092,14 @@ approximate $z = \AGM(a, b)$.
 We first have to precisely define $\AGM(a, b)$. At each step indeed there are
 two choices for $b_n = \sqrt{a_{n-1} b_{n-1}}$. We take a \emph{good} choice
 so that $|a_n - b_n| \leq |a_n + b_n|$; this corresponds to an \emph{optimal}
-AGM sequence \cite{CrTh10}.
-In case $|a_n - b_n| = |a_n + b_n|$, we choose $b_n$ such that
-$b_n/a_n$ has a positive imaginary part.
-
-In \cite{Dupont06}, it is shown that if $\lambda$ is a non-zero complex
-number, then $(\lambda a, \lambda b)$ is a good choice if and only if
-$(a, b)$ is a good choice. As a consequence, taking $\lambda = 1/a$,
-it shows that $\AGM(a,b) = a \AGM(1,b/a)$. We can thus restrict ourselves to
-the special case $\AGM(1, z)$ studied above.
-Since $\AGM(a,b) = \AGM(b,a)$, without loss of generality we can assume
-$|z| \leq 1$.
+AGM sequence \cite{CrTh10}. Unless $a_{n-1} / b_{n-1}$ is real, which happens
+exactly for $a / b$ real, this sequence is unique.
+It is shown in \cite{Dupont06} that the good choice is homogeneous with respect
+to multiplication of $a$ and $b$ by a non-zero complex number $\lambda$,
+so that $\AGM (\lambda a, \lambda b) = \lambda \AGM (a, b)$.
+In particular, $\AGM(a,b) = a \AGM(1,b/a) = b \AGM (1, a/b)$.
+We can thus restrict ourselves to the special case $\AGM(1, z)$ studied above
+with moreover $|z| \leq 1$.
 
 \bibliographystyle{acm}
 \bibliography{algorithms}
