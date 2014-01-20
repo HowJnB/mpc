@@ -1,6 +1,6 @@
 /* mpc_asin -- arcsine of a complex number.
 
-Copyright (C) 2009, 2010, 2011, 2012, 2013 INRIA
+Copyright (C) 2009, 2010, 2011, 2012, 2013, 2014 INRIA
 
 This file is part of GNU MPC.
 
@@ -18,6 +18,7 @@ You should have received a copy of the GNU Lesser General Public License
 along with this program. If not, see http://www.gnu.org/licenses/ .
 */
 
+#include <stdio.h>
 #include "mpc-impl.h"
 
 /* Special case op = 1 + i*y for tiny y (see algorithms.tex).
@@ -35,8 +36,6 @@ mpc_asin_special (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd, mpc_ptr z1)
 
   /* |Re(asin(1+i*y)) - pi/2| <= y^(1/2) */
   if (ey >= 0 || ((-ey) / 2 < mpfr_get_prec (mpc_realref (z1))))
-    return 0;
-  if (mpfr_get_prec (mpc_imagref (z1)) > (-ey) + 2) /* p > -ey + 2 */
     return 0;
 
   mpfr_const_pi (mpc_realref (z1), MPFR_RNDN);
