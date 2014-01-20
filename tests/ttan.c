@@ -1,6 +1,6 @@
 /* ttan -- test file for mpc_tan.
 
-Copyright (C) 2008, 2011, 2012 INRIA
+Copyright (C) 2008, 2011, 2012, 2013 INRIA
 
 This file is part of GNU MPC.
 
@@ -197,16 +197,24 @@ pure_imaginary_argument (void)
   mpfr_clear (y);
 }
 
+#define MPC_FUNCTION_CALL                                       \
+  P[0].mpc_inex = mpc_tan (P[1].mpc, P[2].mpc, P[3].mpc_rnd)
+#define MPC_FUNCTION_CALL_REUSE_OP1                             \
+  P[0].mpc_inex = mpc_tan (P[1].mpc, P[1].mpc, P[3].mpc_rnd)
+
+#include "data_check.tpl"
+#include "tgeneric.tpl"
+
 int
 main (void)
 {
-  DECL_FUNC (CC, f, mpc_tan);
-
   test_start ();
 
-  data_check (f, "tan.dat");
-  tgeneric (f, 2, 512, 7, 4);
+  data_check_template ("tan.dsc", "tan.dat");
 
+  tgeneric_template ("tan.dsc", 2, 512, 7, 4);
+
+  /* FIXME: remove them? */
   pure_real_argument ();
   pure_imaginary_argument ();
 

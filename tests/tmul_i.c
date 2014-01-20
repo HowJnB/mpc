@@ -1,6 +1,6 @@
 /* tmul_i -- test file for mpc_mul_i.
 
-Copyright (C)  2008, 2009, 2010, 2011, 2012 INRIA
+Copyright (C)  2008, 2009, 2010, 2011, 2012, 2013 INRIA
 
 This file is part of GNU MPC.
 
@@ -80,15 +80,22 @@ check_different_precisions(void)
   mpc_clear (got);
 }
 
+
+#define MPC_FUNCTION_CALL                                               \
+  P[0].mpc_inex = mpc_mul_i (P[1].mpc, P[2].mpc, P[3].i, P[4].mpc_rnd)
+#define MPC_FUNCTION_CALL_REUSE_OP1                                     \
+  P[0].mpc_inex = mpc_mul_i (P[1].mpc, P[1].mpc, P[3].i, P[4].mpc_rnd)
+
+#include "tgeneric.tpl"
+
 int
 main (void)
 {
-  DECL_FUNC (CCI, f, mpc_mul_i);
-
   test_start ();
 
   check_different_precisions ();
-  tgeneric (f, 2, 1024, 7, -1);
+
+  tgeneric_template ("mul_i.dsc", 2, 1024, 7, 1024);
 
   test_end ();
 

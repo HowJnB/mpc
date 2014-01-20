@@ -1,6 +1,6 @@
 /* tnorm -- test file for mpc_norm.
 
-Copyright (C) 2008, 2011, 2012 INRIA
+Copyright (C) 2008, 2011, 2012, 2013 INRIA
 
 This file is part of GNU MPC.
 
@@ -93,15 +93,21 @@ test_underflow (void)
   mpfr_set_emin (emin);
 }
 
+#define MPC_FUNCTION_CALL                                               \
+  P[0].mpfr_inex = mpc_norm (P[1].mpfr, P[2].mpc, P[3].mpfr_rnd)
+
+#include "data_check.tpl"
+#include "tgeneric.tpl"
+
 int
 main (void)
 {
-  DECL_FUNC (FC, f, mpc_norm);
-
   test_start ();
 
-  data_check (f, "norm.dat");
-  tgeneric (f, 2, 1024, 1, 4096);
+  data_check_template ("norm.dsc", "norm.dat");
+
+  tgeneric_template ("norm.dsc", 2, 1024, 1, 4096);
+
   test_underflow ();
 
   test_end ();

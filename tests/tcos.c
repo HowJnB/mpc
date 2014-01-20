@@ -1,6 +1,6 @@
 /* tcos -- test file for mpc_cos.
 
-Copyright (C) 2008, 2009, 2011, 2012 INRIA
+Copyright (C) 2008, 2009, 2011, 2012, 2013 INRIA
 
 This file is part of GNU MPC.
 
@@ -47,17 +47,24 @@ bug20090105 (void)
   mpc_clear (op);
 }
 
+#define MPC_FUNCTION_CALL                                       \
+  P[0].mpc_inex = mpc_cos (P[1].mpc, P[2].mpc, P[3].mpc_rnd)
+#define MPC_FUNCTION_CALL_REUSE_OP1                             \
+  P[0].mpc_inex = mpc_cos (P[1].mpc, P[1].mpc, P[3].mpc_rnd)
+
+#include "data_check.tpl"
+#include "tgeneric.tpl"
+
 int
 main (void)
 {
-  DECL_FUNC (CC, f, mpc_cos);
-
   test_start ();
 
-  data_check (f, "cos.dat");
-  tgeneric (f, 2, 512, 7, 7);
+  data_check_template ("cos.dsc", "cos.dat");
 
-  bug20090105 ();
+  tgeneric_template ("cos.dsc", 2, 512, 7, 7);
+
+  bug20090105 (); /* TODO: move data in cos.dat */
 
   test_end ();
 

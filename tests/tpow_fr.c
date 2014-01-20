@@ -1,6 +1,6 @@
 /* tpow_fr -- test file for mpc_pow_fr.
 
-Copyright (C) 2009, 2011, 2012 INRIA
+Copyright (C) 2009, 2011, 2012, 2013 INRIA
 
 This file is part of GNU MPC.
 
@@ -47,15 +47,24 @@ test_reuse (void)
   mpc_clear (z);
 }
 
+#define MPC_FUNCTION_CALL                                               \
+  P[0].mpc_inex = mpc_pow_fr (P[1].mpc, P[2].mpc, P[3].mpfr, P[4].mpc_rnd)
+#define MPC_FUNCTION_CALL_REUSE_OP1                                     \
+  P[0].mpc_inex = mpc_pow_fr (P[1].mpc, P[1].mpc, P[3].mpfr, P[4].mpc_rnd)
+
+#include "data_check.tpl"
+#include "tgeneric.tpl"
+
 int
 main (void)
 {
-  DECL_FUNC (CCF, f, mpc_pow_fr);
   test_start ();
 
-  test_reuse ();
-  data_check (f, "pow_fr.dat");
-  tgeneric (f, 2, 1024, 7, 10);
+  test_reuse (); /* FIXME: remove it, already checked by tgeneric */
+
+  data_check_template ("pow_fr.dsc", "pow_fr.dat");
+
+  tgeneric_template ("pow_fr.dsc", 2, 1024, 7, 10);
 
   test_end ();
 

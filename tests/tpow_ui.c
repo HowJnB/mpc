@@ -1,6 +1,6 @@
 /* tpow_ui -- test file for mpc_pow_ui.
 
-Copyright (C) 2009, 2010, 2012 INRIA
+Copyright (C) 2009, 2010, 2012, 2013 INRIA
 
 This file is part of GNU MPC.
 
@@ -73,12 +73,17 @@ compare_mpc_pow (mpfr_prec_t pmax, int iter, unsigned long nbits)
   mpc_clear (y);
 }
 
+#define MPC_FUNCTION_CALL                                               \
+  P[0].mpc_inex = mpc_pow_ui (P[1].mpc, P[2].mpc, P[3].ui, P[4].mpc_rnd)
+#define MPC_FUNCTION_CALL_REUSE_OP1                                     \
+  P[0].mpc_inex = mpc_pow_ui (P[1].mpc, P[1].mpc, P[3].ui, P[4].mpc_rnd)
+
+#include "data_check.tpl"
+
 int
 main (int argc, char *argv[])
 {
   mpc_t z;
-
-  DECL_FUNC (CCU, f, mpc_pow_ui);
 
   if (argc != 1)
     {
@@ -108,7 +113,8 @@ main (int argc, char *argv[])
     }
 
   test_start ();
-  data_check (f, "pow_ui.dat");
+
+  data_check_template ("pow_ui.dsc", "pow_ui.dat");
 
   compare_mpc_pow (100, 5, 19);
 

@@ -1,6 +1,6 @@
 /* tatan -- test file for mpc_atan.
 
-Copyright (C) 2009, 2012 INRIA
+Copyright (C) 2009, 2012, 2013 INRIA
 
 This file is part of GNU MPC.
 
@@ -50,16 +50,22 @@ test_underflow (void)
 }
 #endif
 
+#define MPC_FUNCTION_CALL                                       \
+  P[0].mpc_inex = mpc_atan (P[1].mpc, P[2].mpc, P[3].mpc_rnd)
+#define MPC_FUNCTION_CALL_REUSE_OP1                             \
+  P[0].mpc_inex = mpc_atan (P[1].mpc, P[1].mpc, P[3].mpc_rnd)
+
+#include "data_check.tpl"
+#include "tgeneric.tpl"
 
 int
 main (void)
 {
-  DECL_FUNC (CC, f, mpc_atan);
-
   test_start ();
 
-  data_check (f, "atan.dat");
-  tgeneric (f, 2, 512, 5, 128);
+  data_check_template ("atan.dsc", "atan.dat");
+
+  tgeneric_template ("atan.dsc", 2, 512, 5, 128);
 
   test_end ();
 

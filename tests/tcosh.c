@@ -1,6 +1,6 @@
-/* test file for mpc_cosh.
+/* tcosh -- test file for mpc_cosh.
 
-Copyright (C) 2008, 2009, 2010, 2011, 2012 INRIA
+Copyright (C) 2008, 2009, 2010, 2011, 2012, 2013 INRIA
 
 This file is part of GNU MPC.
 
@@ -115,16 +115,23 @@ pure_imaginary_argument (void)
   mpc_clear (u);
 }
 
+#define MPC_FUNCTION_CALL                                       \
+  P[0].mpc_inex = mpc_cosh (P[1].mpc, P[2].mpc, P[3].mpc_rnd)
+#define MPC_FUNCTION_CALL_REUSE_OP1                             \
+  P[0].mpc_inex = mpc_cosh (P[1].mpc, P[1].mpc, P[3].mpc_rnd)
+
+#include "data_check.tpl"
+#include "tgeneric.tpl"
 int
 main (void)
 {
-  DECL_FUNC(CC, f,mpc_cosh);
-
   test_start ();
 
-  data_check (f, "cosh.dat");
-  tgeneric (f, 2, 512, 7, 7);
+  data_check_template ("cosh.dsc", "cosh.dat");
 
+  tgeneric_template ("cosh.dsc", 2, 512, 7, 7);
+
+  /* FIXME: remove the following tests? (Now tested by tgeneric) */
   pure_real_argument ();
   pure_imaginary_argument ();
 
