@@ -1899,7 +1899,7 @@ Thus, assuming that $n 2^{-p} \leq 1$, the error estimates
 \eqref {eq:powui_re} and \eqref {eq:powui_im} are valid with $n$
 in the place of $n - 1$.
 
-\subsection{\texttt {mpc\_agm1}}
+\subsection{\texttt {mpc\_agm}}
 
 Let
 \[
@@ -1964,9 +1964,10 @@ Let $r_n = (2^n - 1) d$ for some $d > 2 c$. Then one can show that
 for a sufficiently high
 precision~$p$ and not too many steps~$n$ compared to~$p$, one has
 $\eta_n, \epsilon_n \leq r_n 2^{1-p}$.
-Now we will prove this explicitly for $d=4$ and $c \leq 1$, and show
-$\eta_n, \epsilon_n \leq r_n 2^{1-p} \leq 2^{n + 3 -p}$
-for $p \geq 2 n + 3$
+Now we will prove this explicitly for $d=2^k$ with $k \geq 2$
+and $c \leq 1$, and show
+$\eta_n, \epsilon_n \leq r_n 2^{1-p} \leq 2^{n + k + 1 - p}$
+for $p \geq 2 (n + k) - 1$
 by induction over \eqref {eq:agmeta}, \eqref {eq:agmzeta}
 and~\eqref {eq:agmepsilon}. For $n = 0$, we have $\eta_0 = \epsilon_0 = 0$.
 Inductively, by \eqref {eq:agmzeta} we obtain
@@ -1975,22 +1976,22 @@ Inductively, by \eqref {eq:agmzeta} we obtain
 2 r_{n-1} + 1 +
 \left( r_{n-1}^2 + 2 r_{n-1} + r_{n-1}^2 2^{1-p} \right) 2^{1-p}.
 \]
-From $r_{n-1} < 4 \cdot 2^{n-1}$ we obtain
+From $r_{n-1} < 2^{k + n-1}$ we obtain
 \[
-r_{n-1}^2 2^{1-p} < 2^{2 n + 3 - p} \leq 1
+r_{n-1}^2 2^{1-p} < 2^{2 (n + k) - 1 - p} \leq 1
 \]
-as long as $p \geq 2 n + 3$, and then, under the same condition,
+as long as $p \geq 2 (n + k) - 1$, and then, under the same condition,
 \[
 \left( r_{n-1}^2 + 2 r_{n-1} + r_{n-1}^2 2^{1-p} \right) 2^{1-p}
 \leq
-(r_{n-1} + 1)^2 \, 2^{1-p} \leq (4 \cdot 2^{n-1})^2 \, 2^{1-p} \leq 1.
+(r_{n-1} + 1)^2 \, 2^{1-p} \leq (2^{k+n-1})^2 \, 2^{1-p} \leq 1.
 \]
 Then
 \[
 \frac {\zeta_n}{2^{1-p}}
 \leq
 2 r_{n-1} + 2
-=
+\leq
 r_n - 2.
 \]
 By \eqref {eq:agmepsilon},
@@ -1998,7 +1999,7 @@ By \eqref {eq:agmepsilon},
 \frac {\epsilon_n}{2^{1-p}} \leq
 r_n - 1 + r_n 2^{1-p}
 \leq
-r_n - 1 + 2^{n+3-p}
+r_n - 1 + 2^{n+k+1-p}
 \leq r_n
 \]
 under a milder than the previous condition. Finally by \eqref {eq:agmeta},
@@ -2006,7 +2007,7 @@ for $p \geq 3$,
 \[
 \frac {\eta_n}{2^{1-p}} \leq
 \sqrt 2 \, r_{n-1} + 1 + \sqrt {2} \, r_{n-1} 2^{1-p}
-\leq \frac{5}{4} \sqrt{2} r_{n-1} + 1 \leq 2 r_{n-1} + d = r_n.
+\leq \frac{5}{4} \sqrt{2} r_{n-1} + 1 \leq 2 r_{n-1} + 2^k = r_n.
 \]
 This finishes the induction argument.
 To summarise, we have
@@ -2014,9 +2015,9 @@ To summarise, we have
 \label {eq:propagm}
 \corr {a_n} = (1 + \theta_1) \appro {a_n}
 \text { with }
-|\theta_1| \leq 2^{n + 3 - p}
+|\theta_1| \leq 2^{n + k + 1 - p}
 \text { for }
-2n+3 \leq p.
+2 (n + k) - 1 \leq p.
 \end {equation}
 
 We now use \cite[Prop.~3.3]{Dupont06}, which states that for
@@ -2038,15 +2039,15 @@ $z = \frac {1 + \theta_1}{1 + \theta_2} \appro z
 = (1 + \theta) \appro z$ with
 \[
 |\theta| \leq \frac {|\theta_1| + |\theta_2|}{|1 - |\theta_2||}
-\leq 2 \left( 2^{n+3-p} + 2^{-(N+2)} \right).
+\leq 2 \left( 2^{n+k+1-p} + 2^{-(N+2)} \right).
 \]
 
 So after $n = B (N, z_1)$ steps of the AGM iteration at a working precision
-of $p = N + n + 5$, we obtain $\appro z = \appro {a_n}$ with a relative error
+of $p = N + n + k + 3$, we obtain $\appro z = \appro {a_n}$ with a relative error
 bounded by $2^{-N}$.
 
-Note that with $p = N + n + 5$, the constraint $2n + 3 \leq p$ means
-$n \leq N+2$. Depending on the value of $z_1$, one might have to take
+Note that with $p = N + n + k + 3$, the constraint $2 (n + k) + 1 \leq p$ means
+$n + k \leq N+2$. Depending on the value of $z_1$, one might have to take
 $N$ larger than the required accuracy to ensure \eqref{eq:agmbound} is
 fulfilled.
 
@@ -2056,13 +2057,13 @@ With $\appro {z} = \appro x + i \appro y$, let
 $k_R = \max (\Exp (\appro y) - \Exp (\appro x) + 1, 0) + 1$, and
 $k_I = \max (\Exp (\appro x) - \Exp (\appro y) + 1, 0) + 1$.
 Then we have
-$\error (\appro x) \leq 2^{k_R + n + 5} \Ulp (\appro x)$ and
-$\error (\appro y) \leq 2^{k_I + n + 5} \Ulp (\appro y)$.
+$\error (\appro x) \leq 2^{k_R + n + k + 3} \Ulp (\appro x)$ and
+$\error (\appro y) \leq 2^{k_I + n + k + 3} \Ulp (\appro y)$.
 
 In practice, one should take this additional loss into account.
 If rounding fails after the first computation, nevertheless the values of
 $k_R$ and $k_I$ will most likely not change with a larger precision.
-So one should let $k = \max (k_R, k_I)$, replace $N$ by $N + k$
+So one should let $k' = \max (k_R, k_I)$, replace $N$ by $N + k'$
 and adapt the precision accordingly.
 
 If $\Im(z_1) < 0$, then we can use the fact that $\AGM(1,\overline z_1)$ is
