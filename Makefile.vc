@@ -99,7 +99,7 @@ ENDTESTCOMPILE=/LIBPATH:"$(DIRMPCTESTS)" libmpc.lib  /LIBPATH:"$(GMPDIR)\lib" li
 #generate the CPPLINKOBJECTS : goto src and execute
 # ls *.c | sed "s/\.c/\.obj/" | awk ' { printf("%s \\\n",$1); } '
 #generate the list for tests : goto tests and execute
-# ls t*.c | sed "s/\.c//" | grep -v tgeneric| grep -v comparisons | grep -v read_data | grep -v random | awk ' { printf("\t$(TESTCOMPILE)%s.c  $(MIDTESTCOMPILE)%s.exe $(ENDTESTCOMPILE)\n\tcd $(DIRMPCTESTS) && %s.exe && cd ..\n",$1,$1,$1,$1); } '
+# ls t*.c | sed "s/\.c//" | grep -v comparisons | grep -v read_data | grep -v random | awk ' { printf("\t$(TESTCOMPILE)%s.c  $(MIDTESTCOMPILE)%s.exe $(ENDTESTCOMPILE)\n\tcd $(DIRMPCTESTS) && %s.exe && cd ..\n",$1,$1,$1,$1); } '
 
 LIBRARYLIB = libmpc.lib
 
