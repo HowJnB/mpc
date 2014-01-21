@@ -40,25 +40,6 @@ int nextchar;
     : (inex) == +1 ? "+1"                       \
     : (inex) == -1 ? "-1" : "0"
 
-const char *mpc_rnd_mode[] =
-  { "MPC_RNDNN", "MPC_RNDZN", "MPC_RNDUN", "MPC_RNDDN",
-    "undefined", "undefined", "undefined", "undefined", "undefined",
-    "undefined", "undefined", "undefined", "undefined", "undefined",
-    "undefined", "undefined",
-    "MPC_RNDNZ", "MPC_RNDZZ", "MPC_RNDUZ", "MPC_RNDDZ",
-    "undefined", "undefined", "undefined", "undefined", "undefined",
-    "undefined", "undefined", "undefined", "undefined", "undefined",
-    "undefined", "undefined",
-    "MPC_RNDNU", "MPC_RNDZU", "MPC_RNDUU", "MPC_RNDDU",
-    "undefined", "undefined", "undefined", "undefined", "undefined",
-    "undefined", "undefined", "undefined", "undefined", "undefined",
-    "undefined", "undefined",
-    "MPC_RNDND", "MPC_RNDZD", "MPC_RNDUD", "MPC_RNDDD",
-    "undefined", "undefined", "undefined", "undefined", "undefined",
-    "undefined", "undefined", "undefined", "undefined", "undefined",
-    "undefined", "undefined",
-  };
-
 /* file functions */
 FILE *
 open_data_file (const char *file_name)
