@@ -207,8 +207,8 @@ enum {
   SPECIAL_MZERO,
   SPECIAL_PZERO,
   SPECIAL_PINF,
-  SPECIAL_COUNT,
-} special_case;
+  SPECIAL_COUNT
+};
 
 static void
 special_mpfr (mpfr_ptr x, int special)

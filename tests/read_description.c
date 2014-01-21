@@ -1,6 +1,6 @@
 /* read_description.c -- read parameters from description file
 
-Copyright (C)  2012, 2013 INRIA
+Copyright (C) 2012, 2013, 2014 INRIA
 
 This file is part of GNU MPC.
 
@@ -26,8 +26,8 @@ static size_t read_keyworddesc (mpc_datafile_context_t* datafile_context,
 
 /* tuple to link name with the enum value */
 typedef struct  {
-  const char *typename;  /* type name */
-  mpc_param_t  typeval ;  /* type enum */
+  const char * name;  /* type name */
+  mpc_param_t  val;   /* type enum */
 } param_typeval_t;
 
 /* available types for function description */
@@ -115,15 +115,15 @@ static mpc_param_t
 description_findtype (const char *name)
 {
 
-  mpc_param_t r = sparam_typeval[0].typeval;
+  mpc_param_t r = sparam_typeval[0].val;
   size_t s = 0;
   const size_t send = sizeof (sparam_typeval) / sizeof (param_typeval_t);
 
-  while (s < send && strcmp (sparam_typeval[s].typename, name) != 0)
+  while (s < send && strcmp (sparam_typeval[s].name, name) != 0)
     s++;
 
   if (s < send)
-    r = sparam_typeval[s].typeval;
+    r = sparam_typeval[s].val;
   else
     {
       printf ("Error: Unable to find the type  '%s'\n",name);
@@ -141,11 +141,11 @@ read_description_findname (mpc_param_t e)
   size_t s = 0;
   const size_t send = sizeof (sparam_typeval) / sizeof (param_typeval_t);
 
-  while (s < send && sparam_typeval[s].typeval != e)
+  while (s < send && sparam_typeval[s].val != e)
     s++;
 
   if (s<send)
-    name = sparam_typeval[s].typename;
+    name = sparam_typeval[s].name;
   else
     {
       printf ("Error: Unable to find the enum type\n");

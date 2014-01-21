@@ -75,7 +75,6 @@ tgeneric_template (const char *description_file,
   for (prec = prec_min; prec <= prec_max; prec += step)
     check_against_quadruple_precision (&params, prec, exp_min, exp_max, -1);
 
-
   /* check consistency with quadruple precision for special values:
      pure real, pure imaginary, or infinite arguments */
   last_special = count_special_cases (&params);
@@ -162,11 +161,13 @@ enum {
   SPECIAL_MZERO,
   SPECIAL_PZERO,
   SPECIAL_PINF,
-  SPECIAL_COUNT,
-} special_case;
+  SPECIAL_COUNT
+};
 
 static int
 count_special_cases (mpc_fun_param_t *params)
+/* counts the number of possibilities of exactly one real or imaginary part of
+   any input parameter being special, all others being finite real numbers */
 {
   int i;
   const int start = params->nbout;
@@ -202,6 +203,9 @@ special_mpfr (mpfr_ptr x, int special)
     case SPECIAL_PINF:
       mpfr_set_inf (x, +1);
       break;
+    case SPECIAL_COUNT:
+       /* does not occur */
+       break;
    }
 }
 
@@ -264,13 +268,15 @@ random_params (mpc_fun_param_t *params,
           break;
 
         case NATIVE_LD:
-        case NATIVE_DC:    case NATIVE_LDC:
+        case NATIVE_DC:
+        case NATIVE_LDC:
           /* TODO: draw random value */
           fprintf (stderr, "random_params: type not implemented.\n");
           exit (1);
           break;
 
-        case NATIVE_IM:    case NATIVE_UIM:
+        case NATIVE_IM:
+        case NATIVE_UIM:
           /* TODO: draw random value */
           fprintf (stderr, "random_params: type not implemented.\n");
           exit (1);
