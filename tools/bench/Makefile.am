@@ -22,8 +22,11 @@ AM_DEFAULT_SOURCE_EXT = .c
 
 LDADD = $(top_builddir)/src/libmpc.la
 
-noinst_PROGRAMS = mpcbench
+EXTRA_PROGRAMS = mpcbench
 
 
 noinst_HEADERS = benchtime.h
+
+
+bench : mpcbench
 
