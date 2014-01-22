@@ -135,7 +135,7 @@ fi
 
 # Checks for header files.
 AC_HEADER_STDC
-AC_CHECK_HEADERS([locale.h inttypes.h stdint.h limits.h unistd.h sys/time.h])
+AC_CHECK_HEADERS([locale.h inttypes.h stdint.h limits.h unistd.h sys/time.h sys/resource.h])
 AC_HEADER_TIME
 MPC_COMPLEX_H
 
@@ -144,7 +144,7 @@ AC_C_CONST
 AC_TYPE_SIZE_T
 
 # Checks for libraries.
-AC_CHECK_FUNCS([gettimeofday localeconv setlocale])
+AC_CHECK_FUNCS([gettimeofday localeconv setlocale getrusage])
 AC_CHECK_FUNCS([dup dup2],,
         [AC_DEFINE([MPC_NO_STREAM_REDIRECTION],1,[Do not check mpc_out_str on stdout])])
 
@@ -237,5 +237,5 @@ AC_DEFINE_UNQUOTED([MPC_GCC_VERSION], ["$GCC_VERSION"], [Version of gcc])
 # Looks for svn version if the version string contains "dev"
 MPC_SVNVERSION
 
-AC_CONFIG_FILES([Makefile src/Makefile tests/Makefile doc/Makefile])
+AC_CONFIG_FILES([Makefile src/Makefile tests/Makefile doc/Makefile tools/Makefile tools/bench/Makefile])
 AC_OUTPUT
