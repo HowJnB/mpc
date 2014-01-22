@@ -1,6 +1,6 @@
 /* rounding.c -- file for functions iterating over rounding modes.
 
-Copyright (C) 2013 INRIA
+Copyright (C) 2013, 2014 INRIA
 
 This file is part of GNU MPC.
 
@@ -56,76 +56,134 @@ is_valid_mpfr_rnd_mode (mpfr_rnd_t curr)
       return 0;
 }
 
+static mpc_rnd_t
+next_mpc_rnd_mode (mpc_rnd_t rnd)
+{
+  mpfr_rnd_t rnd_re = MPC_RND_RE (rnd);
+  mpfr_rnd_t rnd_im = MPC_RND_IM (rnd);
+
+  rnd_im = next_mpfr_rnd_mode (rnd_im);
+  if (!is_valid_mpfr_rnd_mode (rnd_im))
+    {
+      rnd_re = next_mpfr_rnd_mode (rnd_re);
+      rnd_im = FIRST_MPFR_RND_MODE;
+    }
+
+  return MPC_RND(rnd_re, rnd_im);
+}
+
+static int
+is_valid_mpc_rnd_mode (mpc_rnd_t rnd)
+/* returns 1 if curr is a valid rounding mode, and 0 otherwise */
+{
+  mpfr_rnd_t rnd_re = MPC_RND_RE (rnd);
+  mpfr_rnd_t rnd_im = MPC_RND_IM (rnd);
+
+  return is_valid_mpfr_rnd_mode (rnd_re) && is_valid_mpfr_rnd_mode (rnd_im);
+}
 
 /* functions using abstract parameters */
+
+static void
+first_mode (mpc_fun_param_t *params, int index)
+{
+  switch (params->T[index])
+    {
+    case MPC_RND:
+      params->P[index].mpc_rnd =
+        MPC_RND(FIRST_MPFR_RND_MODE, FIRST_MPFR_RND_MODE);
+      break;
+    case MPFR_RND:
+      params->P[index].mpfr_rnd = FIRST_MPFR_RND_MODE;
+      break;
+    default:
+      printf ("The rounding mode is expected to be"
+              " the last input parameter.\n");
+      exit (-1);
+    }
+}
+
+static void
+next_mode (mpc_fun_param_t *params, int index)
+{
+  switch (params->T[index])
+    {
+    case MPC_RND:
+      params->P[index].mpc_rnd =
+        next_mpc_rnd_mode (params->P[index].mpc_rnd);
+      break;
+    case MPFR_RND:
+      params->P[index].mpfr_rnd =
+        next_mpfr_rnd_mode (params->P[index].mpfr_rnd);
+      break;
+    default:
+      printf ("The rounding mode is expected to be"
+              " the last input parameter.\n");
+      exit (-1);
+    }
+}
+
+static int
+is_valid_mode (mpc_fun_param_t *params, int index)
+/* returns 1 if params->P[index] is a valid rounding mode, and 0 otherwise */
+{
+  switch (params->T[index])
+    {
+    case MPC_RND:
+      return is_valid_mpc_rnd_mode (params->P[index].mpc_rnd);
+    case MPFR_RND:
+      return is_valid_mpfr_rnd_mode (params->P[index].mpfr_rnd);
+    default:
+      printf ("The rounding mode is expected to be"
+              " the last input parameter.\n");
+      exit (-1);
+    }
+}
 
 void
 first_rnd_mode (mpc_fun_param_t *params)
 {
-  int rnd_mode_index = params->nbout + params->nbin - 1;
-  switch (params->T[rnd_mode_index])
+  int rnd_mode_index;
+
+  for (rnd_mode_index = params->nbout + params->nbin - params->nbrnd;
+       rnd_mode_index < params->nbout + params->nbin;
+       rnd_mode_index++)
     {
-    case MPC_RND:
-      params->P[rnd_mode_index].mpc_rnd =
-        MPC_RND(FIRST_MPFR_RND_MODE, FIRST_MPFR_RND_MODE);
-      break;
-    case MPFR_RND:
-      params->P[rnd_mode_index].mpfr_rnd = FIRST_MPFR_RND_MODE;
-      break;
-    default:
-      printf ("The rounding mode is expected to be"
-              " the last input parameter.\n");
-      exit (-1);
+      first_mode (params, rnd_mode_index);
     }
 }
 
+
 void
 next_rnd_mode (mpc_fun_param_t *params)
+/* cycle through all valid rounding modes and finish with an invalid one */
 {
-  mpfr_rnd_t rnd_re, rnd_im;
-  int rnd_mode_index = params->nbout + params->nbin - 1;
-  switch (params->T[rnd_mode_index])
-    {
-    case MPC_RND:
-      rnd_re = MPC_RND_RE (params->P[rnd_mode_index].mpc_rnd);
-      rnd_im = MPC_RND_IM (params->P[rnd_mode_index].mpc_rnd);
-      rnd_im = next_mpfr_rnd_mode (rnd_im);
-      if (!is_valid_mpfr_rnd_mode (rnd_im))
-        {
-          rnd_re = next_mpfr_rnd_mode (rnd_re);
-          rnd_im = FIRST_MPFR_RND_MODE;
-        }
-      params->P[rnd_mode_index].mpc_rnd = MPC_RND(rnd_re, rnd_im);
-      break;
-    case MPFR_RND:
-      params->P[rnd_mode_index].mpfr_rnd =
-        next_mpfr_rnd_mode (params->P[rnd_mode_index].mpfr_rnd);
-      break;
-    default:
-      printf ("The rounding mode is expected to be"
-              " the last input parameter.\n");
-      exit (-1);
-    }
+  int last = params->nbout + params->nbin - 1;
+  int index = params->nbout + params->nbin - params->nbrnd;
+  int carry = 1;
+
+  while (carry && index <= last) {
+    next_mode (params, index);
+    if (!is_valid_mode (params, index) && index < last)
+      first_mode (params, index);
+    else
+      carry = 0;
+    index++;
+  }
 }
 
 int
 is_valid_rnd_mode (mpc_fun_param_t *params)
-/* returns 1 if curr is a valid rounding mode, and 0 otherwise */
+/* returns 1 if all rounding parameters are set to a valid rounding mode,
+   and 0 otherwise */
 {
-  mpfr_rnd_t rnd_re, rnd_im;
-  int rnd_mode_index = params->nbout + params->nbin - 1;
-  switch (params->T[rnd_mode_index])
-    {
-    case MPC_RND:
-      rnd_re = MPC_RND_RE (params->P[rnd_mode_index].mpc_rnd);
-      rnd_im = MPC_RND_IM (params->P[rnd_mode_index].mpc_rnd);
-      return is_valid_mpfr_rnd_mode (rnd_re)
-        && is_valid_mpfr_rnd_mode (rnd_im);
-    case MPFR_RND:
-      return is_valid_mpfr_rnd_mode (params->P[rnd_mode_index].mpfr_rnd);
-    default:
-      printf ("The rounding mode is expected to be"
-              " the last input parameter.\n");
-      exit (-1);
-    }
+  int index;
+
+  for (index = params->nbout + params->nbin - params->nbrnd;
+       index < params->nbout + params->nbin;
+       index++)
+    if (! is_valid_mode (params, index))
+      return 0;
+
+  return 1;
 }

@@ -1,6 +1,6 @@
 /* clear_parameters -- Deallocate memory for function parameters.
 
-Copyright (C) 2012, 2013 INRIA
+Copyright (C) 2012, 2013, 2014 INRIA
 
 This file is part of GNU MPC.
 
@@ -48,6 +48,7 @@ clear_param (mpc_operand_t* p, mpc_param_t t)
       break;
 
     case MPC_INEX:
+    case MPCC_INEX:
       break;
     case MPC:
       mpc_clear (p->mpc);

@@ -1,6 +1,6 @@
 /* tgeneric.tpl -- template file for generic tests.
 
-Copyright (C) 2008, 2009, 2010, 2011, 2012, 2013 INRIA
+Copyright (C) 2008, 2009, 2010, 2011, 2012, 2013, 2014 INRIA
 
 This file is part of GNU MPC.
 
@@ -320,6 +320,7 @@ random_params (mpc_fun_param_t *params,
         case NATIVE_STRING:
         case MPFR_INEX:
         case MPC_INEX:
+        case MPCC_INEX:
           /* unsupported types */
           fprintf (stderr, "random_params: unsupported type.\n");
           exit (1);

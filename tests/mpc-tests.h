@@ -1,6 +1,6 @@
 /* mpc-tests.h -- Tests helper functions.
 
-Copyright (C) 2008, 2009, 2010, 2011, 2012, 2013 INRIA
+Copyright (C) 2008, 2009, 2010, 2011, 2012, 2013, 2014 INRIA
 
 This file is part of GNU MPC.
 
@@ -179,7 +179,8 @@ typedef enum {
   MPFR_RND,            /* mpfr_rnd_t */
   MPC_INEX,            /* mpc_inex */
   MPC,                 /* mpc_t */
-  MPC_RND              /* mpc_rnd_t */
+  MPC_RND,             /* mpc_rnd_t */
+  MPCC_INEX            /* mpcc_inex */
 } mpc_param_t;
 
 /* additional information for checking mpfr_t result */
@@ -255,15 +256,25 @@ typedef union {
   mpc_rnd_t            mpc_rnd;
   int                  mpc_inex;
   mpc_inex_data_t      mpc_inex_data;
+  int                  mpcc_inex;
 } mpc_operand_t;
 
 #define PARAMETER_ARRAY_SIZE 10
 
-/* function name plus parameters */
+/* function name plus parameters in the following order:
+   output parameters, input parameters (ending with rounding modes).
+   The input parameters include one rounding mode per mpfr/mpc
+   output starting from rnd_index.
+   For the time being, there may be either one or two rounding modes;
+   in the latter case, we assume that there are three outputs:
+   the inexact value and two complex numbers.
+ */
 typedef struct {
   char         *name;  /* name of the function */
   int           nbout; /* number of output parameters */
-  int           nbin;  /* number of input parameters */
+  int           nbin;  /* number of input parameters, including rounding
+                          modes */
+  int           nbrnd; /* number of rounding mode parameters */
   mpc_operand_t P[PARAMETER_ARRAY_SIZE]; /* value of parameters */
   mpc_param_t   T[PARAMETER_ARRAY_SIZE]; /* type of parameters */
 } mpc_fun_param_t;

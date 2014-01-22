@@ -1,7 +1,7 @@
 /* copy_parameter.c -- Copy of an input parameter into a parameter reused for
    output.
 
-Copyright (C) 2012, 2013 INRIA
+Copyright (C) 2012, 2013, 2014 INRIA
 
 This file is part of GNU MPC.
 
@@ -113,6 +113,7 @@ copy_parameter (mpc_fun_param_t *params, int index_dest, int index_src)
     case NATIVE_STRING:
     case MPFR_INEX:     case MPFR_RND:
     case MPC_INEX:      case MPC_RND:
+    case MPCC_INEX:
       /* no supported copy */
       break;
     }

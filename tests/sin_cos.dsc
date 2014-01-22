@@ -1,6 +1,6 @@
 # Description file for mpc_sin_cos
 #
-# Copyright (C) 2013 INRIA
+# Copyright (C) 2013, 2014 INRIA
 #
 # This file is part of GNU MPC.
 #
@@ -20,7 +20,7 @@
 NAME:
     mpc_sin_cos
 RETURN:
-    mpc_inex
+    mpcc_inex
 OUTPUT:
     mpc_ptr
     mpc_ptr

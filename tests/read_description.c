@@ -56,7 +56,8 @@ static const param_typeval_t sparam_typeval[]= {
   { "mpc_inex"            , MPC_INEX    },
   { "mpc_ptr"             , MPC         },
   { "mpc_srcptr"          , MPC         },
-  { "mpc_rnd_t"           , MPC_RND     }
+  { "mpc_rnd_t"           , MPC_RND     },
+  { "mpcc_inex"           , MPCC_INEX   }
 };
 
 /* read primitives */
@@ -166,6 +167,7 @@ read_description (mpc_fun_param_t* param, const char *filename)
   size_t len = 0;
   int nbout = 0;
   int nbin = 0;
+  int rnd_mode = 0;
   int j;
 
   open_datafile (&datafile_context, filename);
@@ -251,12 +253,15 @@ read_description (mpc_fun_param_t* param, const char *filename)
       if (strlen (buffer) == 0 && feof (datafile_context.fd))
         break;
       param->T[nbout+nbin] = description_findtype (buffer);
+      if (param->T[nbout+nbin] == MPC_RND || param->T[nbout+nbin] == MPFR_RND)
+        rnd_mode++;
       nbin++;
     }
   free (buffer);
 
   param->nbout = nbout;
-  param->nbin = nbin;
+  param->nbin  = nbin;
+  param->nbrnd = rnd_mode;
 
   /* duplicate output parameters at the end for the expected values */
   for (j = 0; j < param->nbout; j++)

@@ -1,6 +1,6 @@
 /* read_line.c -- Read line of test data in file.
 
-Copyright (C) 2012, 2013 INRIA
+Copyright (C) 2012, 2013, 2014 INRIA
 
 This file is part of GNU MPC.
 
@@ -98,6 +98,12 @@ read_param  (mpc_datafile_context_t* datafile_context,
     case MPC_RND:
       tpl_read_mpc_rnd (datafile_context, &p->mpc_rnd);
       return;
+
+    case MPCC_INEX:
+      /* TODO */
+      fprintf (stderr, "read_param: type not implemented.\n");
+      exit (1);
+      break;
     }
 
   fprintf (stderr, "read_param: unsupported type.\n");
@@ -134,6 +140,7 @@ set_precision (mpc_fun_param_t* params, int index)
     case GMP_F:
     case MPFR_INEX:    case MPFR_RND:
     case MPC_INEX:     case MPC_RND:
+    case MPCC_INEX:
       /* unsupported types */
       break;
     }

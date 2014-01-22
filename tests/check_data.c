@@ -1,6 +1,6 @@
 /* check_data.c -- Check computed data against reference result.
 
-Copyright (C) 2012, 2013 INRIA
+Copyright (C) 2012, 2013, 2014 INRIA
 
 This file is part of GNU MPC.
 
@@ -61,6 +61,9 @@ check_param  (mpc_operand_t* got, mpc_operand_t* expected, mpc_param_t t)
     case MPC:
       return tpl_check_mpc_data (got->mpc,
                                  expected->mpc_data);
+
+    case MPCC_INEX:
+      return got->mpcc_inex == expected->mpcc_inex;
 
     default:
       fprintf (stderr, "check_data: unsupported type.\n");

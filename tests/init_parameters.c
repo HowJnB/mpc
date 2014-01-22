@@ -1,6 +1,6 @@
 /* init_parameters -- Allocate memory for function parameters.
 
-Copyright (C) 2012 INRIA
+Copyright (C) 2012, 2014 INRIA
 
 This file is part of GNU MPC.
 
@@ -49,6 +49,7 @@ init_param (mpc_operand_t* p, mpc_param_t t)
       break;
 
     case MPC_INEX:
+    case MPCC_INEX:
       break;
     case MPC:
       mpc_init2 (p->mpc, 512);

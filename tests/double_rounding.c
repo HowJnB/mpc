@@ -1,6 +1,6 @@
 /*  double_rounding.c -- Functions for checking double rounding.
 
-Copyright (C) 2013 INRIA
+Copyright (C) 2013, 2014 INRIA
 
 This file is part of GNU MPC.
 
@@ -35,7 +35,7 @@ double_rounding_mpfr (mpfr_ptr lowprec,
 
   if (hiprec_rnd == MPFR_RNDN)
     /* when rounding to nearest, use the trick for determining the
-       correct ternary value which is described in MPFR
+       correct ternary value which is described in the MPFR
        documentation */
     {
       hiprec_err++; /* error is bounded by one half-ulp */
@@ -74,42 +74,75 @@ double_rounding (mpc_fun_param_t *params)
 {
   int out;
   const int offset = params->nbout + params->nbin;
-  const int rnd_index = params->nbout + params->nbin - 1;
+  int rnd_index = offset - params->nbrnd;
 
   for (out = 0; out < params->nbout; out++) {
     if (params->T[out] == MPC)
       {
-        MPC_ASSERT (params->T[0] == MPC_INEX);
-        MPC_ASSERT (params->T[offset] == MPC_INEX);
+        int inex;
+
+        MPC_ASSERT ((params->T[0] == MPC_INEX)
+                    || (params->T[0] == MPCC_INEX));
+        MPC_ASSERT ((params->T[offset] == MPC_INEX)
+                    || (params->T[offset] == MPCC_INEX));
         MPC_ASSERT (params->T[out + offset] == MPC);
         MPC_ASSERT (params->T[rnd_index] == MPC_RND);
 
+        /*
+          For the time being, there may be either one or two rounding modes;
+          in the latter case, we assume that there are three outputs:
+          the inexact value and two complex numbers.
+        */
+        inex = (params->nbrnd == 1 ? params->P[0].mpc_inex
+                : (out == 1 ? MPC_INEX1 (params->P[0].mpcc_inex)
+                   : MPC_INEX2 (params->P[0].mpcc_inex)));
+
         if (double_rounding_mpc (params->P[out + offset].mpc_data.mpc,
                                  params->P[out].mpc,
-                                 params->P[0].mpc_inex,
+                                 inex,
                                  params->P[rnd_index].mpc_rnd))
-          /* the hight-precision value and the exact value round to the same
+          /* the high-precision value and the exact value round to the same
              low-precision value */
           {
-            int inex;
+            int inex_hp, inex_re, inex_im;
             inex = mpc_set (params->P[out + offset].mpc_data.mpc,
                             params->P[out].mpc,
                             params->P[rnd_index].mpc_rnd);
             params->P[out + offset].mpc_data.known_sign_real = -1;
             params->P[out + offset].mpc_data.known_sign_imag = -1;
 
-            /* no double rounding means that the ternary value may comes from
+            /* no double rounding means that the ternary value may come from
                the high-precision calculation or from the rounding */
+            if (params->nbrnd == 1)
+              inex_hp = params->P[0].mpc_inex;
+            else /* nbrnd == 2 */
+              if (out == 1)
+                inex_hp = MPC_INEX1 (params->P[0].mpcc_inex);
+              else /* out == 2 */
+                inex_hp = MPC_INEX2 (params->P[0].mpcc_inex);
+
             if (MPC_INEX_RE (inex) == 0)
-              params->P[offset].mpc_inex_data.real =
-                MPC_INEX_RE (params->P[0].mpc_inex);
+              inex_re = MPC_INEX_RE (inex_hp);
             else
-              params->P[offset].mpc_inex_data.real = MPC_INEX_RE (inex);
+              inex_re = MPC_INEX_RE (inex);
             if (MPC_INEX_IM (inex) == 0)
-              params->P[offset].mpc_inex_data.imag =
-                MPC_INEX_IM (params->P[0].mpc_inex);
+              inex_im = MPC_INEX_IM (inex_hp);
             else
-              params->P[offset].mpc_inex_data.imag = MPC_INEX_IM (inex);
+              inex_im = MPC_INEX_IM (inex);
+
+            if (params->nbrnd == 1) {
+              params->P[offset].mpc_inex_data.real = inex_re;
+              params->P[offset].mpc_inex_data.imag = inex_im;
+            }
+            else /* nbrnd == 2 */
+              if (out == 1)
+                params->P[offset].mpcc_inex = MPC_INEX (inex_re, inex_im);
+              else /* out == 2 */
+                params->P[offset].mpcc_inex
+                  = MPC_INEX12 (params->P[offset].mpcc_inex,
+                                MPC_INEX (inex_re, inex_im));
+        
+            rnd_index++;
           }
         else
           /* double rounding occurs */
@@ -141,6 +174,8 @@ double_rounding (mpc_fun_param_t *params)
               params->P[offset].mpfr_inex = params->P[0].mpfr_inex;
             else
               params->P[offset].mpfr_inex = inex;
+
+            rnd_index++;
           }
         else
           /* double rounding occurs */

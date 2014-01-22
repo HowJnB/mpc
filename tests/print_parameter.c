@@ -118,6 +118,13 @@ print_parameter (mpc_fun_param_t* params, int index)
               mpc_rnd_mode[params->P[index].mpc_rnd]);
       break;
 
+    case MPCC_INEX:
+      printf (" double ternary value = %s, %s\n",
+              MPC_INEX_STR (MPC_INEX1 (params->P[index].mpcc_inex)),
+              MPC_INEX_STR (MPC_INEX2 (params->P[index].mpcc_inex))
+              );
+      break;
+
     default:
       fprintf (stderr, "print_parameter: unsupported type.\n");
       exit (1);
