@@ -1911,8 +1911,8 @@ by $\corr {a_0} = a$, $\corr {b_0} = b$,
 $\corr {a_{n+1}} = \frac {\corr {a_n} + \corr {b_n}}{2}$ and
 $\corr {b_{n+1}} = \sqrt {\corr {a_n} \corr {b_n}}$.
 At each step, there is a choice of sign for the square root.
-If $\corr {a_n}$ and $\corr {b_n}$ are at an angle different from $0$
-and $\pi$, then
+If $\corr {a_n}$ and $\corr {b_n}$ are at an (unoriented) angle
+different from $0$ and $\pi$, then
 they define a two-dimensional pointed cone in the complex plane.
 Notice that $\corr {a_{n+1}}$ lies in this cone.
 Following \cite {Cox84} we call \emph {right} the choice that makes
@@ -2031,7 +2031,7 @@ computations at a working precision of about $p = N + c B (N, b/a)$.
 The following discussion provides explicit bounds for all these quantities.
 
 
-\paragraph {Error propagation.}
+\paragraph {Rounding error propagation.}
 
 Let
 $\corr {a_n} = \frac {\corr {a_{n-1}} + \corr {b_{n-1}}}{2}$,
@@ -2220,7 +2220,7 @@ we reach
 \]
 
 
-\paragraph {Total error and working precision}
+\paragraph {Total error and working precision.}
 
 Combining with \eqref {eq:propagm} we obtain
 $\AGM (1, b_0) = \frac {1 + \theta_1}{1 + \theta_2} \appro {a_n}
@@ -2244,8 +2244,11 @@ this leads to a relative error bounded by $2^{-N}$.
 
 \paragraph {Parameter choice.}
 
-Recall that in our analysis, $k = \max (2, - \Exp (\Re (\appro {a_1} + 1)))$
-is given by the input data. We may then choose a target relative error~$N$,
+Recall that in our analysis, $k = \max (2, - \Exp (\Re (\appro {a_1}) + 1))$
+is given by the input data. As we need to know it before choosing the final
+precision, it should be computed from an approximation at a tiny precision,
+of $2$ bits, say.
+We may then choose a target relative error~$N$,
 which determines the number of iterations~$n = B (N)$ by~\eqref {eq:agmbound}.
 Then the working precision may be chosen as
 \[
