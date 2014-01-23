@@ -1,6 +1,6 @@
 /* mpcbench.c -- perform the benchmark on the complex numbers.
 
-Copyright (C) 2014, INRIA
+Copyright (C) 2014 CNRS
 
 This file is part of GNU MPC.
 

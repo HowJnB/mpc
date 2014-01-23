@@ -1,6 +1,6 @@
 ## tools/bench/Makefile.am -- Process this file with automake to produce Makefile.in
 ##
-## Copyright (C) 2014 INRIA
+## Copyright (C) 2014 CNRS
 ##
 ## This file is part of GNU MPC.
 ##

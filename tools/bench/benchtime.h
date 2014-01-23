@@ -1,6 +1,6 @@
 /* benchtime.h -- compute the timings for the benchmark.
 
-Copyright (C) 2014, INRIA
+Copyright (C) 2014 INRIA - CNRS
 
 This file is part of GNU MPC.
 
@@ -22,19 +22,18 @@ along with this program. If not, see http://www.gnu.org/licenses/ .
 /* compute the time to run accurately niter calls of the function for any number of inputs */
 #define DECLARE_ACCURATE_TIME_NOP(func, funccall)      \
 unsigned long int ACCURATE_TIME_NOP##func( unsigned long int niter, int n, mpc_t* z, mpc_t* x, mpc_t* y, int nop);\
-unsigned long int ACCURATE_TIME_NOP##func( unsigned long int niter, int n, mpc_t* z, mpc_t* x, mpc_t* y, int nop)\
+unsigned long int ACCURATE_TIME_NOP##func( unsigned long int niter, int n, mpc_t* z, mpc_t* x, \
+__attribute__ ((__unused__)) mpc_t* y, \
+__attribute__ ((__unused__)) int nop)\
 {                                             \
-  unsigned long int ti, i;  int kn;           \
+  unsigned long int i;  int kn;           \
   unsigned long int t0 = get_cputime ();      \
   for (i = niter, kn=0; i > 0; i--)           \
     {                                         \
 	  funccall;	                              \
 	  kn++; if (kn==n) kn = 0; 			      \
     }                                         \
-  ti = get_cputime () - t0;                   \
-  /* following lines are append to avoid warnings but minimize the number of macros*/\
-  if (nop==2) y = NULL;                       \
-  return ti;                                  \
+  return get_cputime () - t0;                 \
 }
 
 /* address of the function to time accurately niter calls of func */
