@@ -24,6 +24,8 @@ LDADD = $(top_builddir)/src/libmpc.la
 
 EXTRA_PROGRAMS = mpcbench
 
-
 noinst_HEADERS = benchtime.h
+
+bench : mpcbench
+	./mpcbench
 

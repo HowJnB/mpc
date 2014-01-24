@@ -27,3 +27,7 @@ SUBDIRS = src tests doc tools
 EXTRA_HEADERS = src/mpc-log.h
 include_HEADERS = src/mpc.h @MPC_LOG_H@
 EXTRA_DIST = doc/fdl-1.3.texi src/mpc-log.h Makefile.vc
+
+bench :
+	cd tools/bench && $(MAKE) $(AM_MAKEFLAGS) bench
+
