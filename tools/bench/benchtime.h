@@ -43,7 +43,7 @@ __attribute__ ((__unused__)) int nop)\
 #define ADDR_TIME_NOP(func) TIME_NOP##func
 
 
-/* compute the time to run one only call of the function with two inputs  */
+/* compute the time to run only one call of the function with two inputs  */
 #define DECLARE_TIME_NOP(func, funcall, nop)				  \
  DECLARE_ACCURATE_TIME_NOP(func, funcall)					  \
  double TIME_NOP##func(int n, mpc_t* z, mpc_t* x, mpc_t* y);  \

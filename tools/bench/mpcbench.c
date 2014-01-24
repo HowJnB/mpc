@@ -92,15 +92,15 @@ const struct benchfunc
       {"asin", ADDR_TIME_NOP (mpc_asin), ADDR_ACCURATE_TIME_NOP (mpc_asin), egroup_special, 1}
     };
 
-/* the following arrays must have the same number of elemnts */
+/* the following arrays must have the same number of elements */
 
-/* list of precision to test for the first operand */
+/* list of precisions to test for the first operand */
 const int arrayprecision_op1[] =
   { 32, 64, 128, 256, 512, 1024, 2048, 4096, 8192, 16384, 
   50, 100, 200, 350, 700, 1500, 3000, 6000, 10000, 1500, 3000, 5000,
 };
 
-/* list of precision to test for the second operand */
+/* list of precisions to test for the second operand */
 const int arrayprecision_op2[] =
   { 32, 64, 128, 256, 512, 1024, 2048, 4096, 8192, 16384,
   50, 100, 200, 350, 700, 1500, 3000, 6000, 10000, 3000, 6000, 10000
@@ -162,7 +162,7 @@ compute_score (mpz_t zscore, int op, gmp_randstate_t randstate)
 
   double t;
 
-  unsigned long ops_per_sec;
+  unsigned long ops_per_fivecentisec;
 
   int countprec = 0;
 
@@ -184,28 +184,28 @@ compute_score (mpz_t zscore, int op, gmp_randstate_t randstate)
       /* compute the number of operations per seconds */
       if (arrayfunc[i].noperands==2)
       {
-          printf ("operation %5s, precision : %5lux%5lu to %5lu bits ... ", arrayfunc[i].name, precision1, precision2, precision3);
+          printf ("op %4s, prec %5lux%5lu->%5lu:", arrayfunc[i].name, precision1, precision2, precision3);
       }
       else
       {
-          printf ("operation %5s, precision :       %5lu to %5lu bits ... ", arrayfunc[i].name, precision1, precision3);
+          printf ("op %4s, prec %5lu      ->%5lu:", arrayfunc[i].name, precision1, precision3);
       }
       fflush (stdout);
 
       t = arrayfunc[i].func_init (NB_RAND_CPLX, zptr, xptr, yptr);
       niter = 1 + (unsigned long) (1e6 / t);
 
-      printf (" %10lu iterations ...", niter);
+      printf ("%9lu iter:", niter);
       fflush (stdout);
 
       /* ti expressed in microseconds */
       ti = arrayfunc[i].func_accurate (niter, NB_RAND_CPLX, zptr, xptr, yptr, arrayfunc[i].noperands);
 
-      ops_per_sec = (unsigned long) (1000000E0 * niter / (double) ti);
+      ops_per_fivecentisec = (unsigned long) (50000E0 * niter / (double) ti);
 
-      printf (" %10lu operations per second\n", ops_per_sec);
+      printf ("%7lu\n", ops_per_fivecentisec);
 
-      mpz_mul_ui (zscore, zscore, ops_per_sec);
+      mpz_mul_ui (zscore, zscore, ops_per_fivecentisec);
 
       /* free memory */
       for (j = 0; j < NB_RAND_CPLX; j++)
@@ -284,26 +284,26 @@ main (void)
   compute_groupscore (groupscore, NB_BENCH_OP, score);
 
   printf ("\n=================================================================\n\n");
-  printf ("GMP : %s  MPFR : %s  MPC: %s\n", gmp_version,
+  printf ("GMP: %s,  MPFR: %s,  MPC: %s\n", gmp_version,
           mpfr_get_version (), mpc_get_version ());
 #ifdef __GMP_CC
-  printf ("GMP compiler : %s\n", __GMP_CC);
+  printf ("GMP compiler: %s\n", __GMP_CC);
 #endif
 #ifdef __GMP_CFLAGS
-  printf ("GMP flags    : %s\n", __GMP_CFLAGS);
+  printf ("GMP flags   : %s\n", __GMP_CFLAGS);
 #endif
-  printf ("\n\n");
+  printf ("\n");
 
   for (i = 0; i < NB_BENCH_OP; i++)
     {
-      gmp_printf ("\tscore for %5s : %12Zd\n", arrayfunc[i].name, score[i]);
+      gmp_printf ("   score for %4s %8Zd\n", arrayfunc[i].name, score[i]);
       if (i == NB_BENCH_OP-1 || arrayfunc[i +1].group != arrayfunc[i].group)
         {
           enum egroupfunc g = arrayfunc[i].group;
-          gmp_printf ("group score %s : %12Zd\n\n", groupname[g], groupscore[g]);
+          gmp_printf ("group score %s %6Zd\n\n", groupname[g], groupscore[g]);
         }
     }
-  gmp_printf ("global score : %12Zd\n\n", globalscore);
+  gmp_printf ("global score %13Zd\n\n", globalscore);
 
 
   for (i = 0; i < NB_BENCH_OP; i++)
