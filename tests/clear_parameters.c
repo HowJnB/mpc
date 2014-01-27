@@ -70,6 +70,7 @@ clear_parameters (mpc_fun_param_t *params)
   int in, out;
   int total = params->nbout + params->nbin;
 
+  free (params->name);
   for (out = 0; out < params->nbout; out++)
     {
       clear_param (&(params->P[out]), params->T[out]);

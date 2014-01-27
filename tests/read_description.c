@@ -269,4 +269,6 @@ read_description (mpc_fun_param_t* param, const char *filename)
       MPC_ASSERT (nbout + nbin + j < PARAMETER_ARRAY_SIZE);
       param->T[nbout + nbin + j] = param->T[j];
     }
+
+  close_datafile(&datafile_context);
 }
