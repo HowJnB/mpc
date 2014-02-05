@@ -1,6 +1,6 @@
 /* mpcbench.c -- perform the benchmark on the complex numbers.
 
-Copyright (C) 2014 CNRS
+Copyright (C) 2014 CNRS - INRIA
 
 This file is part of GNU MPC.
 
@@ -21,6 +21,7 @@ along with this program. If not, see http://www.gnu.org/licenses/ .
 #include "config.h"
 #include <stdlib.h>
 #include <stdio.h>
+#include <math.h>
 #ifdef HAVE_SYS_TIME_H
 #include <sys/time.h>
 #endif
@@ -59,9 +60,9 @@ struct benchfunc
 
 
 /* declare the function to compute the cost for one call of the mpc function */
-DECLARE_TIME_2OP (mpc_mul)
 DECLARE_TIME_2OP (mpc_add)
 DECLARE_TIME_2OP (mpc_sub)
+DECLARE_TIME_2OP (mpc_mul)
 DECLARE_TIME_2OP (mpc_div)
 DECLARE_TIME_1OP (mpc_sqrt)
 DECLARE_TIME_1OP (mpc_exp)
@@ -79,11 +80,11 @@ DECLARE_TIME_1OP (mpc_acos)
 /* list of functions to compute the score */
 const struct benchfunc
       arrayfunc[NB_BENCH_OP] = {
-      {"mul", ADDR_TIME_NOP (mpc_mul), ADDR_ACCURATE_TIME_NOP (mpc_mul), egroup_arith, 2}, 
       {"add", ADDR_TIME_NOP (mpc_add), ADDR_ACCURATE_TIME_NOP (mpc_add), egroup_arith, 2},
       {"sub", ADDR_TIME_NOP (mpc_sub), ADDR_ACCURATE_TIME_NOP (mpc_sub), egroup_arith, 2},
+      {"mul", ADDR_TIME_NOP (mpc_mul), ADDR_ACCURATE_TIME_NOP (mpc_mul), egroup_arith, 2}, 
       {"div", ADDR_TIME_NOP (mpc_div), ADDR_ACCURATE_TIME_NOP (mpc_div), egroup_arith, 2},
-      {"sqrt", ADDR_TIME_NOP (mpc_sqrt), ADDR_ACCURATE_TIME_NOP (mpc_sqrt), egroup_special, 1},
+      {"sqrt", ADDR_TIME_NOP (mpc_sqrt), ADDR_ACCURATE_TIME_NOP (mpc_sqrt), egroup_arith, 1},
       {"exp", ADDR_TIME_NOP (mpc_exp), ADDR_ACCURATE_TIME_NOP (mpc_exp), egroup_special, 1},
       {"log", ADDR_TIME_NOP (mpc_log), ADDR_ACCURATE_TIME_NOP (mpc_log), egroup_special, 1},
       {"cos", ADDR_TIME_NOP (mpc_cos), ADDR_ACCURATE_TIME_NOP (mpc_cos), egroup_special, 1},
@@ -162,7 +163,7 @@ compute_score (mpz_t zscore, int op, gmp_randstate_t randstate)
 
   double t;
 
-  unsigned long ops_per_fivecentisec;
+  unsigned long ops_per_time;
 
   int countprec = 0;
 
@@ -201,11 +202,12 @@ compute_score (mpz_t zscore, int op, gmp_randstate_t randstate)
       /* ti expressed in microseconds */
       ti = arrayfunc[i].func_accurate (niter, NB_RAND_CPLX, zptr, xptr, yptr, arrayfunc[i].noperands);
 
-      ops_per_fivecentisec = (unsigned long) (50000E0 * niter / (double) ti);
+      ops_per_time = (unsigned long) ceil (50000E0 * niter / (double) ti);
+         /* use 0.05s */
 
-      printf ("%7lu\n", ops_per_fivecentisec);
+      printf ("%7lu\n", ops_per_time);
 
-      mpz_mul_ui (zscore, zscore, ops_per_fivecentisec);
+      mpz_mul_ui (zscore, zscore, ops_per_time);
 
       /* free memory */
       for (j = 0; j < NB_RAND_CPLX; j++)

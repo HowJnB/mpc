@@ -20,7 +20,7 @@
 AM_CPPFLAGS = -I$(top_srcdir)/src
 AM_DEFAULT_SOURCE_EXT = .c
 
-LDADD = $(top_builddir)/src/libmpc.la
+LDADD = $(top_builddir)/src/libmpc.la -lm
 
 EXTRA_PROGRAMS = mpcbench
 
