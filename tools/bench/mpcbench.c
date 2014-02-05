@@ -87,10 +87,10 @@ const struct benchfunc
       {"sqrt", ADDR_TIME_NOP (mpc_sqrt), ADDR_ACCURATE_TIME_NOP (mpc_sqrt), egroup_arith, 1},
       {"exp", ADDR_TIME_NOP (mpc_exp), ADDR_ACCURATE_TIME_NOP (mpc_exp), egroup_special, 1},
       {"log", ADDR_TIME_NOP (mpc_log), ADDR_ACCURATE_TIME_NOP (mpc_log), egroup_special, 1},
-      {"cos", ADDR_TIME_NOP (mpc_cos), ADDR_ACCURATE_TIME_NOP (mpc_cos), egroup_special, 1},
       {"sin", ADDR_TIME_NOP (mpc_sin), ADDR_ACCURATE_TIME_NOP (mpc_sin), egroup_special, 1},
-      {"acos", ADDR_TIME_NOP (mpc_acos), ADDR_ACCURATE_TIME_NOP (mpc_acos), egroup_special, 1},
-      {"asin", ADDR_TIME_NOP (mpc_asin), ADDR_ACCURATE_TIME_NOP (mpc_asin), egroup_special, 1}
+      {"cos", ADDR_TIME_NOP (mpc_cos), ADDR_ACCURATE_TIME_NOP (mpc_cos), egroup_special, 1},
+      {"asin", ADDR_TIME_NOP (mpc_asin), ADDR_ACCURATE_TIME_NOP (mpc_asin), egroup_special, 1},
+      {"acos", ADDR_TIME_NOP (mpc_acos), ADDR_ACCURATE_TIME_NOP (mpc_acos), egroup_special, 1}
     };
 
 /* the following arrays must have the same number of elements */
@@ -202,8 +202,8 @@ compute_score (mpz_t zscore, int op, gmp_randstate_t randstate)
       /* ti expressed in microseconds */
       ti = arrayfunc[i].func_accurate (niter, NB_RAND_CPLX, zptr, xptr, yptr, arrayfunc[i].noperands);
 
-      ops_per_time = (unsigned long) ceil (50000E0 * niter / (double) ti);
-         /* use 0.05s */
+      ops_per_time = (unsigned long) ceil (100000E0 * niter / (double) ti);
+         /* use 0.1s */
 
       printf ("%7lu\n", ops_per_time);
 
