@@ -67,13 +67,14 @@ DECLARE_TIME_2OP (mpc_div)
 DECLARE_TIME_1OP (mpc_sqrt)
 DECLARE_TIME_1OP (mpc_exp)
 DECLARE_TIME_1OP (mpc_log)
+DECLARE_TIME_2OP (mpc_pow)
 DECLARE_TIME_1OP (mpc_sin)
 DECLARE_TIME_1OP (mpc_cos)
 DECLARE_TIME_1OP (mpc_asin) 
 DECLARE_TIME_1OP (mpc_acos)
 
 /* number of operations to score*/
-#define NB_BENCH_OP 11
+#define NB_BENCH_OP 12
 /* number of random numbers */
 #define NB_RAND_CPLX 10000
 
@@ -87,6 +88,7 @@ const struct benchfunc
       {"sqrt", ADDR_TIME_NOP (mpc_sqrt), ADDR_ACCURATE_TIME_NOP (mpc_sqrt), egroup_arith, 1},
       {"exp", ADDR_TIME_NOP (mpc_exp), ADDR_ACCURATE_TIME_NOP (mpc_exp), egroup_special, 1},
       {"log", ADDR_TIME_NOP (mpc_log), ADDR_ACCURATE_TIME_NOP (mpc_log), egroup_special, 1},
+      {"pow", ADDR_TIME_NOP (mpc_pow), ADDR_ACCURATE_TIME_NOP (mpc_pow), egroup_special, 2},
       {"sin", ADDR_TIME_NOP (mpc_sin), ADDR_ACCURATE_TIME_NOP (mpc_sin), egroup_special, 1},
       {"cos", ADDR_TIME_NOP (mpc_cos), ADDR_ACCURATE_TIME_NOP (mpc_cos), egroup_special, 1},
       {"asin", ADDR_TIME_NOP (mpc_asin), ADDR_ACCURATE_TIME_NOP (mpc_asin), egroup_special, 1},
