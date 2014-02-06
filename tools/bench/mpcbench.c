@@ -150,6 +150,34 @@ bench_random_array (int n, mpfr_prec_t precision, gmp_randstate_t randstate)
   return ptr;
 }
 
+
+/* Print the positive number x with 3 significant digits or at most 3 digits
+   after the komma, using 7 digits before the komma. */
+static void sensible_print (double x)
+{
+   if (x < 1)
+      printf ("%11.3f", x);
+   else if (x < 10)
+      printf ("%10.2f", x);
+   else if (x < 100)
+      printf ("%9.1f", x);
+   else {
+      unsigned long int r;
+      unsigned int e = 0;
+      while (round (x) >= 1000) {
+         x /= 10;
+         e++;
+      }
+      r = (unsigned long int) round (x);
+      while (e > 0) {
+         r *= 10;
+         e--;
+      }
+      printf ("%7lu", r);
+   }
+}
+
+
 /* compute the score for the operation arrayfunc[op] */
 static void
 compute_score (double *zscore, int op, gmp_randstate_t randstate)
@@ -201,10 +229,11 @@ compute_score (double *zscore, int op, gmp_randstate_t randstate)
       niter /= 10;
       ti = arrayfunc[i].func_accurate (niter, NB_RAND_CPLX, zptr, xptr, yptr, arrayfunc[i].noperands);
 
-      ops_per_time = ceil (1e5 * niter / (double) ti);
+      ops_per_time = 1e5 * niter / (double) ti;
          /* use 0.1s */
 
-      printf ("%7lu\n", (unsigned long int) ops_per_time);
+      sensible_print (ops_per_time);
+      printf ("\n");
 
       *zscore *= ops_per_time;
 
@@ -270,7 +299,6 @@ main (void)
 
   gmp_randstate_t randstate;
 
-
   gmp_randinit_default (randstate);
 
   for (i = 0; i < NB_BENCH_OP; i++)
@@ -291,16 +319,20 @@ main (void)
 
   for (i = 0; i < NB_BENCH_OP; i++)
     {
-      printf ("   score for %4s %8lu\n",
-              arrayfunc[i].name, (unsigned long int) (score[i]));
+      printf ("   score for %4s  ", arrayfunc[i].name);
+      sensible_print (score[i]);
+      printf ("\n");
       if (i == NB_BENCH_OP-1 || arrayfunc[i +1].group != arrayfunc[i].group)
         {
           enum egroupfunc g = arrayfunc[i].group;
-          printf ("group score %s %6lu\n\n",
-                  groupname[g], (unsigned long int) groupscore[g]);
+          printf ("group score %s", groupname[g]);
+          sensible_print (groupscore[g]);
+          printf ("\n\n");
         }
     }
-  printf ("global score %13lu\n\n", (unsigned long int) globalscore);
+  printf ("global score       ");
+  sensible_print (globalscore);
+  printf ("\n\n");
 
   gmp_randclear (randstate);
   return 0;
