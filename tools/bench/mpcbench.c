@@ -226,7 +226,7 @@ compute_score (double *zscore, int op, gmp_randstate_t randstate)
       fflush (stdout);
 
       /* ti expressed in microseconds */
-      niter /= 10;
+      niter = (niter + 9) / 10;
       ti = arrayfunc[i].func_accurate (niter, NB_RAND_CPLX, zptr, xptr, yptr, arrayfunc[i].noperands);
 
       ops_per_time = 1e5 * niter / (double) ti;
