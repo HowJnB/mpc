@@ -83,7 +83,7 @@ const struct benchfunc
       arrayfunc[NB_BENCH_OP] = {
       {"add", ADDR_TIME_NOP (mpc_add), ADDR_ACCURATE_TIME_NOP (mpc_add), egroup_arith, 2},
       {"sub", ADDR_TIME_NOP (mpc_sub), ADDR_ACCURATE_TIME_NOP (mpc_sub), egroup_arith, 2},
-      {"mul", ADDR_TIME_NOP (mpc_mul), ADDR_ACCURATE_TIME_NOP (mpc_mul), egroup_arith, 2}, 
+      {"mul", ADDR_TIME_NOP (mpc_mul), ADDR_ACCURATE_TIME_NOP (mpc_mul), egroup_arith, 2},
       {"div", ADDR_TIME_NOP (mpc_div), ADDR_ACCURATE_TIME_NOP (mpc_div), egroup_arith, 2},
       {"sqrt", ADDR_TIME_NOP (mpc_sqrt), ADDR_ACCURATE_TIME_NOP (mpc_sqrt), egroup_arith, 1},
       {"exp", ADDR_TIME_NOP (mpc_exp), ADDR_ACCURATE_TIME_NOP (mpc_exp), egroup_special, 1},
@@ -110,7 +110,7 @@ const int arrayprecision_op2[] =
   
 };
 
-/*! get the time in microseconds */
+/* get the time in microseconds */
 static unsigned long
 get_cputime (void)
 {
@@ -146,15 +146,13 @@ bench_random_array (int n, mpfr_prec_t precision, gmp_randstate_t randstate)
     {
       mpc_init2 (ptr[j], precision);
       mpc_urandom (ptr[j], randstate);
-      /*mpc_out_str(stdout, 10, 20, ptr[j], MPC_RNDNN);
-         fputs("\n", stdout); */
     }
   return ptr;
 }
 
 /* compute the score for the operation arrayfunc[op] */
 static void
-compute_score (mpz_t zscore, int op, gmp_randstate_t randstate)
+compute_score (double *zscore, int op, gmp_randstate_t randstate)
 {
   mpc_t *xptr, *yptr, *zptr;
 
@@ -165,11 +163,11 @@ compute_score (mpz_t zscore, int op, gmp_randstate_t randstate)
 
   double t;
 
-  unsigned long ops_per_time;
+  double ops_per_time;
 
   int countprec = 0;
 
-  mpz_init_set_si (zscore, 1);
+  *zscore = 1.0;
 
   i = op;
   for (k = 0; k < (int)sizeof (arrayprecision_op1) / sizeof (arrayprecision_op1[0]);
@@ -186,13 +184,11 @@ compute_score (mpz_t zscore, int op, gmp_randstate_t randstate)
 
       /* compute the number of operations per seconds */
       if (arrayfunc[i].noperands==2)
-      {
-          printf ("op %4s, prec %5lux%5lu->%5lu:", arrayfunc[i].name, precision1, precision2, precision3);
-      }
+          printf ("op %4s, prec %5lux%5lu->%5lu:",
+                  arrayfunc[i].name, precision1, precision2, precision3);
       else
-      {
-          printf ("op %4s, prec %5lu      ->%5lu:", arrayfunc[i].name, precision1, precision3);
-      }
+          printf ("op %4s, prec %5lu      ->%5lu:",
+                  arrayfunc[i].name, precision1, precision3);
       fflush (stdout);
 
       t = arrayfunc[i].func_init (NB_RAND_CPLX, zptr, xptr, yptr);
@@ -204,12 +200,12 @@ compute_score (mpz_t zscore, int op, gmp_randstate_t randstate)
       /* ti expressed in microseconds */
       ti = arrayfunc[i].func_accurate (niter, NB_RAND_CPLX, zptr, xptr, yptr, arrayfunc[i].noperands);
 
-      ops_per_time = (unsigned long) ceil (100000E0 * niter / (double) ti);
+      ops_per_time = ceil (100000E0 * niter / (double) ti);
          /* use 0.1s */
 
-      printf ("%7lu\n", ops_per_time);
+      printf ("%7lu\n", (unsigned long int) ops_per_time);
 
-      mpz_mul_ui (zscore, zscore, ops_per_time);
+      *zscore *= ops_per_time;
 
       /* free memory */
       for (j = 0; j < NB_RAND_CPLX; j++)
@@ -223,12 +219,12 @@ compute_score (mpz_t zscore, int op, gmp_randstate_t randstate)
       free (zptr);
     }
 
-  mpz_root (zscore, zscore, countprec);
+  *zscore = pow (*zscore, 1.0 / (double) countprec);
 }
 
 /* compute the score for all groups */
 static void
-compute_groupscore (mpz_t groupscore[], int countop, mpz_t zscore[])
+compute_groupscore (double groupscore[], int countop, double zscore[])
 {
   int op;
   enum egroupfunc group;
@@ -236,32 +232,30 @@ compute_groupscore (mpz_t groupscore[], int countop, mpz_t zscore[])
  
   for (group = (enum egroupfunc)0; group != egroup_last; group++)
     {
-      mpz_init_set_si (groupscore[group], 1);
+      groupscore[group] = 1.0;
       for (op = 0, countgroupop = 0; op < countop; op++)
         {
           if (group == arrayfunc[op].group)
             {
-              mpz_mul (groupscore[group], groupscore[group], zscore[op]);
+              groupscore[group] *= zscore[op];
               countgroupop++;
             }
         }
-      mpz_root (groupscore[group], groupscore[group], countgroupop);
+      groupscore[group] = pow (groupscore[group], 1.0 / (double) countgroupop);
     }
 }
 
 
 /* compute the global score */
 static void
-compute_globalscore (mpz_t globalscore, int countop, mpz_t zscore[])
+compute_globalscore (double *globalscore, int countop, double zscore[])
 {
   int op;
 
-  mpz_init_set_si (globalscore, 1);
+  *globalscore = 1.0;
   for (op = 0; op < countop; op++)
-    {
-      mpz_mul (globalscore, globalscore, zscore[op]);
-    }
-  mpz_root (globalscore, globalscore, countop);
+    *globalscore *= zscore[op];
+  *globalscore = pow (*globalscore, 1.0 / (double) countop);
 }
 
 int
@@ -269,11 +263,9 @@ main (void)
 {
   int i;
 
-  enum egroupfunc group;
+  double score[NB_BENCH_OP];
 
-  mpz_t score[NB_BENCH_OP];
-
-  mpz_t globalscore, groupscore[egroup_last];
+  double globalscore, groupscore[egroup_last];
 
   gmp_randstate_t randstate;
 
@@ -281,10 +273,8 @@ main (void)
   gmp_randinit_default (randstate);
 
   for (i = 0; i < NB_BENCH_OP; i++)
-    {
-      compute_score (score[i], i, randstate);
-    }
-  compute_globalscore (globalscore, NB_BENCH_OP, score);
+      compute_score (&(score[i]), i, randstate);
+  compute_globalscore (&globalscore, NB_BENCH_OP, score);
   compute_groupscore (groupscore, NB_BENCH_OP, score);
 
   printf ("\n=================================================================\n\n");
@@ -300,26 +290,17 @@ main (void)
 
   for (i = 0; i < NB_BENCH_OP; i++)
     {
-      gmp_printf ("   score for %4s %8Zd\n", arrayfunc[i].name, score[i]);
+      printf ("   score for %4s %8lu\n",
+              arrayfunc[i].name, (unsigned long int) (score[i]));
       if (i == NB_BENCH_OP-1 || arrayfunc[i +1].group != arrayfunc[i].group)
         {
           enum egroupfunc g = arrayfunc[i].group;
-          gmp_printf ("group score %s %6Zd\n\n", groupname[g], groupscore[g]);
+          printf ("group score %s %6lu\n\n",
+                  groupname[g], (unsigned long int) groupscore[g]);
         }
     }
-  gmp_printf ("global score %13Zd\n\n", globalscore);
+  printf ("global score %13lu\n\n", (unsigned long int) globalscore);
 
-
-  for (i = 0; i < NB_BENCH_OP; i++)
-    {
-      mpz_clear (score[i]);
-    }
-
-  for (group = (enum egroupfunc)0; group != egroup_last; group++)
-    {
-     mpz_clear (groupscore[group]);
-    }
-  mpz_clear (globalscore);
   gmp_randclear (randstate);
   return 0;
 }
