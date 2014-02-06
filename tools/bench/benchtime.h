@@ -50,8 +50,9 @@ __attribute__ ((__unused__)) int nop)\
  double TIME_NOP##func(int n, mpc_t* z, mpc_t* x, mpc_t* y)   \
  {					                                          \
   double t; unsigned long int nbcall, mytime;                 \
-    for (nbcall = 1, mytime=0; mytime<100000; nbcall<<=1) 	  \
+    for (nbcall = 1, mytime=0; mytime<25000; ) 	  \
       {									                      \
+          nbcall <<= 1; \
 	   mytime = ACCURATE_TIME_NOP##func(nbcall, n, z, x, y, nop);  \
       }									                      \
       t = (double) mytime/ nbcall ;					          \
