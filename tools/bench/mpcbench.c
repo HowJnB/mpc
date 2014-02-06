@@ -198,9 +198,10 @@ compute_score (double *zscore, int op, gmp_randstate_t randstate)
       fflush (stdout);
 
       /* ti expressed in microseconds */
+      niter /= 10;
       ti = arrayfunc[i].func_accurate (niter, NB_RAND_CPLX, zptr, xptr, yptr, arrayfunc[i].noperands);
 
-      ops_per_time = ceil (100000E0 * niter / (double) ti);
+      ops_per_time = ceil (1e5 * niter / (double) ti);
          /* use 0.1s */
 
       printf ("%7lu\n", (unsigned long int) ops_per_time);
