@@ -102,7 +102,6 @@ AC_DEFUN([MPC_C_CHECK_WARNINGCFLAGS], [
       MPC_C_CHECK_FLAG(-Wall)
       MPC_C_CHECK_FLAG(-Wextra)
       MPC_C_CHECK_FLAG(-Wdeclaration-after-statement)
-      MPC_C_CHECK_FLAG(-Wundef)
       MPC_C_CHECK_FLAG(-Wshadow)
       MPC_C_CHECK_FLAG(-Wstrict-prototypes)
       MPC_C_CHECK_FLAG(-Wmissing-prototypes)
