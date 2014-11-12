@@ -235,8 +235,8 @@ AC_DEFINE_UNQUOTED([MPC_GCC], ["$GCC"], [Gcc yes or no])
 AC_DEFINE_UNQUOTED([MPC_CC], ["$CC"], [C compiler])
 AC_DEFINE_UNQUOTED([MPC_GCC_VERSION], ["$GCC_VERSION"], [Version of gcc])
 
-# Looks for svn version if the version string contains "dev"
-MPC_SVNVERSION
+# Looks for short git hash if the version string contains "dev"
+MPC_GITVERSION
 
 AC_CONFIG_FILES([Makefile src/Makefile tests/Makefile doc/Makefile])
 AC_OUTPUT

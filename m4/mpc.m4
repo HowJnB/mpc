@@ -222,21 +222,21 @@ error
 # SYNOPSIS
 #
 #
-# MPC_SVNVERSION
+# MPC_GITVERSION
 #
 # DESCRIPTION
 #
-# If current version string contains "dev", substitutes svn version into
-# SVNVERSION
+# If current version string contains "dev", substitutes the short git hash
+# into GITVERSION
 #
-AC_DEFUN([MPC_SVNVERSION], [
+AC_DEFUN([MPC_GITVERSION], [
    if echo $VERSION | grep -c dev >/dev/null 2>&1 ; then
-      AC_CHECK_PROG([HASSVNVERSION], [svnversion], [yes], [no])
-      AS_IF([test "x$HASSVNVERSION" = "xyes"], [
-         AC_MSG_CHECKING([for current svn version])
-         SVNVERSION=esyscmd([svnversion -n])
-         AC_SUBST([SVNVERSION])
-         AC_MSG_RESULT([$SVNVERSION])
+      AC_CHECK_PROG([HASGIT], [git], [yes], [no])
+      AS_IF([test "x$HASGIT" = "xyes"], [
+         AC_MSG_CHECKING([for current git version])
+         GITVERSION=esyscmd([git rev-parse --short HEAD])
+         AC_SUBST([GITVERSION])
+         AC_MSG_RESULT([$GITVERSION])
       ])
    fi
 ])
