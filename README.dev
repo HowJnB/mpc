@@ -8,8 +8,8 @@ $ autoreconf -i
 
 Required versions:
 * autoconf >= 2.61
-* automake >= 1.10.1
-* libtool >= 2.2
+* automake >= 1.11.6
+* libtool >= 2.4.3
 
 Creating a new release
 ----------------------
