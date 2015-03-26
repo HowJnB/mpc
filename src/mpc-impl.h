@@ -77,6 +77,10 @@ along with this program. If not, see http://www.gnu.org/licenses/ .
 #define INV_RND(r) \
    (((r) == MPFR_RNDU) ? MPFR_RNDD : (((r) == MPFR_RNDD) ? MPFR_RNDU : (r)))
 
+/* Return non-zero if 'rnd' rounds towards zero, for a number of sign 'sgn' */
+#define MPC_IS_LIKE_RNDZ(rnd, sgn) \
+  ((rnd==MPFR_RNDZ) || (sgn<0 && rnd==MPFR_RNDU) || (sgn>0 && rnd==MPFR_RNDD))
+
 #define mpc_inf_p(z) (mpfr_inf_p(mpc_realref(z))||mpfr_inf_p(mpc_imagref(z)))
    /* Convention in C99 (G.3): z is regarded as an infinity if at least one of
       its parts is infinite */
