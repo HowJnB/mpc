@@ -180,8 +180,8 @@ mpc_exp (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
   inex_im = mpfr_set (mpc_imagref(rop), z, MPC_RND_IM(rnd));
   if (mpfr_overflow_p ()) {
     /* overflow in real exponential, inex is sign of infinite result */
-    inex_re = mpfr_sgn (y);
-    inex_im = mpfr_sgn (z);
+    inex_re = mpc_fix_inf (mpc_realref(rop), MPC_RND_RE(rnd));
+    inex_im = mpc_fix_inf (mpc_imagref(rop), MPC_RND_IM(rnd));
   }
   else if (mpfr_underflow_p ()) {
     /* underflow in real exponential, inex is opposite of sign of 0 result */

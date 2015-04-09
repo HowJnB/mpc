@@ -270,8 +270,8 @@ mpc_sin_cos_imag (mpc_ptr rop_sin, mpc_ptr rop_cos, mpc_srcptr op,
    When rnd is towards zero, change x into the largest (in absolute value)
    floating-point number.
    Return the inexact flag. */
-static int
-fix_inf (mpfr_t x, mpfr_rnd_t rnd)
+int
+mpc_fix_inf (mpfr_t x, mpfr_rnd_t rnd)
 {
   if (!MPC_IS_LIKE_RNDZ(rnd, MPFR_SIGNBIT(x)))
     return mpfr_sgn (x);
@@ -405,10 +405,10 @@ mpc_sin_cos (mpc_ptr rop_sin, mpc_ptr rop_cos, mpc_srcptr op,
       if (rop_sin != NULL) {
          inex_re = mpfr_set (mpc_realref (rop_sin), sch, MPC_RND_RE (rnd_sin));
          if (mpfr_inf_p (sch))
-           inex_re = fix_inf (mpc_realref (rop_sin), MPC_RND_RE (rnd_sin));
+           inex_re = mpc_fix_inf (mpc_realref (rop_sin), MPC_RND_RE (rnd_sin));
          inex_im = mpfr_set (mpc_imagref (rop_sin), csh, MPC_RND_IM (rnd_sin));
          if (mpfr_inf_p (csh))
-           inex_im = fix_inf (mpc_imagref (rop_sin), MPC_RND_IM (rnd_sin));
+           inex_im = mpc_fix_inf (mpc_imagref (rop_sin), MPC_RND_IM (rnd_sin));
          inex_sin = MPC_INEX (inex_re, inex_im);
       }
       else
@@ -417,10 +417,10 @@ mpc_sin_cos (mpc_ptr rop_sin, mpc_ptr rop_cos, mpc_srcptr op,
       if (rop_cos != NULL) {
          inex_re = mpfr_set (mpc_realref (rop_cos), c, MPC_RND_RE (rnd_cos));
          if (mpfr_inf_p (c))
-           inex_re = fix_inf (mpc_realref (rop_cos), MPC_RND_RE (rnd_cos));
+           inex_re = mpc_fix_inf (mpc_realref (rop_cos), MPC_RND_RE (rnd_cos));
          inex_im = mpfr_set (mpc_imagref (rop_cos), s, MPC_RND_IM (rnd_cos));
          if (mpfr_inf_p (s))
-           inex_im = fix_inf (mpc_imagref (rop_cos), MPC_RND_IM (rnd_cos));
+           inex_im = mpc_fix_inf (mpc_imagref (rop_cos), MPC_RND_IM (rnd_cos));
          inex_cos = MPC_INEX (inex_re, inex_im);
       }
       else

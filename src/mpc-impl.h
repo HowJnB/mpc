@@ -161,6 +161,7 @@ __MPC_DECLSPEC char* mpc_realloc_str (char*, size_t, size_t);
 __MPC_DECLSPEC void mpc_free_str (char*);
 __MPC_DECLSPEC mpfr_prec_t mpc_ceil_log2 (mpfr_prec_t);
 __MPC_DECLSPEC int set_pi_over_2 (mpfr_ptr, int, mpfr_rnd_t);
+__MPC_DECLSPEC int mpc_fix_inf (mpfr_t x, mpfr_rnd_t rnd);
 
 #if defined (__cplusplus)
 }
