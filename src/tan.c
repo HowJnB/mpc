@@ -225,6 +225,8 @@ mpc_tan (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
               mpfr_set_si (mpc_imagref (rop), -1, MPFR_RNDN);
               inex_im = -1;
             }
+          inex_re = mpc_fix_zero (mpc_realref (rop), inex_re);
+          inex_im = mpc_fix_zero (mpc_imagref (rop), inex_im);
           inex = MPC_INEX(inex_re, inex_im);
           goto end;
         }

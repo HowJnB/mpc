@@ -81,6 +81,10 @@ along with this program. If not, see http://www.gnu.org/licenses/ .
 #define MPC_IS_LIKE_RNDZ(rnd, sgn) \
   ((rnd==MPFR_RNDZ) || (sgn<0 && rnd==MPFR_RNDU) || (sgn>0 && rnd==MPFR_RNDD))
 
+/* Return non-zero if 'rnd' rounds away from zero for a number of sign 'sgn' */
+#define MPC_IS_LIKE_RNDA(rnd, sgn) \
+  ((sgn<0 && rnd==MPFR_RNDD) || (sgn>0 && rnd==MPFR_RNDU))
+
 #define mpc_inf_p(z) (mpfr_inf_p(mpc_realref(z))||mpfr_inf_p(mpc_imagref(z)))
    /* Convention in C99 (G.3): z is regarded as an infinity if at least one of
       its parts is infinite */
@@ -162,6 +166,7 @@ __MPC_DECLSPEC void mpc_free_str (char*);
 __MPC_DECLSPEC mpfr_prec_t mpc_ceil_log2 (mpfr_prec_t);
 __MPC_DECLSPEC int set_pi_over_2 (mpfr_ptr, int, mpfr_rnd_t);
 __MPC_DECLSPEC int mpc_fix_inf (mpfr_t x, mpfr_rnd_t rnd);
+__MPC_DECLSPEC int mpc_fix_zero (mpfr_t x, mpfr_rnd_t rnd);
 
 #if defined (__cplusplus)
 }

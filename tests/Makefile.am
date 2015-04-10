@@ -35,7 +35,7 @@ check_PROGRAMS = tabs tacos tacosh tadd tadd_fr tadd_si tadd_ui targ	\
   tmul tmul_2si tmul_2ui tmul_fr tmul_i tmul_si tmul_ui tneg tnorm tpow	\
   tpow_d tpow_fr tpow_ld tpow_si tpow_ui tpow_z tprec tproj treal	\
   treimref tset tsin tsin_cos tsinh tsqr tsqrt tstrtoc tsub tsub_fr	\
-  tsub_ui tswap ttan ttanh tui_div tui_ui_sub tget_version
+  tsub_ui tswap ttan ttanh tui_div tui_ui_sub tget_version exceptions
 
 check_LTLIBRARIES=libmpc-tests.la
 libmpc_tests_la_SOURCES = mpc-tests.h check_data.c clear_parameters.c	\

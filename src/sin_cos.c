@@ -285,6 +285,29 @@ mpc_fix_inf (mpfr_t x, mpfr_rnd_t rnd)
     }
 }
 
+/* Fix an inexact underflow, when x is +0 or -0:
+   When rnd is away from zero, change x into the closest floating-point number.
+   Return the inexact flag. */
+int
+mpc_fix_zero (mpfr_t x, mpfr_rnd_t rnd)
+{
+  if (!MPC_IS_LIKE_RNDA(rnd, MPFR_SIGNBIT(x)))
+    return mpfr_sgn (x);
+  else
+    {
+      if (mpfr_signbit (x) == 0)
+        {
+          mpfr_nextabove (x);
+          return 1;
+        }
+      else
+        {
+          mpfr_nextbelow (x);
+          return -1;
+        }
+    }
+}
+
 int
 mpc_sin_cos (mpc_ptr rop_sin, mpc_ptr rop_cos, mpc_srcptr op,
    mpc_rnd_t rnd_sin, mpc_rnd_t rnd_cos)
