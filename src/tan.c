@@ -1,6 +1,6 @@
 /* mpc_tan -- tangent of a complex number.
 
-Copyright (C) 2008, 2009, 2010, 2011, 2012 INRIA
+Copyright (C) 2008-2015 INRIA
 
 This file is part of GNU MPC.
 
@@ -225,8 +225,16 @@ mpc_tan (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
               mpfr_set_si (mpc_imagref (rop), -1, MPFR_RNDN);
               inex_im = -1;
             }
-          inex_re = mpc_fix_zero (mpc_realref (rop), inex_re);
-          inex_im = mpc_fix_zero (mpc_imagref (rop), inex_im);
+          /* if rounding is toward zero, fix the imaginary part */
+          if (MPC_IS_LIKE_RNDZ(MPC_RND_IM(rnd), MPFR_SIGNBIT(mpc_imagref (rop))))
+            {
+              mpfr_nexttoward (mpc_imagref (rop), mpc_realref (rop));
+              inex_im = -inex_im;
+            }
+          if (mpfr_zero_p (mpc_realref (rop)))
+            inex_re = mpc_fix_zero (mpc_realref (rop), MPC_RND_RE(rnd));
+          if (mpfr_zero_p (mpc_imagref (rop)))
+            inex_im = mpc_fix_zero (mpc_imagref (rop), MPC_RND_IM(rnd));
           inex = MPC_INEX(inex_re, inex_im);
           goto end;
         }

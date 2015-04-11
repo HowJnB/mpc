@@ -18,6 +18,7 @@ You should have received a copy of the GNU Lesser General Public License
 along with this program. If not, see http://www.gnu.org/licenses/ .
 */
 
+#include <stdio.h>
 #include "mpc-impl.h"
 
 static int
@@ -273,6 +274,7 @@ mpc_sin_cos_imag (mpc_ptr rop_sin, mpc_ptr rop_cos, mpc_srcptr op,
 int
 mpc_fix_inf (mpfr_t x, mpfr_rnd_t rnd)
 {
+  MPC_ASSERT (mpfr_inf_p (x));
   if (!MPC_IS_LIKE_RNDZ(rnd, MPFR_SIGNBIT(x)))
     return mpfr_sgn (x);
   else
@@ -292,7 +294,7 @@ int
 mpc_fix_zero (mpfr_t x, mpfr_rnd_t rnd)
 {
   if (!MPC_IS_LIKE_RNDA(rnd, MPFR_SIGNBIT(x)))
-    return mpfr_sgn (x);
+    return mpfr_signbit (x) == 0 ? -1 : 1;
   else
     {
       if (mpfr_signbit (x) == 0)

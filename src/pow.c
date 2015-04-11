@@ -1,6 +1,6 @@
 /* mpc_pow -- Raise a complex number to the power of another complex number.
 
-Copyright (C) 2009, 2010, 2011, 2012 INRIA
+Copyright (C) 2009-2015 INRIA
 
 This file is part of GNU MPC.
 
@@ -483,7 +483,7 @@ mpc_pow (mpc_ptr z, mpc_srcptr x, mpc_srcptr y, mpc_rnd_t rnd)
   mpc_t t, u;
   mpfr_prec_t p, pr, pi, maxprec;
   int saved_underflow, saved_overflow;
-  
+
   /* save the underflow or overflow flags from MPFR */
   saved_underflow = mpfr_underflow_p ();
   saved_overflow = mpfr_overflow_p ();
@@ -670,13 +670,29 @@ mpc_pow (mpc_ptr z, mpc_srcptr x, mpc_srcptr y, mpc_rnd_t rnd)
       if (mpfr_get_exp (mpc_imagref(t)) > (mpfr_exp_t) q)
         q = mpfr_get_exp (mpc_imagref(t));
 
+      /* if q >= p, we get an error of order 1 on the imaginary part of t,
+         which is not enough to get the correct sign of exp(t) */
+      if (q >= p)
+        {
+          p = p + 64;
+          goto try_again;
+        }
+
       mpfr_clear_overflow ();
       mpfr_clear_underflow ();
       ret_exp = mpc_exp (u, t, MPC_RNDNN);
       if (mpfr_underflow_p () || mpfr_overflow_p ()) {
+         int inex_re, inex_im;
          /* under- and overflow flags are set by mpc_exp */
          mpc_set (z, u, MPC_RNDNN);
          ret = ret_exp;
+         inex_re = MPC_INEX_RE(ret_exp);
+         inex_im = MPC_INEX_IM(ret_exp);
+         if (mpfr_inf_p (mpc_realref (z)))
+           inex_re = mpc_fix_inf (mpc_realref (z), MPC_RND_RE(rnd));
+         if (mpfr_inf_p (mpc_imagref (z)))
+           inex_im = mpc_fix_inf (mpc_imagref (z), MPC_RND_IM(rnd));
+         ret = MPC_INEX(inex_re,inex_im);
          goto exact;
       }
 
@@ -726,6 +742,7 @@ mpc_pow (mpc_ptr z, mpc_srcptr x, mpc_srcptr y, mpc_rnd_t rnd)
         }
       else
         p += p / 2;
+    try_again:
       mpc_set_prec (t, p);
       mpc_set_prec (u, p);
     }
