@@ -34,20 +34,25 @@ foo (int f(mpc_ptr, mpc_srcptr, mpc_rnd_t), char *s)
 #define N 5
   mpfr_exp_t exy[N][2] = {{200, 800}, {800, 200}, {-50, 50}, {-10, 1000},
                           {0, 1000}};
-  int n, inex, inex_re, inex_im;
+  int n, inex, inex_re, inex_im, sgn;
 
   mpc_init2 (z, MPFR_PREC_MIN);
   mpc_init2 (t, MPFR_PREC_MIN);
   for (n = 0; n < N; n++)
+    for (sgn = 0; sgn < 4; sgn++)
     {
       if (exy[n][0])
         mpfr_set_ui_2exp (mpc_realref (z), 1, exy[n][0], MPFR_RNDN);
       else
         mpfr_set_ui (mpc_realref (z), 0, MPFR_RNDN);
+      if (sgn & 1)
+        mpfr_neg (mpc_realref (z), mpc_realref (z), MPFR_RNDN);
       if (exy[n][1])
         mpfr_set_ui_2exp (mpc_imagref (z), 1, exy[n][1], MPFR_RNDN);
       else
         mpfr_set_ui (mpc_imagref (z), 0, MPFR_RNDN);
+      if (sgn & 2)
+        mpfr_neg (mpc_imagref (z), mpc_imagref (z), MPFR_RNDN);
 
       inex = f (t, z, MPC_RNDZZ);
       inex_re = MPC_INEX_RE(inex);

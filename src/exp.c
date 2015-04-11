@@ -178,16 +178,16 @@ mpc_exp (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
 
   inex_re = mpfr_set (mpc_realref(rop), y, MPC_RND_RE(rnd));
   inex_im = mpfr_set (mpc_imagref(rop), z, MPC_RND_IM(rnd));
-  if (mpfr_overflow_p ()) {
-    /* overflow in real exponential, inex is sign of infinite result */
-    inex_re = mpc_fix_inf (mpc_realref(rop), MPC_RND_RE(rnd));
-    inex_im = mpc_fix_inf (mpc_imagref(rop), MPC_RND_IM(rnd));
-  }
-  else if (mpfr_underflow_p ()) {
-    /* underflow in real exponential, inex is opposite of sign of 0 result */
-    inex_re = (mpfr_signbit (y) ? +1 : -1);
-    inex_im = (mpfr_signbit (z) ? +1 : -1);
-  }
+  if (mpfr_overflow_p ())
+    {
+      inex_re = mpc_fix_inf (mpc_realref(rop), MPC_RND_RE(rnd));
+      inex_im = mpc_fix_inf (mpc_imagref(rop), MPC_RND_IM(rnd));
+    }
+  else if (mpfr_underflow_p ())
+    {
+      inex_re = mpc_fix_zero (mpc_realref(rop), MPC_RND_RE(rnd));
+      inex_im = mpc_fix_zero (mpc_imagref(rop), MPC_RND_IM(rnd));
+    }
 
   mpfr_clear (x);
   mpfr_clear (y);
