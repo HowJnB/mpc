@@ -1,3 +1,8 @@
+From Joseph Myers 12 Apr 2015:
+http://lists.gforge.inria.fr/pipermail/mpc-discuss/2015-April/001347.html
+Try implementing tan z = (sin 2x + i sinh 2y) / (cos 2x + cosh 2y) or
+(sin(x)*cos(x) + i*sinh(y)*cosh(y))/(cos(x)^2 + sinh(y)^2) as in glibc.
+
 From Karim Belabas 9 Jan 2014:
 Implement Hurwitz(s,x) -> gives Zeta for x=1.
 Cf http://arxiv.org/abs/1309.2877
