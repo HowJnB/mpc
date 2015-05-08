@@ -24,7 +24,7 @@ AC_INIT(mpc, 1.1dev, mpc-discuss@lists.gforge.inria.fr)
 AC_CONFIG_SRCDIR([src/mpc-impl.h])
 AC_CONFIG_HEADER([config.h])
 
-AM_INIT_AUTOMAKE([1.9 -Wall -Werror])
+AM_INIT_AUTOMAKE
 AM_MAINTAINER_MODE
 
 USER_CC=$CC
