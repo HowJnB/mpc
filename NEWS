@@ -4,7 +4,8 @@ Recent changes in the trunk:
     http://lists.gforge.inria.fr/pipermail/mpc-discuss/2013-December/001266.html
   - Rewrite of the testing framework
   - New mpcbench tool, used with "make bench"
-  - Fixed mpc_cos and mpc_sin, see
+  - Fixed handling of over- and underflows with directed rounding in the
+    "other direction" for mpc_cos, mpc_sin, mpc_exp and mpc_pow, see
     http://lists.gforge.inria.fr/pipermail/mpc-discuss/2015-March/001336.html
 
 Changes in version 1.0.3:
