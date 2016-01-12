@@ -48,7 +48,7 @@ mpc_asin_special (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd, mpc_ptr z1)
                        mpfr_get_prec (mpc_realref(rop)) +
                        (MPC_RND_RE(rnd) == MPFR_RNDN)))
     return 0;
-  
+
   /* |Im(asin(1+i*y)) - y^(1/2)| <= (1/12) * y^(3/2) for y >= 0 (err >= 0)
      |Im(asin(1-i*y)) + y^(1/2)| <= (1/12) * y^(3/2) for y >= 0 (err <= 0) */
   abs_y[0] = mpc_imagref (op)[0];
