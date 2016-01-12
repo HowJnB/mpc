@@ -108,7 +108,7 @@ fix_sign (mpc_ptr z, int sign_eps, int sign_a, mpfr_srcptr y)
 
   mpz_init (my);
 
-  ey = mpfr_get_z_2exp (my, y);
+  ey = mpfr_get_z_exp (my, y);
   /* normalize so that my is odd */
   t = mpz_scan1 (my, 0);
   ey += (mpfr_exp_t) t;
@@ -197,7 +197,7 @@ mpc_pow_exact (mpc_ptr z, mpc_srcptr x, mpfr_srcptr y, mpc_rnd_t rnd,
   mpz_init (d);
   mpz_init (u);
 
-  ey = mpfr_get_z_2exp (my, y);
+  ey = mpfr_get_z_exp (my, y);
   /* normalize so that my is odd */
   t = mpz_scan1 (my, 0);
   ey += (mpfr_exp_t) t;
@@ -210,7 +210,7 @@ mpc_pow_exact (mpc_ptr z, mpc_srcptr x, mpfr_srcptr y, mpc_rnd_t rnd,
       ec = 0;
     }
   else
-    ec = mpfr_get_z_2exp (c, mpc_realref(x));
+    ec = mpfr_get_z_exp (c, mpc_realref(x));
   if (mpfr_zero_p (mpc_imagref(x)))
     {
       mpz_set_ui (d, 0);
@@ -218,7 +218,7 @@ mpc_pow_exact (mpc_ptr z, mpc_srcptr x, mpfr_srcptr y, mpc_rnd_t rnd,
     }
   else
     {
-      ed = mpfr_get_z_2exp (d, mpc_imagref(x));
+      ed = mpfr_get_z_exp (d, mpc_imagref(x));
       if (x_imag)
         ec = ed;
     }
