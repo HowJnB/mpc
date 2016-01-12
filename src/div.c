@@ -267,7 +267,7 @@ mpc_div (mpc_ptr a, mpc_srcptr b, mpc_srcptr c, mpc_rnd_t rnd)
       return mpc_div_real (a, b, c, rnd);
    else if (mpfr_zero_p(mpc_realref(c)))
       return mpc_div_imag (a, b, c, rnd);
-      
+
    prec = MPC_MAX_PREC(a);
 
    mpc_init2 (res, 2);
