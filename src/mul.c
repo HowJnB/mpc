@@ -233,7 +233,7 @@ mpc_fmma (mpfr_ptr z, mpfr_srcptr a, mpfr_srcptr b, mpfr_srcptr c,
    /* tentatively compute z as u+v; here we need z to be distinct
       from a, b, c, d to not lose the latter */
    inex = mpfr_add (z, u, v, rnd);
-   
+
    if (!mpfr_regular_p(z) || !mpfr_regular_p(u) || !mpfr_regular_p(v))
      {
        if (mpfr_inf_p (z)) {
