@@ -1,4 +1,4 @@
-# Copyright (C) 2008, 2009, 2010, 2011, 2012, 2014 INRIA
+# Copyright (C) 2008, 2009, 2010, 2011, 2012, 2014, 2016 INRIA
 #
 # This file is part of GNU MPC.
 #
