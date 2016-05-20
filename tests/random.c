@@ -84,6 +84,11 @@ test_start (void)
           gmp_randseed_ui (rands, seed);
         }
     }
+
+  /* some tests assume a given exponent range for MPFR, thus since the
+     default exponent range for MPFR is not specified, we hard-code it */
+  mpfr_set_emax (1073741821);
+  mpfr_set_emin (-1073741821);
 }
 
 void
