@@ -1904,7 +1904,7 @@ in the place of $n - 1$.
 \subsection {\texttt {mpc\_cmp\_abs}}
 
 Let $z_1 = x_1 + i y_1$ and $z_2 = x_2 + i y_2$. We want to check whether
-the absolute values $|z_1|$ and $|z_2|$ are equal and, if not, which of them
+$|z_1|$ and $|z_2|$ are equal and, if not, which of them
 is smaller; equivalently (and more efficiently), we may compare their squares
 $x_1^2 + y_1^2$ and $x_2^2 + y_2^2$.
 The following algorithm is obviously correct, but it is a priori not clear
@@ -1942,7 +1942,7 @@ quasi-linear complexity.
 \begin {proof}
 We assume that the algorithm has not terminated after the third step with a
 working precision of $p' \geq 4p$, that is, $n_1 = n_2$ and neither
-$n_1$ nor $n_2$ has been computed eaxctly, and derive a contradiction.
+$n_1$ nor $n_2$ has been computed exactly, and derive a contradiction.
 
 If any of $x_1$, $y_1$, $x_2$ or $y_2$ equals~$0$, then the algorithm has
 either finished in the second step, or the corresponding norm is computed
