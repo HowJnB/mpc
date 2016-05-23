@@ -1901,6 +1901,66 @@ Thus, assuming that $n 2^{-p} \leq 1$, the error estimates
 \eqref {eq:powui_re} and \eqref {eq:powui_im} are valid with $n$
 in the place of $n - 1$.
 
+\subsection {\texttt {mpc\_cmp\_abs}}
+
+Let $z_1 = x_1 + i y_1$ and $z_2 = x_2 + i y_2$. We want to check whether
+the absolute values $|z_1|$ and $|z_2|$ are equal and, if not, which of them
+is smaller; equivalently (and more efficiently), we may compare their squares
+$x_1^2 + y_1^2$ and $x_2^2 + y_2^2$.
+The following algorithm is obviously correct, but it is a priori not clear
+when it terminates:
+\begin {enumerate}
+\item
+Replace all real and imaginary parts in the $z_k$, $k \in \{ 1, 2 \}$, by their
+absolute values, and potentially swap the real and imaginary parts so that
+$0 \leq x_k \leq y_k$.
+\item
+If $y_1 = y_2$, return the comparison of the real floating point values
+$x_1$ and $x_2$, and analogously if $x_1 = x_2$.
+\item
+Otherwise, compute $n_1 = \round (x_1^2 + y_1^2)$ and
+$n_2 = \round (x_2^2 + y_2^2)$, rounded down, at low precision.
+If $n_1 < n_2$, then $|z_1| < |z_2|$;
+if $n_1 > n_2$, then $|z_1| > |z_2|$.
+The remaining case is $n_1 = n_2$.
+If then $n_1$ is exact (that is, it equals $|z_1|^2$) and $n_2$ is inexact
+(that is, it has been rounded down from $|z_2|^2$), then $|z_1| < |z_2|$;
+if $n_1$ is inexact and $n_2$ is exact, then $|z_1| > |z_2|$;
+if both are exact, then $|z_1| = |z_2|$.
+If both are inexact, one cannot conclude and needs to increase the precision
+and start from the beginning of this step.
+\end {enumerate}
+
+\begin {lemma}
+If $p$ is the maximum precision of $x_1$, $y_1$, $x_2$ and $y_2$, then the
+previous algorithm terminates as soon as the working precision $p'$ satisfies
+$p' \geq 4p$.
+So if the precision is doubled after each iteration, the algorithm has a
+quasi-linear complexity.
+\end {lemma}
+
+\begin {proof}
+We assume that the algorithm has not terminated after the third step with a
+working precision of $p' \geq 4p$, that is, $n_1 = n_2$ and neither
+$n_1$ nor $n_2$ has been computed eaxctly, and derive a contradiction.
+
+If any of $x_1$, $y_1$, $x_2$ or $y_2$ equals~$0$, then the algorithm has
+either finished in the second step, or the corresponding norm is computed
+exactly already at precision $2p < p'$, a contradiction.
+So the case of interest is that these four input values are non-zero.
+Then write $z_k = 2^{e_k} (x_k' + i 2^{d_k} y_k')$
+with $0 < x_k', y_k' < 2^p$, and $d_k \geq 0$ from $y_k \geq x_k$.
+If any of the exponent differences satisfies $d_k \leq p$, then the
+corresponding
+$n_k = 2^{2 e_k} \round \left( (x_k')^2 + 2^{2 d_k} (y_k')^2 \right)$ is
+computed exactly at precision $4 p \leq p'$, a contradiction.
+So $d_1$, $d_2 > p$. Then the $2 p$ leading bits of $n_k$ depend only on
+$y_k'$ and not on $x_k'$; in fact, they encode $(y_k')^2$. Since $n_1 = n_2$,
+this implies $y_1' = y_2'$ and $e_1 + d_1 = e_2 + d_2$, so $y_1 = y_2$,
+a contradiction since the algorithm has passed the second step.
+\end {proof}
+
+
 \subsection{\texttt {mpc\_agm}, \texttt {mpc\_agm1}}
 
 \paragraph {Definition.}
