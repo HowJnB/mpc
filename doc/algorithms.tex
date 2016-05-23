@@ -51,7 +51,7 @@
 
 \title {MPC: Algorithms and Error Analysis}
 \author {Andreas Enge \and Philippe Th\'eveny \and Paul Zimmermann}
-\date {Draft; January 23, 2014}
+\date {Draft; May 23, 2016}
 
 \begin {document}
 \maketitle
@@ -1948,16 +1948,34 @@ If any of $x_1$, $y_1$, $x_2$ or $y_2$ equals~$0$, then the algorithm has
 either finished in the second step, or the corresponding norm is computed
 exactly already at precision $2p < p'$, a contradiction.
 So the case of interest is that these four input values are non-zero.
-Then write $z_k = 2^{e_k} (x_k' + i 2^{d_k} y_k')$
-with $0 < x_k', y_k' < 2^p$, and $d_k \geq 0$ from $y_k \geq x_k$.
-If any of the exponent differences satisfies $d_k \leq p$, then the
-corresponding
-$n_k = 2^{2 e_k} \round \left( (x_k')^2 + 2^{2 d_k} (y_k')^2 \right)$ is
-computed exactly at precision $4 p \leq p'$, a contradiction.
-So $d_1$, $d_2 > p$. Then the $2 p$ leading bits of $n_k$ depend only on
-$y_k'$ and not on $x_k'$; in fact, they encode $(y_k')^2$. Since $n_1 = n_2$,
-this implies $y_1' = y_2'$ and $e_1 + d_1 = e_2 + d_2$, so $y_1 = y_2$,
-a contradiction since the algorithm has passed the second step.
+Then write $z_k = 2^{e_k} (x_k' + i 2^{d_k} y_k')$ with integers
+$x_k'$ and $y_k'$ satisfying $2^{p-1} \leq x_k', y_k' < 2^p$, and
+furthermore $d_k \geq 0$ since $y_k \geq x_k$.
+We have 
+$n_k = 2^{2 e_k} \round (m_k)$ with the integer
+$m_k = (x_k')^2 + 2^{2 d_k} (y_k')^2$.
+If any of the exponent differences satisfies $d_k \leq p$, then
+$m_k < 2^{4 p} \leq 2^{p'}$, and $n_k$ is computed exactly at precision~$p'$,
+a contradiction.
+
+So $d_1$, $d_2 > p$. The integer $m_k$, read from the lowest to the most
+significant bits, consists of $(x_k')^2$ encoded with $2 p$ bits (with
+potentially a leading bit~$0$), followed by $2 d_k - 2 p \geq 2$ bits~$0$,
+followed by $(y_k')^2$ encoded with $2 p$ bits (with potentially one leading
+bit~$0$).
+So the $2 p$ most significant bits of $m_k$, excluding leading
+bits~$0$, have the following shape:
+If $y_k' > \sqrt 2 \cdot 2^{p-1}$, they encode exactly $(y_k')^2$.
+If $y_k' < \sqrt 2 \cdot 2^{p-1}$, the $2 p - 1$ leading bits encode
+$(y_k')^2$, and they are followed by a digit~$0$, so the $2 p$ leading
+bits encode $2 (y_k')^2$. 
+
+Since $n_1 = n_2$, in particular their leading $2 p$ bits coincide;
+so either $(y_1')^2 = (y_2')^2$, $(y_1')^2 = 2 (y_2')^2$ or
+$2 (y_1')^2 = (y_2')^2$, where the last two cases are impossible.
+Comparing exponents of the $n_k$ yields
+$e_1 + d_1 = e_2 + d_2$, so $y_1 = y_2$,
+a contradiction since the algorithm has proceeded beyond the second step.
 \end {proof}
 
 
