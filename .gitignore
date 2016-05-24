@@ -45,6 +45,11 @@ test-driver
 /doc/mpc.info
 /doc/stamp-vti
 /doc/texinfo.tex
+/doc/mpc.dvi
+/doc/mpc.pdf
+/doc/mpc.ps
+/doc/mpc.t2d/
+/doc/mpc.t2p/
 
 /src/libmpc.la
 
