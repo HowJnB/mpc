@@ -13,7 +13,7 @@
 This manual is for GNU MPC, a library for multiple precision complex arithmetic,
 version @value{VERSION} of @value{UPDATED-MONTH}.
 
-Copyright @copyright{} 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010, 2011, 2012 INRIA
+Copyright @copyright{} 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010, 2011, 2012, 2013, 2016 INRIA
 
 @quotation
 Permission is granted to copy, distribute and/or modify this document
@@ -794,6 +794,14 @@ It is not allowed that one of the operands has a NaN (Not-a-Number) part.
 
 The storage of the return value is such that equality can be simply checked
 with @code{mpc_cmp (op1, op2) == 0}.
+@end deftypefn
+
+@deftypefn Function int mpc_cmp_abs (mpc_t @var{op1}, mpc_t @var{op2})
+
+Compare the absolute values of @var{op1} and @var{op2}.
+The return value is 0 if both are the same,
+positive if the absolute value of @var{op1} is greater than that of @var{op2},
+and negative if it is smaller.
 @end deftypefn
 
 

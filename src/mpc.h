@@ -1,6 +1,6 @@
 /* mpc.h -- Include file for mpc.
 
-Copyright (C) 2002, 2003, 2004, 2005, 2007, 2008, 2009, 2010, 2011, 2012 INRIA
+Copyright (C) 2002, 2003, 2004, 2005, 2007, 2008, 2009, 2010, 2011, 2012, 2016 INRIA
 
 This file is part of GNU MPC.
 
@@ -183,6 +183,7 @@ __MPC_DECLSPEC int  mpc_arg       (mpfr_ptr, mpc_srcptr, mpfr_rnd_t);
 __MPC_DECLSPEC int  mpc_proj      (mpc_ptr, mpc_srcptr, mpc_rnd_t);
 __MPC_DECLSPEC int  mpc_cmp       (mpc_srcptr, mpc_srcptr);
 __MPC_DECLSPEC int  mpc_cmp_si_si (mpc_srcptr, long int, long int);
+__MPC_DECLSPEC int  mpc_cmp_abs   (mpc_srcptr, mpc_srcptr);
 __MPC_DECLSPEC int  mpc_exp       (mpc_ptr, mpc_srcptr, mpc_rnd_t);
 __MPC_DECLSPEC int  mpc_log       (mpc_ptr, mpc_srcptr, mpc_rnd_t);
 __MPC_DECLSPEC int  mpc_log10     (mpc_ptr, mpc_srcptr, mpc_rnd_t);
