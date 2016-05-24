@@ -1,6 +1,6 @@
-/* ttan -- test file for mpc_rootofunity.
+/* trootofunity -- test file for mpc_rootofunity.
 
-Copyright (C) 2012 INRIA
+Copyright (C) 2012, 2016 INRIA
 
 This file is part of GNU MPC.
 
@@ -39,7 +39,7 @@ check (unsigned long int n)
       mpc_pow_ui (zero, z, n, MPC_RNDNN);
       mpc_sub_ui (zero, zero, 1u, MPC_RNDNN);
       if (MPC_MAX (mpfr_get_exp (mpc_realref (zero)), mpfr_get_exp (mpc_imagref (zero)))
-          > - (prec - n)) {
+          > - ((long int) prec - (long int) n)) {
          fprintf (stderr, "rootofunity too imprecise for n=%lu\n", n);
          MPC_OUT (z);
          MPC_OUT (zero);
@@ -55,10 +55,10 @@ check (unsigned long int n)
 int
 main (void)
 {
-   int n;
+   unsigned long int n;
 
    for (n = 1; n < 10000; n += 10)
       check (n);
-   
+
    return 0;
 }

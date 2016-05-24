@@ -1,6 +1,6 @@
 /* mpc_rootofunity -- primitive root of unity.
 
-Copyright (C) 2012 INRIA
+Copyright (C) 2012, 2016 INRIA
 
 This file is part of GNU MPC.
 
@@ -40,16 +40,16 @@ mpc_rootofunity (mpc_ptr rop, unsigned long int n, mpc_rnd_t rnd)
       inex_re = mpfr_set_si (mpc_realref (rop), (n == 3 ? -1 : 1),
                              MPC_RND_RE (rnd));
       inex_im = mpfr_sqrt_ui (mpc_imagref (rop), 3, MPC_RND_IM (rnd));
-      mpc_div_2exp (rop, rop, 1, MPC_RNDNN);
+      mpc_div_2ui (rop, rop, 1, MPC_RNDNN);
       return MPC_INEX (inex_re, inex_im);
    }
    else if (n == 12) {
       inex_re = mpfr_sqrt_ui (mpc_imagref (rop), 3, MPC_RND_IM (rnd));
       inex_im = mpfr_set_ui (mpc_imagref (rop), 1, MPC_RND_RE (rnd));
-      mpc_div_2exp (rop, rop, 1u, MPC_RNDNN);
+      mpc_div_2ui (rop, rop, 1u, MPC_RNDNN);
       return MPC_INEX (inex_re, inex_im);
    }
-      
+
    prec = MPC_MAX_PREC(rop);
 
    mpfr_init2 (t, 2);
@@ -63,17 +63,17 @@ mpc_rootofunity (mpc_ptr rop, unsigned long int n, mpc_rnd_t rnd)
       mpfr_set_prec (s, prec);
       mpfr_set_prec (c, prec);
 
-      mpfr_const_pi (t, GMP_RNDN); /* error 0.5 ulp */
-      mpfr_mul_2ui (t, t, 1u, GMP_RNDN);
-      mpfr_div_ui (t, t, n, GMP_RNDN); /* error 2*0.5+0.5=1.5 ulp */
-      mpfr_sin_cos (s, c, t, GMP_RNDN);
+      mpfr_const_pi (t, MPFR_RNDN); /* error 0.5 ulp */
+      mpfr_mul_2ui (t, t, 1u, MPFR_RNDN);
+      mpfr_div_ui (t, t, n, MPFR_RNDN); /* error 2*0.5+0.5=1.5 ulp */
+      mpfr_sin_cos (s, c, t, MPFR_RNDN);
          /* error (1.5*2^{Exp (t) - Exp (s resp.c)} + 0.5) ulp
             <= 6.5 ulp for n>=3                             */
    }
-   while (   !mpfr_can_round (c, prec - 3, GMP_RNDN, GMP_RNDZ,
-                 MPC_PREC_RE(rop) + (MPC_RND_RE(rnd) == GMP_RNDN))
-          || !mpfr_can_round (s, prec - 3, GMP_RNDN, GMP_RNDZ,
-                 MPC_PREC_IM(rop) + (MPC_RND_IM(rnd) == GMP_RNDN)));
+   while (   !mpfr_can_round (c, prec - 3, MPFR_RNDN, MPFR_RNDZ,
+                 MPC_PREC_RE(rop) + (MPC_RND_RE(rnd) == MPFR_RNDN))
+          || !mpfr_can_round (s, prec - 3, MPFR_RNDN, GMP_RNDZ,
+                 MPC_PREC_IM(rop) + (MPC_RND_IM(rnd) == MPFR_RNDN)));
 
    inex_re = mpfr_set (mpc_realref(rop), c, MPC_RND_RE(rnd));
    inex_im = mpfr_set (mpc_imagref(rop), s, MPC_RND_IM(rnd));
