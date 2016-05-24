@@ -27,6 +27,12 @@ mpc_rootofunity (mpc_ptr rop, unsigned long int n, mpc_rnd_t rnd)
    mpfr_prec_t prec;
    int inex_re, inex_im;
 
+   if (n == 0) {
+      /* Compute exp (0 + i*inf). */
+      mpfr_set_nan (mpc_realref (rop));
+      mpfr_set_nan (mpc_imagref (rop));
+      return MPC_INEX (0, 0);
+   }
 
    /* We assume that only n=1, 2, 3, 4, 6, 12 yield exact results and
       treat them separately.                                          */

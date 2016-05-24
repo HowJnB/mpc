@@ -62,7 +62,8 @@ DATA_SETS = abs.dat acos.dat acosh.dat add.dat add_fr.dat arg.dat	\
   cmp_abs.dat conj.dat cos.dat cosh.dat	                                \
   div.dat div_fr.dat exp.dat fma.dat fr_div.dat fr_sub.dat inp_str.dat	\
   log.dat log10.dat mul.dat mul_fr.dat neg.dat norm.dat pow.dat		\
-  pow_fr.dat pow_si.dat pow_ui.dat pow_z.dat proj.dat sin.dat sinh.dat	\
+  pow_fr.dat pow_si.dat pow_ui.dat pow_z.dat proj.dat rootofunity.dat   \
+  sin.dat sinh.dat                                                      \
   sqr.dat sqrt.dat strtoc.dat sub.dat sub_fr.dat tan.dat tanh.dat
 EXTRA_DIST = data_check.tpl tgeneric.tpl $(DATA_SETS) $(DESCRIPTIONS)
 

@@ -23,6 +23,7 @@ along with this program. If not, see http://www.gnu.org/licenses/ .
 #define MPC_FUNCTION_CALL                                               \
   P[0].mpc_inex = mpc_rootofunity (P[1].mpc, P[2].ui, P[3].mpc_rnd)
 
+#include "data_check.tpl"
 #include "tgeneric.tpl"
 
 static void
@@ -66,6 +67,9 @@ main (void)
       check (n);
 
    test_start ();
+
+   data_check_template ("rootofunity.dsc", "rootofunity.dat");
+
 
    /* Avoid checking roots of unity of high order at very low precision,
       so start only at 20. */
