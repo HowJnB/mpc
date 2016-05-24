@@ -1,6 +1,6 @@
 Recent changes in the trunk:
   - Minimally required library version: mpfr 3.0.0
-  - New function: mpc_cmp_abs
+  - New functions: mpc_cmp_abs, mpc_rootofunity
   - Improved speed for corner cases of mpc_asin, mpc_sin, see
     http://lists.gforge.inria.fr/pipermail/mpc-discuss/2013-December/001266.html
   - Rewrite of the testing framework

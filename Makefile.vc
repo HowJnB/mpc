@@ -159,6 +159,7 @@ $(DIRMPC)\pow_ui.obj \
 $(DIRMPC)\pow_z.obj \
 $(DIRMPC)\proj.obj \
 $(DIRMPC)\real.obj \
+$(DIRMPC)\rootofunity.obj \
 $(DIRMPC)\set.obj \
 $(DIRMPC)\set_prec.obj \
 $(DIRMPC)\set_str.obj \
@@ -237,6 +238,7 @@ pow_ui.obj \
 pow_z.obj \
 proj.obj \
 real.obj \
+rootofunity.obj \
 set.obj \
 set_prec.obj \
 set_str.obj \
@@ -403,6 +405,8 @@ test :
 	cd $(DIRMPCTESTS) && treal.exe && cd ..
 	$(TESTCOMPILE)treimref.c  $(MIDTESTCOMPILE)treimref.exe $(ENDTESTCOMPILE)
 	cd $(DIRMPCTESTS) && treimref.exe && cd ..
+	$(TESTCOMPILE)trootofunity.c  $(MIDTESTCOMPILE)trootofunity.exe $(ENDTESTCOMPILE)
+	cd $(DIRMPCTESTS) && trootofunity.exe && cd ..
 	$(TESTCOMPILE)tset.c  $(MIDTESTCOMPILE)tset.exe $(ENDTESTCOMPILE)
 	cd $(DIRMPCTESTS) && tset.exe && cd ..
 	$(TESTCOMPILE)tsin.c  $(MIDTESTCOMPILE)tsin.exe $(ENDTESTCOMPILE)
