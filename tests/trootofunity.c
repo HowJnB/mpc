@@ -20,6 +20,11 @@ along with this program. If not, see http://www.gnu.org/licenses/ .
 
 #include "mpc-tests.h"
 
+#define MPC_FUNCTION_CALL                                               \
+  P[0].mpc_inex = mpc_rootofunity (P[1].mpc, P[2].ui, P[3].mpc_rnd)
+
+#include "tgeneric.tpl"
+
 static void
 check (unsigned long int n)
    /* checks whether zeta_n^n = 1, which is somewhat dangerous in floating
@@ -59,6 +64,14 @@ main (void)
 
    for (n = 1; n < 10000; n += 10)
       check (n);
+
+   test_start ();
+
+   /* Avoid checking roots of unity of high order at very low precision,
+      so start only at 20. */
+   tgeneric_template ("rootofunity.dsc", 20, 512, 7, 256);
+
+   test_end ();
 
    return 0;
 }

@@ -53,7 +53,8 @@ DESCRIPTIONS = abs.dsc acos.dsc acosh.dsc add.dsc add_fr.dsc add_si.dsc	\
   div_ui.dsc exp.dsc fma.dsc fr_div.dsc fr_sub.dsc imag.dsc log.dsc	\
   log10.dsc mul.dsc mul_2si.dsc mul_2ui.dsc mul_fr.dsc mul_i.dsc	\
   mul_si.dsc mul_ui.dsc neg.dsc norm.dsc pow.dsc pow_d.dsc pow_fr.dsc	\
-  pow_si.dsc pow_ui.dsc pow_z.dsc proj.dsc real.dsc sin.dsc sin_cos.dsc	\
+  pow_si.dsc pow_ui.dsc pow_z.dsc proj.dsc real.dsc rootofunity.dsc     \
+  sin.dsc sin_cos.dsc	                                                \
   sinh.dsc sqr.dsc sqrt.dsc sub.dsc sub_fr.dsc sub_ui.dsc tan.dsc	\
   tanh.dsc ui_div.dsc ui_ui_sub.dsc
 DATA_SETS = abs.dat acos.dat acosh.dat add.dat add_fr.dat arg.dat	\
