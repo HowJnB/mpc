@@ -24,26 +24,31 @@ along with this program. If not, see http://www.gnu.org/licenses/ .
 int
 mpc_cmp_abs (mpc_srcptr a, mpc_srcptr b)
 {
-   mpfr_t nan;
    mpc_t z1, z2;
    mpfr_t n1, n2;
    mpfr_prec_t prec;
-   int inex1, inex2, cmp;
+   int inex1, inex2, ret;
 
    /* Handle numbers containing one NaN as mpfr_cmp. */
-   mpfr_set_nan (nan); /* undocumented feature: can be used uninitialised */
    if (   mpfr_nan_p (mpc_realref (a)) || mpfr_nan_p (mpc_imagref (a))
        || mpfr_nan_p (mpc_realref (b)) || mpfr_nan_p (mpc_imagref (b)))
-      return (mpfr_cmp (nan, nan));
+     {
+       mpfr_t nan;
+       mpfr_init (nan);
+       mpfr_set_nan (nan);
+       ret = mpfr_cmp (nan, nan);
+       mpfr_clear (nan);
+       return ret;
+     }
 
    /* Handle infinities. */
    if (mpc_inf_p (a))
       if (mpc_inf_p (b))
-         return (0);
+         return 0;
       else
-         return (1);
+         return 1;
    else if (mpc_inf_p (b))
-      return (-1);
+      return -1;
 
    /* Replace all parts of a and b by their absolute values, then order
       them by size. */
@@ -64,34 +69,45 @@ mpc_cmp_abs (mpc_srcptr a, mpc_srcptr b)
 
    /* Handle cases in which only one part differs. */
    if (mpfr_cmp (mpc_realref (z1), mpc_realref (z2)) == 0)
-      return (mpfr_cmp (mpc_imagref (z1), mpc_imagref (z2)));
+      return mpfr_cmp (mpc_imagref (z1), mpc_imagref (z2));
    if (mpfr_cmp (mpc_imagref (z1), mpc_imagref (z2)) == 0)
-      return (mpfr_cmp (mpc_realref (z1), mpc_realref (z2)));
+      return mpfr_cmp (mpc_realref (z1), mpc_realref (z2));
 
    /* Implement the algorithm in algorithms.tex. */
    mpfr_init (n1);
    mpfr_init (n2);
-   prec = MPC_MAX (50, MPC_MAX (MPC_MAX_PREC (z1), MPC_MAX_PREC (z2)) / 100) / 2;
+   prec = MPC_MAX (50, MPC_MAX (MPC_MAX_PREC (z1), MPC_MAX_PREC (z2)) / 100);
    do {
-      prec *= 2;
       mpfr_set_prec (n1, prec);
       mpfr_set_prec (n2, prec);
       inex1 = mpc_norm (n1, z1, MPFR_RNDD);
       inex2 = mpc_norm (n2, z2, MPFR_RNDD);
-      cmp = mpfr_cmp (n1, n2);
-      if (cmp != 0)
-         return (cmp);
+      ret = mpfr_cmp (n1, n2);
+      if (ret != 0)
+        goto end;
       else
-         if (!inex1)
-            if (inex2)
-               return (-1);
-            else
-               return (0);
-         else
-            if (!inex1)
-               return (1);
+         if (inex1 == 0) /* n1 = norm(z1) */
+            if (inex2)   /* n2 < norm(z2) */
+              {
+                ret = -1;
+                goto end;
+              }
+            else /* n2 = norm(z2) */
+              {
+                ret = 0;
+                goto end;
+              }
+         else /* n1 < norm(z1) */
+            if (inex2 == 0)
+              {
+                ret = 1;
+                goto end;
+              }
+      prec *= 2;
    } while (1);
+ end:
    mpfr_clear (n1);
    mpfr_clear (n2);
+   return ret;
 }
 

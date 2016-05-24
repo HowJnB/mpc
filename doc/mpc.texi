@@ -799,9 +799,11 @@ with @code{mpc_cmp (op1, op2) == 0}.
 @deftypefn Function int mpc_cmp_abs (mpc_t @var{op1}, mpc_t @var{op2})
 
 Compare the absolute values of @var{op1} and @var{op2}.
-The return value is 0 if both are the same,
+The return value is 0 if both are the same (including Infinity),
 positive if the absolute value of @var{op1} is greater than that of @var{op2},
 and negative if it is smaller.
+If @var{op1} or @var{op2} has a real or imaginary part which is NaN,
+the return value is that of @code{mpfr_cmp (NaN, NaN)}.
 @end deftypefn
 
 
