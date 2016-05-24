@@ -51,7 +51,7 @@
 
 \title {MPC: Algorithms and Error Analysis}
 \author {Andreas Enge \and Philippe Th\'eveny \and Paul Zimmermann}
-\date {Draft; May 23, 2016}
+\date {Draft; May 24, 2016}
 
 \begin {document}
 \maketitle
@@ -1951,7 +1951,7 @@ So the case of interest is that these four input values are non-zero.
 Then write $z_k = 2^{e_k} (x_k' + i 2^{d_k} y_k')$ with integers
 $x_k'$ and $y_k'$ satisfying $2^{p-1} \leq x_k', y_k' < 2^p$, and
 furthermore $d_k \geq 0$ since $y_k \geq x_k$.
-We have 
+We have
 $n_k = 2^{2 e_k} \round (m_k)$ with the integer
 $m_k = (x_k')^2 + 2^{2 d_k} (y_k')^2$.
 If any of the exponent differences satisfies $d_k \leq p$, then
@@ -1972,7 +1972,8 @@ bits encode $2 (y_k')^2$.
 
 Since $n_1 = n_2$, in particular their leading $2 p$ bits coincide;
 so either $(y_1')^2 = (y_2')^2$, $(y_1')^2 = 2 (y_2')^2$ or
-$2 (y_1')^2 = (y_2')^2$, where the last two cases are impossible.
+$2 (y_1')^2 = (y_2')^2$, where the last two cases are impossible
+for integers.
 Comparing exponents of the $n_k$ yields
 $e_1 + d_1 = e_2 + d_2$, so $y_1 = y_2$,
 a contradiction since the algorithm has proceeded beyond the second step.
