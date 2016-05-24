@@ -20,6 +20,7 @@ along with this program. If not, see http://www.gnu.org/licenses/ .
 
 #include "mpc-impl.h"
 
+/* put in rop the value of exp(2*i*pi/n) rounded according to rnd */
 int
 mpc_rootofunity (mpc_ptr rop, unsigned long int n, mpc_rnd_t rnd)
 {
@@ -34,7 +35,7 @@ mpc_rootofunity (mpc_ptr rop, unsigned long int n, mpc_rnd_t rnd)
       return MPC_INEX (0, 0);
    }
 
-   /* We assume that only n=1, 2, 3, 4, 6, 12 yield exact results and
+   /* We assume that only n=1, 2, 3, 4, 6, 8, 12 yield exact results and
       treat them separately.                                          */
    if (n == 1)
       return mpc_set_ui_ui (rop, 1, 0, rnd);
@@ -49,9 +50,15 @@ mpc_rootofunity (mpc_ptr rop, unsigned long int n, mpc_rnd_t rnd)
       mpc_div_2ui (rop, rop, 1, MPC_RNDNN);
       return MPC_INEX (inex_re, inex_im);
    }
+   else if (n == 8) {
+      inex_re = mpfr_sqrt_ui (mpc_realref (rop), 2, MPC_RND_RE (rnd));
+      inex_im = mpfr_sqrt_ui (mpc_imagref (rop), 2, MPC_RND_IM (rnd));
+      mpc_div_2ui (rop, rop, 1u, MPC_RNDNN);
+      return MPC_INEX (inex_re, inex_im);
+   }
    else if (n == 12) {
-      inex_re = mpfr_sqrt_ui (mpc_imagref (rop), 3, MPC_RND_IM (rnd));
-      inex_im = mpfr_set_ui (mpc_imagref (rop), 1, MPC_RND_RE (rnd));
+      inex_re = mpfr_sqrt_ui (mpc_realref (rop), 3, MPC_RND_RE (rnd));
+      inex_im = mpfr_set_ui (mpc_imagref (rop), 1, MPC_RND_IM (rnd));
       mpc_div_2ui (rop, rop, 1u, MPC_RNDNN);
       return MPC_INEX (inex_re, inex_im);
    }
