@@ -1,3 +1,7 @@
+From Andreas Enge 22 July 2016:
+Now that mpfr-3 is the minimum version requirement, support the
+MPFR_RNDA rounding mode.
+
 From Joseph Myers 12 Apr 2015:
 http://lists.gforge.inria.fr/pipermail/mpc-discuss/2015-April/001347.html
 Try implementing tan z = (sin 2x + i sinh 2y) / (cos 2x + cosh 2y) or
