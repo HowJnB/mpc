@@ -137,7 +137,8 @@ mpc_rootofunity (mpc_ptr rop, unsigned long int n, unsigned long int k, mpc_rnd_
       mpfr_sin_cos (s, c, t, MPFR_RNDN);
          /* error (1.5*2^{Exp (t) - Exp (s resp. c)} + 0.5) ulp
             We have 0<t<2*pi, so Exp (t) <= 3.
-            Unfortunately s or c can be close to 0.
+            Unfortunately s or c can be close to 0, but with n<2^64,
+            we lose at most about 64 bits:
             Where the minimum of s and c over all primitive n-th roots of
             unity is reached depends on n mod 4. 
             To simplify the argument, we will consider the 4*n-th roots of
@@ -148,12 +149,17 @@ mpc_rootofunity (mpc_ptr rop, unsigned long int n, unsigned long int k, mpc_rnd_
             sin (2 * pi * 2^(-64) / 4) > 2^(-64) of exponent at least -63.
             So the error is bounded above by
             (1.5*2^66+0.5) ulp < 2^67 ulp.
-            (This could be made dependent on n, which would be useful for
-            small n at small precision.) */
+            To obtain a more precise bound for smaller n, which is useful
+            especially at small precision, we may use the error bound of
+            (1.5*2^(3 - Exp (s or c)) + 0.5) ulp
+            < 2^(4 - Exp (s or c)) ulp, since Exp (s or c) is at most 0. */
+
    }
-   while (   !mpfr_can_round (c, prec - 67, MPFR_RNDN, MPFR_RNDZ,
+   while (   !mpfr_can_round (c, prec - (4 - mpfr_get_exp (c)),
+                 MPFR_RNDN, MPFR_RNDZ,
                  MPC_PREC_RE(rop) + (MPC_RND_RE(rnd) == MPFR_RNDN))
-          || !mpfr_can_round (s, prec - 67, MPFR_RNDN, MPFR_RNDZ,
+          || !mpfr_can_round (s, prec - (4 - mpfr_get_exp (s)),
+                 MPFR_RNDN, MPFR_RNDZ,
                  MPC_PREC_IM(rop) + (MPC_RND_IM(rnd) == MPFR_RNDN)));
 
    inex_re = mpfr_set (mpc_realref(rop), c, MPC_RND_RE(rnd));
