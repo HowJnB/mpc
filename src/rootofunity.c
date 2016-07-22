@@ -38,6 +38,7 @@ mpc_rootofunity (mpc_ptr rop, unsigned long int n, unsigned long int k, mpc_rnd_
    mpfr_t t, s, c;
    mpfr_prec_t prec;
    int inex_re, inex_im;
+   mpfr_rnd_t rnd_re, rnd_im;
 
    if (n == 0) {
       /* Compute exp (0 + i*inf). */
@@ -60,24 +61,58 @@ mpc_rootofunity (mpc_ptr rop, unsigned long int n, unsigned long int k, mpc_rnd_
    else if (n == 2)
       return mpc_set_si_si (rop, -1, 0, rnd);
    else if (n == 4)
-      return mpc_set_ui_ui (rop, 0, 1, rnd);
+      if (k == 1)
+         return mpc_set_ui_ui (rop, 0, 1, rnd);
+      else
+         return mpc_set_si_si (rop, 0, -1, rnd);
    else if (n == 3 || n == 6) {
       inex_re = mpfr_set_si (mpc_realref (rop), (n == 3 ? -1 : 1),
                              MPC_RND_RE (rnd));
-      inex_im = mpfr_sqrt_ui (mpc_imagref (rop), 3, MPC_RND_IM (rnd));
+      /* inverse the rounding mode for -sqrt(3)/2 for zeta_3^2 and zeta_6^5 */
+      rnd_im = MPC_RND_IM (rnd);
+      if (k != 1)
+         rnd_im = INV_RND (rnd_im);
+      inex_im = mpfr_sqrt_ui (mpc_imagref (rop), 3, rnd_im);
       mpc_div_2ui (rop, rop, 1, MPC_RNDNN);
-      return MPC_INEX (inex_re, inex_im);
-   }
-   else if (n == 8) {
-      inex_re = mpfr_sqrt_ui (mpc_realref (rop), 2, MPC_RND_RE (rnd));
-      inex_im = mpfr_sqrt_ui (mpc_imagref (rop), 2, MPC_RND_IM (rnd));
-      mpc_div_2ui (rop, rop, 1u, MPC_RNDNN);
+      if (k != 1) {
+         mpfr_neg (mpc_imagref (rop), mpc_imagref (rop), MPFR_RNDN);
+         inex_im = -inex_im;
+      }
       return MPC_INEX (inex_re, inex_im);
    }
    else if (n == 12) {
-      inex_re = mpfr_sqrt_ui (mpc_realref (rop), 3, MPC_RND_RE (rnd));
-      inex_im = mpfr_set_ui (mpc_imagref (rop), 1, MPC_RND_IM (rnd));
+      /* inverse the rounding mode for -sqrt(3)/2 for zeta_12^5 and zeta_12^7 */
+      rnd_re = MPC_RND_RE (rnd);
+      if (k == 5 || k == 7)
+         rnd_re = INV_RND (rnd_re);
+      inex_re = mpfr_sqrt_ui (mpc_realref (rop), 3, rnd_re);
+      inex_im = mpfr_set_si (mpc_imagref (rop), (k == 1 || k == 5 ? 1 : -1),
+         MPC_RND_IM (rnd));
       mpc_div_2ui (rop, rop, 1u, MPC_RNDNN);
+      if (k == 5 || k == 7) {
+         mpfr_neg (mpc_realref (rop), mpc_realref (rop), MPFR_RNDN);
+         inex_re = -inex_re;
+      }
+      return MPC_INEX (inex_re, inex_im);
+   }
+   else if (n == 8) {
+      rnd_re = MPC_RND_RE (rnd);
+      if (k == 3 || k == 5)
+         rnd_re = INV_RND (rnd_re);
+      rnd_im = MPC_RND_IM (rnd);
+      if (k == 5 || k == 7)
+         rnd_im = INV_RND (rnd_im);
+      inex_re = mpfr_sqrt_ui (mpc_realref (rop), 2, rnd_re);
+      inex_im = mpfr_sqrt_ui (mpc_imagref (rop), 2, rnd_im);
+      mpc_div_2ui (rop, rop, 1u, MPC_RNDNN);
+      if (k == 3 || k == 5) {
+         mpfr_neg (mpc_realref (rop), mpc_realref (rop), MPFR_RNDN);
+         inex_re = -inex_re;
+      }
+      if (k == 5 || k == 7) {
+         mpfr_neg (mpc_imagref (rop), mpc_imagref (rop), MPFR_RNDN);
+         inex_im = -inex_im;
+      }
       return MPC_INEX (inex_re, inex_im);
    }
 
