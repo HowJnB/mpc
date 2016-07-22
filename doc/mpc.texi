@@ -981,9 +981,9 @@ so that the imaginary part of the result lies in
 @math{]-\pi , \pi]} and @math{]-\pi/log(10) , \pi/log(10)]} respectively.
 @end deftypefun
 
-@deftypefun int mpc_rootofunity (mpc_t @var{rop}, unsigned long int @var{n}, mpc_rnd_t @var{rnd})
-Set @var{rop} to the standard primitive @var{n}-th root of unity,
-@math{\exp (2 \pi i / n)},
+@deftypefun int mpc_rootofunity (mpc_t @var{rop}, unsigned long int @var{n}, unsigned long int @var{k}, mpc_rnd_t @var{rnd})
+Set @var{rop} to the standard primitive @var{n}-th root of unity raised to the power @var{k}, that is,
+@math{\exp (2 \pi i k / n)},
 rounded according to @var{rnd} with the precision of @var{rop}.
 @end deftypefun
 

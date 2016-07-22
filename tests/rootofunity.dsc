@@ -25,4 +25,5 @@ OUTPUT:
     mpc_ptr
 INPUT:
     unsigned long int
+    unsigned long int
     mpc_rnd_t

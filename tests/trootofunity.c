@@ -21,7 +21,7 @@ along with this program. If not, see http://www.gnu.org/licenses/ .
 #include "mpc-tests.h"
 
 #define MPC_FUNCTION_CALL                                               \
-  P[0].mpc_inex = mpc_rootofunity (P[1].mpc, P[2].ui, P[3].mpc_rnd)
+  P[0].mpc_inex = mpc_rootofunity (P[1].mpc, P[2].ui, P[3].ui, P[4].mpc_rnd)
 
 #include "data_check.tpl"
 #include "tgeneric.tpl"
@@ -41,7 +41,7 @@ check (unsigned long int n)
       mpc_set_prec (z, prec);
       mpc_set_prec (zero, prec);
 
-      mpc_rootofunity (z, n, MPC_RNDNN);
+      mpc_rootofunity (z, n, 1, MPC_RNDNN);
       mpc_pow_ui (zero, z, n, MPC_RNDNN);
       mpc_sub_ui (zero, zero, 1u, MPC_RNDNN);
       if (MPC_MAX (mpfr_get_exp (mpc_realref (zero)), mpfr_get_exp (mpc_imagref (zero)))
@@ -69,7 +69,6 @@ main (void)
    test_start ();
 
    data_check_template ("rootofunity.dsc", "rootofunity.dat");
-
 
    /* Avoid checking roots of unity of high order at very low precision,
       so start only at 20. */

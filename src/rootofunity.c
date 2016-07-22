@@ -19,11 +19,22 @@ along with this program. If not, see http://www.gnu.org/licenses/ .
 */
 
 #include "mpc-impl.h"
+#include <assert.h>
 
-/* put in rop the value of exp(2*i*pi/n) rounded according to rnd */
-int
-mpc_rootofunity (mpc_ptr rop, unsigned long int n, mpc_rnd_t rnd)
+static unsigned long int
+gcd (unsigned long int a, unsigned long int b)
 {
+   if (b == 0)
+      return a;
+   else return gcd (b, a % b);
+}
+
+/* put in rop the value of exp(2*i*pi*k/n) rounded according to rnd */
+int
+mpc_rootofunity (mpc_ptr rop, unsigned long int n, unsigned long int k, mpc_rnd_t rnd)
+{
+   unsigned long int g;
+   mpq_t kn;
    mpfr_t t, s, c;
    mpfr_prec_t prec;
    int inex_re, inex_im;
@@ -35,8 +46,15 @@ mpc_rootofunity (mpc_ptr rop, unsigned long int n, mpc_rnd_t rnd)
       return MPC_INEX (0, 0);
    }
 
-   /* We assume that only n=1, 2, 3, 4, 6, 8, 12 yield exact results and
-      treat them separately.                                          */
+   /* Eliminate common denominator. */
+   k %= n;
+   g = gcd (k, n);
+   k /= g;
+   n /= g;
+
+   /* We assume that only n=1, 2, 3, 4, 6 and 12 may yield exact results
+      and treat them separately; n=8 is also treated here for efficiency
+      reasons. */
    if (n == 1)
       return mpc_set_ui_ui (rop, 1, 0, rnd);
    else if (n == 2)
@@ -65,9 +83,12 @@ mpc_rootofunity (mpc_ptr rop, unsigned long int n, mpc_rnd_t rnd)
 
    prec = MPC_MAX_PREC(rop);
 
-   mpfr_init2 (t, 2);
-   mpfr_init2 (s, 2);
-   mpfr_init2 (c, 2);
+   mpfr_init2 (t, 67); /* see the argument at the end of the following loop */
+   mpfr_init2 (s, 67);
+   mpfr_init2 (c, 67);
+   mpq_init (kn);
+   mpq_set_ui (kn, k, n);
+   mpq_mul_2exp (kn, kn, 1);
 
    do {
       prec += mpc_ceil_log2 (prec) + 5;
@@ -77,15 +98,27 @@ mpc_rootofunity (mpc_ptr rop, unsigned long int n, mpc_rnd_t rnd)
       mpfr_set_prec (c, prec);
 
       mpfr_const_pi (t, MPFR_RNDN); /* error 0.5 ulp */
-      mpfr_mul_2ui (t, t, 1u, MPFR_RNDN);
-      mpfr_div_ui (t, t, n, MPFR_RNDN); /* error 2*0.5+0.5=1.5 ulp */
+      mpfr_mul_q (t, t, kn, MPFR_RNDN); /* error 2*1.5+0.5=3.5 ulp */
       mpfr_sin_cos (s, c, t, MPFR_RNDN);
-         /* error (1.5*2^{Exp (t) - Exp (s resp.c)} + 0.5) ulp
-            <= 6.5 ulp for n>=3                             */
+         /* error (1.5*2^{Exp (t) - Exp (s resp. c)} + 0.5) ulp
+            We have 0<t<2*pi, so Exp (t) <= 3.
+            Unfortunately s or c can be close to 0.
+            Where the minimum of s and c over all primitive n-th roots of
+            unity is reached depends on n mod 4. 
+            To simplify the argument, we will consider the 4*n-th roots of
+            unity, which contain the n-th roots of unity and which are
+            symmmetrically distributed with respect to the real and imaginary
+            axes, so that it becomes enough to consider only s for k=1.
+            With n<2^64, the absolute values of all s or c are at least
+            sin (2 * pi * 2^(-64) / 4) > 2^(-64) of exponent at least -63.
+            So the error is bounded above by
+            (1.5*2^66+0.5) ulp < 2^67 ulp.
+            (This could be made dependent on n, which would be useful for
+            small n at small precision.) */
    }
-   while (   !mpfr_can_round (c, prec - 3, MPFR_RNDN, MPFR_RNDZ,
+   while (   !mpfr_can_round (c, prec - 67, MPFR_RNDN, MPFR_RNDZ,
                  MPC_PREC_RE(rop) + (MPC_RND_RE(rnd) == MPFR_RNDN))
-          || !mpfr_can_round (s, prec - 3, MPFR_RNDN, GMP_RNDZ,
+          || !mpfr_can_round (s, prec - 67, MPFR_RNDN, MPFR_RNDZ,
                  MPC_PREC_IM(rop) + (MPC_RND_IM(rnd) == MPFR_RNDN)));
 
    inex_re = mpfr_set (mpc_realref(rop), c, MPC_RND_RE(rnd));
@@ -94,6 +127,7 @@ mpc_rootofunity (mpc_ptr rop, unsigned long int n, mpc_rnd_t rnd)
    mpfr_clear (t);
    mpfr_clear (s);
    mpfr_clear (c);
+   mpq_clear (kn);
 
    return MPC_INEX(inex_re, inex_im);
 }

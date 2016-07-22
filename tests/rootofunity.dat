@@ -20,7 +20,8 @@
 # The line format respects the parameter order in function prototype as
 # follow:
 #
-# INEX_RE  INEX_IM  PREC_ROP_RE  ROP_RE  PREC_ROP_IM  ROP_IM  OP  RND_RE  RND_IM
+# INEX_RE  INEX_IM  PREC_ROP_RE  ROP_RE  PREC_ROP_IM  ROP_IM  OP1 OP2  RND_RE  RND_IM
 
 # special values
-0 0 53 nan 53 nan 0 N N
+0 0 53 nan 53 nan 0 0 N N
+0 0 53 nan 53 nan 0 1 N N

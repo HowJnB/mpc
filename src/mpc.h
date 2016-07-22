@@ -200,7 +200,7 @@ __MPC_DECLSPEC int  mpc_atan        (mpc_ptr, mpc_srcptr, mpc_rnd_t);
 __MPC_DECLSPEC int  mpc_asinh       (mpc_ptr, mpc_srcptr, mpc_rnd_t);
 __MPC_DECLSPEC int  mpc_acosh       (mpc_ptr, mpc_srcptr, mpc_rnd_t);
 __MPC_DECLSPEC int  mpc_atanh       (mpc_ptr, mpc_srcptr, mpc_rnd_t);
-__MPC_DECLSPEC int  mpc_rootofunity (mpc_ptr, unsigned long int, mpc_rnd_t);
+__MPC_DECLSPEC int  mpc_rootofunity (mpc_ptr, unsigned long int, unsigned long int, mpc_rnd_t);
 __MPC_DECLSPEC void mpc_clear       (mpc_ptr);
 __MPC_DECLSPEC int  mpc_urandom     (mpc_ptr, gmp_randstate_t);
 __MPC_DECLSPEC void mpc_init2       (mpc_ptr, mpfr_prec_t);
