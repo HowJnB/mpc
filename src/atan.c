@@ -200,7 +200,7 @@ mpc_atan (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
               else
                 err = 1; /* 1 + 2^err <= 2^1 */
 
-              /* the error is bounded by 'err' ulps */
+              /* the error is bounded by 2^err ulps */
 
               ok = inex_im == 0
                 || mpfr_can_round (y, p - err, rnd_away, MPFR_RNDZ,
