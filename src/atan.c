@@ -143,46 +143,74 @@ mpc_atan (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
           /* atan(+0+iy) = +pi/2 +i*atanh(1/y), if |y| > 1
              atan(-0+iy) = -pi/2 +i*atanh(1/y), if |y| > 1 */
           mpfr_rnd_t rnd_im, rnd_away;
-          mpfr_t y;
+          mpfr_t y, z;
           mpfr_prec_t p, p_im;
           int ok;
 
           rnd_im = MPC_RND_IM (rnd);
           mpfr_init (y);
+          mpfr_init (z);
           p_im = mpfr_get_prec (mpc_imagref (rop));
           p = p_im;
 
-          /* a = o(1/y)      with error(a) < 1 ulp(a)
-             b = o(atanh(a)) with error(b) < (1+2^{1+Exp(a)-Exp(b)}) ulp(b)
-
-             As |atanh (1/y)| > |1/y| we have Exp(a)-Exp(b) <=0 so, at most,
-             2 bits of precision are lost.
+          /* a = o(1/y)      with error(a) < ulp(a)
+             b = o(atanh(a)) with error(b) < ulp(b) + 1/|a^2-1|*ulp(a),
+             since if a = 1/y + eps, then atanh(a) = atanh(y) + eps * atanh'(t)
+             with t in (1/y, a). Since a is rounded away, we have 1/y <= a <= 1
+             if y > 1, and -1 <= a <= 1/y if y < -1, thus atanh'(t) =
+             1/|t^2-1| <= 1/|a^2-1|.
 
              We round atanh(1/y) away from 0.
           */
           do
             {
+              mpfr_exp_t err, exp_a;
+
               p += mpc_ceil_log2 (p) + 2;
               mpfr_set_prec (y, p);
+              mpfr_set_prec (z, p);
               rnd_away = s_im == 0 ? MPFR_RNDU : MPFR_RNDD;
               inex_im = mpfr_ui_div (y, 1, mpc_imagref (op), rnd_away);
+              exp_a = mpfr_get_exp (y);
               /* FIXME: should we consider the case with unreasonably huge
                  precision prec(y)>3*exp_min, where atanh(1/Im(op)) could be
                  representable while 1/Im(op) underflows ?
                  This corresponds to |y| = 0.5*2^emin, in which case the
                  result may be wrong. */
 
+              /* we want an upper bound of 1/|a^2-1|, thus a lower bound of
+                 |a^2-1|, thus we should round a^2 away */
+              mpfr_sqr (z, y, rnd_away);
+              /* since |y| > 1, we should have |a| <= 1, thus a^2 <= 1 */
+              MPC_ASSERT(mpfr_cmp_ui (z, 1) <= 0);
+              /* in case z=1, we should try again with more precision */
+              if (mpfr_cmp_ui (z, 1) == 0)
+                continue;
+              /* now z < 1 */
+              mpfr_ui_sub (z, 1, z, MPFR_RNDZ);
+
               /* atanh cannot underflow: |atanh(x)| > |x| for |x| < 1 */
               inex_im |= mpfr_atanh (y, y, rnd_away);
 
+              /* the error is now bounded by ulp(b) + 1/z*ulp(a), thus
+                 ulp(b) + 2^(exp(a) - exp(b) + 1 - exp(z)) * ulp(b) */
+              err = exp_a - mpfr_get_exp (y) + 1 - mpfr_get_exp (z);
+              if (err >= 0) /* 1 + 2^err <= 2^(err+1) */
+                err = err + 1;
+              else
+                err = 1; /* 1 + 2^err <= 2^1 */
+
+              /* the error is bounded by 'err' ulps */
+
               ok = inex_im == 0
-                || mpfr_can_round (y, p - 2, rnd_away, MPFR_RNDZ,
+                || mpfr_can_round (y, p - err, rnd_away, MPFR_RNDZ,
                                    p_im + (rnd_im == MPFR_RNDN));
             } while (ok == 0);
 
           inex_re = set_pi_over_2 (mpc_realref (rop), -s_re, MPC_RND_RE (rnd));
           inex_im = mpfr_set (mpc_imagref (rop), y, rnd_im);
           mpfr_clear (y);
+          mpfr_clear (z);
         }
       return MPC_INEX (inex_re, inex_im);
     }

@@ -8,6 +8,8 @@ Recent changes in the trunk:
   - Fixed handling of over- and underflows with directed rounding in the
     "other direction" for mpc_cos, mpc_sin, mpc_exp and mpc_pow, see
     http://lists.gforge.inria.fr/pipermail/mpc-discuss/2015-March/001336.html
+  - Fixed a bug in mpc_atan(0,y) with |y| near 1, see
+    http://lists.gforge.inria.fr/pipermail/mpc-discuss/2017-March/001404.html
 
 Changes in version 1.0.3:
   - Fixed mpc_pow, see
