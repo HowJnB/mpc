@@ -179,8 +179,8 @@ mpc_atan (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
                  result may be wrong. */
 
               /* we want an upper bound of 1/|a^2-1|, thus a lower bound of
-                 |a^2-1|, thus we should round a^2 away */
-              mpfr_sqr (z, y, rnd_away);
+                 |a^2-1|, thus we should round a^2 to +Inf */
+              mpfr_sqr (z, y, MPFR_RNDU);
               /* since |y| > 1, we should have |a| <= 1, thus a^2 <= 1 */
               MPC_ASSERT(mpfr_cmp_ui (z, 1) <= 0);
               /* in case z=1, we should try again with more precision */
