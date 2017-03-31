@@ -153,11 +153,11 @@ mpc_atan (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
           p_im = mpfr_get_prec (mpc_imagref (rop));
           p = p_im;
 
-          /* a = o(1/y)      with error(a) < ulp(a)
+          /* a = o(1/y)      with error(a) < ulp(a), rounded away
              b = o(atanh(a)) with error(b) < ulp(b) + 1/|a^2-1|*ulp(a),
-             since if a = 1/y + eps, then atanh(a) = atanh(y) + eps * atanh'(t)
+             since if a = 1/y + eps, then atanh(a) = atanh(1/y) + eps * atanh'(t)
              with t in (1/y, a). Since a is rounded away, we have 1/y <= a <= 1
-             if y > 1, and -1 <= a <= 1/y if y < -1, thus atanh'(t) =
+             if y > 1, and -1 <= a <= 1/y if y < -1, thus |atanh'(t)| =
              1/|t^2-1| <= 1/|a^2-1|.
 
              We round atanh(1/y) away from 0.
@@ -178,8 +178,9 @@ mpc_atan (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
                  This corresponds to |y| = 0.5*2^emin, in which case the
                  result may be wrong. */
 
-              /* we want an upper bound of 1/|a^2-1|, thus a lower bound of
-                 |a^2-1|, thus we should round a^2 to +Inf */
+              /* We would like to compute a rounded-up error bound 1/|a^2-1|,
+                 so we need to round down |a^2-1|, which means rounding up
+                 a^2 since |a|<1. */
               mpfr_sqr (z, y, MPFR_RNDU);
               /* since |y| > 1, we should have |a| <= 1, thus a^2 <= 1 */
               MPC_ASSERT(mpfr_cmp_ui (z, 1) <= 0);
