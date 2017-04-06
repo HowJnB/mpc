@@ -182,6 +182,8 @@ mpc_atan (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
                  so we need to round down |a^2-1|, which means rounding up
                  a^2 since |a|<1. */
               mpfr_sqr (z, y, MPFR_RNDU);
+              /* since |y| > 1, we should have |a| <= 1, thus a^2 <= 1 */
+              MPC_ASSERT(mpfr_cmp_ui (z, 1) <= 0);
               /* in case z=1, we should try again with more precision */
               if (mpfr_cmp_ui (z, 1) == 0)
                 continue;
