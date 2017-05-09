@@ -386,8 +386,8 @@ mpc_div (mpc_ptr a, mpc_srcptr b, mpc_srcptr c, mpc_rnd_t rnd)
              /* if 1/q is inexact, the approximations of the real and
                 imaginary part below will be inexact, unless RE(res)
                 or IM(res) is zero */
-             inexact_re |= ~mpfr_zero_p (mpc_realref (res));
-             inexact_im |= ~mpfr_zero_p (mpc_imagref (res));
+             inexact_re |= !mpfr_zero_p (mpc_realref (res));
+             inexact_im |= !mpfr_zero_p (mpc_imagref (res));
          }
          mpfr_clear_underflow ();
          mpfr_clear_overflow ();
