@@ -172,7 +172,7 @@ mpc_rootofunity (mpc_ptr rop, unsigned long n, unsigned long k, mpc_rnd_t rnd)
 
       mpfr_const_pi (t, MPFR_RNDN);
          /* The absolute error is bounded by 0.5 ulp(t) = 2^(1-prec),
-            and with prec >= 6 we have 50/2^4 < t < 51/2^4,
+            and with prec >= 2 we have 50/2^4 <= t,
             so the relative error is bounded above by
             2^(1-prec)/t <= 0.64*2^(-prec); otherwise said,
             |(t-pi)/t| <= 0.64*2^(-prec). */
@@ -181,7 +181,8 @@ mpc_rootofunity (mpc_ptr rop, unsigned long n, unsigned long k, mpc_rnd_t rnd)
             |u-kn*pi| <= |kn*t-kn*pi| + 0.5 ulp(u)
                =  |kn*t/u| * |u| * |(t-pi)/t| + 0.5 ulp(u)
                <= |kn*t/u| * 2^Exp(u) * 0.64*2^(-prec) + 0.5 ulp(u)
-               = |kn*t/u| * 1.14 ulp(u)
+               <= max(|kn*t/u|,1) * 1.14 ulp(u)
+                                           since 2^Exp(u)*2^(-prec) < ulp(u).
                The factor |kn*t/u| is larger than 1 only if rounding down has
                occurred for |u| by at most 0.5 ulp(u); with prec >= 6, the
                worst case bound is then 32.5/32,
