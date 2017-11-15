@@ -1910,7 +1910,8 @@ First, we compute $\pi$ with rounding to nearest and an absolute error
 of \ulp{0.5}. Using Proposition~\ref {prop:relerror} we obtain a relative
 error of $\relerror (\appro {\pi}) \leq 2^{-p}$ at precision~$p$, which
 would be enough for the following analysis. However, we can be a bit more
-precise, knowing the first few binary digits of $\pi$: As soon as $p \geq 8$,
+precise, knowing the first few binary digits of $\pi$: As soon as $p \geq 7$,
+% for p=6, we get 25/8 < 201/2^6, for p=7 we get 101/32 > 201/2^6
 we have $201/2^6 \leq \appro {\pi}$, so
 \[
 \relerror (\appro {\pi})
