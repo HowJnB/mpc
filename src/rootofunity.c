@@ -156,7 +156,9 @@ mpc_rootofunity (mpc_ptr rop, unsigned long n, unsigned long k, mpc_rnd_t rnd)
 
    prec = MPC_MAX_PREC(rop);
 
-   mpfr_init2 (t, 67); /* see the argument at the end of the following loop */
+   /* For the error analysis justifying the following algorithm,
+      see algorithms.tex. */
+   mpfr_init2 (t, 67);
    mpfr_init2 (s, 67);
    mpfr_init2 (c, 67);
    mpq_init (kn);
@@ -171,45 +173,8 @@ mpc_rootofunity (mpc_ptr rop, unsigned long n, unsigned long k, mpc_rnd_t rnd)
       mpfr_set_prec (c, prec);
 
       mpfr_const_pi (t, MPFR_RNDN);
-         /* The absolute error is bounded by 0.5 ulp(t) = 2^(1-prec),
-            and with prec >= 2 we have 50/2^4 <= t,
-            so the relative error is bounded above by
-            2^(1-prec)/t <= 0.64*2^(-prec); otherwise said,
-            |(t-pi)/t| <= 0.64*2^(-prec). */
       mpfr_mul_q (t, t, kn, MPFR_RNDN);
-         /* We analyse mpfr_mul_q (u, t, kn, MPFR_RNDN).
-            |u-kn*pi| <= |kn*t-kn*pi| + 0.5 ulp(u)
-               =  |kn*t/u| * |u| * |(t-pi)/t| + 0.5 ulp(u)
-               <= |kn*t/u| * 2^Exp(u) * 0.64*2^(-prec) + 0.5 ulp(u)
-               <= max(|kn*t/u|,1) * 1.14 ulp(u)
-                                           since 2^Exp(u)*2^(-prec) < ulp(u).
-               The factor |kn*t/u| is larger than 1 only if rounding down has
-               occurred for |u| by at most 0.5 ulp(u); with prec >= 6, the
-               worst case bound is then 32.5/32,
-               and the total error bounded by 1.16 ulp(u). */
-
       mpfr_sin_cos (s, c, t, MPFR_RNDN);
-         /* error (1.16*2^{Exp (t) - Exp (s resp. c)} + 0.5) ulp
-            according to Section 1.2.3 on error propagation of the sine
-            and cosine functions in algorithms.tex.
-            We have 0<t<2*pi, so Exp (t) <= 3.
-            Unfortunately s or c can be close to 0, but with n<2^64,
-            we lose at most about 64 bits:
-            Where the minimum of s and c over all primitive n-th roots of
-            unity is reached depends on n mod 4.
-            To simplify the argument, we will consider the 4*n-th roots of
-            unity, which contain the n-th roots of unity and which are
-            symmetrically distributed with respect to the real and imaginary
-            axes, so that it becomes enough to consider only s for k=1.
-            With n<2^64, the absolute values of all s or c are at least
-            sin (2 * pi * 2^(-64) / 4) > 2^(-64) of exponent at least -63.
-            So the error is bounded above by
-            (1.16*2^66+0.5) ulp < 2^67 ulp.
-            To obtain a more precise bound for smaller n, which is useful
-            especially at small precision, we may use the error bound of
-            (1.16*2^(3 - Exp (s or c)) + 0.5) ulp
-            < 2^(4 - Exp (s or c)) ulp, since Exp (s or c) is at most 0. */
-
    }
    while (   !mpfr_can_round (c, prec - (4 - mpfr_get_exp (c)),
                  MPFR_RNDN, MPFR_RNDZ,

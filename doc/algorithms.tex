@@ -51,7 +51,7 @@
 
 \title {MPC: Algorithms and Error Analysis}
 \author {Andreas Enge \and Philippe Th\'eveny \and Paul Zimmermann}
-\date {Draft; May 24, 2016}
+\date {Draft; November 15, 2017}
 
 \begin {document}
 \maketitle
@@ -1900,6 +1900,78 @@ $|\eta| \leq 2^{-p}$.
 Thus, assuming that $n 2^{-p} \leq 1$, the error estimates
 \eqref {eq:powui_re} and \eqref {eq:powui_im} are valid with $n$
 in the place of $n - 1$.
+
+
+\subsection {\texttt {mpc\_rootofunity}}
+
+Consider co-prime integers $n > 0$ and $k \geq 0$. We wish to compute
+the primitive $n$-th root of unity $e^{2 \pi i k / n}$.
+First, we compute $\pi$ with rounding to nearest and an absolute error
+of \ulp{0.5}. Using Proposition~\ref {prop:relerror} we obtain a relative
+error of $\relerror (\appro {\pi}) \leq 2^{-p}$ at precision~$p$, which
+would be enough for the following analysis. However, we can be a bit more
+precise, knowing the first few binary digits of $\pi$: As soon as $p \geq 8$,
+we have $201/2^6 \leq \appro {\pi}$, so
+\[
+\relerror (\appro {\pi})
+= \left| \frac {\appro {\pi} - \corr {\pi}}{\appro {\pi}} \right|
+\leq 0.637 \cdot 2^{-p}.
+\]
+Let $r$ be the (exact) rational number $2k/n$.
+Next we compute
+$\appro {t} = \round (r \appro {\pi})$, as an approximation to
+$\corr {t} = r \pi$, rounded to nearest.
+Its absolute error is bounded as follows:
+\begin {align*}
+| \appro {t} - \corr {t} |
+& \leq |r \appro {\pi} - r \corr {\pi}| + 0.5 \, \Ulp (\appro {t}) \\
+& =  |r \appro {\pi} / \appro {t}| \cdot |\appro {t}|
+     \cdot |(\appro {\pi} - \corr {\pi}) / \appro {\pi}|
+     + 0.5 \, \Ulp (\appro {t}) \\
+& \leq |r \appro {\pi} / \appro {t}| \cdot 2^{\Exp (\appro {t})}
+     \cdot 0.637 \cdot 2^{-p} + 0.5 \, \Ulp (\appro {t}) \\
+& \leq \left( \max (|r \appro {\pi} / \appro {t}|, 1) \cdot 0.637
+              + 0.5 \right) \Ulp (\appro {t})
+  \text { by Definition~\ref {def:ulp}}.
+\end {align*}
+The factor $|r \appro {\pi} / \appro {t}|$ is larger than~$1$ only if
+rounding down has occurred for $|\appro {t}|$ by at most \ulp {0.5};
+with $p \geq 8$, the worst case bound is then $128.5/128$,
+and the absolute error is bounded by $1.15 \, \Ulp (\appro {t})$.
+
+The result is now obtained as
+\[
+\appro {s} + \appro {c} \, i
+\text { with }
+\appro {s} = \round (\sin (\appro {t}))
+\text { and }
+\appro {c} = \round (\cos (\appro {t})),
+\]
+rounded to nearest.
+By \eqref {eq:proprealcos}, the absolute error for the real part satisfies
+\begin {align*}
+|\appro {s} - \corr {s}|
+& \leq \left( 1.15 \cdot 2^{\Exp (\appro {t}) - \Exp (\appro {s})}
+   + 0.5 \right) \, \Ulp (\appro {s}) \\
+& \leq \left( 1.15 \cdot 2^{3 - \Exp (\appro {s})} + 0.5 \right)
+   \, \Ulp (\appro {s}) \text { since } \Exp (\appro {t}) \leq 3 \\
+& \leq 2^{4 - \Exp (\appro {s})} \, \Ulp (\appro {s})
+   \text { since } \Exp (\appro {s}) \leq 0,
+\end {align*}
+and the analogous bound holds for the imaginary part.
+
+If $n$ is large and $k$ close to a multiple of $n/4$, then $c$ or $s$
+can become small, and we lose about as many bits as given by the exponent
+of $s$ or $c$. The exact minimum of $s$ and~$c$ depends on the residue
+class of $n$ modulo~$4$. To simplify the argument, we consider the $4 n$-th
+roots of unity, which contain the $n$-th ones, and which are symmetrically
+distributed with respect to the real and imaginary axes. Then the smallest
+absolute value of the real or imaginary part is given by
+$\sin (2 \pi / (4 n))$. Using $\sin (x) > x - x^3 / 6$ for $x > 0$
+we obtain $\Exp (\appro {s}) \geq -63$ for $n < 2^{64}$; otherwise said,
+the number of bits lost during the computation is at most $67$ in this
+case, and in general at most $3$ more than the number of bits in~$n$.
+
 
 \subsection {\texttt {mpc\_cmp\_abs}}
 
