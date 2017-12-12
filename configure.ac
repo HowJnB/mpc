@@ -20,7 +20,7 @@
 # Process this file with autoconf to produce a configure script.
 
 AC_PREREQ(2.61)
-AC_INIT(mpc, 1.1dev, mpc-discuss@lists.gforge.inria.fr)
+AC_INIT(mpc, 1.1-rc1, mpc-discuss@lists.gforge.inria.fr)
 AC_CONFIG_SRCDIR([src/mpc-impl.h])
 AC_CONFIG_HEADER([config.h])
 
@@ -184,7 +184,7 @@ AC_LINK_IFELSE(
 # Check for a recent GMP
 # We only guarantee that with a *functional* and recent enough GMP version,
 # MPC will compile; we do not guarantee that GMP will compile.
-# In particular fat builds are broken in GMP 4.3.2 and GMP 5.0.0
+# In particular fat builds are broken in GMP 5.0.0
 # (at least on 64-bit Core 2 under GNU/Linux),
 # see http://gmplib.org/list-archives/gmp-bugs/2011-August/002345.html.
 AC_MSG_CHECKING(for recent GMP)
@@ -192,15 +192,15 @@ AC_COMPILE_IFELSE(
         [AC_LANG_SOURCE(
         [[
 #include "gmp.h"
-#if (__GNU_MP_VERSION*100 + __GNU_MP_VERSION_MINOR*10 + __GNU_MP_VERSION_PATCHLEVEL < 432)
-# error "Minimal GMP version is 4.3.2"
+#if (__GNU_MP_VERSION*100 + __GNU_MP_VERSION_MINOR*10 + __GNU_MP_VERSION_PATCHLEVEL < 500)
+# error "Minimal GMP version is 5.0.0"
 error
 #endif
         ]])],
         [AC_MSG_RESULT(yes)],
         [
         AC_MSG_RESULT(no)
-        AC_MSG_ERROR([GMP version >= 4.3.2 required])
+        AC_MSG_ERROR([GMP version >= 5.0.0 required])
         ])
 
 # Check for a recent MPFR: we require MPFR 3.0.0 for MPC_RNDA

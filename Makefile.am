@@ -20,7 +20,8 @@
 ACLOCAL_AMFLAGS = -I m4
 
 # version number for distribution tarball
-VERSION = @VERSION@@GITVERSION@
+# VERSION = @VERSION@@GITVERSION@ # for development version
+VERSION = @VERSION@
 
 SUBDIRS = src tests doc tools
 
