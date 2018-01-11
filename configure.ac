@@ -1,4 +1,4 @@
-# Copyright (C) 2008, 2009, 2010, 2011, 2012, 2014, 2016 INRIA
+# Copyright (C) 2008, 2009, 2010, 2011, 2012, 2014, 2016, 2017 INRIA
 #
 # This file is part of GNU MPC.
 #
@@ -20,7 +20,7 @@
 # Process this file with autoconf to produce a configure script.
 
 AC_PREREQ(2.61)
-AC_INIT(mpc, 1.1.0-rc1, mpc-discuss@lists.gforge.inria.fr)
+AC_INIT(mpc, 1.1.0, mpc-discuss@lists.gforge.inria.fr)
 AC_CONFIG_SRCDIR([src/mpc-impl.h])
 AC_CONFIG_HEADER([config.h])
 
