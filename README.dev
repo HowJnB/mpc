@@ -29,8 +29,9 @@ Creating a new release
    The html documentation is created with
       makeinfo --html --no-split mpc.texi
    and the resulting mpc.html is copied to content_html.php.
-7) Create an svn tag from inside the svn root:
-   svn cp trunk tags/VERSION
+7) Create a git tag:
+   git tag VERSION
 8) After the release, update the version number in configure.ac, INSTALL,
    src/get_version.c, src/mpc.h and Makefile.vc.
-9) Commit the changes to svn.
+9) Commit the changes to git.
+
