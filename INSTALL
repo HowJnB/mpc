@@ -14,7 +14,7 @@ This is for the impatient, for deeper explanations see the chapter
 
 0. You first need to install GMP, the GNU Multiprecision Arithmetic Library,
    see <http://gmplib.org/>, and GNU MPFR, see <http://www.mpfr.org>.
-   GNU MPC requires GMP version 4.3.2 or later
+   GNU MPC requires GMP version 5.0.0 or later
    and GNU MPFR version 3.0.0 or later.
 
 1. In the directory of the GNU MPC archive, type
