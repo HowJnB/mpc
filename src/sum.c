@@ -18,6 +18,7 @@ You should have received a copy of the GNU Lesser General Public License
 along with this program. If not, see http://www.gnu.org/licenses/ .
 */
 
+#include <stdio.h> /* for MPC_ASSERT */
 #include "mpc-impl.h"
 
 int
@@ -28,6 +29,7 @@ mpc_sum (mpc_ptr sum, const mpc_ptr *z, unsigned long n, mpc_rnd_t rnd)
   unsigned long i;
 
   t = (mpfr_ptr *) malloc (n * sizeof(mpfr_t));
+  MPC_ASSERT(t != NULL);
   for (i = 0; i < n; i++)
     t[i] = mpc_realref (z[i]);
   inex_re = mpfr_sum (mpc_realref (sum), t, n, MPC_RND_RE (rnd));

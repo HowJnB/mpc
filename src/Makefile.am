@@ -30,7 +30,7 @@ libmpc_la_SOURCES = mpc-impl.h abs.c acos.c acosh.c add.c add_fr.c         \
   pow_ld.c pow_d.c pow_si.c pow_ui.c pow_z.c proj.c real.c rootofunity.c   \
   urandom.c set.c \
   set_prec.c set_str.c set_x.c set_x_x.c sin.c sin_cos.c sinh.c sqr.c      \
-  sqrt.c strtoc.c sub.c sub_fr.c sub_ui.c swap.c tan.c tanh.c uceil_log2.c \
-  ui_div.c ui_ui_sub.c
+  sqrt.c strtoc.c sub.c sub_fr.c sub_ui.c sum.c swap.c tan.c tanh.c        \
+  uceil_log2.c ui_div.c ui_ui_sub.c
 
 libmpc_la_LIBADD = @LTLIBOBJS@

@@ -939,6 +939,10 @@ of the real and imaginary parts by @var{op2}
 when @var{rop} and @var{op1} are identical.
 @end deftypefun
 
+@deftypefun int mpc_sum (mpc_t @var{rop}, mpc_ptr* @var{op}, unsigned long @var{n}, mpc_rnd_t @var{rnd})
+Set @var{rop} to the sum of the array @var{op} of length @var{n}
+rounded according to @var{rnd}.
+@end deftypefun
 
 @node Power Functions and Logarithm
 @section Power Functions and Logarithm
