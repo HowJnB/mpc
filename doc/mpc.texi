@@ -874,6 +874,11 @@ Set @var{rop} to @minus{}@var{op} rounded according to @var{rnd}.
 Just changes the sign if @var{rop} and @var{op} are the same variable.
 @end deftypefun
 
+@deftypefun int mpc_sum (mpc_t @var{rop}, mpc_ptr* @var{op}, unsigned long @var{n}, mpc_rnd_t @var{rnd})
+Set @var{rop} to the sum of the elements in the array @var{op} of
+length @var{n}, rounded according to @var{rnd}.
+@end deftypefun
+
 @deftypefun int mpc_mul (mpc_t @var{rop}, mpc_t @var{op1}, mpc_t @var{op2}, mpc_rnd_t @var{rnd})
 @deftypefunx int mpc_mul_ui (mpc_t @var{rop}, mpc_t @var{op1}, unsigned long int @var{op2}, mpc_rnd_t @var{rnd})
 @deftypefunx int mpc_mul_si (mpc_t @var{rop}, mpc_t @var{op1}, long int @var{op2}, mpc_rnd_t @var{rnd})
@@ -939,10 +944,6 @@ of the real and imaginary parts by @var{op2}
 when @var{rop} and @var{op1} are identical.
 @end deftypefun
 
-@deftypefun int mpc_sum (mpc_t @var{rop}, mpc_ptr* @var{op}, unsigned long @var{n}, mpc_rnd_t @var{rnd})
-Set @var{rop} to the sum of the array @var{op} of length @var{n}
-rounded according to @var{rnd}.
-@end deftypefun
 
 @node Power Functions and Logarithm
 @section Power Functions and Logarithm

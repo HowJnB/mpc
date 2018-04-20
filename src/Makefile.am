@@ -1,6 +1,6 @@
 ## src/Makefile.am -- Process this file with automake to produce Makefile.in
 ##
-## Copyright (C) 2008, 2009, 2010, 2011, 2012, 2016 INRIA
+## Copyright (C) 2008, 2009, 2010, 2011, 2012, 2016, 2018 INRIA
 ##
 ## This file is part of GNU MPC.
 ##
