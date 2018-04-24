@@ -903,6 +903,11 @@ Set @var{rop} to @var{op1}*@var{op2}+@var{op3},
 rounded according to @var{rnd}, with only one final rounding.
 @end deftypefun
 
+@deftypefun int mpc_dot (mpc_t @var{rop}, mpc_ptr* @var{op1}, mpc_ptr* @var{op2}, unsigned long @var{n}, mpc_rnd_t @var{rnd})
+Set @var{rop} to the dot product of the elements in the arrays @var{op1} and
+@var{op2}, both of length @var{n}, rounded according to @var{rnd}.
+@end deftypefun
+
 @deftypefun int mpc_div (mpc_t @var{rop}, mpc_t @var{op1}, mpc_t @var{op2}, mpc_rnd_t @var{rnd})
 @deftypefunx int mpc_div_ui (mpc_t @var{rop}, mpc_t @var{op1}, unsigned long int @var{op2}, mpc_rnd_t @var{rnd})
 @deftypefunx int mpc_div_fr (mpc_t @var{rop}, mpc_t @var{op1}, mpfr_t @var{op2}, mpc_rnd_t @var{rnd})

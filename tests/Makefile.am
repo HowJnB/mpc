@@ -31,8 +31,8 @@ LOADLIBES=$(DEFS) $(AM_CPPFLAGS) $(CPPFLAGS) $(CFLAGS)	\
 
 check_PROGRAMS = tabs tacos tacosh tadd tadd_fr tadd_si tadd_ui targ	\
   tasin tasinh tatan tatanh tcmp_abs tconj tcos tcosh                   \
-  tdiv tdiv_2si tdiv_2ui	                                        \
-  tdiv_fr tdiv_ui texp tfma tfr_div tfr_sub timag tio_str tlog tlog10	\
+  tdiv tdiv_2si tdiv_2ui tdiv_fr tdiv_ui tdot texp tfma tfr_div tfr_sub \
+  timag tio_str tlog tlog10						\
   tmul tmul_2si tmul_2ui tmul_fr tmul_i tmul_si tmul_ui tneg tnorm tpow	\
   tpow_d tpow_fr tpow_ld tpow_si tpow_ui tpow_z tprec tproj treal	\
   treimref trootofunity                                                 \

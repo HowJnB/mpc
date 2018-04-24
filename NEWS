@@ -1,5 +1,5 @@
 Changes in version xxx:
-  - New functions: mpc_sum
+  - New functions: mpc_sum, mpc_dot
 
 Changes in version 1.1.0:
   - Minimally required library versions: GMP 5.0.0 and MPFR 3.0.0

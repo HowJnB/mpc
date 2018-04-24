@@ -153,6 +153,7 @@ __MPC_DECLSPEC int  mpc_mul_2si   (mpc_ptr, mpc_srcptr, long int, mpc_rnd_t);
 __MPC_DECLSPEC int  mpc_conj      (mpc_ptr, mpc_srcptr, mpc_rnd_t);
 __MPC_DECLSPEC int  mpc_neg       (mpc_ptr, mpc_srcptr, mpc_rnd_t);
 __MPC_DECLSPEC int  mpc_sum (mpc_ptr, const mpc_ptr *, unsigned long, mpc_rnd_t);
+__MPC_DECLSPEC int  mpc_dot (mpc_ptr, const mpc_ptr *, const mpc_ptr *, unsigned long, mpc_rnd_t);
 __MPC_DECLSPEC int  mpc_norm      (mpfr_ptr, mpc_srcptr, mpfr_rnd_t);
 __MPC_DECLSPEC int  mpc_abs       (mpfr_ptr, mpc_srcptr, mpfr_rnd_t);
 __MPC_DECLSPEC int  mpc_sqrt      (mpc_ptr, mpc_srcptr, mpc_rnd_t);
