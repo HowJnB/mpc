@@ -182,6 +182,7 @@ mpc_pow_exact (mpc_ptr z, mpc_srcptr x, mpfr_srcptr y, mpc_rnd_t rnd,
   int x_imag = mpfr_zero_p (mpc_realref(x));
   int z_is_y = 0;
   mpfr_t copy_of_y;
+  int inex_im;
 
   if (mpc_realref (z) == y || mpc_imagref (z) == y)
     {
@@ -403,7 +404,8 @@ mpc_pow_exact (mpc_ptr z, mpc_srcptr x, mpfr_srcptr y, mpc_rnd_t rnd,
     }
 
   ret = mpfr_set_z (mpc_realref(z), a, MPC_RND_RE(rnd));
-  ret = MPC_INEX(ret, mpfr_set_z (mpc_imagref(z), b, MPC_RND_IM(rnd)));
+  inex_im = mpfr_set_z (mpc_imagref(z), b, MPC_RND_IM(rnd));
+  ret = MPC_INEX(ret, inex_im);
   mpfr_mul_2si (mpc_realref(z), mpc_realref(z), ed, MPC_RND_RE(rnd));
   mpfr_mul_2si (mpc_imagref(z), mpc_imagref(z), ed, MPC_RND_IM(rnd));
 
@@ -483,6 +485,7 @@ mpc_pow (mpc_ptr z, mpc_srcptr x, mpc_srcptr y, mpc_rnd_t rnd)
   mpc_t t, u;
   mpfr_prec_t p, pr, pi, maxprec;
   int saved_underflow, saved_overflow;
+  int inex_re, inex_im;
 
   /* save the underflow or overflow flags from MPFR */
   saved_underflow = mpfr_underflow_p ();
@@ -590,7 +593,8 @@ mpc_pow (mpc_ptr z, mpc_srcptr x, mpc_srcptr y, mpc_rnd_t rnd)
           s2 = mpfr_signbit (mpc_imagref (x));
 
           ret = mpfr_pow (mpc_realref(z), mpc_realref(x), mpc_realref(y), MPC_RND_RE(rnd));
-          ret = MPC_INEX(ret, mpfr_set_ui (mpc_imagref(z), 0, MPC_RND_IM(rnd)));
+          inex_im = mpfr_set_ui (mpc_imagref(z), 0, MPC_RND_IM(rnd));
+          ret = MPC_INEX(ret, inex_im);
 
           /* the sign of the zero imaginary part is known in some cases
              (see algorithm.tex). In such cases we have (x +s*0i)^(y+/-0i)
@@ -682,7 +686,6 @@ mpc_pow (mpc_ptr z, mpc_srcptr x, mpc_srcptr y, mpc_rnd_t rnd)
       mpfr_clear_underflow ();
       ret_exp = mpc_exp (u, t, MPC_RNDNN);
       if (mpfr_underflow_p () || mpfr_overflow_p ()) {
-         int inex_re, inex_im;
          /* under- and overflow flags are set by mpc_exp */
          mpc_set (z, u, MPC_RNDNN);
          ret = ret_exp;
@@ -790,7 +793,8 @@ mpc_pow (mpc_ptr z, mpc_srcptr x, mpc_srcptr y, mpc_rnd_t rnd)
         }
       else
         {
-          ret = MPC_INEX (ret, mpfr_set_ui (mpc_imagref (z), 0, MPC_RND_IM (rnd)));
+          inex_im = mpfr_set_ui (mpc_imagref (z), 0, MPC_RND_IM (rnd));
+          ret = MPC_INEX (ret, inex_im);
           /* warning: mpfr_set_ui does not set Im(z) to -0 if Im(rnd) = RNDD */
           if (MPC_RND_IM (rnd) == MPFR_RNDD || sign_zi)
             mpc_conj (z, z, MPC_RNDNN);
@@ -816,7 +820,10 @@ mpc_pow (mpc_ptr z, mpc_srcptr x, mpc_srcptr y, mpc_rnd_t rnd)
           ret = MPC_INEX(0, ret);
         }
       else
-        ret = MPC_INEX(mpfr_set_ui (mpc_realref(z), 0, MPC_RND_RE(rnd)), ret);
+        {
+          inex_re = mpfr_set_ui (mpc_realref(z), 0, MPC_RND_RE(rnd));
+          ret = MPC_INEX(inex_re, ret);
+        }
     }
   else
     ret = mpc_set (z, u, rnd);

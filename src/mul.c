@@ -366,7 +366,7 @@ mpc_mul_naive (mpc_ptr z, mpc_srcptr x, mpc_srcptr y, mpc_rnd_t rnd)
 {
    /* computes z=x*y by the schoolbook method, where x and y are assumed
       to be finite and without zero parts                                */
-   int overlap, inex;
+   int overlap, inex_re, inex_im;
    mpc_t rop;
 
    MPC_ASSERT (   mpfr_regular_p (mpc_realref (x)) && mpfr_regular_p (mpc_imagref (x))
@@ -378,22 +378,22 @@ mpc_mul_naive (mpc_ptr z, mpc_srcptr x, mpc_srcptr y, mpc_rnd_t rnd)
       rop [0] = z [0];
 
 #if HAVE_MPFR_FMMA
-   inex = MPC_INEX (mpfr_fmms (mpc_realref (rop), mpc_realref (x), mpc_realref (y), mpc_imagref (x),
-                               mpc_imagref (y), MPC_RND_RE (rnd)),
-                    mpfr_fmma (mpc_imagref (rop), mpc_realref (x), mpc_imagref (y), mpc_imagref (x),
-                               mpc_realref (y), MPC_RND_IM (rnd)));
+   inex_re = mpfr_fmms (mpc_realref (rop), mpc_realref (x), mpc_realref (y),
+                        mpc_imagref (x), mpc_imagref (y), MPC_RND_RE (rnd));
+   inex_im = mpfr_fmma (mpc_imagref (rop), mpc_realref (x), mpc_imagref (y),
+                        mpc_imagref (x), mpc_realref (y), MPC_RND_IM (rnd));
 #else
-   inex = MPC_INEX (mpc_fmma (mpc_realref (rop), mpc_realref (x), mpc_realref (y), mpc_imagref (x),
-                               mpc_imagref (y), -1, MPC_RND_RE (rnd)),
-                    mpc_fmma (mpc_imagref (rop), mpc_realref (x), mpc_imagref (y), mpc_imagref (x),
-                               mpc_realref (y), +1, MPC_RND_IM (rnd)));
+   inex_re = mpc_fmma (mpc_realref (rop), mpc_realref (x), mpc_realref (y),
+                       mpc_imagref (x), mpc_imagref (y), -1, MPC_RND_RE (rnd));
+   inex_im = mpc_fmma (mpc_imagref (rop), mpc_realref (x), mpc_imagref (y),
+                       mpc_imagref (x), mpc_realref (y), +1, MPC_RND_IM (rnd));
 #endif
 
    mpc_set (z, rop, MPC_RNDNN);
    if (overlap)
       mpc_clear (rop);
 
-   return inex;
+   return MPC_INEX (inex_re, inex_im);
 }
 
 

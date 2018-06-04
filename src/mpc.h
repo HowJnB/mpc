@@ -42,7 +42,9 @@ along with this program. If not, see http://www.gnu.org/licenses/ .
 
 /* Return values */
 
-/* Transform negative to 2, positive to 1, leave 0 unchanged */
+/* Transform negative to 2, positive to 1, leave 0 unchanged.
+   Warning: since inex is evaluated two times, we should avoid
+   MPC_INEX(mpc_mul (...), mpc_mul (...)) */
 #define MPC_INEX_POS(inex) (((inex) < 0) ? 2 : ((inex) == 0) ? 0 : 1)
 /* Transform 2 to negative, 1 to positive, leave 0 unchanged */
 #define MPC_INEX_NEG(inex) (((inex) == 2) ? -1 : ((inex) == 0) ? 0 : 1)
