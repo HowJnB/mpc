@@ -210,8 +210,11 @@ mpc_sqrt (mpc_ptr a, mpc_srcptr b, mpc_rnd_t rnd)
       mpfr_set_prec (t, prec);
       /* let b = x + iy */
       /* w = sqrt ((|x| + sqrt (x^2 + y^2)) / 2), rounded down */
-      /* total error bounded by 3 ulps */
-      inex_w = mpc_abs (w, b, MPFR_RNDD);
+      /* final error on w bounded by 10 ulps, see algorithms.tex */
+      inex_w = mpfr_sqr (w, mpc_realref (b), MPFR_RNDD);
+      inex_w |= mpfr_sqr (t, mpc_imagref (b), MPFR_RNDD);
+      inex_w |= mpfr_add (w, w, t, MPFR_RNDD);
+      inex_w |= mpfr_sqrt (w, w, MPFR_RNDD);
       if (re_cmp < 0)
         inex_w |= mpfr_sub (w, w, mpc_realref (b), MPFR_RNDD);
       else
@@ -222,7 +225,7 @@ mpc_sqrt (mpc_ptr a, mpc_srcptr b, mpc_rnd_t rnd)
       repr_w = mpfr_min_prec (w) <= prec_w;
       if (!repr_w)
          /* use the usual trick for obtaining the ternary value */
-         ok_w = mpfr_can_round (w, prec - 2, MPFR_RNDD, MPFR_RNDU,
+         ok_w = mpfr_can_round (w, prec - 4, MPFR_RNDD, MPFR_RNDU,
                                 prec_w + (rnd_w == MPFR_RNDN));
       else {
             /* w is representable in the target precision and thus cannot be
@@ -230,16 +233,16 @@ mpc_sqrt (mpc_ptr a, mpc_srcptr b, mpc_rnd_t rnd)
          if (rnd_w == MPFR_RNDN)
             /* If w can be rounded to nearest, then actually no rounding
                occurs, and the ternary value is known from inex_w. */
-            ok_w = mpfr_can_round (w, prec - 2, MPFR_RNDD, MPFR_RNDN, prec_w);
+            ok_w = mpfr_can_round (w, prec - 4, MPFR_RNDD, MPFR_RNDN, prec_w);
          else
             /* If w can be rounded down, then any direct rounding and the
                ternary flag can be determined from inex_w. */
-            ok_w = mpfr_can_round (w, prec - 2, MPFR_RNDD, MPFR_RNDD, prec_w);
+            ok_w = mpfr_can_round (w, prec - 4, MPFR_RNDD, MPFR_RNDD, prec_w);
       }
 
       if (!inex_w || ok_w) {
          /* t = y / 2w, rounded away */
-         /* total error bounded by 7 ulps */
+         /* total error bounded by 16 ulps, see algorithms.tex */
          inex_t = mpfr_div (t, mpc_imagref (b), w, r);
          if (!inex_t && inex_w)
             /* The division was exact, but w was not. */
@@ -249,13 +252,13 @@ mpc_sqrt (mpc_ptr a, mpc_srcptr b, mpc_rnd_t rnd)
          if (!repr_t)
              /* As for w; since t was rounded away, we check whether rounding to 0
                 is possible. */
-            ok_t = mpfr_can_round (t, prec - 3, r, MPFR_RNDZ,
+            ok_t = mpfr_can_round (t, prec - 4, r, MPFR_RNDZ,
                                    prec_t + (rnd_t == MPFR_RNDN));
          else {
             if (rnd_t == MPFR_RNDN)
-               ok_t = mpfr_can_round (t, prec - 3, r, MPFR_RNDN, prec_t);
+               ok_t = mpfr_can_round (t, prec - 4, r, MPFR_RNDN, prec_t);
             else
-               ok_t = mpfr_can_round (t, prec - 3, r, r, prec_t);
+               ok_t = mpfr_can_round (t, prec - 4, r, r, prec_t);
          }
       }
     }
