@@ -53,7 +53,7 @@ mpc_dot (mpc_ptr res, const mpc_ptr *x, const mpc_ptr *y,
       mpfr_mul (z[i], mpc_realref (x[i]), mpc_realref (y[i]), MPFR_RNDZ);
       /* idem for z[n+i]: we allocate with prec_x_im + prec_y_max bits */
       mpfr_init2 (z[n+i], prec_x_im + prec_y_max);
-      mpfr_set_prec (z[i], prec_x_im + prec_y_im);
+      mpfr_set_prec (z[n+i], prec_x_im + prec_y_im);
       mpfr_mul (z[n+i], mpc_imagref (x[i]), mpc_imagref (y[i]), MPFR_RNDZ);
       mpfr_neg (z[n+i], z[n+i], MPFR_RNDZ);
     }

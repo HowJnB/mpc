@@ -38,21 +38,29 @@ check_special (void)
   /* dot product of empty vectors is 0 */
   inex = mpc_dot (res, t, t, 0, MPC_RNDNN);
   MPC_ASSERT (inex == 0);
-  MPC_ASSERT (mpfr_cmp_ui (mpc_realref (res), 0) == 0);
-  MPC_ASSERT (mpfr_cmp_ui (mpc_imagref (res), 0) == 0);
+  MPC_ASSERT (mpfr_zero_p (mpc_realref (res)));
+  MPC_ASSERT (mpfr_zero_p (mpc_imagref (res)));
+  MPC_ASSERT (mpfr_signbit (mpc_realref (res)) == 0);
+  MPC_ASSERT (mpfr_signbit (mpc_imagref (res)) == 0);
   /* (1,2)*(1,2) = (-3,4) */
   inex = mpc_dot (res, t, t, 1, MPC_RNDNN);
   MPC_ASSERT (inex == 0);
+  MPC_ASSERT (mpfr_regular_p (mpc_realref (res)));
+  MPC_ASSERT (mpfr_regular_p (mpc_imagref (res)));
   MPC_ASSERT (mpfr_cmp_si (mpc_realref (res), -3) == 0);
   MPC_ASSERT (mpfr_cmp_ui (mpc_imagref (res), 4) == 0);
   /* (1,2)*(1,2) + (2,3)*(2,3) = (-8,16) */
   inex = mpc_dot (res, t, t, 2, MPC_RNDNN);
   MPC_ASSERT (inex == 0);
+  MPC_ASSERT (mpfr_regular_p (mpc_realref (res)));
+  MPC_ASSERT (mpfr_regular_p (mpc_imagref (res)));
   MPC_ASSERT (mpfr_cmp_si (mpc_realref (res), -8) == 0);
   MPC_ASSERT (mpfr_cmp_ui (mpc_imagref (res), 16) == 0);
   /* (1,2)*(1,2) + (2,3)*(2,3) + (3,4)*(3,4) = (-15,40) */
   inex = mpc_dot (res, t, t, 3, MPC_RNDNN);
   MPC_ASSERT (inex == 0);
+  MPC_ASSERT (mpfr_regular_p (mpc_realref (res)));
+  MPC_ASSERT (mpfr_regular_p (mpc_imagref (res)));
   MPC_ASSERT (mpfr_cmp_si (mpc_realref (res), -15) == 0);
   MPC_ASSERT (mpfr_cmp_ui (mpc_imagref (res), 40) == 0);
   for (i = 0; i < 3; i++)
