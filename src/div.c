@@ -312,7 +312,13 @@ mpc_div (mpc_ptr a, mpc_srcptr b, mpc_srcptr c, mpc_rnd_t rnd)
             hopefully, the side-effects of mpc_mul do indeed raise the
             mpfr exceptions */
       if (overflow_prod) {
+        /* FIXME: in case overflow_norm is also true, the code below is wrong,
+           since the after division by the norm, we might end up with finite
+           real and/or imaginary parts. A workaround would be to scale the
+           inputs (in case the exponents are within the same range). */
          int isinf = 0;
+         /* determine if the real part of res is the maximum or the minimum
+            representable number */
          tmpsgn = mpfr_sgn (mpc_realref(res));
          if (tmpsgn > 0)
            {
@@ -331,6 +337,7 @@ mpc_div (mpc_ptr a, mpc_srcptr b, mpc_srcptr c, mpc_rnd_t rnd)
              mpfr_set_inf (mpc_realref(res), tmpsgn);
              overflow_re = 1;
            }
+         /* same for the imaginary part */
          tmpsgn = mpfr_sgn (mpc_imagref(res));
          isinf = 0;
          if (tmpsgn > 0)
