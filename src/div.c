@@ -229,6 +229,7 @@ mpc_div_imag (mpc_ptr rop, mpc_srcptr z, mpc_srcptr w, mpc_rnd_t rnd)
    return MPC_INEX(inex_re, inex_im);
 }
 
+#define MPFR_EXP(x)       ((x)->_mpfr_exp)
 
 int
 mpc_div (mpc_ptr a, mpc_srcptr b, mpc_srcptr c, mpc_rnd_t rnd)
@@ -243,6 +244,9 @@ mpc_div (mpc_ptr a, mpc_srcptr b, mpc_srcptr c, mpc_rnd_t rnd)
    mpfr_rnd_t rnd_re = MPC_RND_RE (rnd), rnd_im = MPC_RND_IM (rnd);
    int saved_underflow, saved_overflow;
    int tmpsgn;
+   mpfr_exp_t e, emin, emax, emid; /* for scaling of exponents */
+   mpc_t b_scaled, c_scaled;
+   mpfr_t b_re, b_im, c_re, c_im;
 
    /* According to the C standard G.3, there are three types of numbers:   */
    /* finite (both parts are usual real numbers; contains 0), infinite     */
@@ -253,9 +257,10 @@ mpc_div (mpc_ptr a, mpc_srcptr b, mpc_srcptr c, mpc_rnd_t rnd)
    /* all other divisions that are not finite/finite return nan+i*nan.     */
    /* Division by 0 could be handled by the following case of division by  */
    /* a real; we handle it separately instead.                             */
-   if (mpc_zero_p (c))
+   if (mpc_zero_p (c)) /* both Re(c) and Im(c) are zero */
       return mpc_div_zero (a, b, c, rnd);
-   else if (mpc_inf_p (b) && mpc_fin_p (c))
+   else if (mpc_inf_p (b) && mpc_fin_p (c)) /* either Re(b) or Im(b) is infinite
+                                               and both Re(c) and Im(c) are ordinary */
          return mpc_div_inf_fin (a, b, c);
    else if (mpc_fin_p (b) && mpc_inf_p (c))
          return mpc_div_fin_inf (a, b, c);
@@ -273,9 +278,57 @@ mpc_div (mpc_ptr a, mpc_srcptr b, mpc_srcptr c, mpc_rnd_t rnd)
    mpc_init2 (res, 2);
    mpfr_init (q);
 
+   /* compute scaling of exponents: none of Re(c) and Im(c) can be zero,
+      but one of Re(b) or Im(b) could be zero */
+
+   e = mpfr_get_exp (mpc_realref (c));
+   emin = emax = e;
+   e = mpfr_get_exp (mpc_imagref (c));
+   if (e > emax)
+     emax = e;
+   else if (e < emin)
+     emin = e;
+   if (!mpfr_zero_p (mpc_realref (b)))
+     {
+       e = mpfr_get_exp (mpc_realref (b));
+       if (e > emax)
+         emax = e;
+       else if (e < emin)
+         emin = e;
+     }
+   if (!mpfr_zero_p (mpc_imagref (b)))
+     {
+       e = mpfr_get_exp (mpc_imagref (b));
+       if (e > emax)
+         emax = e;
+       else if (e < emin)
+         emin = e;
+     }
+
+   /* all input exponents are in [emin, emax] */
+   emid = emin / 2 + emax / 2;
+
+   /* scale the inputs */
+   b_re[0] = mpc_realref (b)[0];
+   if (!mpfr_zero_p (mpc_realref (b)))
+     MPFR_EXP(b_re) = MPFR_EXP(mpc_realref (b)) - emid;
+   b_im[0] = mpc_imagref (b)[0];
+   if (!mpfr_zero_p (mpc_imagref (b)))
+     MPFR_EXP(b_im) = MPFR_EXP(mpc_imagref (b)) - emid;
+   c_re[0] = mpc_realref (c)[0];
+   MPFR_EXP(c_re) = MPFR_EXP(mpc_realref (c)) - emid;
+   c_im[0] = mpc_imagref (c)[0];
+   MPFR_EXP(c_im) = MPFR_EXP(mpc_imagref (c)) - emid;
+
+   /* create the scaled inputs without allocating new memory */
+   mpc_realref (b_scaled)[0] = b_re[0];
+   mpc_imagref (b_scaled)[0] = b_im[0];
+   mpc_realref (c_scaled)[0] = c_re[0];
+   mpc_imagref (c_scaled)[0] = c_im[0];
+
    /* create the conjugate of c in c_conj without allocating new memory */
-   mpc_realref (c_conj)[0] = mpc_realref (c)[0];
-   mpc_imagref (c_conj)[0] = mpc_imagref (c)[0];
+   mpc_realref (c_conj)[0] = mpc_realref (c_scaled)[0];
+   mpc_imagref (c_conj)[0] = mpc_imagref (c_scaled)[0];
    MPFR_CHANGE_SIGN (mpc_imagref (c_conj));
 
    /* save the underflow or overflow flags from MPFR */
@@ -289,20 +342,20 @@ mpc_div (mpc_ptr a, mpc_srcptr b, mpc_srcptr c, mpc_rnd_t rnd)
       mpc_set_prec (res, prec);
       mpfr_set_prec (q, prec);
 
-      /* first compute norm(c) */
+      /* first compute norm(c_scaled) */
       mpfr_clear_underflow ();
       mpfr_clear_overflow ();
-      inexact_norm = mpc_norm (q, c, MPFR_RNDU);
+      inexact_norm = mpc_norm (q, c_scaled, MPFR_RNDU);
       underflow_norm = mpfr_underflow_p ();
       overflow_norm = mpfr_overflow_p ();
       if (underflow_norm)
          mpfr_set_ui (q, 0ul, MPFR_RNDN);
          /* to obtain divisions by 0 later on */
 
-      /* now compute b*conjugate(c) */
+      /* now compute b_scaled*conjugate(c_scaled) */
       mpfr_clear_underflow ();
       mpfr_clear_overflow ();
-      inexact_prod = mpc_mul (res, b, c_conj, MPC_RNDZZ);
+      inexact_prod = mpc_mul (res, b_scaled, c_conj, MPC_RNDZZ);
       inexact_re = MPC_INEX_RE (inexact_prod);
       inexact_im = MPC_INEX_IM (inexact_prod);
       underflow_prod = mpfr_underflow_p ();
