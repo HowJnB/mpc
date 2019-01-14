@@ -1010,7 +1010,7 @@ so that the imaginary part of the result lies in
 @end ifnottex
 and
 @iftex
-@math{]-\pi/log(10) , \pi/log(10)]}
+@math{]-\pi/\log(10) , \pi/\log(10)]}
 @end iftex
 @ifnottex
 ]-Pi/log(10) , Pi/log(10)]
