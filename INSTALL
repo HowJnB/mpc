@@ -59,6 +59,15 @@ In case of difficulties, please send a description of the problem to
 
 ##############################################################################
 
+Known problems:
+===============
+
+When LD_LIBRARY_PATH is set to various paths, it might confuse the configure
+script, even with --with-gmp and --with-mpfr options. Then try to unset
+LD_LIBRARY_PATH.
+
+##############################################################################
+
 Note for AIX users:
 ===================
 
