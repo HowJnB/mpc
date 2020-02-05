@@ -1,4 +1,5 @@
-/* mpc_check -- compare mpc functions against the GNU libc implementation
+/* mpcheck-double -- compare mpc functions against "double complex"
+                     from the GNU libc implementation
 
 Copyright (C) 2020 INRIA
 
@@ -65,82 +66,82 @@ ulp_error (mpfr_t x, mpfr_t y)
 
 #define FOO add
 #define CFOO(x,y) (x+y)
-#include "mpc_check_template3.c"
+#include "mpcheck-template3.c"
 
 #define FOO sub
 #define CFOO(x,y) (x-y)
-#include "mpc_check_template3.c"
+#include "mpcheck-template3.c"
 
 #define FOO mul
 #define CFOO(x,y) (x*y)
-#include "mpc_check_template3.c"
+#include "mpcheck-template3.c"
 
 #define FOO div
 #define CFOO(x,y) (x/y)
-#include "mpc_check_template3.c"
+#include "mpcheck-template3.c"
 
 #define FOO pow
-#include "mpc_check_template3.c"
+#include "mpcheck-template3.c"
 
 #define FOO abs
-#include "mpc_check_template2.c"
+#include "mpcheck-template2.c"
 
 #define FOO arg
-#include "mpc_check_template2.c"
+#include "mpcheck-template2.c"
 
 #define FOO sqrt
-#include "mpc_check_template1.c"
+#include "mpcheck-template1.c"
 
 #define FOO acos
-#include "mpc_check_template1.c"
+#include "mpcheck-template1.c"
 
 #define FOO acosh
-#include "mpc_check_template1.c"
+#include "mpcheck-template1.c"
 
 #define FOO asin
-#include "mpc_check_template1.c"
+#include "mpcheck-template1.c"
 
 #define FOO asinh
-#include "mpc_check_template1.c"
+#include "mpcheck-template1.c"
 
 #define FOO atan
-#include "mpc_check_template1.c"
+#include "mpcheck-template1.c"
 
 #define FOO atanh
-#include "mpc_check_template1.c"
+#include "mpcheck-template1.c"
 
 #define FOO cos
-#include "mpc_check_template1.c"
+#include "mpcheck-template1.c"
 
 #define FOO cosh
-#include "mpc_check_template1.c"
+#include "mpcheck-template1.c"
 
 #define FOO exp
-#include "mpc_check_template1.c"
+#include "mpcheck-template1.c"
 
 #define FOO log
-#include "mpc_check_template1.c"
+#include "mpcheck-template1.c"
 
 #define FOO log10
-#include "mpc_check_template1.c"
+#include "mpcheck-template1.c"
 
 #define FOO sin
-#include "mpc_check_template1.c"
+#include "mpcheck-template1.c"
 
 #define FOO sinh
-#include "mpc_check_template1.c"
+#include "mpcheck-template1.c"
 
 #define FOO tan
-#include "mpc_check_template1.c"
+#include "mpcheck-template1.c"
 
 #define FOO tanh
-#include "mpc_check_template1.c"
+#include "mpcheck-template1.c"
 
 int
 main (int argc, char *argv[])
 {
-  mpfr_prec_t p = 53; /* default precision */
-  unsigned long n = 1000000;
+  mpfr_prec_t p = 53; /* precision of 'double' */
+  unsigned long n = 1000000; /* default number of random tests per function */
 
   while (argc >= 2 && argv[1][0] == '-')
     {
@@ -153,6 +154,12 @@ main (int argc, char *argv[])
       else if (argc >= 3 && strcmp (argv[1], "-seed") == 0)
         {
           seed = atoi (argv[2]);
+          argc -= 2;
+          argv += 2;
+        }
+      else if (argc >= 3 && strcmp (argv[1], "-num") == 0)
+        {
+          n = atoi (argv[2]);
           argc -= 2;
           argv += 2;
         }
@@ -169,13 +176,9 @@ main (int argc, char *argv[])
         }
     }
 
-  MPC_ASSERT (p == 53);
-
-  if (p == 53)
-    {
-      mpfr_set_emin (-1073);
-      mpfr_set_emax (1024);
-    }
+  /* set exponent range for 'double' */
+  mpfr_set_emin (-1073);
+  mpfr_set_emax (1024);
 
   gmp_randinit_default (state);
 

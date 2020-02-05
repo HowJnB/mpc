@@ -66,8 +66,8 @@ DATA_SETS = abs.dat acos.dat acosh.dat add.dat add_fr.dat arg.dat	\
   sin.dat sinh.dat                                                      \
   sqr.dat sqrt.dat strtoc.dat sub.dat sub_fr.dat tan.dat tanh.dat
 EXTRA_DIST = data_check.tpl tgeneric.tpl $(DATA_SETS) $(DESCRIPTIONS) \
-	     mpc_check.c \
-             mpc_check_template1.c mpc_check_template2.c mpc_check_template3.c
+	     mpcheck-double.c \
+             mpcheck-template1.c mpcheck-template2.c mpcheck-template3.c
 
 LOG_COMPILER = $(VALGRIND)
 AM_LOG_FLAGS = $(VALGRIND_OPTS)
