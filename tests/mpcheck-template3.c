@@ -26,7 +26,7 @@ along with this program. If not, see http://www.gnu.org/licenses/ .
 #define FUN CAT2(test_,FOO)
 #define MPC_FOO CAT2(mpc_,FOO)
 #ifndef CFOO
-#define CFOO CAT2(c,FOO)
+#define CFOO CAT2(CAT2(c,FOO),SUFFIX)
 #endif
 #define BAR TOSTRING(FOO)
 

@@ -1,5 +1,5 @@
-/* mpcheck-double -- compare mpc functions against "double complex"
-                     from the GNU libc implementation
+/* mpcheck-float128 -- compare mpc functions against "__float128 complex"
+                       from the GNU libc implementation
 
 Copyright (C) 2020 INRIA
 
@@ -35,19 +35,36 @@ along with this program. If not, see http://www.gnu.org/licenses/ .
 #include <stdlib.h>
 #include <string.h>
 #include <complex.h>
+#define MPFR_WANT_FLOAT128
 #include "mpc-tests.h"
 #ifdef __GNUC__
 #include <gnu/libc-version.h>
 #endif
 
-#define PRECISION 53
-#define EMAX 1024
-#define TYPE double
-#define SUFFIX
+#define PRECISION 113
+#define EMAX 16384
+#define TYPE _Float128
+#define SUFFIX f128
 
-#define mpc_get_type mpc_get_dc
-#define mpc_set_type mpc_set_dc
-#define mpfr_set_type mpfr_set_d
+#define mpfr_set_type mpfr_set_float128
+
+static TYPE complex
+mpc_get_type (mpc_t z, mpc_rnd_t rnd)
+{
+  TYPE x, y;
+  /* there is no mpc_get_float128c function */
+  x = mpfr_get_float128 (mpc_realref (z), MPC_RND_RE(rnd));
+  y = mpfr_get_float128 (mpc_imagref (z), MPC_RND_IM(rnd));
+  return x + I * y;
+}
+
+static int
+mpc_set_type (mpc_t x, TYPE complex y, mpc_rnd_t rnd)
+{
+  /* there is no mpc_set_float128c function */
+  mpfr_set_float128 (mpc_realref (x), crealf128 (y), MPC_RND_RE(rnd));
+  mpfr_set_float128 (mpc_imagref (x), cimagf128 (y), MPC_RND_IM(rnd));
+}
 
 gmp_randstate_t state;
 unsigned long seed = 1;
@@ -185,8 +202,8 @@ main (int argc, char *argv[])
         }
     }
 
-  /* set exponent range for 'double' */
-  mpfr_set_emin (-EMAX - PRECISION + 4); /* should be -1073 */
+  /* set exponent range */
+  mpfr_set_emin (-EMAX - 64 + 4); /* should be -16444 like for long double */
   mpfr_set_emax (EMAX);
 
   gmp_randinit_default (state);

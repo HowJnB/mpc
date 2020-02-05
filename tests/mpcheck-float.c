@@ -1,4 +1,4 @@
-/* mpcheck-double -- compare mpc functions against "float complex"
+/* mpcheck-float -- compare mpc functions against "float complex"
                      from the GNU libc implementation
 
 Copyright (C) 2020 INRIA
@@ -43,6 +43,7 @@ along with this program. If not, see http://www.gnu.org/licenses/ .
 #define PRECISION 24
 #define EMAX 128
 #define TYPE float
+#define SUFFIX f
 
 #define mpfr_set_type mpfr_set_flt
 
@@ -196,8 +197,8 @@ main (int argc, char *argv[])
         }
     }
 
-  /* set exponent range for 'float' */
-  mpfr_set_emin (-EMAX - PRECISION + 4);
+  /* set exponent range */
+  mpfr_set_emin (-EMAX - PRECISION + 4); /* should be -148 */
   mpfr_set_emax (EMAX);
 
   gmp_randinit_default (state);

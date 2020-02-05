@@ -1,5 +1,5 @@
-/* mpcheck-double -- compare mpc functions against "double complex"
-                     from the GNU libc implementation
+/* mpcheck-longdouble -- compare mpc functions against "long double complex"
+                         from the GNU libc implementation
 
 Copyright (C) 2020 INRIA
 
@@ -40,14 +40,14 @@ along with this program. If not, see http://www.gnu.org/licenses/ .
 #include <gnu/libc-version.h>
 #endif
 
-#define PRECISION 53
-#define EMAX 1024
-#define TYPE double
-#define SUFFIX
+#define PRECISION 64
+#define EMAX 16384
+#define TYPE long double
+#define SUFFIX l
 
-#define mpc_get_type mpc_get_dc
-#define mpc_set_type mpc_set_dc
-#define mpfr_set_type mpfr_set_d
+#define mpc_get_type mpc_get_ldc
+#define mpc_set_type mpc_set_ldc
+#define mpfr_set_type mpfr_set_ld
 
 gmp_randstate_t state;
 unsigned long seed = 1;
@@ -185,8 +185,8 @@ main (int argc, char *argv[])
         }
     }
 
-  /* set exponent range for 'double' */
-  mpfr_set_emin (-EMAX - PRECISION + 4); /* should be -1073 */
+  /* set exponent range */
+  mpfr_set_emin (-EMAX - PRECISION + 4); /* should be -16444 */
   mpfr_set_emax (EMAX);
 
   gmp_randinit_default (state);

@@ -25,7 +25,7 @@ along with this program. If not, see http://www.gnu.org/licenses/ .
 
 #define FUN CAT2(test_,FOO)
 #define MPC_FOO CAT2(mpc_,FOO)
-#define CFOO CAT2(c,FOO)
+#define CFOO CAT2(CAT2(c,FOO),SUFFIX)
 #define BAR TOSTRING(FOO)
 
 static void
@@ -75,3 +75,4 @@ FUN (mpfr_prec_t p, unsigned long n)
 }
 
 #undef FOO
+#undef CFOO
