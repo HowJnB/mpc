@@ -35,6 +35,9 @@ along with this program. If not, see http://www.gnu.org/licenses/ .
 #include <string.h>
 #include <complex.h>
 #include "mpc-tests.h"
+#ifdef __GNUC__
+#include <gnu/libc-version.h>
+#endif
 
 gmp_randstate_t state;
 unsigned long seed = 1;
@@ -176,6 +179,10 @@ main (int argc, char *argv[])
 
   gmp_randinit_default (state);
 
+#ifdef __GNUC__
+  printf ("GNU libc version: %s\n", gnu_get_libc_version ());
+  printf ("GNU libc release: %s\n", gnu_get_libc_release ());
+#endif
   printf ("Using random seed %lu\n", seed);
 
   /* (complex,complex) -> complex */
@@ -211,4 +218,3 @@ main (int argc, char *argv[])
 
   return 0;
 }
-   

@@ -17,7 +17,7 @@
 ## You should have received a copy of the GNU Lesser General Public License
 ## along with this program. If not, see http://www.gnu.org/licenses/ .
 
-AM_CPPFLAGS = -I$(top_srcdir)/src
+AM_CPPFLAGS = -I$(top_srcdir)/src -I$(top_srcdir)
 LDADD = libmpc-tests.la $(top_builddir)/src/libmpc.la
 # let libtool create an executable instead of a shell script
 # useful for tests with valgrind
