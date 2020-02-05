@@ -37,8 +37,7 @@ check_PROGRAMS = tabs tacos tacosh tadd tadd_fr tadd_si tadd_ui targ	\
   tpow_d tpow_fr tpow_ld tpow_si tpow_ui tpow_z tprec tproj treal	\
   treimref trootofunity                                                 \
   tset tsin tsin_cos tsinh tsqr tsqrt tstrtoc tsub tsub_fr	        \
-  tsub_ui tsum tswap ttan ttanh tui_div tui_ui_sub tget_version exceptions \
-  mpc_check
+  tsub_ui tsum tswap ttan ttanh tui_div tui_ui_sub tget_version exceptions
 
 check_LTLIBRARIES=libmpc-tests.la
 libmpc_tests_la_SOURCES = mpc-tests.h check_data.c clear_parameters.c	\
@@ -67,6 +66,7 @@ DATA_SETS = abs.dat acos.dat acosh.dat add.dat add_fr.dat arg.dat	\
   sin.dat sinh.dat                                                      \
   sqr.dat sqrt.dat strtoc.dat sub.dat sub_fr.dat tan.dat tanh.dat
 EXTRA_DIST = data_check.tpl tgeneric.tpl $(DATA_SETS) $(DESCRIPTIONS) \
+	     mpc_check.c \
              mpc_check_template1.c mpc_check_template2.c mpc_check_template3.c
 
 LOG_COMPILER = $(VALGRIND)
