@@ -1,4 +1,4 @@
-/* mpcheck-double -- compare mpc functions against "double complex"
+/* mpcheck-double -- compare mpc functions against "float complex"
                      from the GNU libc implementation
 
 Copyright (C) 2020 INRIA
@@ -40,13 +40,25 @@ along with this program. If not, see http://www.gnu.org/licenses/ .
 #include <gnu/libc-version.h>
 #endif
 
-#define PRECISION 53
-#define EMAX 1024
-#define TYPE double
+#define PRECISION 24
+#define EMAX 128
+#define TYPE float
 
-#define mpc_get_type mpc_get_dc
-#define mpc_set_type mpc_set_dc
-#define mpfr_set_type mpfr_set_d
+#define mpfr_set_type mpfr_set_flt
+
+static TYPE complex
+mpc_get_type (mpc_t x, mpc_rnd_t rnd)
+{
+  /* there is no mpc_get_fltc function */
+  return (TYPE complex) mpc_get_dc (x, rnd);
+}
+
+static int
+mpc_set_type (mpc_t x, TYPE complex y, mpc_rnd_t rnd)
+{
+  /* there is no mpc_set_fltc function */
+  return mpc_set_dc (x, (double complex) y, rnd);
+}
 
 gmp_randstate_t state;
 unsigned long seed = 1;
@@ -148,7 +160,7 @@ ulp_error (mpfr_t x, mpfr_t y)
 int
 main (int argc, char *argv[])
 {
-  mpfr_prec_t p = PRECISION; /* precision of 'double' */
+  mpfr_prec_t p = PRECISION; /* precision of 'float' */
   unsigned long n = 1000000; /* default number of random tests per function */
 
   while (argc >= 2 && argv[1][0] == '-')
@@ -184,7 +196,7 @@ main (int argc, char *argv[])
         }
     }
 
-  /* set exponent range for 'double' */
+  /* set exponent range for 'float' */
   mpfr_set_emin (-EMAX - PRECISION + 4);
   mpfr_set_emax (EMAX);
 

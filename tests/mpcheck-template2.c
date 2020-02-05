@@ -34,8 +34,8 @@ FUN (mpfr_prec_t p, unsigned long n)
   unsigned long i = 0;
   mpc_t x;
   mpfr_t z, t;
-  double complex xx;
-  double zz;
+  TYPE complex xx;
+  TYPE zz;
   int inex;
   unsigned long errors = 0, max_err = 0;
 
@@ -49,9 +49,9 @@ FUN (mpfr_prec_t p, unsigned long n)
       mpc_urandom (x, state);
       inex = MPC_FOO (z, x, MPC_RNDNN);
       mpfr_subnormalize (z, inex, MPFR_RNDN);
-      xx = mpc_get_dc (x, MPC_RNDNN);
+      xx = mpc_get_type (x, MPC_RNDNN);
       zz = CFOO (xx);
-      mpfr_set_d (t, zz, MPFR_RNDN);
+      mpfr_set_type (t, zz, MPFR_RNDN);
       if (mpfr_cmp (z, t) != 0)
         {
           unsigned long err = ulp_error (t, z);
