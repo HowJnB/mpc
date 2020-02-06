@@ -29,7 +29,7 @@ mpc_tan (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
   mpfr_prec_t prec;
   mpfr_exp_t err;
   int ok = 0;
-  int inex;
+  int inex, inex_re, inex_im;
 
   /* special values */
   if (!mpc_fin_p (op))
@@ -80,7 +80,6 @@ mpc_tan (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
             /* tan(+Inf +i*Inf) = +/-0 +i */
             {
               const int sign_re = mpfr_signbit (mpc_realref (op));
-              int inex_im;
 
               mpfr_set_ui (mpc_realref (rop), 0, MPC_RND_RE (rnd));
               mpfr_setsign (mpc_realref (rop), mpc_realref (rop), sign_re, MPFR_RNDN);
@@ -106,7 +105,6 @@ mpc_tan (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
         {
           mpfr_t c;
           mpfr_t s;
-          int inex_im;
 
           mpfr_init (c);
           mpfr_init (s);
@@ -132,8 +130,6 @@ mpc_tan (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
     /* tan(-0 -i*y) = -0 +i*tanh(y), when y is finite. */
     /* tan(+0 +i*y) = +0 +i*tanh(y), when y is finite. */
     {
-      int inex_im;
-
       mpfr_set (mpc_realref (rop), mpc_realref (op), MPC_RND_RE (rnd));
       inex_im = mpfr_tanh (mpc_imagref (rop), mpc_imagref (op), MPC_RND_IM (rnd));
 
@@ -144,8 +140,6 @@ mpc_tan (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
     /* tan(x -i*0) = tan(x) -i*0, when x is finite. */
     /* tan(x +i*0) = tan(x) +i*0, when x is finite. */
     {
-      int inex_re;
-
       inex_re = mpfr_tan (mpc_realref (rop), mpc_realref (op), MPC_RND_RE (rnd));
       mpfr_set (mpc_imagref (rop), mpc_imagref (op), MPC_RND_IM (rnd));
 
@@ -206,7 +200,6 @@ mpc_tan (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
             Im(op) was large, in which case the result is
             sign(tan(Re(op)))*0 + sign(Im(op))*I,
             where sign(tan(Re(op))) = sign(Re(x))*sign(Re(y)). */
-          int inex_re, inex_im;
           mpfr_set_ui (mpc_realref (rop), 0, MPFR_RNDN);
           if (mpfr_sgn (mpc_realref (x)) * mpfr_sgn (mpc_realref (y)) < 0)
             {

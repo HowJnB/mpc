@@ -36,6 +36,14 @@ FUN (mpfr_prec_t p, unsigned long n)
   TYPE complex xx, zz;
   int inex;
   unsigned long errors = 0, max_err_re = 0, max_err_im = 0;
+  /* allow reduced exponent range */
+#if defined(FOO_EMIN) || defined(FOO_EMAX)
+  mpfr_exp_t saved_emin = emin, saved_emax = emax;
+  emin = FOO_EMIN;
+  emax = FOO_EMAX;
+#endif
+
+  printf ("Testing function %s\n", BAR);
 
   gmp_randseed_ui (state, seed);
 
@@ -44,14 +52,14 @@ FUN (mpfr_prec_t p, unsigned long n)
   mpc_init2 (t, p);
   for (i = 0; i < n; i++)
     {
-      mpc_urandom (x, state);
+      mpcheck_random (x);
       inex = MPC_FOO (z, x, MPC_RNDNN);
       mpfr_subnormalize (mpc_realref (z), MPC_INEX_RE(inex), MPFR_RNDN);
       mpfr_subnormalize (mpc_imagref (z), MPC_INEX_IM(inex), MPFR_RNDN);
       xx = mpc_get_type (x, MPC_RNDNN);
       zz = CFOO (xx);
       mpc_set_type (t, zz, MPFR_RNDN);
-      if (mpc_cmp (z, t) != 0)
+      if (mpcheck_mpc_cmp (t, z) != 0)
         {
           unsigned long err_re = ulp_error (mpc_realref (t), mpc_realref (z));
           unsigned long err_im = ulp_error (mpc_imagref (t), mpc_imagref (z));
@@ -75,8 +83,12 @@ FUN (mpfr_prec_t p, unsigned long n)
   mpc_clear (x);
   mpc_clear (z);
   mpc_clear (t);
-  printf ("Number of errors for %s: %lu/%lu (max %lu,%lu)\n", BAR,
-          errors, n, max_err_re, max_err_im);
+  printf ("Errors for %s: %lu/%lu (max %lu,%lu) [seed %lu]\n", BAR,
+          errors, n, max_err_re, max_err_im, seed);
+#if defined(FOO_EMIN) || defined(FOO_EMAX)
+  emin = saved_emin;
+  emax = saved_emax;
+#endif
 }
 
 #undef FOO

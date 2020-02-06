@@ -48,7 +48,6 @@ bug20200206 (void)
   mpfr_set_d (mpc_imagref (x), -4.9188093228194944e-89, MPFR_RNDN);
   mpfr_set_d (mpc_realref (y), -3.6801500191882962e-14, MPFR_RNDN);
   mpfr_set_d (mpc_imagref (y), 4.5420247980297260e-145, MPFR_RNDN);
-  printf ("emin=%ld emax=%ld\n", mpfr_get_emin (), mpfr_get_emax ());
   mpc_div (z, x, y, MPC_RNDNN);
   /* quotient is 1.44844440684571e-202 + 1.33657848108714e-75*I,
      where both the real and imaginary parts fit in the exponent range */

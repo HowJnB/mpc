@@ -35,10 +35,13 @@ along with this program. If not, see http://www.gnu.org/licenses/ .
 #include <stdlib.h>
 #include <string.h>
 #include <complex.h>
-#include "mpc-tests.h"
+#include <sys/types.h>
+#include <unistd.h>
+#include <assert.h>
 #ifdef __GNUC__
 #include <gnu/libc-version.h>
 #endif
+#include "mpc-tests.h"
 
 #define PRECISION 53
 #define EMAX 1024
@@ -50,28 +53,12 @@ along with this program. If not, see http://www.gnu.org/licenses/ .
 #define mpfr_set_type mpfr_set_d
 
 gmp_randstate_t state;
-unsigned long seed = 1;
+mpz_t expz; /* global variable used in mpcheck_random */
+unsigned long seed = 0;
 int verbose = 0;
+mpfr_exp_t emin, emax;
 
-static unsigned long
-ulp_error (mpfr_t x, mpfr_t y)
-{
-  mpfr_t z;
-  mpfr_prec_t p = mpfr_get_prec (y);
-  unsigned long n;
-
-  if (mpfr_cmp (x, y) == 0)
-    return 0;
-
-  mpfr_init2 (z, p);
-  mpfr_sub (z, x, y, MPFR_RNDN);
-  mpfr_abs (z, z, MPFR_RNDN);
-  /* divide by ulp(y) = 2^(EXP(y) - p) */
-  mpfr_div_2si (z, z, mpfr_get_exp (y) - p, MPFR_RNDN);
-  n = mpfr_get_ui (z, MPFR_RNDZ);
-  mpfr_clear (z);
-  return n;
-}
+#include "mpcheck-common.c"
 
 #define FOO add
 #define CFOO(x,y) (x+y)
@@ -140,11 +127,18 @@ ulp_error (mpfr_t x, mpfr_t y)
 #define FOO sinh
 #include "mpcheck-template1.c"
 
+/* use reduced exponent range for tan and tanh */
+#define FOO_EMIN -8
+#define FOO_EMAX  8
+
 #define FOO tan
 #include "mpcheck-template1.c"
 
 #define FOO tanh
 #include "mpcheck-template1.c"
+
+#undef FOO_EMIN
+#undef FOO_EMAX
 
 int
 main (int argc, char *argv[])
@@ -185,16 +179,22 @@ main (int argc, char *argv[])
         }
     }
 
-  /* set exponent range for 'double' */
-  mpfr_set_emin (-EMAX - PRECISION + 4); /* should be -1073 */
-  mpfr_set_emax (EMAX);
+  /* set exponent range */
+  emin = -EMAX - PRECISION + 4; /* should be -1073 */
+  emax = EMAX;
+  mpfr_set_emin (emin);
+  mpfr_set_emax (emax);
 
   gmp_randinit_default (state);
+  mpz_init (expz);
 
 #ifdef __GNUC__
   printf ("GNU libc version: %s\n", gnu_get_libc_version ());
   printf ("GNU libc release: %s\n", gnu_get_libc_release ());
 #endif
+
+  if (seed == 0)
+    seed = getpid ();
   printf ("Using random seed %lu\n", seed);
 
   /* (complex,complex) -> complex */
@@ -227,6 +227,7 @@ main (int argc, char *argv[])
   test_tanh (p, n);
 
   gmp_randclear (state);
+  mpz_clear (expz);
 
   return 0;
 }

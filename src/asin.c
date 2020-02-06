@@ -86,7 +86,8 @@ mpc_asin (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
   mpfr_prec_t p, p_re, p_im;
   mpfr_rnd_t rnd_re, rnd_im;
   mpc_t z1;
-  int inex, loop = 0;
+  int inex, inex_re, inex_im, loop = 0;
+  mpfr_exp_t saved_emin, saved_emax;
 
   /* special values */
   if (mpfr_nan_p (mpc_realref (op)) || mpfr_nan_p (mpc_imagref (op)))
@@ -112,7 +113,6 @@ mpc_asin (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
 
   if (mpfr_inf_p (mpc_realref (op)) || mpfr_inf_p (mpc_imagref (op)))
     {
-      int inex_re;
       if (mpfr_inf_p (mpc_realref (op)))
         {
           int inf_im = mpfr_inf_p (mpc_imagref (op));
@@ -137,8 +137,6 @@ mpc_asin (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
   /* pure real argument */
   if (mpfr_zero_p (mpc_imagref (op)))
     {
-      int inex_re;
-      int inex_im;
       int s_im;
       s_im = mpfr_signbit (mpc_imagref (op));
 
@@ -186,7 +184,6 @@ mpc_asin (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
   /* pure imaginary argument */
   if (mpfr_zero_p (mpc_realref (op)))
     {
-      int inex_im;
       int s;
       s = mpfr_signbit (mpc_realref (op));
       mpfr_set_ui (mpc_realref (rop), 0, MPFR_RNDN);
@@ -196,6 +193,11 @@ mpc_asin (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
 
       return MPC_INEX (0, inex_im);
     }
+
+  saved_emin = mpfr_get_emin ();
+  saved_emax = mpfr_get_emax ();
+  mpfr_set_emin (mpfr_get_emin_min ());
+  mpfr_set_emax (mpfr_get_emax_max ());
 
   /* regular complex: asin(z) = -i*log(i*z+sqrt(1-z^2)) */
   p_re = mpfr_get_prec (mpc_realref(rop));
@@ -286,5 +288,13 @@ mpc_asin (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
   inex = mpc_set (rop, z1, rnd);
   mpc_clear (z1);
 
-  return inex;
+  /* restore the exponent range, and check the range of results */
+  mpfr_set_emin (saved_emin);
+  mpfr_set_emax (saved_emax);
+  inex_re = mpfr_check_range (mpc_realref (rop), MPC_INEX_RE (inex),
+                              MPC_RND_RE (rnd));
+  inex_im = mpfr_check_range (mpc_imagref (rop), MPC_INEX_IM (inex),
+                              MPC_RND_IM (rnd));
+
+  return MPC_INEX (inex_re, inex_im);
 }

@@ -39,6 +39,8 @@ FUN (mpfr_prec_t p, unsigned long n)
   int inex;
   unsigned long errors = 0, max_err = 0;
 
+  printf ("Testing function %s\n", BAR);
+
   gmp_randseed_ui (state, seed);
 
   mpc_init2 (x, p);
@@ -46,13 +48,13 @@ FUN (mpfr_prec_t p, unsigned long n)
   mpfr_init2 (t, p);
   for (i = 0; i < n; i++)
     {
-      mpc_urandom (x, state);
+      mpcheck_random (x);
       inex = MPC_FOO (z, x, MPC_RNDNN);
       mpfr_subnormalize (z, inex, MPFR_RNDN);
       xx = mpc_get_type (x, MPC_RNDNN);
       zz = CFOO (xx);
       mpfr_set_type (t, zz, MPFR_RNDN);
-      if (mpfr_cmp (z, t) != 0)
+      if (mpcheck_mpfr_cmp (t, z) != 0)
         {
           unsigned long err = ulp_error (t, z);
           if (verbose > 0 && err > max_err)
@@ -71,7 +73,8 @@ FUN (mpfr_prec_t p, unsigned long n)
   mpc_clear (x);
   mpfr_clear (z);
   mpfr_clear (t);
-  printf ("Number of errors for %s: %lu/%lu (max %lu)\n", BAR, errors, n, max_err);
+  printf ("Errors for %s: %lu/%lu (max %lu) [seed %lu]\n",
+          BAR, errors, n, max_err, seed);
 }
 
 #undef FOO

@@ -486,6 +486,7 @@ mpc_pow (mpc_ptr z, mpc_srcptr x, mpc_srcptr y, mpc_rnd_t rnd)
   mpfr_prec_t p, pr, pi, maxprec;
   int saved_underflow, saved_overflow;
   int inex_re, inex_im;
+  mpfr_exp_t saved_emin, saved_emax;
 
   /* save the underflow or overflow flags from MPFR */
   saved_underflow = mpfr_underflow_p ();
@@ -644,6 +645,11 @@ mpc_pow (mpc_ptr z, mpc_srcptr x, mpc_srcptr y, mpc_rnd_t rnd)
           else
             z_real = 1;
         }
+
+  saved_emin = mpfr_get_emin ();
+  saved_emax = mpfr_get_emax ();
+  mpfr_set_emin (mpfr_get_emin_min ());
+  mpfr_set_emax (mpfr_get_emax_max ());
 
   pr = mpfr_get_prec (mpc_realref(z));
   pi = mpfr_get_prec (mpc_imagref(z));
@@ -836,6 +842,15 @@ mpc_pow (mpc_ptr z, mpc_srcptr x, mpc_srcptr y, mpc_rnd_t rnd)
     mpfr_set_underflow ();
   if (saved_overflow)
     mpfr_set_overflow ();
+
+  /* restore the exponent range, and check the range of results */
+  mpfr_set_emin (saved_emin);
+  mpfr_set_emax (saved_emax);
+  inex_re = mpfr_check_range (mpc_realref (z), MPC_INEX_RE(ret),
+                              MPC_RND_RE (rnd));
+  inex_im = mpfr_check_range (mpc_imagref (z), MPC_INEX_IM(ret),
+                              MPC_RND_IM (rnd));
+  ret = MPC_INEX(inex_re, inex_im);
 
  end:
   return ret;

@@ -38,6 +38,9 @@ FUN (mpfr_prec_t p, unsigned long n)
   TYPE complex xx, yy, zz;
   int inex;
   unsigned long errors = 0, max_err_re = 0, max_err_im = 0;
+  int cmp;
+
+  printf ("Testing function %s\n", BAR);
 
   gmp_randseed_ui (state, seed);
 
@@ -47,8 +50,8 @@ FUN (mpfr_prec_t p, unsigned long n)
   mpc_init2 (t, p);
   for (i = 0; i < n; i++)
     {
-      mpc_urandom (x, state);
-      mpc_urandom (y, state);
+      mpcheck_random (x);
+      mpcheck_random (y);
       inex = MPC_FOO (z, x, y, MPC_RNDNN);
       mpfr_subnormalize (mpc_realref (z), MPC_INEX_RE(inex), MPFR_RNDN);
       mpfr_subnormalize (mpc_imagref (z), MPC_INEX_IM(inex), MPFR_RNDN);
@@ -56,7 +59,23 @@ FUN (mpfr_prec_t p, unsigned long n)
       yy = mpc_get_dc (y, MPC_RNDNN);
       zz = CFOO(xx, yy);
       mpc_set_type (t, zz, MPFR_RNDN);
-      if (mpc_cmp (z, t) != 0)
+      cmp = mpcheck_mpc_cmp (t, z);
+      if (cmp > 1)
+        {
+          if (verbose > 0)
+            {
+              printf ("   mpc_%s and c%s differ\n", BAR, BAR);
+              mpfr_printf ("      for x=(%Re,%Re)\n          y=(%Re,%Re)\n",
+                           mpc_realref (x), mpc_imagref (x),
+                           mpc_realref (y), mpc_imagref (y));
+              mpfr_printf ("   mpc_%s gives (%Re,%Re)\n", BAR,
+                           mpc_realref (z), mpc_imagref (z));
+              mpfr_printf ("      c%s gives (%Re,%Re)\n", BAR,
+                           mpc_realref (t), mpc_imagref (t));
+            }
+          errors ++;
+        }
+      else if (cmp != 0)
         {
           unsigned long err_re = ulp_error (mpc_realref (t), mpc_realref (z));
           unsigned long err_im = ulp_error (mpc_imagref (t), mpc_imagref (z));
@@ -83,8 +102,8 @@ FUN (mpfr_prec_t p, unsigned long n)
   mpc_clear (y);
   mpc_clear (z);
   mpc_clear (t);
-  printf ("Number of errors for %s: %lu/%lu (max %lu,%lu)\n", BAR, errors, n,
-          max_err_re, max_err_im);
+  printf ("Errors for %s: %lu/%lu (max %lu,%lu) [seed %lu]\n", BAR, errors, n,
+          max_err_re, max_err_im, seed);
 }
 
 #undef FOO
