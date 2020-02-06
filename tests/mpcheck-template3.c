@@ -40,7 +40,8 @@ FUN (mpfr_prec_t p, unsigned long n)
   unsigned long errors = 0, max_err_re = 0, max_err_im = 0;
   int cmp;
 
-  printf ("Testing function %s\n", BAR);
+  if (verbose > 0)
+    printf ("Testing function %s\n", BAR);
 
   gmp_randseed_ui (state, seed);
 

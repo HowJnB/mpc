@@ -216,7 +216,8 @@ mpc_asin (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
     mpfr_set_prec (mpc_imagref(z1), p);
 
     /* try special code for 1+i*y with tiny y */
-    if (loop == 1 && mpc_asin_special (rop, op, rnd, z1))
+    if (loop == 1 && mpfr_cmp_ui (mpc_realref(op), 1) == 0 &&
+        mpc_asin_special (rop, op, rnd, z1))
       break;
 
     /* z1 <- z^2 */

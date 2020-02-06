@@ -43,7 +43,8 @@ FUN (mpfr_prec_t p, unsigned long n)
   emax = FOO_EMAX;
 #endif
 
-  printf ("Testing function %s\n", BAR);
+  if (verbose > 0)
+    printf ("Testing function %s\n", BAR);
 
   gmp_randseed_ui (state, seed);
 
