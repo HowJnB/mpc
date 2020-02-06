@@ -244,9 +244,7 @@ mpc_div (mpc_ptr a, mpc_srcptr b, mpc_srcptr c, mpc_rnd_t rnd)
    mpfr_rnd_t rnd_re = MPC_RND_RE (rnd), rnd_im = MPC_RND_IM (rnd);
    int saved_underflow, saved_overflow;
    int tmpsgn;
-   mpfr_exp_t e, emin, emax, emid; /* for scaling of exponents */
-   mpc_t b_scaled, c_scaled;
-   mpfr_t b_re, b_im, c_re, c_im;
+   mpfr_exp_t saved_emin, saved_emax;
 
    /* According to the C standard G.3, there are three types of numbers:   */
    /* finite (both parts are usual real numbers; contains 0), infinite     */
@@ -278,57 +276,16 @@ mpc_div (mpc_ptr a, mpc_srcptr b, mpc_srcptr c, mpc_rnd_t rnd)
    mpc_init2 (res, 2);
    mpfr_init (q);
 
-   /* compute scaling of exponents: none of Re(c) and Im(c) can be zero,
-      but one of Re(b) or Im(b) could be zero */
-
-   e = mpfr_get_exp (mpc_realref (c));
-   emin = emax = e;
-   e = mpfr_get_exp (mpc_imagref (c));
-   if (e > emax)
-     emax = e;
-   else if (e < emin)
-     emin = e;
-   if (!mpfr_zero_p (mpc_realref (b)))
-     {
-       e = mpfr_get_exp (mpc_realref (b));
-       if (e > emax)
-         emax = e;
-       else if (e < emin)
-         emin = e;
-     }
-   if (!mpfr_zero_p (mpc_imagref (b)))
-     {
-       e = mpfr_get_exp (mpc_imagref (b));
-       if (e > emax)
-         emax = e;
-       else if (e < emin)
-         emin = e;
-     }
-
-   /* all input exponents are in [emin, emax] */
-   emid = emin / 2 + emax / 2;
-
-   /* scale the inputs */
-   b_re[0] = mpc_realref (b)[0];
-   if (!mpfr_zero_p (mpc_realref (b)))
-     MPFR_EXP(b_re) = MPFR_EXP(mpc_realref (b)) - emid;
-   b_im[0] = mpc_imagref (b)[0];
-   if (!mpfr_zero_p (mpc_imagref (b)))
-     MPFR_EXP(b_im) = MPFR_EXP(mpc_imagref (b)) - emid;
-   c_re[0] = mpc_realref (c)[0];
-   MPFR_EXP(c_re) = MPFR_EXP(mpc_realref (c)) - emid;
-   c_im[0] = mpc_imagref (c)[0];
-   MPFR_EXP(c_im) = MPFR_EXP(mpc_imagref (c)) - emid;
-
-   /* create the scaled inputs without allocating new memory */
-   mpc_realref (b_scaled)[0] = b_re[0];
-   mpc_imagref (b_scaled)[0] = b_im[0];
-   mpc_realref (c_scaled)[0] = c_re[0];
-   mpc_imagref (c_scaled)[0] = c_im[0];
+   /* we perform the division in the largest possible exponent range,
+      to avoid underflow/overflow in intermediate computations */
+   saved_emin = mpfr_get_emin ();
+   saved_emax = mpfr_get_emax ();
+   mpfr_set_emin (mpfr_get_emin_min ());
+   mpfr_set_emax (mpfr_get_emax_max ());
 
    /* create the conjugate of c in c_conj without allocating new memory */
-   mpc_realref (c_conj)[0] = mpc_realref (c_scaled)[0];
-   mpc_imagref (c_conj)[0] = mpc_imagref (c_scaled)[0];
+   mpc_realref (c_conj)[0] = mpc_realref (c)[0];
+   mpc_imagref (c_conj)[0] = mpc_imagref (c)[0];
    MPFR_CHANGE_SIGN (mpc_imagref (c_conj));
 
    /* save the underflow or overflow flags from MPFR */
@@ -342,20 +299,20 @@ mpc_div (mpc_ptr a, mpc_srcptr b, mpc_srcptr c, mpc_rnd_t rnd)
       mpc_set_prec (res, prec);
       mpfr_set_prec (q, prec);
 
-      /* first compute norm(c_scaled) */
+      /* first compute norm(c) */
       mpfr_clear_underflow ();
       mpfr_clear_overflow ();
-      inexact_norm = mpc_norm (q, c_scaled, MPFR_RNDU);
+      inexact_norm = mpc_norm (q, c, MPFR_RNDU);
       underflow_norm = mpfr_underflow_p ();
       overflow_norm = mpfr_overflow_p ();
       if (underflow_norm)
          mpfr_set_ui (q, 0ul, MPFR_RNDN);
          /* to obtain divisions by 0 later on */
 
-      /* now compute b_scaled*conjugate(c_scaled) */
+      /* now compute b*conjugate(c) */
       mpfr_clear_underflow ();
       mpfr_clear_overflow ();
-      inexact_prod = mpc_mul (res, b_scaled, c_conj, MPC_RNDZZ);
+      inexact_prod = mpc_mul (res, b, c_conj, MPC_RNDZZ);
       inexact_re = MPC_INEX_RE (inexact_prod);
       inexact_im = MPC_INEX_IM (inexact_prod);
       underflow_prod = mpfr_underflow_p ();
@@ -504,6 +461,12 @@ mpc_div (mpc_ptr a, mpc_srcptr b, mpc_srcptr c, mpc_rnd_t rnd)
      mpfr_set_underflow ();
    if (saved_overflow)
      mpfr_set_overflow ();
+
+   /* restore the exponent range, and check the range of results */
+   mpfr_set_emin (saved_emin);
+   mpfr_set_emax (saved_emax);
+   inexact_re = mpfr_check_range (mpc_realref (a), inexact_re, rnd_re);
+   inexact_im = mpfr_check_range (mpc_imagref (a), inexact_im, rnd_im);
 
    return MPC_INEX (inexact_re, inexact_im);
 }
