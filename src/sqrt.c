@@ -48,6 +48,7 @@ mpc_sqrt (mpc_ptr a, mpc_srcptr b, mpc_rnd_t rnd)
      /* we need to know the sign of Im(b) when it is +/-0 */
   const mpfr_rnd_t r = im_sgn ? MPFR_RNDD : MPFR_RNDU;
      /* rounding mode used when computing t */
+  mpfr_exp_t saved_emin, saved_emax;
 
   /* special values */
   if (!mpc_fin_p (b)) {
@@ -201,6 +202,11 @@ mpc_sqrt (mpc_ptr a, mpc_srcptr b, mpc_rnd_t rnd)
             rnd_t = MPFR_RNDU;
       }
    }
+
+  saved_emin = mpfr_get_emin ();
+  saved_emax = mpfr_get_emax ();
+  mpfr_set_emin (mpfr_get_emin_min ());
+  mpfr_set_emax (mpfr_get_emax_max ());
 
   do
     {
@@ -362,6 +368,12 @@ mpc_sqrt (mpc_ptr a, mpc_srcptr b, mpc_rnd_t rnd)
 
   mpfr_clear (w);
   mpfr_clear (t);
+
+  /* restore the exponent range, and check the range of results */
+  mpfr_set_emin (saved_emin);
+  mpfr_set_emax (saved_emax);
+  inex_re = mpfr_check_range (mpc_realref (a), inex_re, MPC_RND_RE (rnd));
+  inex_im = mpfr_check_range (mpc_imagref (a), inex_im, MPC_RND_IM (rnd));
 
   return MPC_INEX (inex_re, inex_im);
 }
