@@ -76,9 +76,17 @@ FUN (mpfr_prec_t p, unsigned long n)
             }
           errors ++;
           if (err_re > max_err_re)
-            max_err_re = err_re;
+            {
+              max_err_re = err_re;
+              if (max_err_re > Max_err_re)
+                Max_err_re = max_err_re;
+            }
           if (err_im > max_err_im)
-            max_err_im = err_im;
+            {
+              max_err_im = err_im;
+              if (max_err_im > Max_err_im)
+                Max_err_im = max_err_im;
+            }
         }
     }
   mpc_clear (x);

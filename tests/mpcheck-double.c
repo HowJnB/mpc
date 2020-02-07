@@ -229,5 +229,7 @@ main (int argc, char *argv[])
   gmp_randclear (state);
   mpz_clear (expz);
 
+  report_maximal_errors ();
+
   return 0;
 }

@@ -38,6 +38,7 @@ FUN (mpfr_prec_t p, unsigned long n)
   TYPE complex xx, yy, zz;
   int inex;
   unsigned long errors = 0, max_err_re = 0, max_err_im = 0;
+  unsigned long special_errors = 0;
   int cmp;
 
   if (verbose > 0)
@@ -61,9 +62,9 @@ FUN (mpfr_prec_t p, unsigned long n)
       zz = CFOO(xx, yy);
       mpc_set_type (t, zz, MPFR_RNDN);
       cmp = mpcheck_mpc_cmp (t, z);
-      if (cmp > 1)
+      if (cmp > 1) /* NaN or Inf */
         {
-          if (verbose > 0)
+          if (verbose > 1 || (verbose == 1 && special_errors == 0))
             {
               printf ("   mpc_%s and c%s differ\n", BAR, BAR);
               mpfr_printf ("      for x=(%Re,%Re)\n          y=(%Re,%Re)\n",
@@ -73,6 +74,7 @@ FUN (mpfr_prec_t p, unsigned long n)
                            mpc_realref (z), mpc_imagref (z));
               mpfr_printf ("      c%s gives (%Re,%Re)\n", BAR,
                            mpc_realref (t), mpc_imagref (t));
+              special_errors ++;
             }
           errors ++;
         }
@@ -94,9 +96,17 @@ FUN (mpfr_prec_t p, unsigned long n)
             }
           errors ++;
           if (err_re > max_err_re)
-            max_err_re = err_re;
+            {
+              max_err_re = err_re;
+              if (max_err_re > Max_err_re)
+                Max_err_re = max_err_re;
+            }
           if (err_im > max_err_im)
-            max_err_im = err_im;
+            {
+              max_err_im = err_im;
+              if (max_err_im > Max_err_im)
+                Max_err_im = max_err_im;
+            }
         }
     }
   mpc_clear (x);
