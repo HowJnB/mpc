@@ -680,11 +680,13 @@ mpc_pow (mpc_ptr z, mpc_srcptr x, mpc_srcptr y, mpc_rnd_t rnd)
       if (mpfr_get_exp (mpc_imagref(t)) > (mpfr_exp_t) q)
         q = mpfr_get_exp (mpc_imagref(t));
 
-      /* if q >= p, we get an error of order 1 on the imaginary part of t,
-         which is not enough to get the correct sign of exp(t) */
-      if (q >= p)
+      /* the signs of the real/imaginary parts of exp(t) are determined by the
+         quadrant of exp(i*imag(t)), which depends on imag(t) mod (2pi).
+         We ensure that p >= q + 64 to get enough precision, but this might
+         be not enough in corner cases (FIXME). */
+      if (p < q + 64)
         {
-          p = p + 64;
+          p = q + 64;
           goto try_again;
         }
 
