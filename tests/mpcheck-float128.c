@@ -182,6 +182,12 @@ main (int argc, char *argv[])
           argc --;
           argv ++;
         }
+      else if (strcmp (argv[1], "-check") == 0)
+        {
+          recheck = 1;
+          argc --;
+          argv ++;
+        }
       else
         {
           fprintf (stderr, "Unknown option %s\n", argv[1]);

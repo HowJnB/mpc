@@ -24,9 +24,51 @@ along with this program. If not, see http://www.gnu.org/licenses/ .
 #define TOSTRING(x) STRINGIFY(x)
 
 #define FUN CAT2(test_,FOO)
+#define CHECK CAT2(check_,FOO)
 #define MPC_FOO CAT2(mpc_,FOO)
 #define CFOO CAT2(CAT2(c,FOO),SUFFIX)
 #define BAR TOSTRING(FOO)
+
+#define EXTRA 20
+
+/* routine to double-check result from MPC with more precision and without
+   reduced exponent range */
+static void
+CHECK (mpc_t x, mpfr_t z)
+{
+  mpfr_exp_t saved_emin = mpfr_get_emin ();
+  mpfr_exp_t saved_emax = mpfr_get_emax ();
+  mpfr_prec_t p = mpfr_get_prec (mpc_realref (x)), pp = p + EXTRA;
+  mpfr_t t;
+  int inex, ok;
+
+  /* enlarge exponent range to the largest possible */
+  mpfr_set_emin (mpfr_get_emin_min ());
+  mpfr_set_emax (mpfr_get_emax_max ());
+
+  mpfr_init2 (t, pp);
+  MPC_FOO (t, x, MPFR_RNDN);
+  inex = mpfr_prec_round (t, p, MPFR_RNDN);
+  /* restore exponent range */
+  mpfr_set_emin (saved_emin);
+  mpfr_set_emax (saved_emax);
+  inex = mpfr_check_range (t, inex, MPFR_RNDN);
+  inex = mpfr_subnormalize (t, inex, MPFR_RNDN);
+
+  /* check real parts agree */
+  ok = mpfr_agree (z, t, inex);
+
+  if (!ok)
+    {
+      mpfr_printf ("Potential bug in mpc_%s for x=(%Re,%Re)\n", BAR,
+                   mpc_realref (x), mpc_imagref (x));
+      mpfr_printf ("   mpc_%s to precision %lu gives %Re\n", BAR, p, z);
+      mpfr_printf ("   mpc_%s to precision %lu gives %Re\n", BAR, pp, t);
+      exit (1);
+    }
+
+  mpfr_clear (t);
+}
 
 static void
 FUN (mpfr_prec_t p, unsigned long n)
@@ -66,6 +108,8 @@ FUN (mpfr_prec_t p, unsigned long n)
               mpfr_printf ("   mpc_%s gives %Re\n", BAR, z);
               mpfr_printf ("      c%s gives %Re\n", BAR, t);
             }
+          if (recheck)
+            CHECK (x, z);
           errors++;
           if (err > max_err)
             {

@@ -24,11 +24,60 @@ along with this program. If not, see http://www.gnu.org/licenses/ .
 #define TOSTRING(x) STRINGIFY(x)
 
 #define FUN CAT2(test_,FOO)
+#define CHECK CAT2(check_,FOO)
 #define MPC_FOO CAT2(mpc_,FOO)
 #ifndef CFOO
 #define CFOO CAT2(CAT2(c,FOO),SUFFIX)
 #endif
 #define BAR TOSTRING(FOO)
+
+#define EXTRA 20
+
+/* routine to double-check result from MPC with more precision and without
+   reduced exponent range */
+static void
+CHECK (mpc_t x, mpc_t y, mpc_t z)
+{
+  mpfr_exp_t saved_emin = mpfr_get_emin ();
+  mpfr_exp_t saved_emax = mpfr_get_emax ();
+  mpfr_prec_t p = mpfr_get_prec (mpc_realref (x)), pp = p + EXTRA;
+  mpc_t t;
+  int ok, inex_re, inex_im;
+
+  /* enlarge exponent range to the largest possible */
+  mpfr_set_emin (mpfr_get_emin_min ());
+  mpfr_set_emax (mpfr_get_emax_max ());
+
+  mpc_init2 (t, pp);
+  MPC_FOO (t, x, y, MPC_RNDNN);
+  inex_re = mpfr_prec_round (mpc_realref (t), p, MPFR_RNDN);
+  inex_im = mpfr_prec_round (mpc_imagref (t), p, MPFR_RNDN);
+  /* restore exponent range */
+  mpfr_set_emin (saved_emin);
+  mpfr_set_emax (saved_emax);
+  inex_re = mpfr_check_range (mpc_realref (t), inex_re, MPFR_RNDN);
+  inex_re = mpfr_subnormalize (mpc_realref (t), inex_re, MPFR_RNDN);
+  inex_im = mpfr_check_range (mpc_imagref (t), inex_im, MPFR_RNDN);
+  inex_im = mpfr_subnormalize (mpc_imagref (t), inex_im, MPFR_RNDN);
+
+  /* check real parts agree */
+  ok = mpfr_agree (mpc_realref (z), mpc_realref (t), inex_re)
+    && mpfr_agree (mpc_imagref (z), mpc_imagref (t), inex_im);
+
+  if (!ok)
+    {
+      mpfr_printf ("Potential bug in mpc_%s for\n", BAR);
+      mpfr_printf ("   x=(%Re,%Re)\n", mpc_realref (x), mpc_imagref (x));
+      mpfr_printf ("   y=(%Re,%Re)\n", mpc_realref (y), mpc_imagref (y));
+      mpfr_printf ("   mpc_%s to precision %lu gives (%Re,%Re)\n", BAR, p,
+                   mpc_realref (z), mpc_imagref (z));
+      mpfr_printf ("   mpc_%s to precision %lu gives (%Re,%Re)\n", BAR, pp,
+                   mpc_realref (t), mpc_imagref (t));
+      exit (1);
+    }
+
+  mpc_clear (t);
+}
 
 static void
 FUN (mpfr_prec_t p, unsigned long n)
@@ -108,6 +157,8 @@ FUN (mpfr_prec_t p, unsigned long n)
                 Max_err_im = max_err_im;
             }
         }
+      if (recheck && cmp != 0)
+        CHECK (x, y, z);
     }
   mpc_clear (x);
   mpc_clear (y);
