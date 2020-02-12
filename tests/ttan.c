@@ -197,6 +197,37 @@ pure_imaginary_argument (void)
   mpfr_clear (y);
 }
 
+/* test with reduced exponent range */
+static void
+bug20200211 (void)
+{
+  mpfr_exp_t emin = mpfr_get_emin ();
+  mpc_t x, z, zr;
+
+  mpfr_set_emin (-148);
+  mpc_init2 (x, 24);
+  mpc_init2 (z, 24);
+  mpc_init2 (zr, 24);
+  mpfr_set_flt (mpc_realref (x), 0x3.b32d48p24, MPFR_RNDN);
+  mpfr_set_flt (mpc_imagref (x), -0x48.08bd0p0, MPFR_RNDN);
+  mpc_tan (z, x, MPC_RNDNN);
+  /* the real part should be 1.8638349976774607754968796608e-63,
+     but since that underflows, we should get +0 */
+  mpfr_set_flt (mpc_realref (zr), +0.0f, MPFR_RNDN);
+  mpfr_set_flt (mpc_imagref (zr), -1.0f, MPFR_RNDN);
+  if (mpc_cmp (z, zr))
+    {
+      printf ("Incorrect tangent with reduced exponent range:\n");
+      mpfr_printf ("Expected (%Re,%Re)\n", mpc_realref (zr), mpc_imagref (zr));
+      mpfr_printf ("Got      (%Re,%Re)\n", mpc_realref (z), mpc_imagref (z));
+      exit (1);
+    }
+  mpc_clear (x);
+  mpc_clear (z);
+  mpc_clear (zr);
+  mpfr_set_emin (emin);
+}
+
 #define MPC_FUNCTION_CALL                                       \
   P[0].mpc_inex = mpc_tan (P[1].mpc, P[2].mpc, P[3].mpc_rnd)
 #define MPC_FUNCTION_CALL_REUSE_OP1                             \
@@ -209,6 +240,8 @@ int
 main (void)
 {
   test_start ();
+
+  bug20200211 ();
 
   data_check_template ("tan.dsc", "tan.dat");
 
