@@ -30,13 +30,14 @@ along with this program. If not, see http://www.gnu.org/licenses/ .
 static int
 tan_im_cmp_one (mpc_srcptr op)
 {
-  mpfr_t c;
+  mpfr_t x, c;
   int ret = 0;
   mpfr_exp_t expc;
 
-  mpfr_init2 (c, mpfr_get_prec (mpc_realref (op)));
-  mpfr_mul_2exp (c, mpc_realref (op), 1, MPFR_RNDN);
-  mpfr_cos (c, c, MPFR_RNDN);
+  mpfr_init2 (x, mpfr_get_prec (mpc_realref (op)));
+  mpfr_mul_2exp (x, mpc_realref (op), 1, MPFR_RNDN);
+  mpfr_init2 (c, 32);
+  mpfr_cos (c, x, MPFR_RNDN);
   /* if cos(2x) >= 0, then |sinh(2y)/(cos(2x)+cosh(2y))| < 1 */
   if (mpfr_sgn (c) >= 0)
     ret = -1; /* |Im(tan(op))| < 1 */
@@ -45,32 +46,42 @@ tan_im_cmp_one (mpc_srcptr op)
       /* now cos(2x) < 0: |cosh(2y) - sinh(2y)| = exp(-2|y|) */
       expc = mpfr_get_exp (c);
       mpfr_abs (c, mpc_imagref (op), MPFR_RNDN);
-      mpfr_mul_2si (c, c, -2, MPFR_RNDN);
+      mpfr_mul_si (c, c, -2, MPFR_RNDN);
       mpfr_exp (c, c, MPFR_RNDN);
       if (mpfr_zero_p (c) || mpfr_get_exp (c) < expc)
         ret = 1; /* |Im(tan(op))| > 1 */
     }
   mpfr_clear (c);
+  mpfr_clear (x);
   return ret;
 }
 
 /* special case where the real part of tan(op) underflows to 0:
-   return 1 if |Re(tan(op))| > 0, -1 if |Re(tan(op))| < 0, and 0
-   if we can't decide.
-   The real part is sinh(2*x)/(cos(2*x) + cosh(2*y)) where op = (x,y),
-   thus has the sign of sinh(2*x).
+   return 1 if 0 < Re(tan(op)) < 2^(emin-2),
+   -1 if -2^(emin-2) < Re(tan(op))| < 0, and 0 if we can't decide.
+   The real part is sin(2*x)/(cos(2*x) + cosh(2*y)) where op = (x,y),
+   thus has the sign of sin(2*x).
 */
 static int
-tan_re_cmp_zero (mpc_srcptr op)
+tan_re_cmp_zero (mpc_srcptr op, mpfr_exp_t emin)
 {
-  mpfr_t s;
+  mpfr_t x, s, c;
   int ret = 0;
 
-  mpfr_init2 (s, mpfr_get_prec (mpc_realref (op)));
-  mpfr_mul_2exp (s, mpc_realref (op), 1, MPFR_RNDN);
-  mpfr_sin (s, s, MPFR_RNDN);
-  ret = mpfr_sgn (s);
+  mpfr_init2 (x, mpfr_get_prec (mpc_realref (op)));
+  mpfr_mul_2exp (x, mpc_realref (op), 1, MPFR_RNDN);
+  mpfr_init2 (s, 32);
+  mpfr_init2 (c, 32);
+  mpfr_sin (s, x, MPFR_RNDA);
+  mpfr_mul_2exp (x, mpc_imagref (op), 1, MPFR_RNDN);
+  mpfr_cosh (c, x, MPFR_RNDZ);
+  mpfr_sub_ui (c, c, 1, MPFR_RNDZ);
+  mpfr_div (s, s, c, MPFR_RNDA);
+  if (mpfr_zero_p (s) || mpfr_get_exp (s) <= emin - 2)
+    ret = mpfr_sgn (s);
   mpfr_clear (s);
+  mpfr_clear (c);
+  mpfr_clear (x);
   return ret;
 }
 
@@ -250,7 +261,7 @@ mpc_tan (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
       MPFR_ADD_ONE_ULP (mpc_imagref (x));
       MPFR_ADD_ONE_ULP (mpc_realref (y));
       MPFR_ADD_ONE_ULP (mpc_imagref (y));
-      MPC_ASSERT (mpfr_zero_p (mpc_realref (x)) == 0);
+
 
       if (   mpfr_inf_p (mpc_realref (x)) || mpfr_inf_p (mpc_imagref (x))
           || mpfr_inf_p (mpc_realref (y)) || mpfr_inf_p (mpc_imagref (y))) {
@@ -306,7 +317,7 @@ mpc_tan (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
         {
           /* since we use an extended exponent range, if real(x) is zero,
              this means the real part underflows, and we assume we can round */
-          ok = tan_re_cmp_zero (op);
+          ok = tan_re_cmp_zero (op, saved_emin);
           if (ok > 0)
             MPFR_ADD_ONE_ULP (mpc_realref (x));
           else
