@@ -87,7 +87,7 @@ mpc_asin (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
   mpfr_rnd_t rnd_re, rnd_im;
   mpc_t z1;
   int inex, inex_re, inex_im, loop = 0;
-  mpfr_exp_t saved_emin, saved_emax;
+  mpfr_exp_t saved_emin, saved_emax, err;
 
   /* special values */
   if (mpfr_nan_p (mpc_realref (op)) || mpfr_nan_p (mpc_imagref (op)))
@@ -206,11 +206,13 @@ mpc_asin (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
   rnd_im = MPC_RND_IM(rnd);
   p = p_re >= p_im ? p_re : p_im;
   mpc_init2 (z1, p);
+  err = 0; /* number of lost bits */
   while (1)
   {
-    mpfr_exp_t ex, ey, err;
+    mpfr_exp_t ex, ey;
 
     loop ++;
+    p += err; /* add number of lost bits in previous loop */
     p += (loop <= 2) ? mpc_ceil_log2 (p) + 3 : p / 2;
     mpfr_set_prec (mpc_realref(z1), p);
     mpfr_set_prec (mpc_imagref(z1), p);
