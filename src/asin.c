@@ -80,6 +80,64 @@ mpc_asin_special (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd, mpc_ptr z1)
   return 1;
 }
 
+/* Special case for |z| <= 1/2 and tiny imaginary part (see algorithms.tex).
+   Return 0 if the special case fails (this cannot be confused with an exact
+   ternary value since this cannot happen).
+   Otherwise puts an approximation in z1, so that rounding it in rop will get
+   the correct result. */
+static int
+mpc_asin_special2 (mpc_ptr rop, mpc_srcptr op, mpc_ptr z1)
+{
+  /* for |z| <= 1/2, we know that:
+     |Re(asin z) - Re(z)| < 0.198 |z|^3
+     |Im(asin z) - Im(z)| < 0.667 |z|^2 |Im(z)|
+     thus if 0.667 |z|^2 < 1/2 ulp(1) we can round to Re(z) and Im(z) */
+  mpfr_exp_t ex = mpfr_get_exp (mpc_realref (op));
+  mpfr_exp_t ey = mpfr_get_exp (mpc_imagref (op));
+  mpfr_prec_t px = mpfr_get_prec (mpc_realref (rop));
+  mpfr_prec_t py = mpfr_get_prec (mpc_imagref (rop));
+  int sign_re, sign_im, sign_re_t, sign_im_t;
+  mpc_t t;
+
+  /* |x| < 2^ex and |y| < 2^ey thus |z^2| < 2^(2*max(ex,ey)+1) */
+  ex = (ex > ey) ? 2 * ex + 1 : 2 * ey + 1;
+  /* 0.667 |z|^2 < 1/2 ulp(1) if 2^ex <= 2^-p thus ex <= -p */
+  if (ex + px > 0 || ex + py > 0)
+    return 0; /* special case fails */
+
+  /* if the precision of the input is larger than that of the output,
+     we fail since we should deal with a double-rounding, which is not
+     implemented below */
+  if (mpfr_get_prec (mpc_realref (op)) > px ||
+      mpfr_get_prec (mpc_imagref (op)) > py)
+    return 0;
+
+  mpc_init2 (t, 32);
+  mpc_pow_ui (t, op, 3, MPC_RNDNN);
+  sign_re_t = MPFR_SIGN (mpc_realref (t));
+  sign_im_t = MPFR_SIGN (mpc_imagref (t));
+  mpc_clear (t);
+
+  /* approximate the real part: since asin z = z + z^3/6 + ..., the real part
+     has to be rounded according to the sign of Re(t) */
+  mpfr_set (mpc_realref (z1), mpc_realref (op), MPFR_RNDN);
+  sign_re = MPFR_SIGN (mpc_realref (op));
+  if (sign_re * sign_re_t > 0)
+    MPFR_ADD_ONE_ULP (mpc_realref (z1));
+  else
+    MPFR_SUB_ONE_ULP (mpc_realref (z1));
+
+  /* approximate the imaginary part */
+  mpfr_set (mpc_imagref (z1), mpc_imagref (op), MPFR_RNDN);
+  sign_im = MPFR_SIGN (mpc_imagref (op));
+  if (sign_im * sign_im_t > 0)
+    MPFR_ADD_ONE_ULP (mpc_imagref (z1));
+  else
+    MPFR_SUB_ONE_ULP (mpc_imagref (z1));
+
+  return 1;
+}
+
 int
 mpc_asin (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
 {
@@ -221,6 +279,10 @@ mpc_asin (mpc_ptr rop, mpc_srcptr op, mpc_rnd_t rnd)
     /* try special code for 1+i*y with tiny y */
     if (loop == 1 && mpfr_cmp_ui (mpc_realref(op), 1) == 0 &&
         mpc_asin_special (rop, op, rnd, z1))
+      break;
+
+    /* try special code for 1+i*y with tiny y */
+    if (loop == 1 && mpc_asin_special2 (rop, op, z1))
       break;
 
     /* z1 <- z^2 */

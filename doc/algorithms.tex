@@ -1186,8 +1186,47 @@ k_R=\left\{
 
 \subsection {\texttt {mpc\_asin}}
 
-For $0 \leq y \leq 1$, we have $|\Re \asin (1 \pm iy) - \pi/2|
+\paragraph{Tiny imaginary part.}
+First, in case the real part of the argument is exactly $1$,
+for $0 \leq y \leq 1$, we have $|\Re \asin (1 \pm iy) - \pi/2|
 \leq y^{1/2}$, and $|\Im \asin (1 \pm iy) \mp y^{1/2}| \leq (1/12) y^{3/2}$.
+
+In the general case,
+formula 4.4.40 from \cite{AbSt73} gives for $|z| < 1$:
+\begin{equation} \label{eq_asin}
+\asin z = z + \frac{1}{2} \frac{z^3}{3} + \frac{1 \cdot 3}{2 \cdot 4}
+  \frac{z^5}{5} + \frac{1 \cdot 3 \cdot 5}{2 \cdot 4 \cdot 6} \frac{z^7}{7}
+  + \cdots
+\end{equation}
+thus we have $\asin z = z + z^3 t$ where
+\[ t = \frac{1}{2} \frac{1}{3} + \frac{1 \cdot 3}{2 \cdot 4}
+  \frac{z^2}{5} + \frac{1 \cdot 3 \cdot 5}{2 \cdot 4 \cdot 6} \frac{z^4}{7}
+  + \cdots, \]
+thus
+\[ |t| \leq \frac{1}{2} \left( \frac{1}{3} + \frac{|z|^2}{5}
+      + \frac{|z|^7}{7} + \cdots \right) \]
+% var('k'); 1/2*sum((1/2)^(2*k)/(2*k+3),k,0,infinity)
+We assume $|z| \leq 1/2$.
+Since $\sum_{k \geq 0} (1/2)^{2k}/(2k+3)
+= 2 \log 3 - 2 \leq 0.198$, thus $|t| < 0.198$,
+we deduce for the real part:
+\[ |\Re\asin z - \Re z| < 0.198 |z|^3. \]
+
+For the imaginary part,
+we first prove by induction that $|\Im z^k| \leq k |z|^{k-1} |\Im z|$
+for $k \geq 1$. This is trivial for $k=1$.
+Now assume it is true for $k$:
+\[ |\Im z^{k+1}| \leq |\Im z^k| |\Re z| + |\Im z| |\Re z^k|
+  \leq k |z|^{k-1} |\Im z| |z| + |\Im z| |z|^k
+  \leq (k+1) |z|^k |\Im z|. \]
+Applying this to each term of Eq.~(\ref{eq_asin}) we get:
+\[ |\Im\asin z - \Im z| \leq \frac{1}{2} |z^2| |\Im z|
+ + \frac{1 \cdot 3}{2 \cdot 4} |z^4| |\Im z|
+ + \frac{1 \cdot 3 \cdot 5}{2 \cdot 4 \cdot 6} |z^6| |\Im z| + \cdots \]
+Still for $|z| \leq 1/2$, we get:
+\[ |\Im\asin z - \Im z| \leq \frac{1}{2} |z^2| |\Im z|
+  + \frac{1}{2} |z^4| |\Im z| + \frac{1}{2} |z^6| |\Im z| + \cdots
+  \leq \frac{2}{3} |z^2| |\Im z|. \]
 
 \subsection {\texttt {mpc\_pow}}
 
@@ -2079,7 +2118,7 @@ bits~$0$, have the following shape:
 If $y_k' > \sqrt 2 \cdot 2^{p-1}$, they encode exactly $(y_k')^2$.
 If $y_k' < \sqrt 2 \cdot 2^{p-1}$, the $2 p - 1$ leading bits encode
 $(y_k')^2$, and they are followed by a digit~$0$, so the $2 p$ leading
-bits encode $2 (y_k')^2$. 
+bits encode $2 (y_k')^2$.
 
 Since $n_1 = n_2$, in particular their leading $2 p$ bits coincide;
 so either $(y_1')^2 = (y_2')^2$, $(y_1')^2 = 2 (y_2')^2$ or
