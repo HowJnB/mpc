@@ -1286,6 +1286,20 @@ and for $e \geq 2$:
 \[ {\rm err}(s) \leq \sum_{k=0}^{K-1} \frac{5}{3} \cdot 2^{-e-p} =
   \frac{5}{3} K 2^{-e-p}. \]
 
+Assume now that $|\Re z| \leq 2^{-e}$ and $|\Im z| \leq 2^{-e-\delta}$ with
+$e \geq 1$ and $\delta \geq 0$. All the above reasoning for the real parts still
+holds. For the imaginary parts, we have
+$|\Im w| \leq 2^{1-2e-\delta}$, and the bound on the imaginary part of $t$
+becomes $|\Im t| \leq 2^{2k-(2k+1)e-\delta}$.
+Now consider that $\varepsilon_k$ is the maximal absolute error on
+$\Im t$ only at the end of the loop with index~$k$.
+The initial value $\varepsilon_0$
+is multiplied by $2^{-\delta}$ compared to above,
+and since all the bounds on the imaginary
+parts are multiplied by $2^{-\delta}$ too, the same holds for the recurrence
+on $\varepsilon_k$ and their solutions. Thus the final error bound on
+$\Im s$ is multiplied by $2^{-\delta}$ too.
+
 \subsection {\texttt {mpc\_pow}}
 
 The main issue for the power function is to be able to recognize when the
