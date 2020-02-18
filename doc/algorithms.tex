@@ -1203,7 +1203,7 @@ we can use the following algorithm, with working precision $p$:
    w = o(z*z)
    t = o(z)
    s = o(z)
-   for k from 1 to K do:
+   for k from 1 to K-1 do:
       u = o(t * w)
       v = o(u * ((2k-1) * (2k-1)))
       t = o(v / ((2*k) * (2*k+1))
@@ -1281,10 +1281,10 @@ and it follows easily $\varepsilon_k \leq \frac{5}{3} \cdot 2^{-e-p}$.
 Now the absolute error on $s$ at the end of the for loop --- not taking into
 account the mathematical error when truncating the Taylor series ---
 is bounded for $e=1$ by:
-\[ {\rm err}(s) \leq \sum_{k=0}^K (5k+1) 2^{-1-p} = \frac{(5K+2)(K+1)}{2} 2^{-1-p}, \]
+\[ {\rm err}(s) \leq \sum_{k=0}^{K-1} (5k+1) 2^{-1-p} = \frac{(5K-3)K}{2} 2^{-1-p}, \]
 and for $e \geq 2$:
-\[ {\rm err}(s) \leq \sum_{k=0}^K \frac{5}{3} \cdot 2^{-e-p} =
-  \frac{5}{3} (K+1) 2^{-e-p}. \]
+\[ {\rm err}(s) \leq \sum_{k=0}^{K-1} \frac{5}{3} \cdot 2^{-e-p} =
+  \frac{5}{3} K 2^{-e-p}. \]
 
 \subsection {\texttt {mpc\_pow}}
 
