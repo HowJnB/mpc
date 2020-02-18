@@ -1186,47 +1186,105 @@ k_R=\left\{
 
 \subsection {\texttt {mpc\_asin}}
 
-\paragraph{Tiny imaginary part.}
+\paragraph{Tiny imaginary part with real part $1$.}
 First, in case the real part of the argument is exactly $1$,
 for $0 \leq y \leq 1$, we have $|\Re \asin (1 \pm iy) - \pi/2|
 \leq y^{1/2}$, and $|\Im \asin (1 \pm iy) \mp y^{1/2}| \leq (1/12) y^{3/2}$.
 
-In the general case,
-formula 4.4.40 from \cite{AbSt73} gives for $|z| < 1$:
-\begin{equation} \label{eq_asin}
-\asin z = z + \frac{1}{2} \frac{z^3}{3} + \frac{1 \cdot 3}{2 \cdot 4}
-  \frac{z^5}{5} + \frac{1 \cdot 3 \cdot 5}{2 \cdot 4 \cdot 6} \frac{z^7}{7}
-  + \cdots
+\paragraph{Small real and imaginary parts.}
+Formula 4.4.40 from \cite{AbSt73} gives for $|z| < 1$:
+\begin{equation} \label{eq_asin1}
+  \asin z = \sum_{k \geq 0} \frac{1 \times 3 \times \cdots \times (2k-1)}
+  {2 \times 4 \times \cdots \times (2k)} \frac{z^{2k+1}}{2k+1}.
 \end{equation}
-thus we have $\asin z = z + z^3 t$ where
-\[ t = \frac{1}{2} \frac{1}{3} + \frac{1 \cdot 3}{2 \cdot 4}
-  \frac{z^2}{5} + \frac{1 \cdot 3 \cdot 5}{2 \cdot 4 \cdot 6} \frac{z^4}{7}
-  + \cdots, \]
-thus
-\[ |t| \leq \frac{1}{2} \left( \frac{1}{3} + \frac{|z|^2}{5}
-      + \frac{|z|^7}{7} + \cdots \right) \]
-% var('k'); 1/2*sum((1/2)^(2*k)/(2*k+3),k,0,infinity)
-We assume $|z| \leq 1/2$.
-Since $\sum_{k \geq 0} (1/2)^{2k}/(2k+3)
-= 2 \log 3 - 2 \leq 0.198$, thus $|t| < 0.198$,
-we deduce for the real part:
-\[ |\Re\asin z - \Re z| < 0.198 |z|^3. \]
+When $|\Re z|,|\Im z| \leq 2^{-e}$ with $e \geq 1$,
+we can use the following algorithm, with working precision $p$:
+\begin{verbatim}
+   w = o(z*z)
+   t = o(z)
+   s = o(z)
+   for k from 1 to K do:
+      u = o(t * w)
+      v = o(u * ((2k-1) * (2k-1)))
+      t = o(v / ((2*k) * (2*k+1))
+      s = s + t
+\end{verbatim}
+We first prove by induction that at the end of the for loop with index $k$,
+we have (up to rounding errors):
+\[ t = \frac{1  \times 3 \times \cdots \times (2k-1)}
+  {2 \times 4 \times \cdots \times (2k)} \frac{z^{2k+1}}{2k+1}. \]
+This is easy and left to the reader.
+Then since $|\Re z|,|\Im z| \leq 2^{-e}$,
+we have $|\Re(w)|,|\Im(w)| \leq o(2^{1-2e}) = 2^{1-2e}$.
 
-For the imaginary part,
-we first prove by induction that $|\Im z^k| \leq k |z|^{k-1} |\Im z|$
-for $k \geq 1$. This is trivial for $k=1$.
-Now assume it is true for $k$:
-\[ |\Im z^{k+1}| \leq |\Im z^k| |\Re z| + |\Im z| |\Re z^k|
-  \leq k |z|^{k-1} |\Im z| |z| + |\Im z| |z|^k
-  \leq (k+1) |z|^k |\Im z|. \]
-Applying this to each term of Eq.~(\ref{eq_asin}) we get:
-\[ |\Im\asin z - \Im z| \leq \frac{1}{2} |z^2| |\Im z|
- + \frac{1 \cdot 3}{2 \cdot 4} |z^4| |\Im z|
- + \frac{1 \cdot 3 \cdot 5}{2 \cdot 4 \cdot 6} |z^6| |\Im z| + \cdots \]
-Still for $|z| \leq 1/2$, we get:
-\[ |\Im\asin z - \Im z| \leq \frac{1}{2} |z^2| |\Im z|
-  + \frac{1}{2} |z^4| |\Im z| + \frac{1}{2} |z^6| |\Im z| + \cdots
-  \leq \frac{2}{3} |z^2| |\Im z|. \]
+Then we prove, still by induction, that at the end of the for loop with index
+$k$, we have $|\Re(t)|,|\Im(t)| \leq 2^{2k-(2k+1)e}$.
+This holds for $k=0$, i.e., at the beginning of the loop with $k=1$,
+since then $t$ is the rounding of $z$,
+thus $|\Re t|,|\Im t| \leq o(2^{-e}) = 2^{-e}$,
+since $2^{-e}$ is exactly representable.
+Now assume $|\Re(t)|,|\Im(t)| \leq 2^{2k-2-(2k-1)e}$ at the beginning of the
+loop with index $k$.
+Since $|\Re(w)|,|\Im(w)| \leq 2^{1-2e}$, we have after the first instruction
+in the loop: $|\Re(u)|, |\Im(u)| \leq 2^{2k-(2k+1)e}$. After the second
+instruction, we get $|\Re(v)|, |\Im(v)| \leq (2k-1)^2 \cdot 2^{2k-(2k+1)e}$,
+assuming $(2k-1)^2$ is exactly representable, which can be checked a
+posteriori. Since in the third instruction we divide by $(2k)(2k+1)$
+which is larger than $(2k-1)^2$, we get at the end of the loop with index $k$:
+$|\Re(t)|, |\Im(t)| \leq 2^{2k-(2k+1)e}$ as claimed.
+
+Now let $\varepsilon_k$ be the maximal absolute error on $\Re t, \Im t$ at the
+end of the loop with index~$k$.
+For $k=0$, i.e., at the beginning of the loop with $k=1$, we have
+$\varepsilon_0 = 2^{-e-p}$, since $t = o(z)$, and the error is at most
+$\frac{1}{2} \Ulp(z) \leq \frac{1}{2} \Ulp(2^{-e}) = 2^{-e-p}$.
+Now the absolute error on $u$ is bounded by:
+\[ {\rm err}(u) \leq \frac{1}{2} \Ulp(u) + 2 \varepsilon_{k-1} |w| + 2 |t| {\rm err}(w), \]
+where ${\rm err}(w)$ stands for the maximal absolute error on $w$ (i.e.,
+on its real and imaginary parts), the factors $2$ come from the fact
+that the real and imaginary parts of a product are a sum of two products,
+and $|x|$ is a shortcut for ${\rm max}(|\Re x|, |\Im x|)$.
+Since $|\Re u|, |\Im u| \leq 2^{2k-(2k+1)e}$, we have
+$\frac{1}{2} \Ulp(u) \leq 2^{2k-(2k+1)e-p}$;
+we also have $|w| \leq 2^{1-2e}$ and ${\rm err}(w) \leq \frac{1}{2}
+\Ulp(w) \leq 2^{1-2e-p}$. This gives:
+\[ {\rm err}(u) \leq 2^{2k+1-(2k+1)e-p} + 2^{2-2e} \varepsilon_{k-1}. \]
+For the second instruction of the loop:
+\[ {\rm err}(v) \leq \frac{1}{2} \Ulp(v) + (2k-1)^2 {\rm err}(u), \]
+and for the third one:
+\[ {\rm err}(t) \leq \frac{1}{2} \Ulp(t) + \frac{{\rm err}(v)}{(2k)(2k+1)}, \]
+thus:
+\[ \varepsilon_k \leq \frac{1}{2} \Ulp(t) +
+  \frac{1}{2(2k)(2k+1)} \Ulp(v) + \frac{(2k-1)^2}{(2k)(2k+1)} {\rm err}(u). \]
+For the first term of the right-hand side,
+$\frac{1}{2} \Ulp(t) \leq 2^{2k-(2k+1)e-p}$;
+the last one is bounded by ${\rm err}(u)$;
+using $|v| \leq (2k-1)^2 \cdot 2^{2k-(2k+1)e}$, and
+the rule $\Ulp(ab) < 2 |a| \Ulp(b)$,
+the middle one is bounded by
+\[ \frac{1}{2(2k)(2k+1)} \Ulp(v) \leq
+  \frac{(2k-1)^2}{(2k)(2k+1)} \Ulp(2^{2k-(2k+1)e})
+  \leq 2^{2k+1-(2k+1)e-p}. \]
+This yields:
+\[ \varepsilon_k \leq 2^{2k-(2k+1)e-p} + 2^{2k+1-(2k+1)e-p}
+  + 2^{2k+1-(2k+1)e-p} + 2^{2-2e} \varepsilon_{k-1}
+  \leq 5 \cdot 2^{2k-(2k+1)e-p} + 2^{2-2e} \varepsilon_{k-1}. \]
+We distinguish two cases: $e=1$ or $e \geq 2$.
+For $e=1$ we get:
+\[ \varepsilon_k \leq 5 \cdot 2^{-1-p} + \varepsilon_{k-1}, \]
+thus since $\varepsilon_0 = 2^{-1-p}$ we have
+$\varepsilon_k \leq (5k+1) 2^{-1-p}$.
+For $e \geq 2$, we have for $k \geq 1$:
+\[ \varepsilon_k \leq 5 \cdot 2^{-2-e-p} + \frac{1}{4} \varepsilon_{k-1}, \]
+and it follows easily $\varepsilon_k \leq \frac{5}{3} \cdot 2^{-e-p}$.
+
+Now the absolute error on $s$ at the end of the for loop --- not taking into
+account the mathematical error when truncating the Taylor series ---
+is bounded for $e=1$ by:
+\[ {\rm err}(s) \leq \sum_{k=0}^K (5k+1) 2^{-1-p} = \frac{(5K+2)(K+1)}{2} 2^{-1-p}, \]
+and for $e \geq 2$:
+\[ {\rm err}(s) \leq \sum_{k=0}^K \frac{5}{3} \cdot 2^{-e-p} =
+  \frac{5}{3} (K+1) 2^{-e-p}. \]
 
 \subsection {\texttt {mpc\_pow}}
 
