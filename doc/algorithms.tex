@@ -1300,6 +1300,25 @@ parts are multiplied by $2^{-\delta}$ too, the same holds for the recurrence
 on $\varepsilon_k$ and their solutions. Thus the final error bound on
 $\Im s$ is multiplied by $2^{-\delta}$ too.
 
+\paragraph{Tiny imaginary part with $1/2 < |\Re z| < 1$.}
+The function $\asin z$ is analytical in the disk of center $(0,0)$ and
+radius $1$, with derivative $1/\sqrt{1-z^2}$.
+Taylor's theorem in complex analysis says that if $c,z$ are points in the unit
+disk, then:
+% https://en.wikipedia.org/wiki/Taylor%27s_theorem#Taylor's_theorem_in_complex_analysis
+\[ \asin z = \asin c + (z-c) \frac{1}{\sqrt{1-c^2}} + R, \]
+with $|R| \leq M_r \beta^2/(1-\beta)$, where $M_r = {\rm max}|\asin w|$
+for $|w-c| = r$, and $|z-c|/r \leq \beta < 1$.
+
+Assume we want to evaluate $\asin z$ for $z = x + iy$, with $y$ tiny,
+and $|x| < 1$.
+Taking $c=x$ in the above formula, $z = x + iy$, and $r = 1 - |x|$, we get:
+\[ \left| \asin(x + iy) - \left( \asin x + \frac{iy}{\sqrt{1-x^2}} \right)
+  \right| \leq \frac{\pi \beta^2}{2 (1-\beta)}, \]
+where $\beta = |y|/(1-|x|)$,
+since $|\asin z| \leq \pi/2$ for $|z| \leq 1$.
+
+
 \subsection {\texttt {mpc\_pow}}
 
 The main issue for the power function is to be able to recognize when the
