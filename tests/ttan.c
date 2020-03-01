@@ -228,6 +228,37 @@ bug20200211 (void)
   mpfr_set_emin (emin);
 }
 
+/* test failing with gcc 5.4.0, line 127 of tan.dat */
+static void
+bug20200301 (void)
+{
+  mpc_t x, z, zr;
+  int inex;
+
+  mpc_init2 (x, 53);
+  mpc_init2 (z, 53);
+  mpc_init2 (zr, 53);
+  mpfr_set_d (mpc_realref (x), 0x4580CBF242683p-3, MPFR_RNDN);
+  mpfr_set_d (mpc_imagref (x), -0x1B3E8A3660D279p-3, MPFR_RNDN);
+  inex = mpc_tan (z, x, MPC_RNDNN);
+  mpfr_set_d (mpc_realref (zr), -0.0, MPFR_RNDN);
+  mpfr_set_d (mpc_imagref (zr), -1.0, MPFR_RNDN);
+  if (mpc_cmp (z, zr) != 0 || mpfr_signbit (mpc_realref (z)) == 0 ||
+      MPC_INEX_RE(inex) <= 0 || MPC_INEX_IM(inex) >= 0)
+    {
+      printf ("Incorrect tangent (bug20200301):\n");
+      mpfr_printf ("Expected (%Re,%Re)\n", mpc_realref (zr), mpc_imagref (zr));
+      mpfr_printf ("Got      (%Re,%Re)\n", mpc_realref (z), mpc_imagref (z));
+      mpfr_printf ("expected ternary value (+1, -1)\n");
+      mpfr_printf ("got      ternary value (%d, %d)\n", MPC_INEX_RE(inex),
+                   MPC_INEX_IM(inex));
+      exit (1);
+    }
+  mpc_clear (x);
+  mpc_clear (z);
+  mpc_clear (zr);
+}
+
 #define MPC_FUNCTION_CALL                                       \
   P[0].mpc_inex = mpc_tan (P[1].mpc, P[2].mpc, P[3].mpc_rnd)
 #define MPC_FUNCTION_CALL_REUSE_OP1                             \
@@ -241,6 +272,7 @@ main (void)
 {
   test_start ();
 
+  bug20200301 ();
   bug20200211 ();
 
   data_check_template ("tan.dsc", "tan.dat");
