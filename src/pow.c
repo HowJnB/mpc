@@ -702,7 +702,12 @@ mpc_pow (mpc_ptr z, mpc_srcptr x, mpc_srcptr y, mpc_rnd_t rnd)
          if (mpfr_inf_p (mpc_realref (z)))
            inex_re = mpc_fix_inf (mpc_realref (z), MPC_RND_RE(rnd));
          if (mpfr_inf_p (mpc_imagref (z)))
-           inex_im = mpc_fix_inf (mpc_imagref (z), MPC_RND_IM(rnd));
+           {
+             if (z_real)
+               inex_im = mpfr_set_ui (mpc_imagref (z), 0, MPC_RND_IM(rnd));
+             else
+               inex_im = mpc_fix_inf (mpc_imagref (z), MPC_RND_IM(rnd));
+           }
          ret = MPC_INEX(inex_re,inex_im);
          goto exact;
       }
