@@ -2485,4 +2485,4 @@
 # example with exact division (0 -1) which works:
 0 0 2 0 2 -1 2 -0x1p50450368 2 0x1p50450368 2 -0x1p50450368 2 -0x1p50450368 N N
 # same with larger exponents, which gives (0 -Inf) in revision 389c43d:
-0 0 2 0 2 -1 2 -0x1p550450368 2 0x1p550450368 2 -0x1p550450368 2 -0x1p550450368 N N
+0 0 2 0 2 -1 2 -0x1p536870910 2 0x1p536870910 2 -0x1p536870910 2 -0x1p536870910 N N
