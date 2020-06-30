@@ -1,5 +1,5 @@
-/* mpcheck-float128 -- compare mpc functions against "__float128 complex"
-                       from the GNU libc implementation
+/* mpcheck-float -- compare mpc functions against "float complex"
+                     from the GNU libc implementation
 
 Copyright (C) 2020 INRIA
 
@@ -32,41 +32,37 @@ along with this program. If not, see http://www.gnu.org/licenses/ .
 */
 
 #define _GNU_SOURCE /* for clog10 */
+#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <complex.h>
 #include <sys/types.h>
 #include <unistd.h>
 #include <assert.h>
-#define MPFR_WANT_FLOAT128
-#include "mpc-tests.h"
+#include "mpc.h"
 #ifdef __GNUC__
 #include <gnu/libc-version.h>
 #endif
 
-#define PRECISION 113
-#define EMAX 16384
-#define TYPE _Float128
-#define SUFFIX f128
+#define PRECISION 24
+#define EMAX 128
+#define TYPE float
+#define SUFFIX f
 
-#define mpfr_set_type mpfr_set_float128
+#define mpfr_set_type mpfr_set_flt
 
 static TYPE complex
-mpc_get_type (mpc_t z, mpc_rnd_t rnd)
+mpc_get_type (mpc_t x, mpc_rnd_t rnd)
 {
-  TYPE x, y;
-  /* there is no mpc_get_float128c function */
-  x = mpfr_get_float128 (mpc_realref (z), MPC_RND_RE(rnd));
-  y = mpfr_get_float128 (mpc_imagref (z), MPC_RND_IM(rnd));
-  return x + I * y;
+  /* there is no mpc_get_fltc function */
+  return (TYPE complex) mpc_get_dc (x, rnd);
 }
 
 static int
 mpc_set_type (mpc_t x, TYPE complex y, mpc_rnd_t rnd)
 {
-  /* there is no mpc_set_float128c function */
-  mpfr_set_float128 (mpc_realref (x), crealf128 (y), MPC_RND_RE(rnd));
-  mpfr_set_float128 (mpc_imagref (x), cimagf128 (y), MPC_RND_IM(rnd));
+  /* there is no mpc_set_fltc function */
+  return mpc_set_dc (x, (double complex) y, rnd);
 }
 
 gmp_randstate_t state;
@@ -153,7 +149,7 @@ mpfr_exp_t emin, emax;
 int
 main (int argc, char *argv[])
 {
-  mpfr_prec_t p = PRECISION; /* precision of 'double' */
+  mpfr_prec_t p = PRECISION; /* precision of 'float' */
   unsigned long n = 1000000; /* default number of random tests per function */
 
   while (argc >= 2 && argv[1][0] == '-')
@@ -196,7 +192,7 @@ main (int argc, char *argv[])
     }
 
   /* set exponent range */
-  emin = -EMAX - 64 + 4; /* should be -16444 like for long double */
+  emin = -EMAX - PRECISION + 4; /* should be -148 */
   emax = EMAX;
   mpfr_set_emin (emin);
   mpfr_set_emax (emax);

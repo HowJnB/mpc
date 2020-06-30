@@ -1,6 +1,6 @@
 ## tests/Makefile.am -- Process this file with automake to produce Makefile.in
 ##
-## Copyright (C) 2008, 2009, 2010, 2011, 2012, 2013, 2016 INRIA
+## Copyright (C) 2008, 2009, 2010, 2011, 2012, 2013, 2016, 2020 INRIA
 ##
 ## This file is part of GNU MPC.
 ##
@@ -65,10 +65,7 @@ DATA_SETS = abs.dat acos.dat acosh.dat add.dat add_fr.dat arg.dat	\
   pow_fr.dat pow_si.dat pow_ui.dat pow_z.dat proj.dat rootofunity.dat   \
   sin.dat sinh.dat                                                      \
   sqr.dat sqrt.dat strtoc.dat sub.dat sub_fr.dat tan.dat tanh.dat
-EXTRA_DIST = data_check.tpl tgeneric.tpl $(DATA_SETS) $(DESCRIPTIONS) \
-	     mpcheck-float.c mpcheck-double.c mpcheck-longdouble.c \
-	     mpcheck-float128.c mpcheck-common.c \
-             mpcheck-template1.c mpcheck-template2.c mpcheck-template3.c
+EXTRA_DIST = data_check.tpl tgeneric.tpl $(DATA_SETS) $(DESCRIPTIONS)
 
 LOG_COMPILER = $(VALGRIND)
 AM_LOG_FLAGS = $(VALGRIND_OPTS)

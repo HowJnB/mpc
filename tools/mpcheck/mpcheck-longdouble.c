@@ -32,13 +32,14 @@ along with this program. If not, see http://www.gnu.org/licenses/ .
 */
 
 #define _GNU_SOURCE /* for clog10 */
+#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <complex.h>
 #include <sys/types.h>
 #include <unistd.h>
 #include <assert.h>
-#include "mpc-tests.h"
+#include "mpc.h"
 #ifdef __GNUC__
 #include <gnu/libc-version.h>
 #endif

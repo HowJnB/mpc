@@ -1,4 +1,4 @@
-# Copyright (C) 2008, 2009, 2010, 2011, 2012, 2014, 2016, 2017, 2018 INRIA
+# Copyright (C) 2008, 2009, 2010, 2011, 2012, 2014, 2016, 2017, 2018, 2020 INRIA
 #
 # This file is part of GNU MPC.
 #
@@ -253,5 +253,5 @@ AC_DEFINE_UNQUOTED([MPC_GCC_VERSION], ["$GCC_VERSION"], [Version of gcc])
 # Looks for short git hash if the version string contains "dev"
 MPC_GITVERSION
 
-AC_CONFIG_FILES([Makefile src/Makefile tests/Makefile doc/Makefile tools/Makefile tools/bench/Makefile])
+AC_CONFIG_FILES([Makefile src/Makefile tests/Makefile doc/Makefile tools/Makefile tools/bench/Makefile tools/mpcheck/Makefile])
 AC_OUTPUT

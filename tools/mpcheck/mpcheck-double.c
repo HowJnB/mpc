@@ -1,4 +1,4 @@
-/* mpcheck-float -- compare mpc functions against "float complex"
+/* mpcheck-double -- compare mpc functions against "double complex"
                      from the GNU libc implementation
 
 Copyright (C) 2020 INRIA
@@ -32,37 +32,26 @@ along with this program. If not, see http://www.gnu.org/licenses/ .
 */
 
 #define _GNU_SOURCE /* for clog10 */
+#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <complex.h>
 #include <sys/types.h>
 #include <unistd.h>
 #include <assert.h>
-#include "mpc-tests.h"
 #ifdef __GNUC__
 #include <gnu/libc-version.h>
 #endif
+#include "mpc.h"
 
-#define PRECISION 24
-#define EMAX 128
-#define TYPE float
-#define SUFFIX f
+#define PRECISION 53
+#define EMAX 1024
+#define TYPE double
+#define SUFFIX
 
-#define mpfr_set_type mpfr_set_flt
-
-static TYPE complex
-mpc_get_type (mpc_t x, mpc_rnd_t rnd)
-{
-  /* there is no mpc_get_fltc function */
-  return (TYPE complex) mpc_get_dc (x, rnd);
-}
-
-static int
-mpc_set_type (mpc_t x, TYPE complex y, mpc_rnd_t rnd)
-{
-  /* there is no mpc_set_fltc function */
-  return mpc_set_dc (x, (double complex) y, rnd);
-}
+#define mpc_get_type mpc_get_dc
+#define mpc_set_type mpc_set_dc
+#define mpfr_set_type mpfr_set_d
 
 gmp_randstate_t state;
 mpz_t expz; /* global variable used in mpcheck_random */
@@ -139,16 +128,23 @@ mpfr_exp_t emin, emax;
 #define FOO sinh
 #include "mpcheck-template1.c"
 
+/* use reduced exponent range for tan and tanh */
+#define FOO_EMIN -8
+#define FOO_EMAX  8
+
 #define FOO tan
 #include "mpcheck-template1.c"
 
 #define FOO tanh
 #include "mpcheck-template1.c"
 
+#undef FOO_EMIN
+#undef FOO_EMAX
+
 int
 main (int argc, char *argv[])
 {
-  mpfr_prec_t p = PRECISION; /* precision of 'float' */
+  mpfr_prec_t p = PRECISION; /* precision of 'double' */
   unsigned long n = 1000000; /* default number of random tests per function */
 
   while (argc >= 2 && argv[1][0] == '-')
@@ -191,7 +187,7 @@ main (int argc, char *argv[])
     }
 
   /* set exponent range */
-  emin = -EMAX - PRECISION + 4; /* should be -148 */
+  emin = -EMAX - PRECISION + 4; /* should be -1073 */
   emax = EMAX;
   mpfr_set_emin (emin);
   mpfr_set_emax (emax);
