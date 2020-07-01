@@ -195,6 +195,8 @@ main (int argc, char *argv[])
   gmp_randinit_default (state);
   mpz_init (expz);
 
+  printf ("Using GMP %s, MPFR %s\n", gmp_version, mpfr_get_version ());
+
 #ifdef __GNUC__
   printf ("GNU libc version: %s\n", gnu_get_libc_version ());
   printf ("GNU libc release: %s\n", gnu_get_libc_release ());

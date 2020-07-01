@@ -182,6 +182,7 @@ mpfr_agree (mpfr_t a, mpfr_t b, int inex)
     return mpfr_equal_p (a, b) || inex == 2 || inex == -2;
 }
 
+#if 0
 static int
 cputime (void)
 {
@@ -190,4 +191,4 @@ cputime (void)
   getrusage (0, &rus);
   return rus.ru_utime.tv_sec * 1000 + rus.ru_utime.tv_usec / 1000;
 }
-
+#endif
