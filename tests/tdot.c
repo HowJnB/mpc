@@ -68,11 +68,27 @@ check_special (void)
   mpc_clear (res);
 }
 
+/* bug reported by Trevor Spiteri */
+static void
+bug20200717 (void)
+{
+  mpc_t a;
+  mpc_ptr p[1];
+  mpc_init2 (a, 53);
+  mpc_set_ui_ui (a, 1, 2, MPC_RNDNN);
+  p[0] = a;
+  mpc_dot (a, p, p, 1, MPC_RNDNN);
+  MPC_ASSERT (mpfr_cmp_si (mpc_realref (a), -3) == 0);
+  MPC_ASSERT (mpfr_cmp_ui (mpc_imagref (a), 4) == 0);
+  mpc_clear (a);
+}
+
 int
 main (void)
 {
   test_start ();
 
+  bug20200717 ();
   check_special ();
 
   test_end ();

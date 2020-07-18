@@ -30,6 +30,7 @@ mpc_dot (mpc_ptr res, const mpc_ptr *x, const mpc_ptr *y,
   mpfr_ptr *t;
   mpfr_t *z;
   unsigned long i;
+  mpfr_t re_res;
 
   z = (mpfr_t *) malloc (2 * n * sizeof (mpfr_t));
   MPC_ASSERT(z != NULL);
@@ -57,7 +58,10 @@ mpc_dot (mpc_ptr res, const mpc_ptr *x, const mpc_ptr *y,
       mpfr_mul (z[n+i], mpc_imagref (x[i]), mpc_imagref (y[i]), MPFR_RNDZ);
       mpfr_neg (z[n+i], z[n+i], MPFR_RNDZ);
     }
-  inex_re = mpfr_sum (mpc_realref (res), t, 2 * n, MPC_RND_RE (rnd));
+  /* copy the real part in a temporary variable, since it might be in the
+     input array */
+  mpfr_init2 (re_res, mpfr_get_prec (mpc_realref (res)));
+  inex_re = mpfr_sum (re_res, t, 2 * n, MPC_RND_RE (rnd));
   /* we then store in z[i] the value of Re(x[i])*Im(y[i])
      and in z[n+i] that of Im(x[i])*Re(y[i]) */
   for (i = 0; i < n; i++)
@@ -72,6 +76,8 @@ mpc_dot (mpc_ptr res, const mpc_ptr *x, const mpc_ptr *y,
       mpfr_mul (z[n+i], mpc_imagref (x[i]), mpc_realref (y[i]), MPFR_RNDZ);
     }
   inex_im = mpfr_sum (mpc_imagref (res), t, 2 * n, MPC_RND_IM (rnd));
+  mpfr_swap (mpc_realref (res), re_res);
+  mpfr_clear (re_res);
   for (i = 0; i < 2 * n; i++)
     mpfr_clear (z[i]);
   free (t);
