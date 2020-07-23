@@ -203,22 +203,22 @@ error
         AC_MSG_ERROR([GMP version >= 5.0.0 required])
         ])
 
-# Check for a recent MPFR: we require MPFR 3.0.0 for MPC_RNDA
+# Check for a recent MPFR: we require MPFR 4.1.0
 # The same remark as above for GMP applies.
 AC_MSG_CHECKING(for recent MPFR)
 AC_COMPILE_IFELSE(
         [AC_LANG_SOURCE(
         [[
 #include "mpfr.h"
-#if (MPFR_VERSION < MPFR_VERSION_NUM (3,0,0))
-# error "Minimal MPFR version is 3.0.0"
+#if (MPFR_VERSION < MPFR_VERSION_NUM (4,1,0))
+# error "Minimal MPFR version is 4.1.0"
 error
 #endif
         ]])],
         [AC_MSG_RESULT(yes)],
         [
          AC_MSG_RESULT(no)
-         AC_MSG_ERROR([MPFR version >= 3.0.0 required])
+         AC_MSG_ERROR([MPFR version >= 4.1.0 required])
          ])
 
 # Check for logging feature
