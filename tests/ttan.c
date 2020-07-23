@@ -1,6 +1,6 @@
 /* ttan -- test file for mpc_tan.
 
-Copyright (C) 2008, 2011, 2012, 2013 INRIA
+Copyright (C) 2008, 2011, 2012, 2013, 2020 INRIA
 
 This file is part of GNU MPC.
 

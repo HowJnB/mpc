@@ -1,7 +1,7 @@
 /* mpc_get_dc, mpc_get_ldc -- Transform mpc number into C complex number
    mpc_get_str -- Convert a complex number into a string.
 
-Copyright (C) 2009, 2010, 2011 INRIA
+Copyright (C) 2009, 2010, 2011, 2020 INRIA
 
 This file is part of GNU MPC.
 

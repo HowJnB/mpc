@@ -1,6 +1,6 @@
 /* tdot -- test file for mpc_dot.
 
-Copyright (C) 2018 INRIA
+Copyright (C) 2018, 2020 INRIA
 
 This file is part of GNU MPC.
 

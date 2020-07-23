@@ -1,6 +1,6 @@
 /* tdiv -- test file for mpc_div.
 
-Copyright (C) 2002, 2008, 2009, 2011, 2013 INRIA
+Copyright (C) 2002, 2008, 2009, 2011, 2013, 2020 INRIA
 
 This file is part of GNU MPC.
 

@@ -1,6 +1,6 @@
 /* mpc_atan -- arctangent of a complex number.
 
-Copyright (C) 2009, 2010, 2011, 2012, 2013, 2017 INRIA
+Copyright (C) 2009, 2010, 2011, 2012, 2013, 2017, 2020 INRIA
 
 This file is part of GNU MPC.
 

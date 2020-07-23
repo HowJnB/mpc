@@ -1,6 +1,6 @@
 /* tmul -- test file for mpc_mul.
 
-Copyright (C) 2002, 2005, 2008, 2009, 2010, 2011, 2012, 2013 INRIA
+Copyright (C) 2002, 2005, 2008, 2009, 2010, 2011, 2012, 2013, 2014, 2020 INRIA
 
 This file is part of GNU MPC.
 

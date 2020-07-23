@@ -1,6 +1,6 @@
 /* mpc_dot -- Dot product of two arrays of complex numbers.
 
-Copyright (C) 2018 INRIA
+Copyright (C) 2018, 2020 INRIA
 
 This file is part of GNU MPC.
 
