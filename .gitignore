@@ -19,6 +19,7 @@ autom4te.cache
 config.h
 config.status
 configure
+INSTALL
 libtool
 stamp-h1
 /m4/libtool.m4
