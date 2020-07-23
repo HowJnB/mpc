@@ -22,6 +22,7 @@
 AC_PREREQ(2.61)
 AC_INIT(mpc, 1.2.0dev, mpc-discuss@lists.gforge.inria.fr)
 AC_CONFIG_SRCDIR([src/mpc-impl.h])
+AC_CONFIG_AUX_DIR([build-aux])
 AC_CONFIG_HEADER([config.h])
 
 AM_INIT_AUTOMAKE
