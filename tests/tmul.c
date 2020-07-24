@@ -150,7 +150,7 @@ bug20200206 (void)
     {
       printf ("Error, mpc_mul returns an out-of-range exponent:\n");
       mpfr_dump (mpc_realref (z));
-      printf ("Bug most probably in MPFR, please upgrade to MPFR 4.0.3 or later\n");
+      printf ("Bug most probably in MPFR, please upgrade to MPFR 4.1.0 or later\n");
       exit (1);
     }
   mpc_clear (x);
